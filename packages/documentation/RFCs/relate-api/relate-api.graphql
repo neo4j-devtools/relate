@@ -1,0 +1,20 @@
+type DBMS {
+    id: ID!
+    metrics: Metric
+    # $ foo-cli dbms 1 dbs list
+    DBs: [DB]!
+}
+
+type DB {
+    id: ID!
+    metrics: Metric
+}
+
+type Metric {
+
+}
+
+type Query {
+    # $ foo-cli dbms list
+    DMBSs: [DBMS]!
+}
