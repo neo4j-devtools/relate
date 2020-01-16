@@ -92,7 +92,7 @@
         "max-depth": "error",
         "max-len": [
             "error",
-            1200
+            120
         ],
         "max-lines": [
             "warn",
