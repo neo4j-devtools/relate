@@ -1,11 +1,11 @@
 {
-  "packages": [
-    "packages/*"
-  ],
-  "version": "independent",
-  "command": {
-    "bootstrap": {
-      "npmClientArgs": ["ci"]
+    "packages": [
+        "packages/*"
+    ],
+    "version": "independent",
+    "command": {
+        "bootstrap": {
+            "ci": true
+        }
     }
-  }
 }

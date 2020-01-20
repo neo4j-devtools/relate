@@ -1,0 +1,13 @@
+{
+    "extends": "./.eslintrc.json",
+    "rules": {
+        "no-console": "error",
+        "no-constant-condition": "error",
+        "no-debugger": "error",
+        "no-unreachable": "error",
+        "no-empty-function": "error",
+        "require-await": "error",
+        "no-lonely-if": "error",
+        "no-multiple-empty-lines": "error"
+    }
+}
