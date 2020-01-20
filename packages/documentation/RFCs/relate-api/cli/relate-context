@@ -1,0 +1,24 @@
+relate-context
+
+DESCRIPTION
+  The context can represent the currently connected provider or DBMS.
+
+USAGE
+  relate context apply (<key> <value> | --file=<path>)
+  relate context reset [<key>]
+  relate context current
+
+OPTIONS
+  --file=<path>    File to load context from.
+
+NOTES
+  apply:
+    It should be possible to pass the context via STDIN.
+  reset:
+    If no key is specified, all information is reset.
+
+EXAMPLE
+  $ relate context apply --file=graph-project
+  $ relate db list
+  $ relate db create foo
+  $ relate context reset

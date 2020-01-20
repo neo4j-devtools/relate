@@ -1,0 +1,16 @@
+relate-provider
+
+DESCRIPTION
+  A provider is a container of DBMS's (ie. Aura or Desktop).
+  Creating or connecting to a DBMS can be done through a provider, but it's not
+  necessary, for example you can have a single DBMS instance either locally or
+  remotely.
+
+USAGE
+  relate provider add <name> <url>
+  relate provider rename <old-name> <new-name>
+  relate provider remove <name>
+  relate provider list
+
+CONTEXT
+  No context is required.
