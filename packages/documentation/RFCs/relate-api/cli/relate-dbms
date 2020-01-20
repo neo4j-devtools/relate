@@ -1,31 +1,24 @@
 relate-dbms
 
 USAGE
-  relate dbms create <dbms> [--version=<version>|--remote=<url>]
+  relate dbms create <dbms> [--source=<version|path|url>]
+  relate dbms start <dbms> [<dbms...>]
+  relate dbms stop <dbms> [<dbms...>]
+  relate dbms use <name|id>
+  relate dbms current [--format=<format>]
+  relate dbms upgrade <dbms> [<dbms...>] [--source=<version|path|url>]
   relate dbms delete <dbms> [<dbms...>]
   relate dbms clone <dbms> <name|path|url>
-  relate dbms backup <dbms> [name|path|url]
-  relate dbms backups [path|url] [--format=<format>|--ids]
-  relate dbms restore <name|path|url> <dbms>
   relate dbms list [--format=<format>|--ids]
-  relate dbms start (<dbms> | --all)
-  relate dbms stop (<dbms> | --all)
-  relate dbms upgrade (<dbms> | --all) [--version=<version>]
   relate dbms new-password
   relate dbms logs [--filter=<filter>]
   relate dbms edit-config
 
 OPTIONS
-  --format=<format>       Specify what information should be returned.
-  --ids                   Return only IDs.
-  --version=<version>     Semver version of a Neo4j DBMS.
-  --remote=<url>          URL to remote DBMS.
-  --filter=<filter>       Expression used to search through logs.
-
-NOTES
-  Wherever authentication is needed:
-    If the DBMS is local the user will be prompted for a password.
-    If the DBMS is remote SSH authentication is used.
+  --source=<version|path|url>   Version or path to download Neo4j DBMS.
+  --format=<format>             Specify what information should be returned.
+  --ids                         Return only IDs.
+  --filter=<filter>             Expression used to search through logs.
 
 CONTEXT
-  It can be run in the context of a provider, or with no context.
+  It has to be run in the context of a provider.

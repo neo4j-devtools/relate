@@ -1,16 +1,26 @@
 relate-provider
 
 DESCRIPTION
-  A provider is a container of DBMS's (ie. Aura or Desktop).
-  Creating or connecting to a DBMS can be done through a provider, but it's not
-  necessary, for example you can have a single DBMS instance either locally or
-  remotely.
+  A provider is a container of DBMSs, it takes care of file system and access to
+  the DBMS. Aura and Desktop are providers, and in the case of single DBMS
+  instances either locally or remotely, the host is the provider.
 
 USAGE
-  relate provider add <name> <url>
-  relate provider rename <old-name> <new-name>
-  relate provider remove <name>
-  relate provider list
+  relate provider add <name> <path|url>
+  relate provider update <name|id>
+  relate provider remove <name|id>
+  relate provider list [--format=<format>|--ids]
+  relate provider use <name|id>
+  relate provider current [--format=<format>]
 
-CONTEXT
-  No context is required.
+OPTIONS
+  --format=<format>       Specify what information should be returned.
+  --ids                   Return only IDs.
+  --file=<path>           File to load context from.
+
+NOTES
+  add:
+    If no <path|url> is specified, it should be possible to pass the configuration
+    file for the provider through STDIN.
+  update:
+    Opens the configuration file on the default editor.
