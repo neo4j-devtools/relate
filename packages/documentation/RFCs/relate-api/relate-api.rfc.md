@@ -23,6 +23,9 @@ closely to the solution you have in mind.
 
 # Detailed design
 
+# Questions
+- Semantics behind Add, remove, VS create, drop, delete
+
 This is the bulk of the RFC. Explain the design in enough detail for somebody
 familiar with React to understand, and for somebody familiar with the
 implementation to implement. This should get into specifics and corner-cases,

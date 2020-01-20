@@ -1,20 +1,121 @@
+type AccountInfo {
+    # "you"
+    userId: String!
+}
+
+type ConnectionInfo {
+    accessToken: String!
+}
+
+type Backup {
+    time: String!
+}
+
 type DBMS {
-    id: ID!
-    metrics: Metric
-    # $ foo-cli dbms 1 dbs list
-    DBs: [DB]!
+    # Neo4j 4.X
+    id: String!
+    dbs: [DB]!
+    # metrics et al.
 }
 
 type DB {
-    id: ID!
-    metrics: Metric
+    id: String!
+    name: String!
+    graphs: [Graph]!
+    connection: ConnectionInfo! # use in driver to send queries
+    # $ relate db list-backups [path|url] [--format=<format>|--ids]
+    # db.listBackups(filter: Filter): Promise<Backup[]>
+    listBackups(filters: Filter): [Backup]!
+    # metrics et al.
 }
 
-type Metric {
+type Graph {
+    id: String!
+    name: String!
+}
 
+input Filter { # TBD
+    field: String!
+    type: String
+    value: [String]!
+}
+
+input Config {
+    name: String
+    defaultDBMS: String
+    # and many more...
+}
+
+type Provider {
+    id: String!
+    account: AccountInfo!
+    # $ relate dbms list
+    # provider.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
+    listDBMSs(filters: [Filter]): [DBMS]! # TBD
+    # $ relate dbms use <nameOrId>
+    # provider.useDBMS(nameOrId: string): Promise<DBMS>
+    useDBMS(nameOrId: String): DBMS! # default "default"
 }
 
 type Query {
-    # $ foo-cli dbms list
-    DMBSs: [DBMS]!
+    # $ relate provider use <nameOrId>
+    # relate.useProvider(nameOrId: string): Promise<Provider>
+    useProvider(nameOrId: String): Provider! # default "local"
+    # $ relate provider list
+    # relate.listProviders(filters?: Filter[]): Promise<Provider[]>
+    listProviders(filters: [Filter]): [Provider]!
 }
+
+type Mutation {
+    # $ relate provider add <name> <configPathOrURL´?>
+    # relate.addProvider(nameOrId: string, config: Partial<Config>): Promise<Provider>
+    addProvider(nameOrId: String!, config: Config): Provider!
+    # $ relate provider edit <nameOrId> <configPathOrURL?>
+    # relate.updateProvider(nameOrId: string, config: Partial<Config>): Promise<Provider>
+    updateProvider(nameOrId: String!, config: Config): Provider!
+    # $ relate provider remove <nameOrId>
+    # relate.removeProvider(nameOrId: string): Promise<Provider>
+    removeProvider(nameOrId: String!): Provider!
+
+    # $ relate dbms create <dbms> [--source=<versionPathOrURL>]
+    # provider.createDBMS(name: string, source?: string): Promise<DBMS>
+    createDBMS(providerId: String!, name: String!, source: String): DBMS!
+    # $ relate dbms start <dbms> [<dbms...>]
+    # provider.startDBMSs(name: [string, ...string]): Promise<DBMS[]>
+    startDBMSs(providerId: String!, name: [String!]!): [DBMS]!
+    # $ relate dbms stop <dbms> [<dbms...>]
+    # provider.stopDBMSs(name: [string, ...string]): Promise<DBMS[]>
+    stopDBMSs(providerId: String!, name: [String!]!): [DBMS]!
+    # $ relate dbms upgrade <dbms> [<dbms...>] [--source=<versionPathOrURL>]
+    # provider.upgradeDBMSs(name: [string, ...string], source?: string): Promise<DBMS[]>
+    upgradeDBMSs(providerId: String!, name: [String!]!, source: String): [DBMS]!
+    # $ relate dbms delete <dbms> [<dbms...>]
+    # provider.deleteDBMSs(name: [string, ...string]): Promise<DBMS[]>
+    deleteDBMSs(providerId: String!, name: [String!]!): [DBMS]!
+
+    # $ relate db create <db>
+    # provider.createDB(name: string): Promise<DB>
+    createDB(providerId: String!, name: String!): DB!
+    # $ relate db start <db> [<db...>]
+    # provider.startDBs(name: [string, ...string]): Promise<DB[]>
+    startDBs(providerId: String!, name: [String!]!): [DB]!
+    # $ relate db stop <db> [<db...>]
+    # provider.stopDBs(name: [string, ...string]): Promise<DB[]>
+    stopDBs(providerId: String!, name: [String!]!): [DB]!
+    # $ relate db truncate <db> [<db...>]
+    # provider.truncateDBs(name: [string, ...string]): Promise<DB[]>
+    truncateDBs(providerId: String!, name: [String!]!): [DB]!
+    # $ relate db clone <db> [<db...>]
+    # provider.cloneDBs(name: [string, ...string]): Promise<DB[]>
+    cloneDBs(providerId: String!, name: [String!]!): [DB]!
+    # $ relate db drop <db> [<db...>]
+    # provider.dropDBs(name: [string, ...string]): Promise<DB[]>
+    dropDBs(providerId: String!, name: [String!]!): [DB]!
+    # $ relate db backup <db> [<db...>] [--target=<pathOrURL>]
+    # provider.backupDBs(name: [string, ...string], target?: string): Promise<Backup[]>
+    backupDBs(providerId: String!, name: [String!]!, target: String): [Backup]!
+    # $ relate db restore <db> [<db...>] [--target=<pathOrURL>]
+    # provider.restoreDBs(name: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
+    restoreDBs(providerId: String!, sources: [String]): [Backup]!
+}
+
