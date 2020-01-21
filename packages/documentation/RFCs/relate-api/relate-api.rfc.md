@@ -3,46 +3,90 @@
 - Daedalus Issue: (leave this empty)
 
 # Summary
+In this RFC, we propose a unified API surface for interacting with the Neo4j platform.
+- *As a GraphQL Schema*, allowing HTTP clients access to a typed schema and query language
+- *As a CLI*, allowing terminal clients to setup advanced, possibly automated, workflows
+- *As a Javascript library*, allowing applications to interact programmatically
 
-Proposes a new version of the Relate API as both GraphQL and CLI. `add more info here`
+Our primary focus is support for Neo4j 4.x and feature parity with the current [@neo4j/relate-api](https://github.com/neo4j-apps/relate-api) schema.
+
+For now we will use the project name "daedalus" until we have found a real name for said API.
 
 # Basic example
+## GraphQL
+```GraphQL
+query GetDBNames {
+    useProvider(nameOrId: "local") {
+        useDBMS(nameOrId: "neo4j") {
+            id,
+            dbs {
+                name
+            }
+        }
+    }
+}
+```
 
-If the proposal involves a new or changed API, include a basic code example.
-Omit this section if it's not applicable.
+## CLI
+```shell script
+$ daedalus provider use "local" # set context to "local"
+$ daedalus dbms use "neo4j" # set current DBMS to "neo4j"
+$ daedalus db list | awk '{print $2}' # list names (col 2)
+```
+
+## JS
+```TypeScript
+import Daedalus, {Database} from '@deadalus/core';
+
+const dbs: Promise<Database[]> = Daedalus.useProvider('local')
+    .then((provider) => provider.useDBMS('neo4j'))
+    .then((dbms) => dbms.listDBs())
+```
+
+For more detailed examples, please see our [proposed schema](./relate-api.graphql).
 
 # Motivation
+As we are adding more and more ways for consumers (web developers, application developers, system developers) to interact with our core product (local, on-prem, cloud), 
+as well as increasing the feature set of our products (clustering, multi-db, transactions), 
+we need to ensure that they have access to a homogeneous, extensible, and intuitive API that empowers them to do great work.
 
-Why are we doing this? What use cases does it support? What is the expected
-outcome?
+The expected outcome of this project is a JavaScript library that allows you to do everything Neo4j Desktop does without the need to install electron. 
+Said library should provide extension points to attach custom logic and be usable in code, in the CLI, and over HTTP (as GraphQL).
 
-Please focus on explaining the motivation so that if this RFC is not accepted,
-the motivation could be used to develop alternative solutions. In other words,
-enumerate the constraints you are trying to solve without coupling them too
-closely to the solution you have in mind.
+The user experience should be as similar as possible across environments and allow consumers to build up a "neo4j muscle memory".
 
 # Detailed design
+The core deliverable is a JavaScript library (the "toolkit") that allows you to programmatically interact with the Neo4j platform.
+In this context, "platform" is defined as the collection of DBMSs Providers (Deskless, Desktop, Aura), Auxiliary Services (IDMS, User data, Graph Apps), and Tooling (drivers, graphql server, plugins).
 
-# Questions
-- Semantics behind Add, remove, VS create, drop, delete
+The toolkit should enable users to safely create and store provider configurations, use a given provider to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
+The toolkit should then be exposed as a GraphQL API, as well as a CLI.
 
-This is the bulk of the RFC. Explain the design in enough detail for somebody
-familiar with React to understand, and for somebody familiar with the
-implementation to implement. This should get into specifics and corner-cases,
-and include examples of how the feature is used. Any new terminology should be
-defined here.
+The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/).
+
+For more detailed description, please see:
+- [Providers, DBMSs, and DBs overview](#TBA)
+- [JS Docs](#TBA)
+    - [Usage](#TBA)
+    - [API Reference](#TBA)
+- [GraphQL Docs](#TBA)
+    - [Usage](#TBA)
+    - [API Reference](#TBA)
+- [CLI Docs](#TBA)
+    - [Usage](#TBA)
+    - [API Reference](#TBA)
+
+Some specific details we'd like to highlight:
+- The API is semantically the same regardless of if you are using the JS library, GraphQL API, or CLI
+- The concept of Providers make it easy to protect sensitive information such credentials
+- NestJS allows for a well known DI pattern that is already established in the community.
+
 
 # Drawbacks
-
-Why should we *not* do this? Please consider:
-
-- implementation cost, both in term of code size and complexity
-- whether the proposed feature can be implemented in user space
-- the impact on teaching people React
-- integration of this feature with other existing and planned features
-- cost of migrating existing React applications (is it a breaking change?)
-
-There are tradeoffs to choosing any path. Attempt to identify them here.
+- This is no small task, and will be delivered in chunks. Prioritizing and scheduling could be tricky, and it is hard to get accurate time estimates
+- Introducing new tooling means a lot of documentation to follow, and thus educating consumers and advocates
+- It is unclear how much backward compatibility we can offer
+- 
 
 # Alternatives
 
@@ -66,6 +110,4 @@ at any level?
 How should this feature be taught to existing React developers?
 
 # Unresolved questions
-
-Optional, but suggested for first drafts. What parts of the design are still
-TBD?
+- Can we improve/amalgamate the semantics behind Add, remove, VS create, drop, delete
