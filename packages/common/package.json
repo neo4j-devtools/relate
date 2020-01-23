@@ -1,0 +1,41 @@
+{
+    "name": "@daedalus/common",
+    "version": "1.0.0",
+    "description": "JS toolkit",
+    "author": "Hugo Bove <hugo.bove@neotechnology.com>",
+    "homepage": "https://github.com/huboneo/daedalus#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/huboneo/daedalus.git"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "prepare": "npm run build:clean",
+        "clean": "rimraf dist",
+        "test": "jest",
+        "build": "tsc",
+        "build:clean": "run-s clean build",
+        "start": "node ./dist/dev.js",
+        "dev": "run-s clean-build start"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "8.0.1",
+        "@types/jest": "24.9.0",
+        "@types/node": "13.1.7",
+        "jest": "24.9.0",
+        "npm-run-all": "4.1.5",
+        "rimraf": "3.0.0",
+        "ts-jest": "24.3.0",
+        "typescript": "3.7.4"
+    },
+    "peerDependencies": {
+        "@nestjs/common": ">= 6",
+        "@nestjs/core": ">= 6",
+        "reflect-metadata": ">= 0.1",
+        "rxjs": ">= 6"
+    },
+    "dependencies": {
+        "fs-extra": "8.1.0"
+    }
+}

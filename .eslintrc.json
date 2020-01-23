@@ -1,6 +1,7 @@
 {
     "env": {
-        "browser": true
+        "node": true,
+        "es6": true
     },
     "extends": [
         "eslint:recommended",
@@ -17,13 +18,29 @@
     "plugins": [
         "@typescript-eslint/eslint-plugin"
     ],
+    "overrides": [
+        {
+            "files": ["packages/**/*.js"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": "off"
+            }
+        },
+        {
+            "files": ["packages/**/graphql.schema.ts"],
+            "rules": {
+                "@typescript-eslint/interface-name-prefix": "off",
+                "multiline-comment-style": "off"
+            }
+        }
+    ],
     "rules": {
+        "@typescript-eslint/interface-name-prefix": ["error", "always"],
         "array-bracket-spacing": [
             "error",
             "never"
         ],
         "array-callback-return": "error",
-        "arrow-body-style": "error",
+        "arrow-body-style": "warn",
         "arrow-parens": [
             "error",
             "always"
@@ -78,10 +95,8 @@
             "error",
             "consistent"
         ],
-        "function-paren-newline": "error",
         "generator-star-spacing": "error",
         "grouped-accessor-pairs": "warn",
-        "implicit-arrow-linebreak": "error",
         "indent": "error",
         "key-spacing": "error",
         "keyword-spacing": "error",
@@ -112,8 +127,7 @@
         ],
         "max-statements": "warn",
         "max-statements-per-line": "error",
-        "multiline-comment-style": "error",
-        "new-cap": "error",
+        "multiline-comment-style": "warn",
         "new-parens": "error",
         "newline-per-chained-call": "error",
         "no-alert": "error",
@@ -128,7 +142,9 @@
         "no-dupe-else-if": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "error",
-        "no-empty-function": "warn",
+        "no-empty-function": ["warn", {
+            "allow": ["constructors"]
+        }],
         "no-eq-null": "error",
         "no-eval": "error",
         "no-extend-native": "error",
@@ -145,7 +161,7 @@
         "no-lone-blocks": "error",
         "no-lonely-if": "warn",
         "no-loop-func": "error",
-        "no-magic-numbers": "error",
+        "no-magic-numbers": "warn",
         "no-multi-assign": "error",
         "no-multi-spaces": "error",
         "no-multi-str": "error",
@@ -192,7 +208,6 @@
         "no-useless-call": "error",
         "no-useless-computed-key": "error",
         "no-useless-concat": "error",
-        "no-useless-constructor": "error",
         "no-useless-rename": "error",
         "no-useless-return": "error",
         "no-var": "error",

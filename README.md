@@ -2,7 +2,7 @@
 
 ### Installation
 ```
-$ npx lerna clean && npx lerna bootstrap
+$ npm ci
 ```
 
 ### Testing
