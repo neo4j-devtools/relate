@@ -3,14 +3,17 @@
 - Daedalus Issue: (leave this empty)
 
 # Summary
-In this RFC, we propose a unified API surface for interacting with the Neo4j platform.
-- *As a GraphQL Schema*, allowing HTTP clients access to a typed schema and query language
-- *As a CLI*, allowing terminal clients to setup advanced, possibly automated, workflows
-- *As a Javascript library*, allowing applications to interact programmatically
+In this RFC, we propose a unified API surface for interacting with the Neo4j platform. The outcome of which is dubbed "Desktop 2.X"
+- *As a WEB server*, allowing HTTP clients access to a typed GraphQL schema as well as static resources (apps)
+- *As a CLI*, allowing shell clients to setup advanced, automated, workflows and integrate with other processes
+- *As a Javascript library*, allowing applications to programmatically compose applications using Dependency Injection
+- *As an electron application*, allowing native OS clients access to the above as well as OS specific features (Keychains etc.)
+
+![Architecture](./imgs/architecture.png)
 
 Our primary focus is support for Neo4j 4.x and feature parity with the current [@neo4j/relate-api](https://github.com/neo4j-apps/relate-api) schema.
 
-For now we will use the project name "daedalus" until we have found a real name for said API.
+For now we will use the project name `@daedalus` until we have found a real name for said API.
 
 # Basic example
 ## GraphQL
@@ -28,13 +31,13 @@ query GetDBNames {
 ```
 
 ## CLI
-```shell script
+```sh
 $ daedalus provider use "local" # set context to "local"
 $ daedalus dbms use "neo4j" # set current DBMS to "neo4j"
-$ daedalus db list | awk '{print $2}' # list names (col 2)
+$ daedalus db list | awk '{print $2}' # list db names (eg. col 2)
 ```
 
-## JS
+## JavaScript/TypeScript
 ```TypeScript
 import Daedalus, {Database} from '@deadalus/core';
 
@@ -43,33 +46,38 @@ const dbs: Promise<Database[]> = Daedalus.useProvider('local')
     .then((dbms) => dbms.listDBs())
 ```
 
-For more detailed examples, please see our [proposed schema](./relate-api.graphql).
-
 # Motivation
 As we are adding more and more ways for consumers (web developers, application developers, system developers) to interact with our core product (local, on-prem, cloud), 
 as well as increasing the feature set of our products (clustering, multi-db, transactions), 
 we need to ensure that they have access to a homogeneous, extensible, and intuitive API that empowers them to do great work.
 
-The expected outcome of this project is a JavaScript library that allows you to do everything Neo4j Desktop does without the need to install electron. 
-Said library should provide extension points to attach custom logic and be usable in code, in the CLI, and over HTTP (as GraphQL).
+The expected outcome of this project is a JavaScript library/toolkit that allows you to do everything Neo4j Desktop does without the need to install electron. 
+Said library should provide extension points to attach custom logic and be usable in code, in the CLI, and over the wire (HTTP).
 
-The user experience should be as similar as possible across environments and allow consumers to build up a "neo4j muscle memory".
+The user experience should be as similar as possible across environments and allow consumers to build up a "Neo4j muscle memory". 
+In addition, we will leverage the power of established frameworks and patterns in the JavaScript to reduce the Neo4j specific "learning curve" and maintenance cost.
 
 # Detailed design
 The core deliverable is a JavaScript library (the "toolkit") that allows you to programmatically interact with the Neo4j platform.
 In this context, "platform" is defined as the collection of DBMSs Providers (Deskless, Desktop, Aura), Auxiliary Services (IDMS, User data, Graph Apps), and Tooling (drivers, graphql server, plugins).
+The basis of the toolkit is a collection of modules, providers, microservices, et al. that can readily be composed into an application using a Dependency Injection framework.
+This enables us to ship modular, extensible, and scalable code that is easy for consumers to discover and adopt.
 
-The toolkit should enable users to safely create and store provider configurations, use a given provider to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
-The toolkit should then be exposed as a GraphQL API, as well as a CLI.
-
-The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/).
+## Goals
+- The toolkit should enable users to safely create and store DBMS provider configurations, use a given provider to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
+- The toolkit should be environment agnostic, aka function just as well on the CLI, over the Wire (HTTP), and in native environments (Electron). Should certain features not be available, this should be clear but not have an impact on functionality/stability
+- The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/). Main advantage being the ability to swap out components as features come and go.
+- The toolkit should leverage existing technology and documentation so that consumers are able to use preexisting knowledge and ramp up quickly. This includes (but is not limited to): DI using `@nestjs`, CLI using `@oclif`, and HTTP using `GraphQL`.
 
 For more detailed description, please see:
 - [Providers, DBMSs, and DBs overview](#TBA)
-- [JS Docs](#TBA)
+- [Toolkit Docs](#TBA)
     - [Usage](#TBA)
     - [API Reference](#TBA)
-- [GraphQL Docs](#TBA)
+- [Web Docs](#TBA)
+    - [Usage](#TBA)
+    - [API Reference](#TBA)
+- [Electron Docs](#TBA)
     - [Usage](#TBA)
     - [API Reference](#TBA)
 - [CLI Docs](#TBA)
@@ -77,26 +85,31 @@ For more detailed description, please see:
     - [API Reference](#TBA)
 
 Some specific details we'd like to highlight:
-- The API is semantically the same regardless of if you are using the JS library, GraphQL API, or CLI
-- The concept of Providers make it easy to protect sensitive information such credentials
-- NestJS allows for a well known DI pattern that is already established in the community.
+- The API should be semantically the same regardless of if you are using the Programmatic, GraphQL, or CLI APIs
+- The concept of DBMS providers make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
+- Dependency Injection and typed language reduce the possibility of bugs and nullpointer exceptions, as well as an established pragma for extending applications.
 
 
 # Drawbacks
-- This is no small task, and will be delivered in chunks. Prioritizing and scheduling could be tricky, and it is hard to get accurate time estimates
-- Introducing new tooling means a lot of documentation to follow, and thus educating consumers and advocates
-- It is unclear how much backward compatibility we can offer
+- There are some learning curves involved in the above which will have an impact on the teams pace of delivery initially
+- Dependency Injection is opinionated and not to everyones liking, there is a possibility for pushback
+- Maintaining support for 4 different environments and in addition keeping them homogenous requires solid communication. Information silos are the enemy here
 - 
 
 # Alternatives
+### Continuing with Desktop 1.x
+Desktop 1.X is an aging codebase that has seen a lot of development and changes as Neo4j has grown. Attempting to modify it to suit a "cloud-first" future is deemed hard due to the tech debt and size of the codebase.
 
-What other designs have been considered? What is the impact of not doing this?
+### Ingesting community projects
+We could scour the community for tools and projects that address these areas. The risk here is trying to shoehorn implementations to fit our needs, as well as the possibility of hidden issues and tech debt.
+
 
 # Adoption strategy
-
-If we implement this proposal, how will existing React developers adopt it? Is
-this a breaking change? Can we write a codemod? Should we coordinate with
-other projects or libraries?
+- Banging the drums in the community
+- Solid API docs (following established structures such as `man` pages and JSDoc)
+- GraphQL schema
+- Explicit and relevant error messages with helpful suggesions
+- Creation of code "recipies" or template projects to reduce boilerplating
 
 # How we teach this
 
