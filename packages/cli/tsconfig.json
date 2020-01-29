@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "baseUrl": "./",
+    "sourceRoot": "./",
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "es2017"
+    },
+    "include": ["src/**/*", "typings/**/*"]
+}

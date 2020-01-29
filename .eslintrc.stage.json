@@ -6,9 +6,12 @@
         "no-debugger": "error",
         "no-unreachable": "error",
         "no-magic-numbers": "error",
-        "no-empty-function": ["error", {
-            "allow": ["constructors"]
-        }],
+        "no-empty-function": [
+            "error",
+            {
+                "allow": ["constructors"]
+            }
+        ],
         "require-await": "error",
         "no-lonely-if": "error",
         "no-multiple-empty-lines": "error"
