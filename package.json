@@ -5,7 +5,9 @@
         "prettify": "prettier --write 'packages/**/*.ts'",
         "lint": "eslint . --ext .ts",
         "test": "lerna run test",
-        "prepare": "lerna clean -y && lerna bootstrap"
+        "lerna:clean": "lerna clean -y",
+        "lerna:bootstrap": "lerna bootstrap",
+        "prepare": "run-s lerna:clean lerna:bootstrap"
     },
     "devDependencies": {
         "@nestjs/common": "6.11.1",
@@ -27,6 +29,7 @@
         "husky": "4.0.9",
         "lerna": "^3.20.2",
         "lint-staged": "9.5.0",
+        "npm-run-all": "4.1.5",
         "prettier": "1.19.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.4",
