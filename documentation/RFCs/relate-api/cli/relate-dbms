@@ -21,4 +21,4 @@ OPTIONS
   --filter=<filter>             Expression used to search through logs.
 
 CONTEXT
-  It has to be run in the context of a provider.
+  It has to be run in the context of an agent.
