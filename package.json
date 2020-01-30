@@ -5,6 +5,7 @@
         "prettify": "prettier --write 'packages/**/*.ts'",
         "lint": "eslint . --ext .ts",
         "test": "lerna run test",
+        "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap"
