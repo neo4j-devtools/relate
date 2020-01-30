@@ -1,5 +1,5 @@
 {
-    "name": "cli",
+    "name": "@daedalus/cli",
     "description": "CLI tool for interacting with the Neo4j platform.",
     "version": "0.0.0",
     "author": "Angelo Gazzola <angelo.gazzola@neotechnology.com>",

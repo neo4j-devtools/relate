@@ -1,4 +1,4 @@
-# Web
+# @daedalus/web
 The Neo4j WEB package (GraphQL)
 
 ### Installation

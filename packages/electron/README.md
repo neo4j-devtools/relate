@@ -1,4 +1,4 @@
-# Electron
+# @daedalus/electron
 The Neo4j Electron package
 
 ### Installation

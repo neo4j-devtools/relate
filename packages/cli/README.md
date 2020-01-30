@@ -1,4 +1,4 @@
-cli
+@daedalus/cli
 ===
 
 CLI tool for interacting with the Neo4j platform.
@@ -15,11 +15,11 @@ CLI tool for interacting with the Neo4j platform.
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g cli
+$ npm install -g @daedalus/cli
 $ daedalus COMMAND
 running command...
 $ daedalus (-v|--version|version)
-cli/0.0.0 linux-x64 node-v10.18.0
+@daedalus/cli/0.0.0 darwin-x64 node-v12.14.1
 $ daedalus --help [COMMAND]
 USAGE
   $ daedalus COMMAND
@@ -48,8 +48,6 @@ EXAMPLE
   $ daedalus hello
   hello world from ./src/hello.ts!
 ```
-
-_See code: [dist/commands/hello.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/hello.ts)_
 
 ## `daedalus help [COMMAND]`
 
