@@ -31,9 +31,15 @@
             }
         },
         {
-            "files": ["packages/cli/**/*.ts"],
+            "files": ["packages/cli/src/commands/**/*.test.ts"],
             "rules": {
                 "jest/no-standalone-expect": ["off"]
+            }
+        },
+        {
+            "files": ["packages/web/**/*.e2e.ts", "packages/electron/**/*.e2e.ts"],
+            "rules": {
+                "jest/expect-expect": ["off"]
             }
         }
     ],

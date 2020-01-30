@@ -46,7 +46,7 @@ OPTIONS
 
 EXAMPLE
   $ daedalus hello
-  hello world from ./src/hello.ts!
+  hello world from ./src/hello.module.ts!
 ```
 
 ## `daedalus help [COMMAND]`
