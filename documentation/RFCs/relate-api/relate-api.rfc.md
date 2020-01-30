@@ -39,7 +39,7 @@ $ daedalus db:list | awk '{print $2}' # list db names (eg. col 2)
 
 ## JavaScript/TypeScript
 ```TypeScript
-import Daedalus, {Database} from '@deadalus/core';
+import Daedalus, {Database} from '@daedalus/core';
 
 const dbs: Promise<Database[]> = Daedalus.useAgent('local')
     .then((agent) => agent.useDBMS('neo4j'))
