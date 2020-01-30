@@ -1,0 +1,72 @@
+{
+    "name": "cli",
+    "description": "CLI tool for interacting with the Neo4j platform.",
+    "version": "0.0.0",
+    "author": "Angelo Gazzola <angelo.gazzola@neotechnology.com>",
+    "homepage": "https://github.com/neo-technology/daedalus",
+    "repository": "neo-technology/daedalus",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "/bin",
+        "/dist",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
+    ],
+    "bin": {
+        "daedalus": "./bin/run"
+    },
+    "dependencies": {
+        "@oclif/command": "1.5.19",
+        "@oclif/config": "1.13.3",
+        "@oclif/plugin-help": "2.2.3",
+        "tslib": "1.10.0"
+    },
+    "peerDependencies": {
+        "@nestjs/common": ">= 6",
+        "@nestjs/core": ">= 6",
+        "reflect-metadata": ">= 0.1",
+        "rxjs": ">= 6"
+    },
+    "devDependencies": {
+        "@oclif/dev-cli": "1.22.2",
+        "@oclif/test": "1.2.5",
+        "@types/jest": "25.1.0",
+        "@types/node": "10.17.13",
+        "chai": "4.2.0",
+        "globby": "10.0.2",
+        "jest": "25.1.0",
+        "npm-run-all": "4.1.5",
+        "rimraf": "3.0.1",
+        "ts-jest": "25.0.0",
+        "ts-node": "8.6.2",
+        "typescript": "3.7.5"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "keywords": [
+        "oclif"
+    ],
+    "oclif": {
+        "commands": "./dist/commands",
+        "bin": "daedalus",
+        "plugins": [
+            "@oclif/plugin-help"
+        ]
+    },
+    "scripts": {
+        "prepare": "npm run build:clean",
+        "postpack": "rimraf oclif.manifest.json",
+        "prepack": "run-s build:clean build:manifest build:readme",
+        "build": "npm run prepack",
+        "build:clean": "run-s clean build:tsc",
+        "build:tsc": "tsc -b",
+        "build:manifest": "oclif-dev manifest",
+        "build:readme": "oclif-dev readme",
+        "clean": "rimraf dist",
+        "test": "jest",
+        "add:readme": "git add README.md",
+        "version": "run-s build:readme add:readme"
+    }
+}
