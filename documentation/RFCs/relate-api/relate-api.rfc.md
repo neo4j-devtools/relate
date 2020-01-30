@@ -73,7 +73,7 @@ This enables us to ship modular, extensible, and scalable code that is easy for 
 
 ## Goals
 - The toolkit should enable users to safely create and store Agent configurations, use a given Agent to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
-- The toolkit should be environment agnostic, aka function just as well on the CLI, over the Wire (HTTP), and in native environments (Electron). Should certain features not be available, this should be clear but not have an impact on functionality/stability
+- The toolkit should be environment agnostic, aka function just as well on the CLI, over the wire (HTTP), and in native environments (Electron). Should certain features not be available, this should be clear but not have an impact on functionality/stability
 - The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/). Main advantage being the ability to swap out components as features come and go.
 - The toolkit should leverage existing technology and documentation so that consumers are able to use preexisting knowledge and ramp up quickly. This includes (but is not limited to): DI using `@nestjs`, CLI using `@oclif`, and HTTP using `GraphQL`.
 
@@ -96,7 +96,7 @@ Some specific details we'd like to highlight:
 - Inside `@daedalus` all entity (Agent, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
 - The API should be semantically the same regardless of if you are using the Programmatic, GraphQL, or CLI APIs
 - The concept of Agents make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
-- Dependency Injection and typed language reduce the possibility of bugs and nullpointer exceptions, as well as an established pragma for extending applications.
+- Dependency Injection and typed language reduce the possibility of a host of bugs and nullpointer exceptions, as well as providing an established pragma for extending applications.
 
 
 # Drawbacks
