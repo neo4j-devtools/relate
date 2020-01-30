@@ -55,7 +55,7 @@ The expected outcome of this project is a JavaScript library/toolkit that allows
 Said library should provide extension points to attach custom logic and be usable in code, in the CLI, and over the wire (HTTP).
 
 The user experience should be as similar as possible across environments and allow consumers to build up a "Neo4j muscle memory". 
-In addition, we will leverage the power of established frameworks and patterns in the JavaScript to reduce the Neo4j specific "learning curve" and maintenance cost.
+In addition, we will leverage the power of established frameworks and patterns in the JavaScript community to reduce the Neo4j specific "learning curve" and maintenance cost.
 
 # Detailed design
 The core deliverable is a JavaScript library (the "toolkit") that allows you to programmatically interact with the Neo4j platform.
