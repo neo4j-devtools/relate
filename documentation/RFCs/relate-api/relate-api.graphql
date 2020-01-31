@@ -1,8 +1,3 @@
-type AccountInfo {
-    # "you"
-    userId: String!
-}
-
 type ConnectionInfo {
     accessToken: String!
 }
@@ -46,76 +41,76 @@ input Config {
     # and many more...
 }
 
-type Agent {
+type Account {
     id: String!
-    account: AccountInfo!
+    userId: String! # and more
     # $ relate dbms:list
-    # agent.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
+    # account.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
     listDBMSs(filters: [Filter]): [DBMS]! # TBD
     # $ relate dbms:use <nameOrId>
-    # agent.useDBMS(nameOrId: string): Promise<DBMS>
+    # account.useDBMS(nameOrId: string): Promise<DBMS>
     useDBMS(nameOrId: String): DBMS! # default "default"
 }
 
 type Query {
-    # $ relate agent:use <nameOrId>
-    # relate.useAgent(nameOrId: string): Promise<Agent>
-    useAgent(nameOrId: String): Agent! # default "local"
-    # $ relate agent:list
-    # relate.listAgents(filters?: Filter[]): Promise<Agent[]>
-    listAgents(filters: [Filter]): [Agent]!
+    # $ relate account:use <nameOrId>
+    # relate.useAccount(nameOrId: string): Promise<Account>
+    useAccount(nameOrId: String): Account! # default "local"
+    # $ relate account:list
+    # relate.listAccounts(filters?: Filter[]): Promise<Account[]>
+    listAccounts(filters: [Filter]): [Account]!
 }
 
 type Mutation {
-    # $ relate agent:add <name> <configPathOrURL´?>
-    # relate.addAgent(nameOrId: string, config: Partial<Config>): Promise<Agent>
-    addAgent(nameOrId: String!, config: Config): Agent!
-    # $ relate agent:edit <nameOrId> <configPathOrURL?>
-    # relate.updateAgent(nameOrId: string, config: Partial<Config>): Promise<Agent>
-    updateAgent(nameOrId: String!, config: Config): Agent!
-    # $ relate agent:remove <nameOrId>
-    # relate.removeAgent(nameOrId: string): Promise<Agent>
-    removeAgent(nameOrId: String!): Agent!
+    # $ relate account:add <name> <configPathOrURL?>
+    # relate.addAccount(name: string, config: Partial<Config>): Promise<Account>
+    addAccount(name: String!, config: Config): Account!
+    # $ relate account:edit <nameOrId> <configPathOrURL?>
+    # relate.updateAccount(nameOrId: string, config: Partial<Config>): Promise<Account>
+    updateAccount(nameOrId: String!, config: Config): Account!
+    # $ relate account:remove <nameOrId>
+    # relate.removeAccount(nameOrId: string): Promise<Account>
+    removeAccount(nameOrId: String!): Account!
 
     # $ relate dbms:create <dbms> [--source=<versionPathOrURL>]
-    # agent.createDBMS(name: string, source?: string): Promise<DBMS>
-    createDBMS(agentId: String!, name: String!, source: String): DBMS!
+    # account.createDBMS(name: string, source?: string): Promise<DBMS>
+    createDBMS(accountNameOrId: String!, name: String!, source: String): DBMS!
     # $ relate dbms:start <dbms> [<dbms...>]
-    # agent.startDBMSs(name: [string, ...string]): Promise<DBMS[]>
-    startDBMSs(agentId: String!, name: [String!]!): [DBMS]!
+    # account.startDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
+    startDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:stop <dbms> [<dbms...>]
-    # agent.stopDBMSs(name: [string, ...string]): Promise<DBMS[]>
-    stopDBMSs(agentId: String!, name: [String!]!): [DBMS]!
+    # account.stopDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
+    stopDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:upgrade <dbms> [<dbms...>] [--source=<versionPathOrURL>]
-    # agent.upgradeDBMSs(name: [string, ...string], source?: string): Promise<DBMS[]>
-    upgradeDBMSs(agentId: String!, name: [String!]!, source: String): [DBMS]!
+    # account.upgradeDBMSs(nameOrId: [string, ...string], source?: string): Promise<DBMS[]>
+    upgradeDBMSs(accountNameOrId: String!, nameOrId: [String!]!, source: String): [DBMS]!
     # $ relate dbms:delete <dbms> [<dbms...>]
-    # agent.deleteDBMSs(name: [string, ...string]): Promise<DBMS[]>
-    deleteDBMSs(agentId: String!, name: [String!]!): [DBMS]!
+    # account.deleteDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
+    deleteDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
 
     # $ relate db:create <db>
-    # agent.createDB(name: string): Promise<DB>
-    createDB(agentId: String!, name: String!): DB!
+    # account.createDB(name: string): Promise<DB>
+    createDB(accountNameOrId: String!, dbmsNameOrId: String!, name: String!): DB!
     # $ relate db:start <db> [<db...>]
-    # agent.startDBs(name: [string, ...string]): Promise<DB[]>
-    startDBs(agentId: String!, name: [String!]!): [DB]!
+    # account.startDBs(nameOrId: [string, ...string]): Promise<DB[]>
+    startDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:stop <db> [<db...>]
-    # agent.stopDBs(name: [string, ...string]): Promise<DB[]>
-    stopDBs(agentId: String!, name: [String!]!): [DB]!
+    # account.stopDBs(nameOrId: [string, ...string]): Promise<DB[]>
+    stopDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:truncate <db> [<db...>]
-    # agent.truncateDBs(name: [string, ...string]): Promise<DB[]>
-    truncateDBs(agentId: String!, name: [String!]!): [DB]!
+    # account.truncateDBs(nameOrId: [string, ...string]): Promise<DB[]>
+    truncateDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:clone <db> [<db...>]
-    # agent.cloneDBs(name: [string, ...string]): Promise<DB[]>
-    cloneDBs(agentId: String!, name: [String!]!): [DB]!
+    # account.cloneDBs(nameOrId: [string, ...string]): Promise<DB[]>
+    cloneDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:drop <db> [<db...>]
-    # agent.dropDBs(name: [string, ...string]): Promise<DB[]>
-    dropDBs(agentId: String!, name: [String!]!): [DB]!
+    # account.dropDBs(nameOrId: [string, ...string]): Promise<DB[]>
+    dropDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:backup <db> [<db...>] [--target=<pathOrURL>]
-    # agent.backupDBs(name: [string, ...string], target?: string): Promise<Backup[]>
-    backupDBs(agentId: String!, name: [String!]!, target: String): [Backup]!
+    # account.backupDBs(nameOrId: [string, ...string], target?: string): Promise<Backup[]>
+    backupDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!, target: String): [Backup]!
     # $ relate db:restore <db> [<db...>] [--target=<pathOrURL>]
-    # agent.restoreDBs(name: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
-    restoreDBs(agentId: String!, sources: [String]): [Backup]!
+    # account.restoreDBs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
+    restoreDBs(accountNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
 }
 
