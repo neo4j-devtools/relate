@@ -28,10 +28,12 @@
         "@nestjs/platform-express": ">= 6",
         "@nestjs/testing": ">= 6",
         "apollo-server-express": ">= 2",
+        "class-validator": ">= 0.11",
         "graphql": ">= 14",
         "graphql-tools": ">= 4",
         "reflect-metadata": ">= 0.1",
-        "rxjs": ">= 6"
+        "rxjs": ">= 6",
+        "type-graphql": ">= 0.17"
     },
     "devDependencies": {
         "@daedalus/web": "1.0.0",
