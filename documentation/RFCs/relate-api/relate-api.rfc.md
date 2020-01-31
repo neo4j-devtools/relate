@@ -88,9 +88,7 @@ For more detailed description, please see:
 - [Electron Docs](#TBA)
     - [Usage](#TBA)
     - [API Reference](#TBA)
-- [CLI Docs](#TBA)
-    - [Usage](#TBA)
-    - [API Reference](#TBA)
+- [CLI Docs](./cli/README.md)
 
 Some specific details we'd like to highlight:
 - Inside `@daedalus` all entity (Account, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
