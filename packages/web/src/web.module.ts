@@ -6,6 +6,7 @@ import {HelloModule} from './hello';
 import {AppsModule} from './apps';
 
 import configuration from './configs/dev.config';
+import {RecipesModule} from './recipes/recipes.module';
 
 export interface IWebModuleConfig {
     host: string;
@@ -21,8 +22,10 @@ export interface IWebModuleConfig {
             load: [configuration],
         }),
         HelloModule,
+        RecipesModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.graphql',
+            installSubscriptionHandlers: true,
         }),
         AppsModule,
     ],

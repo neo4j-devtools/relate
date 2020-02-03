@@ -5,6 +5,7 @@
         "prettify": "prettier --write 'packages/**/*.ts'",
         "lint": "eslint . --ext .ts",
         "test": "lerna run test",
+        "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap"
@@ -20,6 +21,7 @@
         "@typescript-eslint/eslint-plugin": "2.16.0",
         "@typescript-eslint/parser": "2.16.0",
         "apollo-server-express": "2.9.16",
+        "class-validator": "0.11.0",
         "eslint": "6.8.0",
         "eslint-config-prettier": "6.9.0",
         "eslint-plugin-jest": "23.6.0",

@@ -5,7 +5,6 @@
         "no-constant-condition": "error",
         "no-debugger": "error",
         "no-unreachable": "error",
-        "no-magic-numbers": "error",
         "no-empty-function": [
             "error",
             {

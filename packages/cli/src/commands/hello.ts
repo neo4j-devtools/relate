@@ -40,6 +40,7 @@ hello world from ./src/hello.ts!
             log: this.log,
         };
         const options = IS_TESTING_ENV ? {logger: false} : {};
+
         return NestFactory.createApplicationContext(HelloModule.forRoot(parsed, utils), options);
     }
 }
