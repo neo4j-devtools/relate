@@ -1,10 +1,14 @@
 {
     "name": "@daedalus/cli",
     "description": "CLI tool for interacting with the Neo4j platform.",
-    "version": "0.0.0",
-    "author": "Angelo Gazzola <angelo.gazzola@neotechnology.com>",
-    "homepage": "https://github.com/neo-technology/daedalus",
-    "repository": "neo-technology/daedalus",
+    "version": "1.0.0",
+    "author": "Neo4j Inc.",
+    "license": "GPL-3.0",
+    "homepage": "https://github.com/neo-technology/daedalus#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo-technology/daedalus.git"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [

@@ -1,0 +1,182 @@
+Copyright (c) 2002-2020 "Neo4j,"
+Neo4j Sweden AB [http://neo4j.com]
+
+This product includes software ("Software") developed by Neo Technology.
+
+The copyright in the bundled Neo4j graph database (including the
+Software) is owned by Neo Technology. The Software developed and owned
+by Neo Technology is licensed under the GNU GENERAL PUBLIC LICENSE
+Version 3 (http://www.fsf.org/licensing/licenses/gpl-3.0.html) ("GPL")
+to all third parties and that license, as required by the GPL, is
+included in the LICENSE.txt file.
+
+However, if you have executed an End User Software License and Services
+Agreement or an OEM Software License and Support Services Agreement, or
+another commercial license agreement with Neo Technology or one of its
+affiliates (each, a "Commercial Agreement"), the terms of the license in
+such Commercial Agreement will supersede the GPL and you may use the
+software solely pursuant to the terms of the relevant Commercial
+Agreement.
+
+Full license texts are found in LICENSES.txt.
+
+Third-party licenses
+--------------------
+
+
+├─ GPL-3.0
+│  ├─ @daedalus/cli@1.0.0
+│  │  ├─ repository: https://github.com/neo-technology/daedalus
+│  │  └─ publisher: Neo4j Inc.
+│  ├─ @daedalus/common@1.0.0
+│  │  ├─ repository: https://github.com/neo-technology/daedalus
+│  │  └─ publisher: Neo4j Inc.
+│  ├─ @daedalus/electron@1.0.0
+│  │  ├─ repository: https://github.com/neo-technology/daedalus
+│  │  └─ publisher: Neo4j Inc.
+│  └─ @daedalus/web@1.0.0
+│     ├─ repository: https://github.com/neo-technology/daedalus
+│     └─ publisher: Neo4j Inc.
+├─ MIT
+│  ├─ @oclif/command@1.5.19
+│  │  ├─ repository: https://github.com/oclif/command
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  ├─ @oclif/config@1.13.3
+│  │  ├─ repository: https://github.com/oclif/config
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  ├─ @oclif/errors@1.2.2
+│  │  ├─ repository: https://github.com/oclif/errors
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  ├─ @oclif/parser@3.8.4
+│  │  ├─ repository: https://github.com/oclif/parser
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  ├─ @oclif/plugin-help@2.2.3
+│  │  ├─ repository: https://github.com/oclif/plugin-help
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  ├─ ansi-regex@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-regex
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-regex@4.1.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-regex
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-styles@3.2.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-styles
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ chalk@2.4.2
+│  │  ├─ repository: https://github.com/chalk/chalk
+│  │  └─ publisher
+│  ├─ clean-stack@1.3.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/clean-stack
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ color-convert@1.9.3
+│  │  ├─ repository: https://github.com/Qix-/color-convert
+│  │  └─ publisher: Heather Arthur
+│  ├─ color-name@1.1.3
+│  │  ├─ repository: https://github.com/dfcreative/color-name
+│  │  └─ publisher: DY
+│  ├─ debug@4.1.1
+│  │  ├─ repository: https://github.com/visionmedia/debug
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ emoji-regex@7.0.3
+│  │  ├─ url: https://mathiasbynens.be/
+│  │  ├─ repository: https://github.com/mathiasbynens/emoji-regex
+│  │  └─ publisher: Mathias Bynens
+│  ├─ escape-string-regexp@1.0.5
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/escape-string-regexp
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ fs-extra@7.0.1
+│  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
+│  │  └─ publisher: JP Richardson
+│  ├─ has-flag@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/has-flag
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ indent-string@3.2.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/indent-string
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ indent-string@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/indent-string
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ is-fullwidth-code-point@2.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/is-fullwidth-code-point
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ jsonfile@4.0.0
+│  │  ├─ repository: https://github.com/jprichardson/node-jsonfile
+│  │  └─ publisher: JP Richardson
+│  ├─ lodash._reinterpolate@3.0.0
+│  │  ├─ url: http://allyoucanleet.com/
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ lodash.template@4.5.0
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ lodash.templatesettings@4.2.0
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ ms@2.1.2
+│  │  ├─ repository: https://github.com/zeit/ms
+│  │  └─ publisher
+│  ├─ string-width@2.1.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/string-width
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ string-width@3.1.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/string-width
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ strip-ansi@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/strip-ansi
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ strip-ansi@5.2.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/strip-ansi
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ supports-color@5.5.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/supports-color
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ universalify@0.1.2
+│  │  ├─ repository: https://github.com/RyanZim/universalify
+│  │  └─ publisher: Ryan Zimmerman
+│  ├─ widest-line@2.0.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/widest-line
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ wrap-ansi@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/wrap-ansi
+│  │  └─ publisher: Sindre Sorhus
+│  └─ fs-extra@8.1.0
+│     ├─ repository: https://github.com/jprichardson/node-fs-extra
+│     └─ publisher: JP Richardson
+├─ ISC
+│  ├─ @oclif/linewrap@1.0.0
+│  │  ├─ repository: https://github.com/heroku/node-linewrap
+│  │  └─ publisher: Jeff Dickey
+│  ├─ graceful-fs@4.2.3
+│  │  ├─ repository: https://github.com/isaacs/node-graceful-fs
+│  │  └─ publisher
+│  └─ semver@5.7.1
+│     ├─ repository: https://github.com/npm/node-semver
+│     └─ publisher
+├─ Apache-2.0
+│  ├─ tslib@1.10.0
+│  │  ├─ repository: https://github.com/Microsoft/tslib
+│  │  └─ publisher: Microsoft Corp.
+│  └─ rxjs@6.5.4
+│     ├─ repository: https://github.com/reactivex/rxjs
+│     └─ publisher: Ben Lesh
+└─ UNKNOWN
+   └─ documentation@1.0.0
+      ├─ repository: https://github.com/huboneo/daedalus
+      └─ publisher: Hugo Bove
+
