@@ -32,7 +32,7 @@ query GetDBNames {
 
 ## CLI
 ```sh
-$ daedalus account:use "local" # set context to "local"
+$ daedalus account:use "local" # set current Account to "local"
 $ daedalus dbms:use "neo4j" # set current DBMS to "neo4j"
 $ daedalus db:list | awk '{print $2}' # list db names (eg. col 2)
 ```
@@ -58,10 +58,28 @@ The user experience should be as similar as possible across environments and all
 In addition, we will leverage the power of established frameworks and patterns in the JavaScript community to reduce the Neo4j specific "learning curve" and maintenance cost.
 
 # Detailed design
-The core deliverable is a JavaScript library (the "toolkit") that allows you to programmatically interact with the Neo4j platform.
+In priority order, the end-user deliverables are:
+1. An improved Neo4j Desktop 2.0
+   - Feature parity with Neo4j Desktop 1.x
+   - Easier to maintain by decomposing into a core library, web server, and web UI packaged into an electron app
+   - Neo4j 4.0 optimized with separate lifecycles for the DBMS and multiple databases
+   - Feature complete GraphQL API that expresses all interactions possible through the current user interface
+   - File-system-like behaviors (open with... for dbs and well-known files like cypher, guides, csv, gram)
+   - Project definition to enable examples, bootstrapping, collaboration
+2. User workflows to/from Aura & sandbox
+   - Requires a "Neo4j Account" and probably token-based auth
+3. A web-server with the same capabilities as Desktop
+   - A common request for Bloom and even Browser
+   - Should participate in web-auth flows
+   - Minus any OS-integrations
+   - Minus "hosting" remote applications
+4. CLI tool for awesome developer flows
+   - As smooth as `gcloud` or `heroku` or `gh`
+
+These deliverables are enabled through an underlying JavaScript library (the "toolkit") that allows for programmatically interacting with the Neo4j platform.
 In this context, "platform" is defined as the collection of Accounts (Local, Aura), Services (IDMS, User data, Graph Apps), and Tools (drivers, graphql server, plugins).
 The basis of the toolkit is a collection of modules, providers, microservices, et al. that can readily be composed into an application using a Dependency Injection framework.
-This enables us to ship modular, extensible, and scalable code that is easy for consumers to discover and adopt.
+This enables us to ship modular, extensible, and scalable code that is easy for consumers to discover and adopt. Further it allows us to deliver, support, and extend above mentioned deliverables in a controlled and efficient manner.
 
 ## A note on nomenclature
 - `Account` here refers to a top level trusted authority containing certificates, keys, credentials, et. al. A container of all things, and the root of our chain of trust:
