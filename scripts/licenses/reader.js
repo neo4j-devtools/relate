@@ -8,14 +8,14 @@ const checker = require('license-checker');
 
 const checkerOptions = {
     production: true,
-    summary: true
+    summary: true,
 };
 
 const getDepLicenses = (start) => {
     return new Promise((res) => checker.init({...checkerOptions, start}, (err, data) => res(err ? {} : data)));
 };
 
-const DAEDALUS_PREFIX = '@daedalus/';
+const LOCAL_PACKAGE_PREFIX = '@daedalus/';
 const CWD = path.resolve(process.cwd());
 const PACKAGES = path.join(CWD, '/packages');
 const allPackages = fs.readdirSync(PACKAGES).map((p) => path.join(PACKAGES, p));
@@ -28,6 +28,6 @@ module.exports = of(allPackages).pipe(
     map((all) => all.reduce((agg, next) => ({...agg, ...next}), {})),
     flatMap(Object.entries),
     // exclude our own packages, covered by root license
-    reduce((agg, [key, val]) => (key.startsWith(DAEDALUS_PREFIX) ? agg : {...agg, [key]: val}), {}),
+    reduce((agg, [key, val]) => (key.startsWith(LOCAL_PACKAGE_PREFIX) ? agg : {...agg, [key]: val}), {}),
     share(),
 );

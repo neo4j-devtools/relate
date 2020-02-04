@@ -5,27 +5,8 @@ libraries. For an overview of the licenses see the NOTICE.txt file.
 -----
 
 
-The following software may be included in this product: ansi-regex@3.0.0, ansi-regex@4.1.0, chalk@2.4.2, ansi-styles@3.2.1, has-flag@3.0.0, indent-string@3.2.0, indent-string@4.0.0, string-width@2.1.1, strip-ansi@4.0.0, string-width@3.1.0, supports-color@5.5.0, strip-ansi@5.2.0, widest-line@2.0.1, wrap-ansi@4.0.0.
-A copy of the source code may be downloaded from https://github.com/chalk/ansi-regex (ansi-regex@3.0.0), https://github.com/chalk/ansi-regex (ansi-regex@4.1.0), https://github.com/chalk/chalk (chalk@2.4.2), https://github.com/chalk/ansi-styles (ansi-styles@3.2.1), https://github.com/sindresorhus/has-flag (has-flag@3.0.0), https://github.com/sindresorhus/indent-string (indent-string@3.2.0), https://github.com/sindresorhus/indent-string (indent-string@4.0.0), https://github.com/sindresorhus/string-width (string-width@2.1.1), https://github.com/chalk/strip-ansi (strip-ansi@4.0.0), https://github.com/sindresorhus/string-width (string-width@3.1.0), https://github.com/chalk/supports-color (supports-color@5.5.0), https://github.com/chalk/strip-ansi (strip-ansi@5.2.0), https://github.com/sindresorhus/widest-line (widest-line@2.0.1), https://github.com/chalk/wrap-ansi (wrap-ansi@4.0.0). 
-This software contains the following license and notice below:
-
-MIT License
-
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
------
-    
-
-
-The following software may be included in this product: @oclif/config@1.13.3, @oclif/command@1.5.19, @oclif/errors@1.2.2, @oclif/plugin-help@2.2.3, @oclif/parser@3.8.4.
-A copy of the source code may be downloaded from https://github.com/oclif/config (@oclif/config@1.13.3), https://github.com/oclif/command (@oclif/command@1.5.19), https://github.com/oclif/errors (@oclif/errors@1.2.2), https://github.com/oclif/plugin-help (@oclif/plugin-help@2.2.3), https://github.com/oclif/parser (@oclif/parser@3.8.4). 
+The following software may be included in this product: @oclif/config@1.13.3, @oclif/parser@3.8.4, @oclif/command@1.5.19, @oclif/plugin-help@2.2.3, @oclif/errors@1.2.2.
+A copy of the source code may be downloaded from https://github.com/oclif/config (@oclif/config@1.13.3), https://github.com/oclif/parser (@oclif/parser@3.8.4), https://github.com/oclif/command (@oclif/command@1.5.19), https://github.com/oclif/plugin-help (@oclif/plugin-help@2.2.3), https://github.com/oclif/errors (@oclif/errors@1.2.2). 
 This software contains the following license and notice below:
 
 MIT License
@@ -55,28 +36,49 @@ SOFTWARE.
     
 
 
-The following software may be included in this product: debug@4.1.1.
-A copy of the source code may be downloaded from https://github.com/visionmedia/debug (debug@4.1.1). 
+The following software may be included in this product: ansi-regex@4.1.0, ansi-regex@3.0.0, chalk@2.4.2, ansi-styles@3.2.1, has-flag@3.0.0, indent-string@3.2.0, indent-string@4.0.0, string-width@2.1.1, string-width@3.1.0, strip-ansi@4.0.0, supports-color@5.5.0, strip-ansi@5.2.0, wrap-ansi@4.0.0, widest-line@2.0.1.
+A copy of the source code may be downloaded from https://github.com/chalk/ansi-regex (ansi-regex@4.1.0), https://github.com/chalk/ansi-regex (ansi-regex@3.0.0), https://github.com/chalk/chalk (chalk@2.4.2), https://github.com/chalk/ansi-styles (ansi-styles@3.2.1), https://github.com/sindresorhus/has-flag (has-flag@3.0.0), https://github.com/sindresorhus/indent-string (indent-string@3.2.0), https://github.com/sindresorhus/indent-string (indent-string@4.0.0), https://github.com/sindresorhus/string-width (string-width@2.1.1), https://github.com/sindresorhus/string-width (string-width@3.1.0), https://github.com/chalk/strip-ansi (strip-ansi@4.0.0), https://github.com/chalk/supports-color (supports-color@5.5.0), https://github.com/chalk/strip-ansi (strip-ansi@5.2.0), https://github.com/chalk/wrap-ansi (wrap-ansi@4.0.0), https://github.com/sindresorhus/widest-line (widest-line@2.0.1). 
 This software contains the following license and notice below:
 
-(The MIT License)
+MIT License
 
-Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the 'Software'), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial 
-portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+-----
+    
+
+
+The following software may be included in this product: color-convert@1.9.3.
+A copy of the source code may be downloaded from https://github.com/Qix-/color-convert (color-convert@1.9.3). 
+This software contains the following license and notice below:
+
+Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
@@ -162,37 +164,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
 
 
-The following software may be included in this product: color-convert@1.9.3.
-A copy of the source code may be downloaded from https://github.com/Qix-/color-convert (color-convert@1.9.3). 
-This software contains the following license and notice below:
-
-Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
------
-    
-
-
 The following software may be included in this product: fs-extra@7.0.1, fs-extra@8.1.0.
 A copy of the source code may be downloaded from https://github.com/jprichardson/node-fs-extra (fs-extra@7.0.1), https://github.com/jprichardson/node-fs-extra (fs-extra@8.1.0). 
 This software contains the following license and notice below:
@@ -218,33 +189,37 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
     
 
 
-The following software may be included in this product: graceful-fs@4.2.3.
-A copy of the source code may be downloaded from https://github.com/isaacs/node-graceful-fs (graceful-fs@4.2.3). 
+The following software may be included in this product: debug@4.1.1.
+A copy of the source code may be downloaded from https://github.com/visionmedia/debug (debug@4.1.1). 
 This software contains the following license and notice below:
 
-The ISC License
+(The MIT License)
 
-Copyright (c) Isaac Z. Schlueter, Ben Noordhuis, and Contributors
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 
 -----
     
 
 
-The following software may be included in this product: lodash.templatesettings@4.2.0, lodash.template@4.5.0.
-A copy of the source code may be downloaded from https://github.com/lodash/lodash (lodash.templatesettings@4.2.0), https://github.com/lodash/lodash (lodash.template@4.5.0). 
+The following software may be included in this product: lodash.template@4.5.0, lodash.templatesettings@4.2.0.
+A copy of the source code may be downloaded from https://github.com/lodash/lodash (lodash.template@4.5.0), https://github.com/lodash/lodash (lodash.templatesettings@4.2.0). 
 This software contains the following license and notice below:
 
 Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
@@ -357,31 +332,6 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
     
 
 
-The following software may be included in this product: semver@5.7.1.
-A copy of the source code may be downloaded from https://github.com/npm/node-semver (semver@5.7.1). 
-This software contains the following license and notice below:
-
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
------
-    
-
-
 The following software may be included in this product: ms@2.1.2.
 A copy of the source code may be downloaded from https://github.com/zeit/ms (ms@2.1.2). 
 This software contains the following license and notice below:
@@ -413,30 +363,50 @@ SOFTWARE.
     
 
 
-The following software may be included in this product: universalify@0.1.2.
-A copy of the source code may be downloaded from https://github.com/RyanZim/universalify (universalify@0.1.2). 
+The following software may be included in this product: graceful-fs@4.2.3.
+A copy of the source code may be downloaded from https://github.com/isaacs/node-graceful-fs (graceful-fs@4.2.3). 
 This software contains the following license and notice below:
 
-(The MIT License)
+The ISC License
 
-Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>
+Copyright (c) Isaac Z. Schlueter, Ben Noordhuis, and Contributors
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the 'Software'), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----
+    
+
+
+The following software may be included in this product: semver@5.7.1.
+A copy of the source code may be downloaded from https://github.com/npm/node-semver (semver@5.7.1). 
+This software contains the following license and notice below:
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
 -----
@@ -502,6 +472,36 @@ If the Work includes a "NOTICE" text file as part of its distribution, then any 
 9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
 
 END OF TERMS AND CONDITIONS
+
+
+-----
+    
+
+
+The following software may be included in this product: universalify@0.1.2.
+A copy of the source code may be downloaded from https://github.com/RyanZim/universalify (universalify@0.1.2). 
+This software contains the following license and notice below:
+
+(The MIT License)
+
+Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the 'Software'), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 -----

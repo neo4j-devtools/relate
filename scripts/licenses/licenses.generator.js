@@ -10,14 +10,10 @@ const allLicenses = require('./reader');
 const licenses = allLicenses.pipe(
     flatMap(Object.entries),
     filter(([, {licenseFile}]) => Boolean(licenseFile)),
-    flatMap(([name, package]) => {
-        return fs.readFile(package.licenseFile, 'utf8').then((license) => [name, package, license]);
-    }),
+    flatMap(([name, package]) => fs.readFile(package.licenseFile, 'utf8').then((license) => [name, package, license])),
     groupBy(([, , license]) => license),
     mergeMap((group) => zip(of(group.key), group.pipe(toArray()))),
-    map(([key, packages]) => {
-        return formatLicense(key, packages);
-    }),
+    map(formatLicense),
 );
 
 const LICENSE_HEADER = path.join(__dirname, '../static_data/LICENSES_HEADER.txt');
@@ -39,7 +35,7 @@ licenses.subscribe({
     },
 });
 
-function formatLicense(license, packages) {
+function formatLicense([license, packages]) {
     return `
 The following software may be included in this product: ${packages.map(([packageName]) => packageName).join(', ')}.
 A copy of the source code may be downloaded from ${packages
