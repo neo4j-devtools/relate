@@ -3,39 +3,39 @@
 We would love for you to contribute to @daedalus and help make it even better than it is
 today! As a contributor, here are the guidelines we would like you to follow:
 
- - [Code of Conduct](#coc)
- - [Question or Problem?](#question)
- - [Issues and Bugs](#issue)
- - [Feature Requests](#feature)
- - [Submission Guidelines](#submit)
- - [Coding Rules](#rules)
- - [Commit Message Guidelines](#commit)
- - [Signing the CLA](#cla)
+ - [Code of Conduct](#code-of-conduct)
+ - [Question or Problem?](#got-a-question-or-problem)
+ - [Issues and Bugs](#found-a-bug)
+ - [Feature Requests](#missing-a-feature)
+ - [Submission Guidelines](#submission-guidelines)
+ - [Coding Rules](#coding-rules)
+ - [Commit Message Guidelines](#commit-message-guidelines)
+ - [Signing the CLA](#signing-the-cla)
 
-## <a name="coc"></a> Code of Conduct
-Help us keep @daedalus open and inclusive. Please read and follow our [Code of Conduct][./CODE_OF_CONDUCT.md].
+## Code of Conduct
+Help us keep @daedalus open and inclusive. Please read and follow our [Code of Conduct](./documentation/CODE_OF_CONDUCT.md).
 
-## <a name="question"></a> Got a Question or Problem?
+## Got a Question or Problem?
 
-Do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [Stack Overflow](https://stackoverflow.com/questions/tagged/@daedalus) where the questions should be tagged with tag `daedalus`.
+Do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [Stack Overflow][https://stackoverflow.com/questions/tagged/@daedalus] where the questions should be tagged with tag `daedalus`.
 
 Stack Overflow is a much better place to ask questions since:
 
-- there are thousands of people willing to help on Stack Overflow
-- questions and answers stay available for public viewing so your question / answer might help someone else
+- There are thousands of people willing to help on Stack Overflow
+- Questions and answers stay available for public viewing so your question / answer might help someone else
 - Stack Overflow's voting system assures that the best answers are prominently visible.
 
 To save your and our time, we will systematically close all issues that are requests for general support and redirect people to Stack Overflow.
 
 If you would like to chat about the question in real-time, you can reach out via [our TBD channel][TBD].
 
-## <a name="issue"></a> Found a Bug?
+## Found a Bug?
 If you find a bug in the source code, you can help us by
-[submitting an issue](#submit-issue) to our [GitHub Repository][https://github.com/neo-technology/daedalus]. Even better, you can
-[submit a Pull Request](#submit-pr) with a fix.
+[submitting an issue](#submitting-an-issue) to our [GitHub Repository][https://github.com/neo-technology/daedalus]. Even better, you can
+[submit a Pull Request](#submitting-a-pull-request-pr) with a fix.
 
-## <a name="feature"></a> Missing a Feature?
-You can *request* a new feature by [submitting an issue](#submit-issue) to our GitHub
+## Missing a Feature?
+You can *request* a new feature by [submitting an issue](#submitting-an-issue) to our GitHub
 Repository. If you would like to *implement* a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it.
 Please consider what kind of change it is:
@@ -43,11 +43,11 @@ Please consider what kind of change it is:
 * For a **Major Feature**, first open an issue and outline your proposal so that it can be
 discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
 and help you to craft the change so that it is successfully accepted into the project.
-* **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
+* **Small Features** can be crafted and directly [submitted as a Pull Request](#submitting-a-pull-request-pr).
 
-## <a name="submit"></a> Submission Guidelines
+## Submission Guidelines
 
-### <a name="submit-issue"></a> Submitting an Issue
+### Submitting an Issue
 
 Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion might inform you of workarounds readily available.
 
@@ -62,14 +62,14 @@ Unfortunately, we are not able to investigate / fix bugs without a minimal repro
 You can file new issues by selecting from our [new issue templates](https://github.com/neo-technology/daedalus/issues/new/choose) and filling out the issue template.
 
 
-### <a name="submit-pr"></a> Submitting a Pull Request (PR)
+### Submitting a Pull Request (PR)
 Before you submit your Pull Request (PR) consider the following guidelines:
 
 1. Search [GitHub](https://github.com/neo-technology/daedalus/pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
 1. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
   Discussing the design up front helps to ensure that we're ready to accept your work.
-1. Please sign our [Contributor License Agreement (CLA)](#cla) before sending PRs.
+1. Please sign our [Contributor License Agreement (CLA)](#signing-the-cla) before sending PRs.
   We cannot accept code without this. Make sure you sign with the primary email address of the Git identity that has been granted access to the @daedalus repository.
 1. Fork the neo-technology/daedalus repo.
 1. Make your changes in a new git branch:
@@ -79,10 +79,10 @@ Before you submit your Pull Request (PR) consider the following guidelines:
      ```
 
 1. Create your patch, **including appropriate test cases**.
-1. Follow our [Coding Rules](#rules).
+1. Follow our [Coding Rules](#coding-rules).
 1. Run the full test suite, and ensure that all tests pass.
 1. Commit your changes using a descriptive commit message that follows our
-  [commit message conventions](#commit). Adherence to these conventions
+  [commit message conventions](#commit-message-guidelines). Adherence to these conventions
   is necessary because release notes are automatically generated from these messages.
 
      ```shell
@@ -96,7 +96,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-1. In GitHub, send a pull request to `@daedalus:master`.
+1. In GitHub, send a pull request to `daedalus:master`.
 * If we suggest changes then:
   * Make the required updates.
   * Re-run the test suites to ensure tests are still passing.
@@ -138,13 +138,13 @@ from the main (upstream) repository:
     git pull --ff upstream master
     ```
 
-## <a name="rules"></a> Coding Rules
+## Coding Rules
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 * All features or bug fixes **must be tested** by one or more tests.
 * All public API methods **must be documented**.
 
-## <a name="commit"></a> Commit Message Guidelines
+## Commit Message Guidelines
 
 We have very precise rules over how our git commit messages can be formatted.  This leads to **more
 readable messages** that are easy to follow when looking through the **project history**.  But also,
@@ -223,9 +223,9 @@ reference GitHub issues that this commit **Closes**.
 
 **Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
-A detailed explanation can be found in this [document][commit-message-format].
+A detailed explanation can be found in this [document](#commit-message-format).
 
-## <a name="cla"></a> Signing the CLA
+## Signing the CLA
 
 Please sign our Contributor License Agreement (CLA) before sending pull requests. For any code
 changes to be accepted, the CLA must be signed. It's a quick process, we promise!
