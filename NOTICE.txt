@@ -24,19 +24,6 @@ Third-party licenses
 --------------------
 
 
-├─ GPL-3.0
-│  ├─ @daedalus/cli@1.0.0
-│  │  ├─ repository: https://github.com/neo-technology/daedalus
-│  │  └─ publisher: Neo4j Inc.
-│  ├─ @daedalus/common@1.0.0
-│  │  ├─ repository: https://github.com/neo-technology/daedalus
-│  │  └─ publisher: Neo4j Inc.
-│  ├─ @daedalus/electron@1.0.0
-│  │  ├─ repository: https://github.com/neo-technology/daedalus
-│  │  └─ publisher: Neo4j Inc.
-│  └─ @daedalus/web@1.0.0
-│     ├─ repository: https://github.com/neo-technology/daedalus
-│     └─ publisher: Neo4j Inc.
 ├─ MIT
 │  ├─ @oclif/command@1.5.19
 │  │  ├─ repository: https://github.com/oclif/command
@@ -168,15 +155,11 @@ Third-party licenses
 │  └─ semver@5.7.1
 │     ├─ repository: https://github.com/npm/node-semver
 │     └─ publisher
-├─ Apache-2.0
-│  ├─ tslib@1.10.0
-│  │  ├─ repository: https://github.com/Microsoft/tslib
-│  │  └─ publisher: Microsoft Corp.
-│  └─ rxjs@6.5.4
-│     ├─ repository: https://github.com/reactivex/rxjs
-│     └─ publisher: Ben Lesh
-└─ UNKNOWN
-   └─ documentation@1.0.0
-      ├─ repository: https://github.com/huboneo/daedalus
-      └─ publisher: Hugo Bove
+└─ Apache-2.0
+   ├─ tslib@1.10.0
+   │  ├─ repository: https://github.com/Microsoft/tslib
+   │  └─ publisher: Microsoft Corp.
+   └─ rxjs@6.5.4
+      ├─ repository: https://github.com/reactivex/rxjs
+      └─ publisher: Ben Lesh
 

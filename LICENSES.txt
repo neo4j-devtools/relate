@@ -5,86 +5,27 @@ libraries. For an overview of the licenses see the NOTICE.txt file.
 -----
 
 
-The following software may be included in this product: @daedalus/cli@1.0.0.
-A copy of the source code may be downloaded from https://github.com/neo-technology/daedalus (@daedalus/cli@1.0.0). 
+The following software may be included in this product: ansi-regex@3.0.0, ansi-regex@4.1.0, chalk@2.4.2, ansi-styles@3.2.1, has-flag@3.0.0, indent-string@3.2.0, indent-string@4.0.0, string-width@2.1.1, strip-ansi@4.0.0, string-width@3.1.0, supports-color@5.5.0, strip-ansi@5.2.0, widest-line@2.0.1, wrap-ansi@4.0.0.
+A copy of the source code may be downloaded from https://github.com/chalk/ansi-regex (ansi-regex@3.0.0), https://github.com/chalk/ansi-regex (ansi-regex@4.1.0), https://github.com/chalk/chalk (chalk@2.4.2), https://github.com/chalk/ansi-styles (ansi-styles@3.2.1), https://github.com/sindresorhus/has-flag (has-flag@3.0.0), https://github.com/sindresorhus/indent-string (indent-string@3.2.0), https://github.com/sindresorhus/indent-string (indent-string@4.0.0), https://github.com/sindresorhus/string-width (string-width@2.1.1), https://github.com/chalk/strip-ansi (strip-ansi@4.0.0), https://github.com/sindresorhus/string-width (string-width@3.1.0), https://github.com/chalk/supports-color (supports-color@5.5.0), https://github.com/chalk/strip-ansi (strip-ansi@5.2.0), https://github.com/sindresorhus/widest-line (widest-line@2.0.1), https://github.com/chalk/wrap-ansi (wrap-ansi@4.0.0). 
 This software contains the following license and notice below:
 
-@daedalus/cli
-===
+MIT License
 
-CLI tool for interacting with the Neo4j platform.
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/cli.svg)](https://npmjs.org/package/cli)
-[![Downloads/week](https://img.shields.io/npm/dw/cli.svg)](https://npmjs.org/package/cli)
-[![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/daedalus/blob/master/package.json)
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @daedalus/cli
-$ daedalus COMMAND
-running command...
-$ daedalus (-v|--version|version)
-@daedalus/cli/0.0.0 darwin-x64 node-v12.14.1
-$ daedalus --help [COMMAND]
-USAGE
-  $ daedalus COMMAND
-...
-```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-* [`daedalus hello [FILE]`](#daedalus-hello-file)
-* [`daedalus help [COMMAND]`](#daedalus-help-command)
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-## `daedalus hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ daedalus hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ daedalus hello
-  hello world from ./src/hello.ts!
-```
-
-## `daedalus help [COMMAND]`
-
-display help for daedalus
-
-```
-USAGE
-  $ daedalus help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-<!-- commandsstop -->
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 -----
     
 
 
-The following software may be included in this product: @oclif/command@1.5.19, @oclif/errors@1.2.2, @oclif/plugin-help@2.2.3, @oclif/parser@3.8.4, @oclif/config@1.13.3.
-A copy of the source code may be downloaded from https://github.com/oclif/command (@oclif/command@1.5.19), https://github.com/oclif/errors (@oclif/errors@1.2.2), https://github.com/oclif/plugin-help (@oclif/plugin-help@2.2.3), https://github.com/oclif/parser (@oclif/parser@3.8.4), https://github.com/oclif/config (@oclif/config@1.13.3). 
+The following software may be included in this product: @oclif/config@1.13.3, @oclif/command@1.5.19, @oclif/errors@1.2.2, @oclif/plugin-help@2.2.3, @oclif/parser@3.8.4.
+A copy of the source code may be downloaded from https://github.com/oclif/config (@oclif/config@1.13.3), https://github.com/oclif/command (@oclif/command@1.5.19), https://github.com/oclif/errors (@oclif/errors@1.2.2), https://github.com/oclif/plugin-help (@oclif/plugin-help@2.2.3), https://github.com/oclif/parser (@oclif/parser@3.8.4). 
 This software contains the following license and notice below:
 
 MIT License
@@ -114,19 +55,29 @@ SOFTWARE.
     
 
 
-The following software may be included in this product: ansi-regex@4.1.0, chalk@2.4.2, ansi-regex@3.0.0, ansi-styles@3.2.1, has-flag@3.0.0, indent-string@3.2.0, indent-string@4.0.0, string-width@2.1.1, string-width@3.1.0, strip-ansi@4.0.0, strip-ansi@5.2.0, supports-color@5.5.0, widest-line@2.0.1, wrap-ansi@4.0.0.
-A copy of the source code may be downloaded from https://github.com/chalk/ansi-regex (ansi-regex@4.1.0), https://github.com/chalk/chalk (chalk@2.4.2), https://github.com/chalk/ansi-regex (ansi-regex@3.0.0), https://github.com/chalk/ansi-styles (ansi-styles@3.2.1), https://github.com/sindresorhus/has-flag (has-flag@3.0.0), https://github.com/sindresorhus/indent-string (indent-string@3.2.0), https://github.com/sindresorhus/indent-string (indent-string@4.0.0), https://github.com/sindresorhus/string-width (string-width@2.1.1), https://github.com/sindresorhus/string-width (string-width@3.1.0), https://github.com/chalk/strip-ansi (strip-ansi@4.0.0), https://github.com/chalk/strip-ansi (strip-ansi@5.2.0), https://github.com/chalk/supports-color (supports-color@5.5.0), https://github.com/sindresorhus/widest-line (widest-line@2.0.1), https://github.com/chalk/wrap-ansi (wrap-ansi@4.0.0). 
+The following software may be included in this product: debug@4.1.1.
+A copy of the source code may be downloaded from https://github.com/visionmedia/debug (debug@4.1.1). 
 This software contains the following license and notice below:
 
-MIT License
+(The MIT License)
 
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 
 -----
@@ -158,66 +109,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
------
-    
-
-
-The following software may be included in this product: color-convert@1.9.3.
-A copy of the source code may be downloaded from https://github.com/Qix-/color-convert (color-convert@1.9.3). 
-This software contains the following license and notice below:
-
-Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
------
-    
-
-
-The following software may be included in this product: debug@4.1.1.
-A copy of the source code may be downloaded from https://github.com/visionmedia/debug (debug@4.1.1). 
-This software contains the following license and notice below:
-
-(The MIT License)
-
-Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the 'Software'), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial 
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 
 -----
@@ -271,6 +162,37 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     
 
 
+The following software may be included in this product: color-convert@1.9.3.
+A copy of the source code may be downloaded from https://github.com/Qix-/color-convert (color-convert@1.9.3). 
+This software contains the following license and notice below:
+
+Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+-----
+    
+
+
 The following software may be included in this product: fs-extra@7.0.1, fs-extra@8.1.0.
 A copy of the source code may be downloaded from https://github.com/jprichardson/node-fs-extra (fs-extra@7.0.1), https://github.com/jprichardson/node-fs-extra (fs-extra@8.1.0). 
 This software contains the following license and notice below:
@@ -315,31 +237,6 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
------
-    
-
-
-The following software may be included in this product: jsonfile@4.0.0.
-A copy of the source code may be downloaded from https://github.com/jprichardson/node-jsonfile (jsonfile@4.0.0). 
-This software contains the following license and notice below:
-
-(The MIT License)
-
-Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
- merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 -----
@@ -403,31 +300,6 @@ terms above.
     
 
 
-The following software may be included in this product: semver@5.7.1.
-A copy of the source code may be downloaded from https://github.com/npm/node-semver (semver@5.7.1). 
-This software contains the following license and notice below:
-
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
------
-    
-
-
 The following software may be included in this product: lodash._reinterpolate@3.0.0.
 A copy of the source code may be downloaded from https://github.com/lodash/lodash (lodash._reinterpolate@3.0.0). 
 This software contains the following license and notice below:
@@ -454,6 +326,56 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+-----
+    
+
+
+The following software may be included in this product: jsonfile@4.0.0.
+A copy of the source code may be downloaded from https://github.com/jprichardson/node-jsonfile (jsonfile@4.0.0). 
+This software contains the following license and notice below:
+
+(The MIT License)
+
+Copyright (c) 2012-2015, JP Richardson <jprichardson@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
+ merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+-----
+    
+
+
+The following software may be included in this product: semver@5.7.1.
+A copy of the source code may be downloaded from https://github.com/npm/node-semver (semver@5.7.1). 
+This software contains the following license and notice below:
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
 -----
@@ -593,102 +515,6 @@ This software contains the following license and notice below:
 # `documentation`
 
 All `Daedalus` docs, specs, RFCs
-
-
------
-    
-
-
-The following software may be included in this product: @daedalus/common@1.0.0.
-A copy of the source code may be downloaded from https://github.com/neo-technology/daedalus (@daedalus/common@1.0.0). 
-This software contains the following license and notice below:
-
-# @daedalus/common
-The Neo4j toolkit repo
-
-### Installation
-```
-$ npm ci
-```
-
-### Development
-```
-$ npm run dev
-```
-
-### Building
-```
-$ npm run build
-```
-
-### Testing
-```
-$ npm test
-```
-
-
------
-    
-
-
-The following software may be included in this product: @daedalus/electron@1.0.0.
-A copy of the source code may be downloaded from https://github.com/neo-technology/daedalus (@daedalus/electron@1.0.0). 
-This software contains the following license and notice below:
-
-# @daedalus/electron
-The Neo4j Electron package
-
-### Installation
-```
-$ npm ci
-```
-
-### Development
-```
-$ npm start
-```
-
-### Building
-```
-$ npm run build
-```
-
-### Testing
-```
-$ npm test
-```
-
-
------
-    
-
-
-The following software may be included in this product: @daedalus/web@1.0.0.
-A copy of the source code may be downloaded from https://github.com/neo-technology/daedalus (@daedalus/web@1.0.0). 
-This software contains the following license and notice below:
-
-# @daedalus/web
-The Neo4j WEB package (GraphQL)
-
-### Installation
-```
-$ npm ci
-```
-
-### Development
-```
-$ npm start
-```
-
-### Building
-```
-$ npm run build
-```
-
-### Testing
-```
-$ npm test
-```
 
 
 -----
