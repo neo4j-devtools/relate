@@ -1,13 +1,12 @@
 import {NestFactory} from '@nestjs/core';
 
-import {HelloService, SampleModule} from './sample';
+import {SystemModule, SystemProvider} from './system';
 
 async function bootstrap(): Promise<void> {
-    const app = await NestFactory.createApplicationContext(SampleModule);
-    const service = app.select(SampleModule).get(HelloService);
+    const app = await NestFactory.createApplicationContext(SystemModule);
+    const service = app.select(SystemModule).get(SystemProvider);
 
-    // eslint-disable-next-line no-console
-    console.log(service.getGoodbye());
+    service.getAccount('foo').statusDBMS('test');
 }
 
 bootstrap();
