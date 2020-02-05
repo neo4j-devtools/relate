@@ -1,4 +1,4 @@
-import {Module, OnModuleInit, Inject, DynamicModule} from '@nestjs/common';
+import {Module, OnModuleInit, Inject} from '@nestjs/common';
 
 import {IHelloFlags} from '../commands/hello';
 
@@ -8,22 +8,6 @@ export class HelloModule implements OnModuleInit {
         @Inject('PARSED_PROVIDER') private readonly parsed: ParsedInput<IHelloFlags>,
         @Inject('UTILS_PROVIDER') private readonly utils: CommandUtils,
     ) {}
-
-    static forRoot(parsed: ParsedInput<IHelloFlags>, utils: CommandUtils): DynamicModule {
-        return {
-            module: HelloModule,
-            providers: [
-                {
-                    provide: 'PARSED_PROVIDER',
-                    useValue: parsed,
-                },
-                {
-                    provide: 'UTILS_PROVIDER',
-                    useValue: utils,
-                },
-            ],
-        };
-    }
 
     onModuleInit(): void {
         this.utils.log(`Hello ${this.parsed.args.file}`);

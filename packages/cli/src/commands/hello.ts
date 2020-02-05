@@ -1,17 +1,19 @@
-import {Command, flags} from '@oclif/command';
-import {NestFactory} from '@nestjs/core';
+import {flags} from '@oclif/command';
 
 import {HelloModule} from '../modules/hello.module';
-import {IS_TESTING_ENV} from '../constants';
-import {INestApplicationContext} from '@nestjs/common';
+import BaseCommand from '../base.command';
 
 export interface IHelloFlags {
+    force: boolean;
     help: void;
     name?: string;
-    force: boolean;
 }
 
-export default class Hello extends Command {
+export default class Hello extends BaseCommand {
+    commandClass = Hello;
+
+    commandModule = HelloModule;
+
     static description = 'describe the command here';
 
     static examples = [
@@ -20,7 +22,7 @@ hello world from ./src/hello.ts!
 `,
     ];
 
-    static flags: flags.Input<IHelloFlags> = {
+    static flags = {
         // flag with no value (-f, --force)
         force: flags.boolean({char: 'f'}),
         help: flags.help({char: 'h'}),
@@ -32,15 +34,4 @@ hello world from ./src/hello.ts!
     };
 
     static args = [{name: 'file'}];
-
-    run(): Promise<INestApplicationContext> {
-        const parsed = this.parse(Hello);
-        const utils = {
-            debug: this.debug,
-            log: this.log,
-        };
-        const options = IS_TESTING_ENV ? {logger: false} : {};
-
-        return NestFactory.createApplicationContext(HelloModule.forRoot(parsed, utils), options);
-    }
 }
