@@ -1,5 +1,4 @@
-@relate/cli
-===
+# @relate/cli
 
 CLI tool for interacting with the Neo4j platform.
 
@@ -9,29 +8,67 @@ CLI tool for interacting with the Neo4j platform.
 [![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/daedalus/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+-   [Usage](#usage)
+-   [Commands](#commands)
+    <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
-$ relate (-v|--version|version)
-@relate/cli/0.0.0 darwin-x64 node-v12.14.1
-$ relate --help [COMMAND]
+$ daedalus (-v|--version|version)
+@daedalus/cli/0.0.0 linux-x64 node-v10.18.0
+$ daedalus --help [COMMAND]
 USAGE
   $ relate COMMAND
 ...
 ```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-* [`relate hello [FILE]`](#relate-hello-file)
-* [`relate help [COMMAND]`](#relate-help-command)
 
-## `relate hello [FILE]`
+<!-- usagestop -->
+
+# Commands
+
+<!-- commands -->
+
+-   [`daedalus dbms:start DBMSID`](#daedalus-dbmsstart-dbmsid)
+-   [`daedalus dbms:status DBMSID`](#daedalus-dbmsstatus-dbmsid)
+-   [`daedalus dbms:stop DBMSID`](#daedalus-dbmsstop-dbmsid)
+-   [`daedalus hello [FILE]`](#daedalus-hello-file)
+-   [`daedalus help [COMMAND]`](#daedalus-help-command)
+
+## `daedalus dbms:start DBMSID`
+
+```
+USAGE
+  $ daedalus dbms:start DBMSID
+```
+
+_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/start.ts)_
+
+## `daedalus dbms:status DBMSID`
+
+```
+USAGE
+  $ daedalus dbms:status DBMSID
+```
+
+_See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/status.ts)_
+
+## `daedalus dbms:stop DBMSID`
+
+```
+USAGE
+  $ daedalus dbms:stop DBMSID
+```
+
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/stop.ts)_
+
+## `daedalus hello [FILE]`
 
 describe the command here
 
@@ -45,11 +82,13 @@ OPTIONS
   -n, --name=name  name to print
 
 EXAMPLE
-  $ relate hello
-  hello world from ./src/hello.module.ts!
+  $ daedalus hello
+  hello world from ./src/hello.ts!
 ```
 
-## `relate help [COMMAND]`
+_See code: [dist/commands/hello.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/hello.ts)_
+
+## `daedalus help [COMMAND]`
 
 display help for relate
 
@@ -65,4 +104,5 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+
 <!-- commandsstop -->

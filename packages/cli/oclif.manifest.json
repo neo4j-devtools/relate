@@ -1,1 +1,49 @@
-{"version":"0.0.0","commands":{"hello":{"id":"hello","description":"describe the command here","pluginName":"cli","pluginType":"core","aliases":[],"examples":["$ relate hello\nhello world from ./src/hello.ts!\n"],"flags":{"help":{"name":"help","type":"boolean","char":"h","description":"show CLI help","allowNo":false},"name":{"name":"name","type":"option","char":"n","description":"name to print"},"force":{"name":"force","type":"boolean","char":"f","allowNo":false}},"args":[{"name":"file"}]}}}
+{
+    "version": "0.0.0",
+    "commands": {
+        "hello": {
+            "id": "hello",
+            "description": "describe the command here",
+            "pluginName": "@daedalus/cli",
+            "pluginType": "core",
+            "aliases": [],
+            "examples": ["$ daedalus hello\nhello world from ./src/hello.ts!\n"],
+            "flags": {
+                "force": {"name": "force", "type": "boolean", "char": "f", "allowNo": false},
+                "help": {
+                    "name": "help",
+                    "type": "boolean",
+                    "char": "h",
+                    "description": "show CLI help",
+                    "allowNo": false
+                },
+                "name": {"name": "name", "type": "option", "char": "n", "description": "name to print"}
+            },
+            "args": [{"name": "file"}]
+        },
+        "dbms:start": {
+            "id": "dbms:start",
+            "pluginName": "@daedalus/cli",
+            "pluginType": "core",
+            "aliases": [],
+            "flags": {},
+            "args": [{"name": "dbmsID", "required": true}]
+        },
+        "dbms:status": {
+            "id": "dbms:status",
+            "pluginName": "@daedalus/cli",
+            "pluginType": "core",
+            "aliases": [],
+            "flags": {},
+            "args": [{"name": "dbmsID", "required": true}]
+        },
+        "dbms:stop": {
+            "id": "dbms:stop",
+            "pluginName": "@daedalus/cli",
+            "pluginType": "core",
+            "aliases": [],
+            "flags": {},
+            "args": [{"name": "dbmsID", "required": true}]
+        }
+    }
+}
