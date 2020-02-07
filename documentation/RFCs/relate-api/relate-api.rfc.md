@@ -24,7 +24,7 @@ For now we will use the project name `@daedalus` until we have found a real name
 ```GraphQL
 query GetDbNames {
     account(nameOrId: "local") {
-        dbms(nameOrId: "neo4j"}]) {
+        dbmss {
             id,
             dbs {
                 name
@@ -93,6 +93,7 @@ This enables us to ship modular, extensible, and scalable code that is easy for 
 ## A note on nomenclature
 
 -   `Account` here refers to a top level trusted authority containing certificates, keys, credentials, et. al. A container of all things, and the root of our chain of trust:
+    -   `Project` here refers to where users organize their `DB`'s along with other relevant content.
     -   `DBMS` here refers to a Neo4j DBMS instance, whose access is managed by it's `Account`
         -   `DB` here refers to a Neo4j Database instance, whose access is managed by it's `DBMS`
             -   `Graph` here refers to Neo4j Graph instance, whose access is managed by it's `DB`
