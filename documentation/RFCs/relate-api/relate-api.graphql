@@ -54,11 +54,13 @@ type Account {
     # $ relate dbms:use <nameOrId>
     # account.useDBMS(nameOrId: string): Promise<DBMS>
     dbms(nameOrId: String): DBMS! # default "default"
+    projects(filters: [Filter]): [Project]!
 }
 
 type Project {
     id: string!
     name: String!
+    account: Account!
     dbs: [DB]!
     # more to come ...
 }
@@ -76,8 +78,6 @@ type Query {
     # $ relate account:use <nameOrId>
     # relate.useAccount(nameOrId: string): Promise<Account>
     account(nameOrId: String): Account! # default "local"
-    projects(filters: [Filter]): [Project]!
-    project(nameOrId: String): Project!
     status: Status!
 }
 
@@ -133,5 +133,29 @@ type Mutation {
     # account.restoreDbs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
     restoreDbs(accountNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
 
-    mountProject(projectNameOrId): Project!
+    addProject(accountNameOrId: String!, name: String!): Project!
+    editProject(input: ProjectInput): Project!
+    removeProjects(accountNameOrId: String!, nameOrId: [String!]!): [Project]!
+    mountProject(input: ProjectManageInput): Project!
+    addDbToProject(input: ProjectDbInput): Project!
+    removeDbFromProject(input: ProjectDbInput): Project!
+}
+
+input ProjectInput {
+    projectNameOrId: String!
+    accountNameOrId: String
+    name: String
+}
+
+input ProjectDbInput {
+    projectNameOrId: String!
+    dbNameOrId: String!
+    projectAccountNameOrId: String
+    dbAccountNameOrId: String
+    dbmsNameOrId: String
+}
+
+input ProjectManageInput {
+    projectNameOrId: String!
+    accountNameOrId: String
 }
