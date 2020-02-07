@@ -22,7 +22,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ daedalus (-v|--version|version)
-@daedalus/cli/0.0.0 linux-x64 node-v10.18.0
+@daedalus/cli/0.0.0 linux-x64 node-v12.14.1
 $ daedalus --help [COMMAND]
 USAGE
   $ relate COMMAND

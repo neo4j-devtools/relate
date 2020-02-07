@@ -45,6 +45,7 @@
     ],
     "rules": {
         "@typescript-eslint/interface-name-prefix": ["error", "always"],
+        "@typescript-eslint/no-unused-vars": ["error", {"args": "none"}],
         "array-bracket-spacing": ["error", "never"],
         "array-callback-return": "error",
         "arrow-body-style": "warn",
@@ -70,7 +71,7 @@
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-names": "error",
-        "func-style": ["error", "declaration"],
+        "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
         "function-call-argument-newline": ["error", "consistent"],
         "generator-star-spacing": "error",
         "grouped-accessor-pairs": "warn",

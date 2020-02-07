@@ -1,4 +1,4 @@
-import {OnModuleInit, Module, Inject} from '@nestjs/common';
+import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 
 import {SystemModule, SystemProvider} from '@daedalus/common';
 
@@ -7,15 +7,19 @@ import {SystemModule, SystemProvider} from '@daedalus/common';
     imports: [SystemModule],
     providers: [],
 })
-export class StartModule implements OnModuleInit {
+export class StartModule implements OnApplicationBootstrap {
     constructor(
         @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    onModuleInit(): void {
+    onApplicationBootstrap(): Promise<void> {
         const account = this.systemProvider.getAccount('foo');
-        account.startDBMS(this.parsed.args.dbmsID).catch((err: Error) => this.utils.error(err, {exit: false}));
+
+        return account
+            .startDBMS(this.parsed.args.dbmsID)
+            .then(this.utils.log)
+            .catch(this.utils.error);
     }
 }
