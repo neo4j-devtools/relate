@@ -39,7 +39,7 @@ function formatNotices(packages) {
     return packages.reduce(
         (agg, [packageName, {url, repository, publisher}]) => ({
             ...agg,
-            [packageName]: url ? {url, repository, publisher} : {repository, publisher},
+            [packageName]: {...(url && {url}), repository, publisher},
         }),
         {},
     );

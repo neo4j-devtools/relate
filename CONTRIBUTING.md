@@ -27,7 +27,7 @@ Stack Overflow is a much better place to ask questions since:
 
 To save your and our time, we will systematically close all issues that are requests for general support and redirect people to Stack Overflow.
 
-If you would like to chat about the question in real-time, you can reach out via [our TBD channel][TBD].
+If you would like to chat about the question in real-time, you can reach out via [our Community][https://community.neo4j.com].
 
 ## Found a Bug?
 If you find a bug in the source code, you can help us by
@@ -227,12 +227,8 @@ A detailed explanation can be found in this [document](#commit-message-format).
 
 ## Signing the CLA
 
-Please sign our Contributor License Agreement (CLA) before sending pull requests. For any code
+Please sign our [Contributor License Agreement (CLA)](https://neo4j.com/developer/cla/) before sending pull requests. For any code
 changes to be accepted, the CLA must be signed. It's a quick process, we promise!
-
-* For individuals, we have a [simple click-through form][individual-cla].
-* For corporations, we'll need you to
-  [print, sign and one of scan+email, fax or mail the form][corporate-cla].
 
 <hr>
 
