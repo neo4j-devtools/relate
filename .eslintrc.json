@@ -18,7 +18,7 @@
     "plugins": ["@typescript-eslint/eslint-plugin"],
     "overrides": [
         {
-            "files": ["packages/**/*.js"],
+            "files": ["**/*.js"],
             "rules": {
                 "@typescript-eslint/no-var-requires": "off"
             }

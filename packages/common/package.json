@@ -2,11 +2,12 @@
     "name": "@daedalus/common",
     "version": "1.0.0",
     "description": "JS toolkit",
-    "author": "Hugo Bove <hugo.bove@neotechnology.com>",
-    "homepage": "https://github.com/huboneo/daedalus#readme",
+    "author": "Neo4j Inc.",
+    "license": "GPL-3.0",
+    "homepage": "https://github.com/neo-technology/daedalus#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/huboneo/daedalus.git"
+        "url": "git+https://github.com/neo-technology/daedalus.git"
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
