@@ -9,6 +9,7 @@ type Backup {
 type DBMS {
     # Neo4j 4.X
     id: String!
+    account: Account!
     dbs: [DB]!
     # metrics et al.
 }
@@ -16,17 +17,20 @@ type DBMS {
 type DB {
     id: String!
     name: String!
+    dbms: DBMS!
     graphs: [Graph]!
+    projects: [Project]!
     connection: ConnectionInfo! # use in driver to send queries
     # $ relate db:list-backups [path|url] [--format=<format>|--ids]
     # db.listBackups(filter: Filter): Promise<Backup[]>
-    listBackups(filters: Filter): [Backup]!
+    backups(filters: Filter): [Backup]!
     # metrics et al.
 }
 
 type Graph {
     id: String!
     name: String!
+    db: DB!
 }
 
 input Filter { # TBD
@@ -37,7 +41,7 @@ input Filter { # TBD
 
 input Config {
     name: String
-    defaultDBMS: String
+    defaultDbms: String
     # and many more...
 }
 
@@ -46,19 +50,35 @@ type Account {
     userId: String! # and more
     # $ relate dbms:list
     # account.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
-    listDBMSs(filters: [Filter]): [DBMS]! # TBD
+    dbmss(filters: [Filter]): [DBMS]!
     # $ relate dbms:use <nameOrId>
     # account.useDBMS(nameOrId: string): Promise<DBMS>
-    useDBMS(nameOrId: String): DBMS! # default "default"
+    dbms(nameOrId: String): DBMS! # default "default"
+}
+
+type Project {
+    id: string!
+    name: String!
+    dbs: [DB]!
+    # more to come ...
+}
+
+type Status {
+    runningDbms: DBMS
+    activeDbs: [DB]!
+    mountedProject: Project
 }
 
 type Query {
-    # $ relate account:use <nameOrId>
-    # relate.useAccount(nameOrId: string): Promise<Account>
-    useAccount(nameOrId: String): Account! # default "local"
     # $ relate account:list
     # relate.listAccounts(filters?: Filter[]): Promise<Account[]>
-    listAccounts(filters: [Filter]): [Account]!
+    accounts(filters: [Filter]): [Account]!
+    # $ relate account:use <nameOrId>
+    # relate.useAccount(nameOrId: string): Promise<Account>
+    account(nameOrId: String): Account! # default "local"
+    projects(filters: [Filter]): [Project]!
+    project(nameOrId: String): Project!
+    status: Status!
 }
 
 type Mutation {
@@ -73,44 +93,45 @@ type Mutation {
     removeAccount(nameOrId: String!): Account!
 
     # $ relate dbms:create <dbms> [--source=<versionPathOrURL>]
-    # account.createDBMS(name: string, source?: string): Promise<DBMS>
-    createDBMS(accountNameOrId: String!, name: String!, source: String): DBMS!
+    # account.createDbms(name: string, source?: string): Promise<DBMS>
+    createDbms(accountNameOrId: String!, name: String!, source: String): DBMS!
     # $ relate dbms:start <dbms> [<dbms...>]
-    # account.startDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
-    startDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # account.startDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    startDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:stop <dbms> [<dbms...>]
-    # account.stopDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
-    stopDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # account.stopDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    stopDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:upgrade <dbms> [<dbms...>] [--source=<versionPathOrURL>]
-    # account.upgradeDBMSs(nameOrId: [string, ...string], source?: string): Promise<DBMS[]>
-    upgradeDBMSs(accountNameOrId: String!, nameOrId: [String!]!, source: String): [DBMS]!
+    # account.upgradeDbmss(nameOrId: [string, ...string], source?: string): Promise<DBMS[]>
+    upgradeDbmss(accountNameOrId: String!, nameOrId: [String!]!, source: String): [DBMS]!
     # $ relate dbms:delete <dbms> [<dbms...>]
-    # account.deleteDBMSs(nameOrId: [string, ...string]): Promise<DBMS[]>
-    deleteDBMSs(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # account.deleteDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    deleteDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
 
     # $ relate db:create <db>
-    # account.createDB(name: string): Promise<DB>
-    createDB(accountNameOrId: String!, dbmsNameOrId: String!, name: String!): DB!
+    # account.createDb(name: string): Promise<DB>
+    createDb(accountNameOrId: String!, dbmsNameOrId: String!, name: String!): DB!
     # $ relate db:start <db> [<db...>]
-    # account.startDBs(nameOrId: [string, ...string]): Promise<DB[]>
-    startDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # account.startDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    startDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:stop <db> [<db...>]
-    # account.stopDBs(nameOrId: [string, ...string]): Promise<DB[]>
-    stopDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # account.stopDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    stopDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:truncate <db> [<db...>]
-    # account.truncateDBs(nameOrId: [string, ...string]): Promise<DB[]>
-    truncateDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # account.truncateDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    truncateDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:clone <db> [<db...>]
-    # account.cloneDBs(nameOrId: [string, ...string]): Promise<DB[]>
-    cloneDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # account.cloneDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    cloneDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:drop <db> [<db...>]
-    # account.dropDBs(nameOrId: [string, ...string]): Promise<DB[]>
-    dropDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # account.dropDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    dropDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:backup <db> [<db...>] [--target=<pathOrURL>]
-    # account.backupDBs(nameOrId: [string, ...string], target?: string): Promise<Backup[]>
-    backupDBs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!, target: String): [Backup]!
+    # account.backupDbs(nameOrId: [string, ...string], target?: string): Promise<Backup[]>
+    backupDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!, target: String): [Backup]!
     # $ relate db:restore <db> [<db...>] [--target=<pathOrURL>]
-    # account.restoreDBs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
-    restoreDBs(accountNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
-}
+    # account.restoreDbs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
+    restoreDbs(accountNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
 
+    mountProject(projectNameOrId): Project!
+}
