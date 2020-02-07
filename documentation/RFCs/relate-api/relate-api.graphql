@@ -147,6 +147,8 @@ input ProjectInput {
     name: String
 }
 
+# We need to throw if the provided identifier
+# isn't enough to single out exactly one project and one db
 input ProjectDbInput {
     projectNameOrId: String!
     dbNameOrId: String!
