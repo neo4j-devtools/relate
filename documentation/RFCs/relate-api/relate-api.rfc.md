@@ -86,9 +86,16 @@ In priority order, the end-user deliverables are:
     - As smooth as `gcloud` or `heroku` or `gh`
 
 These deliverables are enabled through an underlying JavaScript library (the "toolkit") that allows for programmatically interacting with the Neo4j platform.
-In this context, "platform" is defined as the collection of Accounts (Local, Aura), Services (IDMS, User data, Graph Apps), and Tools (drivers, graphql server, plugins).
+In this context, "platform" is defined as the collection of Accounts (Local, Aura), Services (IDaaS, User data storage, Graph Apps), and Tools (drivers, graphql server, plugins).
 The basis of the toolkit is a collection of modules, providers, microservices, et al. that can readily be composed into an application using a Dependency Injection framework.
 This enables us to ship modular, extensible, and scalable code that is easy for consumers to discover and adopt. Further it allows us to deliver, support, and extend above mentioned deliverables in a controlled and efficient manner.
+
+Some specific details we'd like to highlight:
+
+-   Inside `@daedalus` all entity (Account, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
+-   The API should be semantically the same regardless of if you are using the Programmatic, GraphQL, or CLI APIs
+-   The concept of Accounts make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
+-   Dependency Injection and typed language reduce the possibility of a host of bugs and exceptions, as well as providing an established pragma for extending applications.
 
 ## A note on nomenclature
 
@@ -107,33 +114,11 @@ This enables us to ship modular, extensible, and scalable code that is easy for 
 -   The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/). Main advantage being the ability to swap out components as features come and go.
 -   The toolkit should leverage existing technology and documentation so that consumers are able to use preexisting knowledge and ramp up quickly. This includes (but is not limited to): DI using `@nestjs`, CLI using `@oclif`, and HTTP using `GraphQL`.
 
-For more detailed description, please see:
-
--   [Accounts, Services, and Tools](#TBA)
--   [Toolkit Docs](#TBA)
-    -   [Usage](#TBA)
-    -   [API Reference](#TBA)
--   [Web Docs](#TBA)
-    -   [Usage](#TBA)
-    -   [API Reference](#TBA)
--   [Electron Docs](#TBA)
-    -   [Usage](#TBA)
-    -   [API Reference](#TBA)
--   [CLI Docs](./cli/README.md)
-
-Some specific details we'd like to highlight:
-
--   Inside `@daedalus` all entity (Account, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
--   The API should be semantically the same regardless of if you are using the Programmatic, GraphQL, or CLI APIs
--   The concept of Accounts make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
--   Dependency Injection and typed language reduce the possibility of a host of bugs and exceptions, as well as providing an established pragma for extending applications.
-
 # Drawbacks
 
 -   There are some learning curves involved in the above which will have an impact on the teams pace of delivery initially
 -   Dependency Injection is opinionated and not to everyones liking, there is a possibility for push back
 -   Maintaining support for 4 different environments and in addition keeping them homogeneous requires solid communication. Information silos are the enemy here
--
 
 # Alternatives
 
@@ -153,18 +138,3 @@ We could scour the community for tools and projects that address these areas. Th
 -   GraphQL schema
 -   Explicit and relevant error messages with helpful suggestions
 -   Creation of code "recipes" or template projects to reduce boilerplating
-
-# How we teach this
-
-What names and terminology work best for these concepts and why? How is this
-idea best presented? As a continuation of existing React patterns?
-
-Would the acceptance of this proposal mean the React documentation must be
-re-organized or altered? Does it change how React is taught to new developers
-at any level?
-
-How should this feature be taught to existing React developers?
-
-# Unresolved questions
-
--   Can we improve/amalgamate the semantics behind Add, remove, VS create, drop, delete
