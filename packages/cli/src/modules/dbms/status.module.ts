@@ -18,8 +18,10 @@ export class StatusModule implements OnApplicationBootstrap {
         const account = this.systemProvider.getAccount('foo');
 
         return account
-            .statusDBMS(this.parsed.args.dbmsID)
-            .then(this.utils.log)
+            .statusDbmss(this.parsed.argv)
+            .then((res) => {
+                this.utils.log(...res);
+            })
             .catch(this.utils.error);
     }
 }

@@ -8,8 +8,10 @@ export default class StatusCommand extends BaseCommand {
 
     static args = [
         {
-            name: 'dbmsID',
+            name: 'dbmsIds',
             required: true,
         },
     ];
+
+    static strict = false;
 }

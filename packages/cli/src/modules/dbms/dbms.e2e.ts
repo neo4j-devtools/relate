@@ -25,6 +25,6 @@ describe('$daedalus dbms', () => {
     test.stdout()
         .command(['dbms:status', 'test'])
         .it('logs stopped status', (ctx) => {
-            expect(ctx.stdout).toBe('Neo4j is not running\n\n');
+            expect(ctx.stdout).toContain('Neo4j is not running');
         });
 });

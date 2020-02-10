@@ -22,7 +22,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ daedalus (-v|--version|version)
-@daedalus/cli/0.0.0 linux-x64 node-v12.14.1
+@daedalus/cli/0.0.0 linux-x64 node-v12.15.0
 $ daedalus --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -34,36 +34,35 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`daedalus dbms:start DBMSIDS`](#daedalus-dbmsstart-dbmsids)
+* [`daedalus dbms:status DBMSIDS`](#daedalus-dbmsstatus-dbmsids)
+* [`daedalus dbms:stop DBMSIDS`](#daedalus-dbmsstop-dbmsids)
+* [`daedalus hello [FILE]`](#daedalus-hello-file)
+* [`daedalus help [COMMAND]`](#daedalus-help-command)
 
--   [`daedalus dbms:start DBMSID`](#daedalus-dbmsstart-dbmsid)
--   [`daedalus dbms:status DBMSID`](#daedalus-dbmsstatus-dbmsid)
--   [`daedalus dbms:stop DBMSID`](#daedalus-dbmsstop-dbmsid)
--   [`daedalus hello [FILE]`](#daedalus-hello-file)
--   [`daedalus help [COMMAND]`](#daedalus-help-command)
-
-## `daedalus dbms:start DBMSID`
+## `daedalus dbms:start DBMSIDS`
 
 ```
 USAGE
-  $ daedalus dbms:start DBMSID
+  $ daedalus dbms:start DBMSIDS
 ```
 
 _See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/start.ts)_
 
-## `daedalus dbms:status DBMSID`
+## `daedalus dbms:status DBMSIDS`
 
 ```
 USAGE
-  $ daedalus dbms:status DBMSID
+  $ daedalus dbms:status DBMSIDS
 ```
 
 _See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/status.ts)_
 
-## `daedalus dbms:stop DBMSID`
+## `daedalus dbms:stop DBMSIDS`
 
 ```
 USAGE
-  $ daedalus dbms:stop DBMSID
+  $ daedalus dbms:stop DBMSIDS
 ```
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/stop.ts)_

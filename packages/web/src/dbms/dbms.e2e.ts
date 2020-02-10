@@ -5,7 +5,15 @@ import request from 'supertest';
 import {WebModule} from '../web.module';
 
 const DBMS_STATUS = {
-    query: 'query StatusDBMS { statusDbms(accountID: "foo", dbmsID: "test") }',
+    query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["test"]) }',
+    variables: {},
+};
+const DBMS_START = {
+    query: 'mutation StartDBMSs { startDbmss(accountId: "foo", dbmsIds: ["test"]) }',
+    variables: {},
+};
+const DBMS_STOP = {
+    query: 'mutation StopDBMSs { stopDbmss(accountId: "foo", dbmsIds: ["test"]) }',
     variables: {},
 };
 const HTTP_OK = 200;
@@ -22,58 +30,50 @@ describe('DBMSModule', () => {
         await app.init();
     });
 
-    test('/graphql startDbms', () => {
-        const DBMS_START = {
-            query: 'mutation StartDBMS { startDbms(accountID: "foo", dbmsID: "test") }',
-            variables: {},
-        };
+    test('/graphql startDbmss', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(DBMS_START)
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {data} = res.body;
-                expect(data.startDbms).toContain('Directories in use');
-                expect(data.startDbms).toContain('Starting Neo4j');
-                expect(data.startDbms).toContain('Started neo4j (pid');
+                const {startDbmss} = res.body.data;
+                expect(startDbmss[0]).toContain('Directories in use');
+                expect(startDbmss[0]).toContain('Starting Neo4j');
+                expect(startDbmss[0]).toContain('Started neo4j (pid');
             });
     });
 
-    test('/graphql statusDbms (started DBMS)', () => {
+    test('/graphql statusDbmss (started DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(DBMS_STATUS)
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {data} = res.body;
-                expect(data.statusDbms).toContain('Neo4j is running at pid');
+                const {statusDbmss} = res.body.data;
+                expect(statusDbmss[0]).toContain('Neo4j is running at pid');
             });
     });
 
-    test('/graphql stopDbms', () => {
-        const DBMS_STOP = {
-            query: 'mutation StopDBMS { stopDbms(accountID: "foo", dbmsID: "test") }',
-            variables: {},
-        };
+    test('/graphql stopDbmss', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(DBMS_STOP)
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {data} = res.body;
-                expect(data.stopDbms).toContain('Stopping Neo4j');
-                expect(data.stopDbms).toContain('stopped');
+                const {stopDbmss} = res.body.data;
+                expect(stopDbmss[0]).toContain('Stopping Neo4j');
+                expect(stopDbmss[0]).toContain('stopped');
             });
     });
 
-    test('/graphql statusDbms (stopped DBMS)', () => {
+    test('/graphql statusDbmss (stopped DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(DBMS_STATUS)
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {data} = res.body;
-                expect(data.statusDbms).toContain('Neo4j is not running');
+                const {statusDbmss} = res.body.data;
+                expect(statusDbmss[0]).toContain('Neo4j is not running');
             });
     });
 

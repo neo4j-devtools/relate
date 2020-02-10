@@ -4,8 +4,8 @@
 # -----------------------------------------------
 
 type Mutation {
-  startDbms(dbmsID: String!, accountID: String!): String!
-  stopDbms(dbmsID: String!, accountID: String!): String!
+  startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
+  stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   addRecipe(newRecipeData: NewRecipeInput!): Recipe!
   removeRecipe(id: String!): Boolean!
 }
@@ -19,7 +19,7 @@ input NewRecipeInput {
 type Query {
   getHello: String!
   getGoodbye: String!
-  statusDbms(dbmsID: String!, accountID: String!): String!
+  statusDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   recipe(id: String!): Recipe!
   recipes(skip: Int = 0, take: Int = 25): [Recipe!]!
 }

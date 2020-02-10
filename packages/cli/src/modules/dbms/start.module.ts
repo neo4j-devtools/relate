@@ -18,8 +18,10 @@ export class StartModule implements OnApplicationBootstrap {
         const account = this.systemProvider.getAccount('foo');
 
         return account
-            .startDBMS(this.parsed.args.dbmsID)
-            .then(this.utils.log)
+            .startDbmss(this.parsed.argv)
+            .then((res) => {
+                this.utils.log(...res);
+            })
             .catch(this.utils.error);
     }
 }

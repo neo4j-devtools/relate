@@ -6,9 +6,9 @@ export interface IAccount {
 export abstract class AccountAbstract {
     constructor(protected readonly config: IAccount) {}
 
-    abstract startDBMS(uuid: string): Promise<string>;
+    abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
 
-    abstract stopDBMS(uuid: string): Promise<string>;
+    abstract stopDbmss(dbmsIds: string[]): Promise<string[]>;
 
-    abstract statusDBMS(uuid: string): Promise<string>;
+    abstract statusDbmss(dbmsIds: string[]): Promise<string[]>;
 }

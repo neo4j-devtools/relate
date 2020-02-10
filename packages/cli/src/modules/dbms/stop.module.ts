@@ -18,8 +18,10 @@ export class StopModule implements OnApplicationBootstrap {
         const account = this.systemProvider.getAccount('foo');
 
         return account
-            .stopDBMS(this.parsed.args.dbmsID)
-            .then(this.utils.log)
+            .stopDbmss(this.parsed.argv)
+            .then((res) => {
+                this.utils.log(...res);
+            })
             .catch(this.utils.error);
     }
 }

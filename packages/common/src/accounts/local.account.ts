@@ -36,15 +36,15 @@ export class LocalAccount extends AccountAbstract {
         });
     }
 
-    startDBMS(uuid: string): Promise<string> {
-        return this.neo4j(uuid, 'start');
+    startDbmss(dbmsIds: string[]): Promise<string[]> {
+        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'start')));
     }
 
-    stopDBMS(uuid: string): Promise<string> {
-        return this.neo4j(uuid, 'stop');
+    stopDbmss(dbmsIds: string[]): Promise<string[]> {
+        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'stop')));
     }
 
-    statusDBMS(uuid: string): Promise<string> {
-        return this.neo4j(uuid, 'status');
+    statusDbmss(dbmsIds: string[]): Promise<string[]> {
+        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'status')));
     }
 }
