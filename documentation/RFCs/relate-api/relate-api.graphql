@@ -87,7 +87,7 @@ type Mutation {
     addAccount(name: String!, config: Config): Account!
     # $ relate account:edit <nameOrId> <configPathOrURL?>
     # relate.updateAccount(nameOrId: string, config: Partial<Config>): Promise<Account>
-    updateAccount(nameOrId: String!, config: Config): Account!
+    editAccount(nameOrId: String!, config: Config): Account!
     # $ relate account:remove <nameOrId>
     # relate.removeAccount(nameOrId: string): Promise<Account>
     removeAccount(nameOrId: String!): Account!
