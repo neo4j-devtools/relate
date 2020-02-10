@@ -31,7 +31,7 @@
             }
         },
         {
-            "files": ["packages/cli/src/commands/**/*.test.ts"],
+            "files": ["packages/cli/src/commands/**/*.test.ts", "packages/cli/src/**/*.e2e.ts"],
             "rules": {
                 "jest/no-standalone-expect": ["off"]
             }

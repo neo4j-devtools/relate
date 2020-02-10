@@ -8,7 +8,7 @@ export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => String)
-    statusDBMS(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
+    statusDbms(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
         const account = this.systemProvider.getAccount(accountID);
         return account.statusDBMS(dbmsID).catch((err: Error) => {
             throw new HttpException(err, HttpStatus.FORBIDDEN);
@@ -16,7 +16,7 @@ export class DBMSResolver {
     }
 
     @Mutation(() => String)
-    startDBMS(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
+    startDbms(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
         const account = this.systemProvider.getAccount(accountID);
         return account.startDBMS(dbmsID).catch((err: Error) => {
             throw new HttpException(err, HttpStatus.FORBIDDEN);
@@ -24,7 +24,7 @@ export class DBMSResolver {
     }
 
     @Mutation(() => String)
-    stopDBMS(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
+    stopDbms(@Args('accountID') accountID: string, @Args('dbmsID') dbmsID: string): Promise<string> {
         const account = this.systemProvider.getAccount(accountID);
         return account.stopDBMS(dbmsID).catch((err: Error) => {
             throw new HttpException(err, HttpStatus.FORBIDDEN);
