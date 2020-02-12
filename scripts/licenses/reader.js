@@ -15,7 +15,7 @@ const getDepLicenses = (start) => {
     return new Promise((res) => checker.init({...checkerOptions, start}, (err, data) => res(err ? {} : data)));
 };
 
-const LOCAL_PACKAGE_PREFIX = '@daedalus/';
+const LOCAL_PACKAGE_PREFIX = '@relate/';
 const CWD = path.resolve(process.cwd());
 const PACKAGES = path.join(CWD, '/packages');
 const allPackages = fs.readdirSync(PACKAGES).map((p) => path.join(PACKAGES, p));

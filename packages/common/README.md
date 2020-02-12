@@ -1,4 +1,4 @@
-# @daedalus/common
+# @relate/common
 The Neo4j toolkit repo
 
 ### Installation

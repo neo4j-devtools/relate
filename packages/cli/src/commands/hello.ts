@@ -15,7 +15,7 @@ export default class Hello extends Command {
     static description = 'describe the command here';
 
     static examples = [
-        `$ daedalus hello
+        `$ relate hello
 hello world from ./src/hello.ts!
 `,
     ];

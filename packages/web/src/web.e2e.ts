@@ -1,7 +1,7 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
-import {HelloService} from '@daedalus/common';
+import {HelloService} from '@relate/common';
 
 import {WebModule} from './web.module';
 

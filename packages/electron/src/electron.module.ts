@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {IWebModuleConfig, WebModule} from '@daedalus/web';
+import {IWebModuleConfig, WebModule} from '@relate/web';
 import {ConfigModule} from '@nestjs/config';
 
 import {HelloElectronModule} from './hello-electron';

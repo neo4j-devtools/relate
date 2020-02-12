@@ -1,6 +1,6 @@
 import {Query, Resolver} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
-import {HelloService} from '@daedalus/common';
+import {HelloService} from '@relate/common';
 
 @Resolver(() => String)
 export class HelloResolver {

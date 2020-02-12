@@ -1,5 +1,4 @@
-@relate/cli
-===
+# @relate/cli
 
 CLI tool for interacting with the Neo4j platform.
 
@@ -9,60 +8,34 @@ CLI tool for interacting with the Neo4j platform.
 [![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/relate/blob/master/package.json)
 
 <!-- toc -->
+* [@relate/cli](#relatecli)
 * [Usage](#usage)
-* [Commands](#commands)
+* [Command Topics](#command-topics)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
 ```sh-session
 $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/0.0.0 darwin-x64 node-v12.14.1
+@relate/cli/0.0.0 linux-x64 node-v10.18.0
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
 ...
 ```
 <!-- usagestop -->
-# Commands
 <!-- commands -->
-* [`relate hello [FILE]`](#relate-hello-file)
-* [`relate help [COMMAND]`](#relate-help-command)
+# Command Topics
 
-## `relate hello [FILE]`
+* [`relate account`](./account.md) - Wrapper that defines how to interact with DBMSs.
+* [`relate autocomplete`](./autocomplete.md) - display autocomplete installation instructions
+* [`relate db`](./db.md)
+* [`relate dbms`](./dbms.md)
+* [`relate help`](./help.md) - display help for relate
 
-describe the command here
 
-```
-USAGE
-  $ relate hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ relate hello
-  hello world from ./src/hello.module.ts!
-```
-
-## `relate help [COMMAND]`
-
-display help for relate
-
-```
-USAGE
-  $ relate help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 <!-- commandsstop -->

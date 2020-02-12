@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {SampleModule} from '@daedalus/common';
+import {SampleModule} from '@relate/common';
 
 import {HelloResolver} from './hello.resolver';
 
