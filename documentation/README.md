@@ -1,3 +1,3 @@
 # `documentation`
 
-All `Daedalus` docs, specs, RFCs
+All `@relate` docs, specs, RFCs

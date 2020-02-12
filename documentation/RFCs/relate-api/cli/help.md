@@ -1,17 +1,17 @@
-`daedalus help`
+`relate help`
 ===============
 
-display help for daedalus
+display help for relate
 
-* [`daedalus help [COMMAND]`](#daedalus-help-command)
+* [`relate help [COMMAND]`](#relate-help-command)
 
-## `daedalus help [COMMAND]`
+## `relate help [COMMAND]`
 
-display help for daedalus
+display help for relate
 
 ```
 USAGE
-  $ daedalus help [COMMAND]
+  $ relate help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for

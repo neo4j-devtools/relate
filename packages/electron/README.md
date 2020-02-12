@@ -1,4 +1,4 @@
-# @daedalus/electron
+# @relate/electron
 The Neo4j Electron package
 
 ### Installation

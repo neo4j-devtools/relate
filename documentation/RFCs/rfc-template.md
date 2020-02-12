@@ -2,7 +2,7 @@
 
 - Start Date: (fill me in with today's date, YYYY-MM-DD)
 - RFC PR: (leave this empty)
-- Daedalus Issue: (leave this empty)
+- @relate Issue: (leave this empty)
 
 # Summary
 

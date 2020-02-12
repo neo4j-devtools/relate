@@ -1,5 +1,5 @@
 {
-    "name": "@daedalus/cli",
+    "name": "@relate/cli",
     "description": "CLI tool for interacting with the Neo4j platform.",
     "version": "1.0.0",
     "author": "Neo4j Inc.",
@@ -18,7 +18,7 @@
         "/oclif.manifest.json"
     ],
     "bin": {
-        "daedalus": "./bin/run"
+        "relate": "./bin/run"
     },
     "dependencies": {
         "@oclif/command": "1.5.19",
@@ -54,7 +54,7 @@
     ],
     "oclif": {
         "commands": "./dist/commands",
-        "bin": "daedalus",
+        "bin": "relate",
         "plugins": [
             "@oclif/plugin-help"
         ]

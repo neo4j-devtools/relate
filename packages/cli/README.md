@@ -1,4 +1,4 @@
-@daedalus/cli
+@relate/cli
 ===
 
 CLI tool for interacting with the Neo4j platform.
@@ -6,7 +6,7 @@ CLI tool for interacting with the Neo4j platform.
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/cli.svg)](https://npmjs.org/package/cli)
 [![Downloads/week](https://img.shields.io/npm/dw/cli.svg)](https://npmjs.org/package/cli)
-[![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/daedalus/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/relate/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -15,29 +15,29 @@ CLI tool for interacting with the Neo4j platform.
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @daedalus/cli
-$ daedalus COMMAND
+$ npm install -g @relate/cli
+$ relate COMMAND
 running command...
-$ daedalus (-v|--version|version)
-@daedalus/cli/0.0.0 darwin-x64 node-v12.14.1
-$ daedalus --help [COMMAND]
+$ relate (-v|--version|version)
+@relate/cli/0.0.0 darwin-x64 node-v12.14.1
+$ relate --help [COMMAND]
 USAGE
-  $ daedalus COMMAND
+  $ relate COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`daedalus hello [FILE]`](#daedalus-hello-file)
-* [`daedalus help [COMMAND]`](#daedalus-help-command)
+* [`relate hello [FILE]`](#relate-hello-file)
+* [`relate help [COMMAND]`](#relate-help-command)
 
-## `daedalus hello [FILE]`
+## `relate hello [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ daedalus hello [FILE]
+  $ relate hello [FILE]
 
 OPTIONS
   -f, --force
@@ -45,17 +45,17 @@ OPTIONS
   -n, --name=name  name to print
 
 EXAMPLE
-  $ daedalus hello
+  $ relate hello
   hello world from ./src/hello.module.ts!
 ```
 
-## `daedalus help [COMMAND]`
+## `relate help [COMMAND]`
 
-display help for daedalus
+display help for relate
 
 ```
 USAGE
-  $ daedalus help [COMMAND]
+  $ relate help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
