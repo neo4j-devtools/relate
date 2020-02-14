@@ -6,12 +6,7 @@ export default class StatusCommand extends BaseCommand {
 
     commandModule = StatusModule;
 
-    static args = [
-        {
-            name: 'dbmsIds',
-            required: true,
-        },
-    ];
+    static args = [{name: 'dbmsIds'}];
 
     static strict = false;
 }

@@ -6,12 +6,7 @@ export default class StartCommand extends BaseCommand {
 
     commandModule = StartModule;
 
-    static args = [
-        {
-            name: 'dbmsIds',
-            required: true,
-        },
-    ];
+    static args = [{name: 'dbmsIds'}];
 
     static strict = false;
 }

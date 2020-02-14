@@ -34,35 +34,35 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`daedalus dbms:start DBMSIDS`](#daedalus-dbmsstart-dbmsids)
-* [`daedalus dbms:status DBMSIDS`](#daedalus-dbmsstatus-dbmsids)
-* [`daedalus dbms:stop DBMSIDS`](#daedalus-dbmsstop-dbmsids)
+* [`daedalus dbms:start [DBMSIDS]`](#daedalus-dbmsstart-dbmsids)
+* [`daedalus dbms:status [DBMSIDS]`](#daedalus-dbmsstatus-dbmsids)
+* [`daedalus dbms:stop [DBMSIDS]`](#daedalus-dbmsstop-dbmsids)
 * [`daedalus hello [FILE]`](#daedalus-hello-file)
 * [`daedalus help [COMMAND]`](#daedalus-help-command)
 
-## `daedalus dbms:start DBMSIDS`
+## `daedalus dbms:start [DBMSIDS]`
 
 ```
 USAGE
-  $ daedalus dbms:start DBMSIDS
+  $ daedalus dbms:start [DBMSIDS]
 ```
 
 _See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/start.ts)_
 
-## `daedalus dbms:status DBMSIDS`
+## `daedalus dbms:status [DBMSIDS]`
 
 ```
 USAGE
-  $ daedalus dbms:status DBMSIDS
+  $ daedalus dbms:status [DBMSIDS]
 ```
 
 _See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/status.ts)_
 
-## `daedalus dbms:stop DBMSIDS`
+## `daedalus dbms:stop [DBMSIDS]`
 
 ```
 USAGE
-  $ daedalus dbms:stop DBMSIDS
+  $ daedalus dbms:stop [DBMSIDS]
 ```
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v0.0.0/dist/commands/dbms/stop.ts)_
