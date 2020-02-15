@@ -1,6 +1,7 @@
 export interface IAccount {
     id: string;
     user: any;
+    neo4jDataPath: string;
 }
 
 export abstract class AccountAbstract {
