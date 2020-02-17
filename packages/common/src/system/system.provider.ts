@@ -12,9 +12,7 @@ export class SystemProvider implements OnModuleInit {
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
     onModuleInit() {
-        return this.discoverAccounts().catch((err: Error) => {
-            throw err;
-        });
+        return this.discoverAccounts();
     }
 
     getAccount(uuid: string): AccountAbstract {
@@ -31,16 +29,14 @@ export class SystemProvider implements OnModuleInit {
 
         let accounts: string[] = [];
         try {
-            accounts = await readdir(`${neo4jConfigPath}/accounts`);
-            accounts.filter((account) => path.extname(account).toLocaleLowerCase() === '.json');
+            accounts = await readdir(path.join(neo4jConfigPath, 'accounts'));
+            accounts = accounts.filter((account) => path.extname(account).toLocaleLowerCase() === '.json');
         } catch (e) {
             throw new ConfigNotFoundError('Config dir not found');
         }
 
         const accountPromiseArray: Promise<Buffer>[] = accounts.map((account) => {
-            return readFile(`${neo4jConfigPath}/accounts/${account}`).catch((e) => {
-                throw e;
-            });
+            return readFile(path.join(neo4jConfigPath, 'accounts', account));
         });
 
         const accountConfigArray: Buffer[] = await Promise.all(accountPromiseArray);
@@ -68,7 +64,7 @@ export class SystemProvider implements OnModuleInit {
                     user: `${accountConfiguration.user}`,
                     neo4jDataPath:
                         process.env.NEO4J_DATA_PATH ||
-                        `${accountConfiguration.neo4jDataPath}/${accountConfiguration.id}`,
+                        path.join(accountConfiguration.neo4jDataPath, accountConfiguration.id),
                 });
             };
 
