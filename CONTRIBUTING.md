@@ -1,6 +1,6 @@
-# Contributing to @daedalus
+# Contributing to @relate
 
-We would love for you to contribute to @daedalus and help make it even better than it is
+We would love for you to contribute to @relate and help make it even better than it is
 today! As a contributor, here are the guidelines we would like you to follow:
 
  - [Code of Conduct](#code-of-conduct)
@@ -13,11 +13,11 @@ today! As a contributor, here are the guidelines we would like you to follow:
  - [Signing the CLA](#signing-the-cla)
 
 ## Code of Conduct
-Help us keep @daedalus open and inclusive. Please read and follow our [Code of Conduct](./documentation/CODE_OF_CONDUCT.md).
+Help us keep @relate open and inclusive. Please read and follow our [Code of Conduct](./documentation/CODE_OF_CONDUCT.md).
 
 ## Got a Question or Problem?
 
-Do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [Stack Overflow][https://stackoverflow.com/questions/tagged/@daedalus] where the questions should be tagged with tag `daedalus`.
+Do not open issues for general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [Stack Overflow][https://stackoverflow.com/questions/tagged/@relate] where the questions should be tagged with tag `daedalus`.
 
 Stack Overflow is a much better place to ask questions since:
 
@@ -70,7 +70,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 1. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
   Discussing the design up front helps to ensure that we're ready to accept your work.
 1. Please sign our [Contributor License Agreement (CLA)](#signing-the-cla) before sending PRs.
-  We cannot accept code without this. Make sure you sign with the primary email address of the Git identity that has been granted access to the @daedalus repository.
+  We cannot accept code without this. Make sure you sign with the primary email address of the Git identity that has been granted access to the @relate repository.
 1. Fork the neo-technology/daedalus repo.
 1. Make your changes in a new git branch:
 
@@ -148,7 +148,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 We have very precise rules over how our git commit messages can be formatted.  This leads to **more
 readable messages** that are easy to follow when looking through the **project history**.  But also,
-we use the git commit messages to **generate the @daedalus change log**.
+we use the git commit messages to **generate the @relate change log**.
 
 ### Commit Message Format
 Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
@@ -232,7 +232,7 @@ changes to be accepted, the CLA must be signed. It's a quick process, we promise
 
 <hr>
 
-  If you have more than one Git identity, you must make sure that you sign the CLA using the primary email address associated with the ID that has been granted access to the @daedalus repository. Git identities can be associated with more than one email address, and only one is primary. Here are some links to help you sort out multiple Git identities and email addresses:
+  If you have more than one Git identity, you must make sure that you sign the CLA using the primary email address associated with the ID that has been granted access to the @relate repository. Git identities can be associated with more than one email address, and only one is primary. Here are some links to help you sort out multiple Git identities and email addresses:
 
   * https://help.github.com/articles/setting-your-commit-email-address-in-git/
   * https://stackoverflow.com/questions/37245303/what-does-usera-committed-with-userb-13-days-ago-on-github-mean
