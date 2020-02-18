@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-describe('$daedalus dbms', () => {
+describe('$relate dbms', () => {
     test.stdout()
         .command(['dbms:start', 'test'])
         .it('logs start message', (ctx) => {

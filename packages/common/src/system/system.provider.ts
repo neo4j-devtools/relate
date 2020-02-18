@@ -25,7 +25,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async discoverAccounts(): Promise<void> {
-        const {config: neo4jConfigPath} = envPaths('daedalus', {suffix: ''});
+        const {config: neo4jConfigPath} = envPaths('neo4j-relate', {suffix: ''});
 
         let accounts: string[] = [];
         try {

@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 
-import {SystemModule, SystemProvider} from '@daedalus/common';
+import {SystemModule, SystemProvider} from '@relate/common';
 import {RequiredArgsError} from '../../errors';
 import {readStdin, isTTY} from '../../stdin';
 

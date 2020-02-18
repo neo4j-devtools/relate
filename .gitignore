@@ -67,3 +67,7 @@ tmp/
 
 # OSX
 .DS_Store
+
+# Oclif generated file
+oclif.manifest.json
+

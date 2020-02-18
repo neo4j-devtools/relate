@@ -1,7 +1,7 @@
 import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {HttpException, HttpStatus, Inject} from '@nestjs/common';
 
-import {SystemProvider} from '@daedalus/common';
+import {SystemProvider} from '@relate/common';
 
 const DBMS_IDS = {
     name: 'dbmsIds',
