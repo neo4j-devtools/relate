@@ -50,8 +50,10 @@ export class SystemProvider implements OnModuleInit {
         }
 
         accountConfigArray.forEach((accountConfigBuffer) => {
+            const {data: defaultNeo4jDataPath} = envPaths('neo4j-relate', {suffix: ''});
             const accountConfig: IAccountConfig = JSON.parse(accountConfigBuffer.toString());
-            if (!accountConfig.id || !accountConfig.user || !accountConfig.neo4jDataPath || !accountConfig.type) {
+
+            if (!accountConfig.id || !accountConfig.user || !accountConfig.type) {
                 throw new InvalidConfigError('Config missing properties');
             }
 
@@ -63,7 +65,7 @@ export class SystemProvider implements OnModuleInit {
                 return new accountConstructors[accountConfig.type.toLocaleUpperCase()]({
                     id: `${accountConfiguration.id}`,
                     user: `${accountConfiguration.user}`,
-                    neo4jDataPath: accountConfiguration.neo4jDataPath,
+                    neo4jDataPath: accountConfiguration.neo4jDataPath || defaultNeo4jDataPath,
                 });
             };
 
