@@ -77,6 +77,34 @@ describe('DBMSModule', () => {
             });
     });
 
+    test('/graphql statusDbmss (non existent account)', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send({
+                query: 'query StatusDBMSs { statusDbmss(accountId: "non-existent", dbmsIds: ["test"]) }',
+            })
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {errors} = res.body;
+                expect(errors).toHaveLength(1);
+                expect(errors[0].message).toBe('Account "non-existent" not found');
+            });
+    });
+
+    test('/graphql statusDbmss (non existent DBMS)', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send({
+                query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["non-existent"]) }',
+            })
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {errors} = res.body;
+                expect(errors).toHaveLength(1);
+                expect(errors[0].message).toBe('DBMS "non-existent" not found');
+            });
+    });
+
     afterAll(async () => {
         await app.close();
     });

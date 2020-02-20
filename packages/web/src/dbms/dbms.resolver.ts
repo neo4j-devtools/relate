@@ -1,5 +1,5 @@
 import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
-import {HttpException, HttpStatus, Inject} from '@nestjs/common';
+import {Inject} from '@nestjs/common';
 
 import {SystemProvider} from '@relate/common';
 
@@ -15,24 +15,18 @@ export class DBMSResolver {
     @Query(() => [String])
     statusDbmss(@Args('accountId') accountId: string, @Args(DBMS_IDS) dbmsIds: string[]): Promise<string[]> {
         const account = this.systemProvider.getAccount(accountId);
-        return account.statusDbmss(dbmsIds).catch((err: Error) => {
-            throw new HttpException(err, HttpStatus.FORBIDDEN);
-        });
+        return account.statusDbmss(dbmsIds);
     }
 
     @Mutation(() => [String])
     startDbmss(@Args('accountId') accountId: string, @Args(DBMS_IDS) dbmsIds: string[]): Promise<string[]> {
         const account = this.systemProvider.getAccount(accountId);
-        return account.startDbmss(dbmsIds).catch((err: Error) => {
-            throw new HttpException(err, HttpStatus.FORBIDDEN);
-        });
+        return account.startDbmss(dbmsIds);
     }
 
     @Mutation(() => [String])
     stopDbmss(@Args('accountId') accountId: string, @Args(DBMS_IDS) dbmsIds: string[]): Promise<string[]> {
         const account = this.systemProvider.getAccount(accountId);
-        return account.stopDbmss(dbmsIds).catch((err: Error) => {
-            throw new HttpException(err, HttpStatus.FORBIDDEN);
-        });
+        return account.stopDbmss(dbmsIds);
     }
 }

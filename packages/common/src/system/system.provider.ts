@@ -5,7 +5,7 @@ import {readdir, readFile} from 'fs-extra';
 
 import {AccountAbstract} from '../accounts/account.abstract';
 import {LocalAccount} from '../accounts';
-import {AccountNotFoundError, ConfigNotFoundError, InvalidConfigError} from '../errors';
+import {NotFoundError, InvalidConfigError} from '../errors';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -17,22 +17,23 @@ export class SystemProvider implements OnModuleInit {
 
     getAccount(uuid: string): AccountAbstract {
         const account = this.allAccounts.get(uuid);
-        if (account) {
-            return account;
+        if (!account) {
+            throw new NotFoundError(`Account "${uuid}" not found`);
         }
 
-        throw new AccountNotFoundError(`Account not found: ${uuid}`);
+        return account;
     }
 
     private async discoverAccounts(): Promise<void> {
         const {config: neo4jConfigPath} = envPaths('neo4j-relate', {suffix: ''});
+        const accountsDir = path.join(neo4jConfigPath, 'accounts');
 
         let accounts: string[] = [];
         try {
-            accounts = await readdir(path.join(neo4jConfigPath, 'accounts'));
+            accounts = await readdir(accountsDir);
             accounts = accounts.filter((account) => path.extname(account).toLocaleLowerCase() === '.json');
         } catch (e) {
-            throw new ConfigNotFoundError('Config dir not found');
+            throw new NotFoundError(`Config directory "${accountsDir}" not found`);
         }
 
         const accountPromiseArray: Promise<Buffer>[] = accounts.map((account) => {
@@ -62,9 +63,7 @@ export class SystemProvider implements OnModuleInit {
                 return new accountConstructors[accountConfig.type.toLocaleUpperCase()]({
                     id: `${accountConfiguration.id}`,
                     user: `${accountConfiguration.user}`,
-                    neo4jDataPath:
-                        process.env.NEO4J_DATA_PATH ||
-                        path.join(accountConfiguration.neo4jDataPath, accountConfiguration.id),
+                    neo4jDataPath: accountConfiguration.neo4jDataPath,
                 });
             };
 

@@ -27,4 +27,11 @@ describe('$relate dbms', () => {
         .it('logs stopped status', (ctx) => {
             expect(ctx.stdout).toContain('Neo4j is not running');
         });
+
+    test.stdout()
+        .command(['dbms:status', 'non-existent'])
+        .catch((ctx) => {
+            expect(ctx.message).toContain('DBMS "non-existent" not found');
+        })
+        .it('errors when trying to access a non existing dbms');
 });

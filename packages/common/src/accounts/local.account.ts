@@ -3,6 +3,7 @@ import {spawn} from 'child_process';
 import path from 'path';
 
 import {AccountAbstract} from './account.abstract';
+import {NotFoundError} from '../errors';
 
 export class LocalAccount extends AccountAbstract {
     private neo4j(dbmsID: string, command: string): Promise<string> {
@@ -10,7 +11,7 @@ export class LocalAccount extends AccountAbstract {
         return new Promise((resolve, reject) => {
             access(neo4jPath, constants.X_OK, (err: NodeJS.ErrnoException | null) => {
                 if (err) {
-                    reject(err);
+                    reject(new NotFoundError(`DBMS "${dbmsID}" not found`));
                     return;
                 }
                 const data: string[] = [];
