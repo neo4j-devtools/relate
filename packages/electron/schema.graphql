@@ -6,32 +6,8 @@
 type Mutation {
   startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
-  addRecipe(newRecipeData: NewRecipeInput!): Recipe!
-  removeRecipe(id: String!): Boolean!
-}
-
-input NewRecipeInput {
-  title: String!
-  description: String
-  ingredients: [String!]!
 }
 
 type Query {
-  getHello: String!
-  getGoodbye: String!
   statusDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
-  recipe(id: String!): Recipe!
-  recipes(skip: Int = 0, take: Int = 25): [Recipe!]!
-  getElectronHello: String!
-}
-
-type Recipe {
-  id: ID!
-  title: String!
-  description: String
-  ingredients: [String!]!
-}
-
-type Subscription {
-  recipeAdded: Recipe!
 }

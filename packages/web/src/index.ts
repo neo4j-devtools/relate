@@ -4,7 +4,6 @@ import {WebModule, IWebModuleConfig} from './web.module';
 import {ConfigService} from '@nestjs/config';
 
 export {WebModule, IWebModuleConfig};
-export {HelloModule} from './hello';
 export {AppsModule} from './apps';
 
 export default async function bootstrapWebModule(): Promise<void> {

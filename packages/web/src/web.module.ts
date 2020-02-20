@@ -2,12 +2,10 @@ import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import {GraphQLModule} from '@nestjs/graphql';
 
-import {HelloModule} from './hello';
 import {AppsModule} from './apps';
 import {DBMSModule} from './dbms';
 
 import configuration from './configs/dev.config';
-import {RecipesModule} from './recipes/recipes.module';
 
 export interface IWebModuleConfig {
     host: string;
@@ -22,8 +20,6 @@ export interface IWebModuleConfig {
             isGlobal: true,
             load: [configuration],
         }),
-        HelloModule,
-        RecipesModule,
         DBMSModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.graphql',
