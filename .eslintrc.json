@@ -83,7 +83,7 @@
         "lines-around-comment": "error",
         "lines-between-class-members": "error",
         "max-depth": "error",
-        "max-len": ["error", 120],
+        "max-len": ["error", {"code": 120, "comments": 120, "ignoreUrls": true}],
         "max-lines": ["warn", 500],
         "max-lines-per-function": ["warn", 100],
         "max-nested-callbacks": ["error", 5],

@@ -37,7 +37,6 @@
         "rxjs": ">= 6"
     },
     "dependencies": {
-        "env-paths": "2.2.0",
         "fs-extra": "8.1.0"
     }
 }

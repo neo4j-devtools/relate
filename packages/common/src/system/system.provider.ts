@@ -1,4 +1,4 @@
-import envPaths from 'env-paths';
+import {envPaths} from '../env-paths';
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {readdir, readFile} from 'fs-extra';
@@ -25,7 +25,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async discoverAccounts(): Promise<void> {
-        const {config: neo4jConfigPath} = envPaths('neo4j-relate', {suffix: ''});
+        const {config: neo4jConfigPath} = envPaths();
         const accountsDir = path.join(neo4jConfigPath, 'accounts');
 
         let accounts: string[] = [];
@@ -50,7 +50,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         accountConfigArray.forEach((accountConfigBuffer) => {
-            const {data: defaultNeo4jDataPath} = envPaths('neo4j-relate', {suffix: ''});
+            const {data: defaultNeo4jDataPath} = envPaths();
             const accountConfig: IAccountConfig = JSON.parse(accountConfigBuffer.toString());
 
             if (!accountConfig.id || !accountConfig.user || !accountConfig.type) {
