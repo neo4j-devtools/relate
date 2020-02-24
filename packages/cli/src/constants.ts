@@ -1,1 +1,1 @@
-export const IS_TESTING_ENV = process.env.NODE_ENV === 'test';
+export const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === 'development';

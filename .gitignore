@@ -67,3 +67,12 @@ tmp/
 
 # OSX
 .DS_Store
+
+# Oclif generated file
+oclif.manifest.json
+
+# E2E generated dirs
+e2e/fixtures/data/neo4j-relate/dbmss/
+e2e/fixtures/config/configstore/
+e2e/fixtures/config/Electron/
+ 

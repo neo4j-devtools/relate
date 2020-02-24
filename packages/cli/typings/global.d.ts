@@ -7,5 +7,17 @@ declare global {
         log: (message?: string | undefined, ...args: any[]) => void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         debug: (...args: any[]) => void;
+        error: (
+            input: string | Error,
+            options?:
+                | {
+                      code?: string;
+                      exit?: number;
+                  }
+                | {
+                      code?: string | undefined;
+                      exit: false;
+                  },
+        ) => void;
     };
 }

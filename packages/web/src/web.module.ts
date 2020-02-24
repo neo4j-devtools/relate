@@ -4,6 +4,7 @@ import {GraphQLModule} from '@nestjs/graphql';
 
 import {HelloModule} from './hello';
 import {AppsModule} from './apps';
+import {DBMSModule} from './dbms';
 
 import configuration from './configs/dev.config';
 import {RecipesModule} from './recipes/recipes.module';
@@ -23,6 +24,7 @@ export interface IWebModuleConfig {
         }),
         HelloModule,
         RecipesModule,
+        DBMSModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.graphql',
             installSubscriptionHandlers: true,

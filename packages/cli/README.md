@@ -1,5 +1,4 @@
-@relate/cli
-===
+# @relate/cli
 
 CLI tool for interacting with the Neo4j platform.
 
@@ -9,27 +8,62 @@ CLI tool for interacting with the Neo4j platform.
 [![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/daedalus/blob/master/package.json)
 
 <!-- toc -->
+* [@relate/cli](#relatecli)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
 ```sh-session
 $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/0.0.0 darwin-x64 node-v12.14.1
+@relate/cli/1.0.0 linux-x64 node-v12.15.0
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
 ...
 ```
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
+* [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
+* [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
+* [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
 * [`relate hello [FILE]`](#relate-hello-file)
 * [`relate help [COMMAND]`](#relate-help-command)
+
+## `relate dbms:start [DBMSIDS]`
+
+```
+USAGE
+  $ relate dbms:start [DBMSIDS]
+```
+
+_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/start.ts)_
+
+## `relate dbms:status [DBMSIDS]`
+
+```
+USAGE
+  $ relate dbms:status [DBMSIDS]
+```
+
+_See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/status.ts)_
+
+## `relate dbms:stop [DBMSIDS]`
+
+```
+USAGE
+  $ relate dbms:stop [DBMSIDS]
+```
+
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
 
 ## `relate hello [FILE]`
 
@@ -46,8 +80,10 @@ OPTIONS
 
 EXAMPLE
   $ relate hello
-  hello world from ./src/hello.module.ts!
+  hello world from ./src/hello.ts!
 ```
+
+_See code: [dist/commands/hello.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/hello.ts)_
 
 ## `relate help [COMMAND]`
 

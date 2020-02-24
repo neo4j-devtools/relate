@@ -31,7 +31,7 @@
             }
         },
         {
-            "files": ["packages/cli/src/commands/**/*.test.ts"],
+            "files": ["packages/cli/src/commands/**/*.test.ts", "packages/cli/src/**/*.e2e.ts"],
             "rules": {
                 "jest/no-standalone-expect": ["off"]
             }
@@ -45,6 +45,7 @@
     ],
     "rules": {
         "@typescript-eslint/interface-name-prefix": ["error", "always"],
+        "@typescript-eslint/no-unused-vars": ["error", {"args": "none"}],
         "array-bracket-spacing": ["error", "never"],
         "array-callback-return": "error",
         "arrow-body-style": "warn",
@@ -70,7 +71,7 @@
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-names": "error",
-        "func-style": ["error", "declaration"],
+        "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
         "function-call-argument-newline": ["error", "consistent"],
         "generator-star-spacing": "error",
         "grouped-accessor-pairs": "warn",
@@ -82,7 +83,7 @@
         "lines-around-comment": "error",
         "lines-between-class-members": "error",
         "max-depth": "error",
-        "max-len": ["error", 120],
+        "max-len": ["error", {"code": 120, "comments": 120, "ignoreUrls": true}],
         "max-lines": ["warn", 500],
         "max-lines-per-function": ["warn", 100],
         "max-nested-callbacks": ["error", 5],
