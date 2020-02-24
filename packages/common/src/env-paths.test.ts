@@ -1,3 +1,5 @@
+import path from 'path';
+
 import {macOS, linux, windows, EnvPaths} from './env-paths';
 
 jest.mock('os', () => ({
@@ -18,22 +20,22 @@ describe('envPaths', () => {
 
     test('system defaults', () => {
         const expectedMacOS = {
-            cache: '$HOME/Library/Caches/com.Neo4j.Relate',
-            config: '$HOME/Library/Application Support/com.Neo4j.Relate/Config',
-            data: '$HOME/Library/Application Support/com.Neo4j.Relate/Data',
-            tmp: '$TMP/com.Neo4j.Relate',
+            cache: path.normalize('$HOME/Library/Caches/com.Neo4j.Relate'),
+            config: path.normalize('$HOME/Library/Application Support/com.Neo4j.Relate/Config'),
+            data: path.normalize('$HOME/Library/Application Support/com.Neo4j.Relate/Data'),
+            tmp: path.normalize('$TMP/com.Neo4j.Relate'),
         };
         const expectedLinux = {
-            cache: '$HOME/.cache/neo4j-relate',
-            config: '$HOME/.config/neo4j-relate',
-            data: '$HOME/.local/share/neo4j-relate',
-            tmp: '$TMP/neo4j-relate',
+            cache: path.normalize('$HOME/.cache/neo4j-relate'),
+            config: path.normalize('$HOME/.config/neo4j-relate'),
+            data: path.normalize('$HOME/.local/share/neo4j-relate'),
+            tmp: path.normalize('$TMP/neo4j-relate'),
         };
         const expectedWindows = {
-            cache: '$HOME/AppData/Local/Neo4j/Relate/Cache',
-            config: '$HOME/AppData/Roaming/Neo4j/Relate/Config',
-            data: '$HOME/AppData/Local/Neo4j/Relate/Data',
-            tmp: '$TMP/Neo4j/Relate',
+            cache: path.normalize('$HOME/AppData/Local/Neo4j/Relate/Cache'),
+            config: path.normalize('$HOME/AppData/Roaming/Neo4j/Relate/Config'),
+            data: path.normalize('$HOME/AppData/Local/Neo4j/Relate/Data'),
+            tmp: path.normalize('$TMP/Neo4j/Relate'),
         };
 
         expect(macOS()).toEqual(expectedMacOS);
@@ -82,10 +84,10 @@ describe('envPaths', () => {
         expect(macOS()).toEqual(expected('com.Neo4j.Relate'));
         expect(linux()).toEqual(expected('neo4j-relate'));
         expect(windows()).toEqual({
-            cache: `/Windows/Custom/AppData/Local/Neo4j/Relate/Cache`,
-            config: `/Windows/Custom/AppData/Roaming/Neo4j/Relate/Config`,
-            data: `/Windows/Custom/AppData/Local/Neo4j/Relate/Data`,
-            tmp: `$TMP/Neo4j/Relate`,
+            cache: path.normalize(`/Windows/Custom/AppData/Local/Neo4j/Relate/Cache`),
+            config: path.normalize(`/Windows/Custom/AppData/Roaming/Neo4j/Relate/Config`),
+            data: path.normalize(`/Windows/Custom/AppData/Local/Neo4j/Relate/Data`),
+            tmp: path.normalize(`$TMP/Neo4j/Relate`),
         });
     });
 });
