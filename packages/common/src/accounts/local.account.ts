@@ -7,9 +7,11 @@ import {NotFoundError} from '../errors';
 
 export class LocalAccount extends AccountAbstract {
     private neo4j(dbmsID: string, command: string): Promise<string> {
-        const neo4jPath = path.join(this.config.neo4jDataPath, 'dbmss', dbmsID, 'bin', 'neo4j');
+        const neo4jBin = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
+        const neo4jBinPath = path.join(this.config.neo4jDataPath, 'dbmss', dbmsID, 'bin', neo4jBin);
+
         return new Promise((resolve, reject) => {
-            access(neo4jPath, constants.X_OK, (err: NodeJS.ErrnoException | null) => {
+            access(neo4jBinPath, constants.X_OK, (err: NodeJS.ErrnoException | null) => {
                 if (err) {
                     reject(new NotFoundError(`DBMS "${dbmsID}" not found`));
                     return;
@@ -19,7 +21,7 @@ export class LocalAccount extends AccountAbstract {
                     data.push(chunk.toString());
                 };
 
-                const neo4jCommand = spawn(neo4jPath, [command]);
+                const neo4jCommand = spawn(neo4jBinPath, [command]);
                 neo4jCommand.stderr.on('data', collect);
                 neo4jCommand.stderr.on('error', reject);
                 neo4jCommand.stderr.on('close', () => resolve(data.join('')));
