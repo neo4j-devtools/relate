@@ -44,18 +44,18 @@ describe('envPaths', () => {
     });
     test('app overrides', () => {
         const expected = (name: string): EnvPaths => ({
-            cache: '/Custom/Application/Cache/Path',
-            config: '/Custom/Application/Config/Path',
-            data: '/Custom/Application/Data/Path',
-            tmp: `$TMP/${name}`,
+            cache: path.normalize('/Custom/Application/Cache/Path'),
+            config: path.normalize('/Custom/Application/Config/Path'),
+            data: path.normalize('/Custom/Application/Data/Path'),
+            tmp: path.normalize(`$TMP/${name}`),
         });
 
         process.env = {
             APPDATA: '/System/Overrides/Shouldnt/Affect/App/Overrides',
             LOCALAPPDATA: '/System/Overrides/Shouldnt/Affect/App/Overrides',
-            NEO4J_RELATE_CACHE_HOME: '/Custom/Application/Cache/Path',
-            NEO4J_RELATE_CONFIG_HOME: '/Custom/Application/Config/Path',
-            NEO4J_RELATE_DATA_HOME: '/Custom/Application/Data/Path',
+            NEO4J_RELATE_CACHE_HOME: path.normalize('/Custom/Application/Cache/Path'),
+            NEO4J_RELATE_CONFIG_HOME: path.normalize('/Custom/Application/Config/Path'),
+            NEO4J_RELATE_DATA_HOME: path.normalize('/Custom/Application/Data/Path'),
             XDG_CACHE_HOME: '/System/Overrides/Shouldnt/Affect/App/Overrides',
             XDG_CONFIG_HOME: '/System/Overrides/Shouldnt/Affect/App/Overrides',
             XDG_DATA_HOME: '/System/Overrides/Shouldnt/Affect/App/Overrides',
@@ -67,15 +67,15 @@ describe('envPaths', () => {
     });
     test('system overrides', () => {
         const expected = (name: string): EnvPaths => ({
-            cache: `/Custom/System/Cache/Path/${name}`,
-            config: `/Custom/System/Config/Path/${name}`,
-            data: `/Custom/System/Data/Path/${name}`,
-            tmp: `$TMP/${name}`,
+            cache: path.normalize(`/Custom/System/Cache/Path/${name}`),
+            config: path.normalize(`/Custom/System/Config/Path/${name}`),
+            data: path.normalize(`/Custom/System/Data/Path/${name}`),
+            tmp: path.normalize(`$TMP/${name}`),
         });
 
         process.env = {
-            APPDATA: '/Windows/Custom/AppData/Roaming',
-            LOCALAPPDATA: '/Windows/Custom/AppData/Local',
+            APPDATA: path.normalize('/Windows/Custom/AppData/Roaming'),
+            LOCALAPPDATA: path.normalize('/Windows/Custom/AppData/Local'),
             XDG_CACHE_HOME: '/Custom/System/Cache/Path',
             XDG_CONFIG_HOME: '/Custom/System/Config/Path',
             XDG_DATA_HOME: '/Custom/System/Data/Path',

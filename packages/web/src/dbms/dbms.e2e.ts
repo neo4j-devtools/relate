@@ -37,9 +37,14 @@ describe('DBMSModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {startDbmss} = res.body.data;
-                expect(startDbmss[0]).toContain('Directories in use');
-                expect(startDbmss[0]).toContain('Starting Neo4j');
-                expect(startDbmss[0]).toContain('Started neo4j (pid');
+
+                if (process.platform === 'win32') {
+                    expect(startDbmss[0]).toContain('Neo4j service started');
+                } else {
+                    expect(startDbmss[0]).toContain('Directories in use');
+                    expect(startDbmss[0]).toContain('Starting Neo4j');
+                    expect(startDbmss[0]).toContain('Started neo4j (pid');
+                }
             });
     });
 
@@ -50,7 +55,7 @@ describe('DBMSModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {statusDbmss} = res.body.data;
-                expect(statusDbmss[0]).toContain('Neo4j is running at pid');
+                expect(statusDbmss[0]).toContain('Neo4j is running');
             });
     });
 
@@ -61,8 +66,13 @@ describe('DBMSModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {stopDbmss} = res.body.data;
-                expect(stopDbmss[0]).toContain('Stopping Neo4j');
-                expect(stopDbmss[0]).toContain('stopped');
+
+                if (process.platform === 'win32') {
+                    expect(stopDbmss[0]).toContain('Neo4j service stopped');
+                } else {
+                    expect(stopDbmss[0]).toContain('Stopping Neo4j');
+                    expect(stopDbmss[0]).toContain('stopped');
+                }
             });
     });
 
