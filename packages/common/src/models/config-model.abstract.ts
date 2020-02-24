@@ -16,9 +16,7 @@ export abstract class ConfigModelAbstract {
         const errors = validateSync(this);
 
         if (arrayHasItems(errors)) {
-            if (arrayHasItems(errors)) {
-                throw new ValidationFailureError(`${this.constructor.name} validation failure`, errors);
-            }
+            throw new ValidationFailureError(`${this.constructor.name} validation failure`, errors);
         }
     }
 }
