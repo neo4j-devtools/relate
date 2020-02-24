@@ -1,22 +1,29 @@
-import {envPaths} from '../env-paths';
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import {readdir, readFile} from 'fs-extra';
+import {ensureDir, readdir, readFile} from 'fs-extra';
+import {filter, forEach, map} from 'lodash';
 
-import {AccountAbstract} from '../accounts/account.abstract';
-import {LocalAccount} from '../accounts';
-import {NotFoundError, InvalidConfigError} from '../errors';
+import {envPaths} from '../env-paths';
+import {ACCOUNTS_DIR_NAME, JSON_FILE_EXTENSION} from '../constants';
+import {AccountAbstract} from '../accounts';
+import {NotFoundError} from '../errors';
+import {AccountConfigModel} from '../models';
+import {createAccountInstance} from '../utils';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
+    protected readonly paths = envPaths();
+
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
-    onModuleInit() {
-        return this.discoverAccounts();
+    async onModuleInit(): Promise<void> {
+        await this.verifyInstallation();
+        await this.discoverAccounts();
     }
 
     getAccount(uuid: string): AccountAbstract {
         const account = this.allAccounts.get(uuid);
+
         if (!account) {
             throw new NotFoundError(`Account "${uuid}" not found`);
         }
@@ -25,51 +32,31 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async discoverAccounts(): Promise<void> {
-        const {config: neo4jConfigPath} = envPaths();
-        const accountsDir = path.join(neo4jConfigPath, 'accounts');
+        const accountsDir = path.join(this.paths.config, ACCOUNTS_DIR_NAME);
+        const availableFiles = await readdir(accountsDir);
+        const availableAccounts = filter(
+            availableFiles,
+            (account) => path.extname(account).toLocaleLowerCase() === JSON_FILE_EXTENSION,
+        );
+        const accountConfigs: string[] = await Promise.all(
+            map(availableAccounts, (account) =>
+                readFile(path.join(this.paths.config, ACCOUNTS_DIR_NAME, account), 'utf8'),
+            ),
+        );
 
-        let accounts: string[] = [];
-        try {
-            accounts = await readdir(accountsDir);
-            accounts = accounts.filter((account) => path.extname(account).toLocaleLowerCase() === '.json');
-        } catch (e) {
-            throw new NotFoundError(`Config directory "${accountsDir}" not found`);
-        }
+        forEach(accountConfigs, (accountConfigBuffer) => {
+            const config = JSON.parse(accountConfigBuffer);
+            const accountConfig: AccountConfigModel = new AccountConfigModel({
+                ...config,
+                neo4jDataPath: config.neo4jDataPath || this.paths.data,
+            });
 
-        const accountPromiseArray: Promise<Buffer>[] = accounts.map((account) => {
-            return readFile(path.join(neo4jConfigPath, 'accounts', account));
+            this.allAccounts.set(`${accountConfig.id}`, createAccountInstance(accountConfig));
         });
+    }
 
-        const accountConfigArray: Buffer[] = await Promise.all(accountPromiseArray);
-
-        interface IAccountConfig {
-            id: any;
-            user: any;
-            neo4jDataPath: any;
-            type: string;
-        }
-
-        accountConfigArray.forEach((accountConfigBuffer) => {
-            const {data: defaultNeo4jDataPath} = envPaths();
-            const accountConfig: IAccountConfig = JSON.parse(accountConfigBuffer.toString());
-
-            if (!accountConfig.id || !accountConfig.user || !accountConfig.type) {
-                throw new InvalidConfigError('Config missing properties');
-            }
-
-            const accountConstructors: {[key: string]: typeof LocalAccount} = {
-                LOCAL: LocalAccount,
-            };
-
-            const createAccount = (accountConfiguration: IAccountConfig): AccountAbstract => {
-                return new accountConstructors[accountConfig.type.toLocaleUpperCase()]({
-                    id: `${accountConfiguration.id}`,
-                    user: `${accountConfiguration.user}`,
-                    neo4jDataPath: accountConfiguration.neo4jDataPath || defaultNeo4jDataPath,
-                });
-            };
-
-            this.allAccounts.set(`${accountConfig.id}`, createAccount(accountConfig));
-        });
+    private async verifyInstallation(): Promise<void> {
+        await ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
+        await ensureDir(this.paths.data);
     }
 }

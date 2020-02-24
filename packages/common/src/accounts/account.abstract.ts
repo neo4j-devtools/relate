@@ -1,11 +1,7 @@
-export interface IAccount {
-    id: string;
-    user: any;
-    neo4jDataPath: string;
-}
+import {AccountConfigModel} from '../models';
 
 export abstract class AccountAbstract {
-    constructor(protected readonly config: IAccount) {}
+    constructor(protected readonly config: AccountConfigModel) {}
 
     abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
 

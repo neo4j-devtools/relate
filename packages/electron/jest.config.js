@@ -1,4 +1,7 @@
+const globalConf = require('../../e2e/jest-global.config');
+
 module.exports = {
+    ...globalConf,
     projects: [
         {
             roots: ['src'],

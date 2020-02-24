@@ -72,7 +72,7 @@ tmp/
 oclif.manifest.json
 
 # E2E generated dirs
-e2e_fixtures/data/neo4j-relate/dbmss/
-e2e_fixtures/config/configstore/
-e2e_fixtures/config/Electron/
+e2e/fixtures/data/neo4j-relate/dbmss/
+e2e/fixtures/config/configstore/
+e2e/fixtures/config/Electron/
  
