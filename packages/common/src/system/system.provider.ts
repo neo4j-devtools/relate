@@ -4,11 +4,10 @@ import {ensureDir, readdir, readFile} from 'fs-extra';
 import {filter, forEach, map} from 'lodash';
 
 import {envPaths} from '../env-paths';
-import {ACCOUNTS_DIR_NAME, JSON_FILE_EXTENSION} from '../constants';
-import {AccountAbstract} from '../accounts';
+import {JSON_FILE_EXTENSION} from '../constants';
+import {ACCOUNTS_DIR_NAME, AccountAbstract, createAccountInstance} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
-import {createAccountInstance} from '../utils';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {

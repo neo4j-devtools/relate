@@ -1,3 +1,3 @@
 export {AccountAbstract} from './account.abstract';
-export {LocalAccount} from './local.account';
-export {AuraAccount} from './aura.account';
+export {ACCOUNTS_DIR_NAME, ACCOUNT_TYPES} from './constants';
+export {createAccountInstance} from './create-account-instance';

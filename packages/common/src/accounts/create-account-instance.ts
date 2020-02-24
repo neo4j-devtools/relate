@@ -1,7 +1,9 @@
 import {AccountConfigModel} from '../models';
-import {AccountAbstract, LocalAccount} from '../accounts';
-import {ACCOUNT_TYPES} from '../constants';
+import {ACCOUNT_TYPES} from './constants';
 import {InvalidConfigError} from '../errors';
+
+import {AccountAbstract} from './account.abstract';
+import {LocalAccount} from './local.account';
 
 export function createAccountInstance(config: AccountConfigModel): AccountAbstract {
     if (config.type === ACCOUNT_TYPES.LOCAL) {

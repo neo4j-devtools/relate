@@ -1,6 +1,6 @@
 import {IsEnum, IsNotEmpty, IsString} from 'class-validator';
 
-import {ACCOUNT_TYPES} from '../constants';
+import {ACCOUNT_TYPES} from '../accounts';
 import {ConfigModelAbstract} from './config-model.abstract';
 
 export class AccountConfigModel extends ConfigModelAbstract {
