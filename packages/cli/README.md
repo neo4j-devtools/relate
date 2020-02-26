@@ -35,7 +35,6 @@ USAGE
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
-* [`relate hello [FILE]`](#relate-hello-file)
 * [`relate help [COMMAND]`](#relate-help-command)
 
 ## `relate dbms:start [DBMSIDS]`
@@ -64,26 +63,6 @@ USAGE
 ```
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
-
-## `relate hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ relate hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ relate hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [dist/commands/hello.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/hello.ts)_
 
 ## `relate help [COMMAND]`
 
