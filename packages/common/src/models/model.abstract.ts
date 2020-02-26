@@ -1,19 +1,11 @@
 import {assign} from 'lodash';
 import {validateSync} from 'class-validator';
 
-import {ACCOUNT_TYPES} from '../accounts';
 import {arrayHasItems} from '../utils';
 import {ValidationFailureError} from '../errors';
 
-export interface IAccountConfig {
-    id: string;
-    user: any;
-    neo4jDataPath: string;
-    type: ACCOUNT_TYPES;
-}
-
-export abstract class ConfigModelAbstract {
-    constructor(props: IAccountConfig) {
+export abstract class ModelAbstract<T = any> {
+    constructor(props: T) {
         assign(this, props);
         this.validate();
     }

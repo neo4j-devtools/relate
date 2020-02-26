@@ -4,6 +4,8 @@ import request from 'supertest';
 
 import {ElectronModule} from './electron.module';
 
+jest.setTimeout(30000);
+
 const DBMS_STATUS = {
     query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["test"]) }',
     variables: {},
@@ -16,7 +18,20 @@ const DBMS_STOP = {
     query: 'mutation StopDBMSs { stopDbmss(accountId: "foo", dbmsIds: ["test"]) }',
     variables: {},
 };
+const DBMS_ACCESS = {
+    query: `mutation AccessDBMS($authToken: AuthTokenInput!) {
+        createAccessToken(accountId: "foo", dbmsId: "test", appId: "foo", authToken: $authToken)
+    }`,
+    variables: {
+        authToken: {
+            credentials: 'newpassword',
+            principal: 'neo4j',
+            scheme: 'basic',
+        },
+    },
+};
 const HTTP_OK = 200;
+const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 
 describe('DBMSModule', () => {
     let app: INestApplication;
@@ -56,6 +71,20 @@ describe('DBMSModule', () => {
             .expect((res: request.Response) => {
                 const {statusDbmss} = res.body.data;
                 expect(statusDbmss[0]).toContain('Neo4j is running');
+            });
+    });
+
+    test('/graphql accessDbms (started DBMS)', async () => {
+        // arbitrary wait for Neo4j to come online
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(DBMS_ACCESS)
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {createAccessToken} = res.body.data;
+                expect(createAccessToken).toEqual(expect.stringMatching(JWT_REGEX));
             });
     });
 

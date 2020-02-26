@@ -23,6 +23,7 @@ export type EnvPaths = {
     config: string;
     data: string;
     tmp: string;
+    home: string;
 };
 
 type Overrides = {
@@ -71,6 +72,7 @@ export const macOS = (): EnvPaths => {
         cache: app.cache || systemFullPaths.cache || defaults.cache,
         config: app.config || systemFullPaths.config || defaults.config,
         data: app.data || systemFullPaths.data || defaults.data,
+        home: homedir,
         tmp: path.join(tmpdir, name),
     };
 };
@@ -92,6 +94,7 @@ export const windows = (): EnvPaths => {
         cache: app.cache || defaults.cache,
         config: app.config || defaults.config,
         data: app.data || defaults.data,
+        home: homedir,
         tmp: path.join(tmpdir, name),
     };
 };
@@ -110,6 +113,7 @@ export const linux = (): EnvPaths => {
         cache: app.cache || path.join(system.cache || defaults.cache, name),
         config: app.config || path.join(system.config || defaults.config, name),
         data: app.data || path.join(system.data || defaults.data, name),
+        home: homedir,
         tmp: path.join(tmpdir, name),
     };
 };

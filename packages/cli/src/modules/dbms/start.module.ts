@@ -10,6 +10,8 @@ import {readStdin, isTTY} from '../../stdin';
     providers: [],
 })
 export class StartModule implements OnApplicationBootstrap {
+    static DEFAULT_ACCOUNT_ID = 'foo';
+
     constructor(
         @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
@@ -17,7 +19,7 @@ export class StartModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const account = this.systemProvider.getAccount('foo');
+        const account = this.systemProvider.getAccount(StartModule.DEFAULT_ACCOUNT_ID);
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {

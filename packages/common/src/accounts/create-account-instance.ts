@@ -1,5 +1,5 @@
 import {AccountConfigModel} from '../models';
-import {ACCOUNT_TYPES} from './constants';
+import {ACCOUNT_TYPES} from './account.constants';
 import {InvalidConfigError} from '../errors';
 
 import {AccountAbstract} from './account.abstract';
