@@ -4,7 +4,7 @@ import {ensureDir, ensureFile, readdir, readFile} from 'fs-extra';
 import {filter, forEach, map} from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
-import {JSON_FILE_EXTENSION, RELATE_RC_FILE} from '../constants';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
@@ -14,7 +14,7 @@ import {registerSystemAccessToken} from '../utils';
 export class SystemProvider implements OnModuleInit {
     protected readonly paths = envPaths();
 
-    protected readonly rcPath = path.join(this.paths.data, RELATE_RC_FILE);
+    protected readonly rcPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
