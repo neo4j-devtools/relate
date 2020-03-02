@@ -21,7 +21,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.0 linux-x64 node-v12.15.0
+@relate/cli/1.0.0 darwin-x64 node-v12.14.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -32,10 +32,24 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
 * [`relate help [COMMAND]`](#relate-help-command)
+
+## `relate dbms:access-token [DBMSID]`
+
+```
+USAGE
+  $ relate dbms:access-token [DBMSID]
+
+OPTIONS
+  -c, --credentials=credentials
+  -p, --principal=principal
+```
+
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
 
 ## `relate dbms:start [DBMSIDS]`
 

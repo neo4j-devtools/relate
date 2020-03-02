@@ -3,9 +3,16 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AuthTokenInput {
+  scheme: String!
+  principal: String!
+  credentials: String!
+}
+
 type Mutation {
   startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
+  createAccessToken(authToken: AuthTokenInput!, dbmsId: String!, appId: String!, accountId: String!): String!
 }
 
 type Query {

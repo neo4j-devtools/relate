@@ -1,9 +1,16 @@
 import {IsEnum, IsNotEmpty, IsString} from 'class-validator';
 
 import {ACCOUNT_TYPES} from '../accounts';
-import {ConfigModelAbstract} from './config-model.abstract';
+import {ModelAbstract} from './model.abstract';
 
-export class AccountConfigModel extends ConfigModelAbstract {
+export interface IAccountConfig {
+    id: string;
+    user: any;
+    neo4jDataPath: string;
+    type: ACCOUNT_TYPES;
+}
+
+export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements IAccountConfig {
     // @todo: should be uuid
     @IsString()
     public id!: string;

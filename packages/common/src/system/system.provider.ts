@@ -1,17 +1,20 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import {ensureDir, readdir, readFile} from 'fs-extra';
+import {ensureDir, ensureFile, readdir, readFile} from 'fs-extra';
 import {filter, forEach, map} from 'lodash';
 
-import {envPaths} from '../env-paths';
-import {JSON_FILE_EXTENSION} from '../constants';
-import {ACCOUNTS_DIR_NAME, AccountAbstract, createAccountInstance} from '../accounts';
+import {envPaths} from '../utils/env-paths';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
+import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
+import {registerSystemAccessToken} from '../utils';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
     protected readonly paths = envPaths();
+
+    protected readonly rcPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
@@ -28,6 +31,17 @@ export class SystemProvider implements OnModuleInit {
         }
 
         return account;
+    }
+
+    async registerAccessToken(
+        accountId: string,
+        dbmsId: string,
+        dbmsUser: string,
+        accessToken: string,
+    ): Promise<string> {
+        await registerSystemAccessToken(this.rcPath, accountId, dbmsId, dbmsUser, accessToken);
+
+        return accessToken;
     }
 
     private async discoverAccounts(): Promise<void> {
@@ -55,7 +69,9 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async verifyInstallation(): Promise<void> {
+        await ensureDir(this.paths.config);
         await ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
         await ensureDir(this.paths.data);
+        await ensureFile(this.rcPath);
     }
 }

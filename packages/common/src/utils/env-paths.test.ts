@@ -1,6 +1,6 @@
 import path from 'path';
 
-import {macOS, linux, windows, EnvPaths} from './env-paths';
+import {EnvPaths, linux, macOS, windows} from './env-paths';
 
 jest.mock('os', () => ({
     homedir: (): string => '$HOME',
