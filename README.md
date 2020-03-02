@@ -8,7 +8,7 @@ $ npm ci
 ### Configuration
 
 #### Required files
-Until we have the ability to add Accounts and DBSMs we need some files copied to user directories:
+Until we have the ability to add Accounts and DBMSs we need some files copied to user directories:
 
 Accounts (see [test folder](./e2e/fixtures/config/neo4j-relate/accounts) for sample):
 ```sh
