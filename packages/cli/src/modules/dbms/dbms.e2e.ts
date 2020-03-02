@@ -31,8 +31,8 @@ describe('$relate dbms', () => {
 
     test.stdout()
         // arbitrary wait for Neo4j to come online
-        .do(() => new Promise((resolve) => setTimeout(resolve, 10000)))
-        .command(['dbms:access', 'test', '-p neo4j', '-c newpassword'])
+        .do(() => new Promise((resolve) => setTimeout(resolve, 20000)))
+        .command(['dbms:access-token', 'test', '-p neo4j', '-c newpassword'])
         .it('logs access token', (ctx) => {
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });

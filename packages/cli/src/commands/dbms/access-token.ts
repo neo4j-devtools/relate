@@ -1,12 +1,12 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {AccessModule} from '../../modules/dbms/access.module';
+import {AccessTokenModule} from '../../modules/dbms/access-token.module';
 
-export default class AccessCommand extends BaseCommand {
-    commandClass = AccessCommand;
+export default class AccessTokenCommand extends BaseCommand {
+    commandClass = AccessTokenCommand;
 
-    commandModule = AccessModule;
+    commandModule = AccessTokenModule;
 
     static args = [{name: 'dbmsId'}];
 

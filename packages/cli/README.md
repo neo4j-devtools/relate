@@ -32,24 +32,24 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`relate dbms:access [DBMSID]`](#relate-dbmsaccess-dbmsid)
+* [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
 * [`relate help [COMMAND]`](#relate-help-command)
 
-## `relate dbms:access [DBMSID]`
+## `relate dbms:access-token [DBMSID]`
 
 ```
 USAGE
-  $ relate dbms:access [DBMSID]
+  $ relate dbms:access-token [DBMSID]
 
 OPTIONS
   -c, --credentials=credentials
   -p, --principal=principal
 ```
 
-_See code: [dist/commands/dbms/access.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access.ts)_
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
 
 ## `relate dbms:start [DBMSIDS]`
 

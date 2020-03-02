@@ -10,7 +10,7 @@ import {isTTY, readStdin} from '../../stdin';
     imports: [SystemModule],
     providers: [],
 })
-export class AccessModule implements OnApplicationBootstrap {
+export class AccessTokenModule implements OnApplicationBootstrap {
     static DEFAULT_APP_ID = 'relate';
 
     static DEFAULT_ACCOUNT_ID = 'foo';
@@ -22,7 +22,7 @@ export class AccessModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const account = this.systemProvider.getAccount(AccessModule.DEFAULT_ACCOUNT_ID);
+        const account = this.systemProvider.getAccount(AccessTokenModule.DEFAULT_ACCOUNT_ID);
         const {argv, flags} = this.parsed;
         const authToken = new AuthTokenModel({
             credentials: trim(flags.credentials),
@@ -43,10 +43,10 @@ export class AccessModule implements OnApplicationBootstrap {
         }
 
         return account
-            .createAccessToken(AccessModule.DEFAULT_APP_ID, dbmsId, authToken)
+            .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbmsId, authToken)
             .then((accessToken) =>
                 this.systemProvider.registerAccessToken(
-                    AccessModule.DEFAULT_ACCOUNT_ID,
+                    AccessTokenModule.DEFAULT_ACCOUNT_ID,
                     dbmsId,
                     authToken.principal,
                     accessToken,
