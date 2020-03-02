@@ -1,5 +1,4 @@
 import path from 'path';
-import {homedir} from 'os';
 
 import {EnvPaths, linux, macOS, windows} from './env-paths';
 
@@ -24,21 +23,18 @@ describe('envPaths', () => {
             cache: path.normalize('$HOME/Library/Caches/com.Neo4j.Relate'),
             config: path.normalize('$HOME/Library/Application Support/com.Neo4j.Relate/Config'),
             data: path.normalize('$HOME/Library/Application Support/com.Neo4j.Relate/Data'),
-            home: homedir(),
             tmp: path.normalize('$TMP/com.Neo4j.Relate'),
         };
         const expectedLinux = {
             cache: path.normalize('$HOME/.cache/neo4j-relate'),
             config: path.normalize('$HOME/.config/neo4j-relate'),
             data: path.normalize('$HOME/.local/share/neo4j-relate'),
-            home: homedir(),
             tmp: path.normalize('$TMP/neo4j-relate'),
         };
         const expectedWindows = {
             cache: path.normalize('$HOME/AppData/Local/Neo4j/Relate/Cache'),
             config: path.normalize('$HOME/AppData/Roaming/Neo4j/Relate/Config'),
             data: path.normalize('$HOME/AppData/Local/Neo4j/Relate/Data'),
-            home: homedir(),
             tmp: path.normalize('$TMP/Neo4j/Relate'),
         };
 
@@ -51,7 +47,6 @@ describe('envPaths', () => {
             cache: path.normalize('/Custom/Application/Cache/Path'),
             config: path.normalize('/Custom/Application/Config/Path'),
             data: path.normalize('/Custom/Application/Data/Path'),
-            home: homedir(),
             tmp: path.normalize(`$TMP/${name}`),
         });
 
@@ -75,7 +70,6 @@ describe('envPaths', () => {
             cache: path.normalize(`/Custom/System/Cache/Path/${name}`),
             config: path.normalize(`/Custom/System/Config/Path/${name}`),
             data: path.normalize(`/Custom/System/Data/Path/${name}`),
-            home: homedir(),
             tmp: path.normalize(`$TMP/${name}`),
         });
 
@@ -93,7 +87,6 @@ describe('envPaths', () => {
             cache: path.normalize(`/Windows/Custom/AppData/Local/Neo4j/Relate/Cache`),
             config: path.normalize(`/Windows/Custom/AppData/Roaming/Neo4j/Relate/Config`),
             data: path.normalize(`/Windows/Custom/AppData/Local/Neo4j/Relate/Data`),
-            home: homedir(),
             tmp: path.normalize(`$TMP/Neo4j/Relate`),
         });
     });

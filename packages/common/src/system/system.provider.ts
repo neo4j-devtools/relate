@@ -14,7 +14,7 @@ import {registerSystemAccessToken} from '../utils';
 export class SystemProvider implements OnModuleInit {
     protected readonly paths = envPaths();
 
-    protected readonly rcPath = path.join(this.paths.home, RELATE_RC_FILE);
+    protected readonly rcPath = path.join(this.paths.data, RELATE_RC_FILE);
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
