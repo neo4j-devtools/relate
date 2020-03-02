@@ -70,6 +70,7 @@ export class SystemProvider implements OnModuleInit {
 
     private async verifyInstallation(): Promise<void> {
         await ensureDir(this.paths.config);
+        await ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
         await ensureDir(this.paths.data);
         await ensureFile(this.rcPath);
     }
