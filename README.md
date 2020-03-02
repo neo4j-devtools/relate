@@ -31,7 +31,7 @@ DBMSs (see [test folder](./e2e/fixtures/data/neo4j-relate/dbmss) for sample):
 ```
 
 #### JWT Auth Plugin
-We require a custom Neo4j [JWT Auth Plugin](https://github.com/huboneo/neo4j-jwt-addon) for local installations.
+We require a custom Neo4j [JWT Auth Plugin](https://github.com/neo-technology/neo4j-jwt-addon) for local installations.
 Please follow the README to add it to any installed DBMSs.
 
 ### Testing

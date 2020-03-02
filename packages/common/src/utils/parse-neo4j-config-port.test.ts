@@ -9,8 +9,12 @@ describe('parseNeo4jConfigPort', () => {
         expect(parseNeo4jConfigPort(':1234')).toBe(1234);
     });
 
-    test('does not require colon(:) syntax', () => {
+    test('does not require colon (:) syntax if no properties syntax', () => {
         expect(parseNeo4jConfigPort('1234')).toBe(1234);
+    });
+
+    test('requires colon (:) syntax if properties syntax', () => {
+        expect(parseNeo4jConfigPort('foo=1234')).toBe(NaN);
     });
 
     test('does throw on invalid value', () => {

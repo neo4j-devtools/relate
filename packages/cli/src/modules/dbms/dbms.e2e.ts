@@ -2,10 +2,11 @@ import {test} from '@oclif/test';
 
 jest.setTimeout(30000);
 
-jest.mock('@relate/common', () => ({
-    ...jest.requireActual('@relate/common'),
-    writePropertiesFile: Promise.resolve,
-}));
+jest.mock('fs-extra', () => {
+    return {
+        writeFile: (_path: string, data: string) => Promise.resolve(data),
+    };
+});
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 

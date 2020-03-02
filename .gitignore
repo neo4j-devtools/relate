@@ -75,4 +75,5 @@ oclif.manifest.json
 e2e/fixtures/data/neo4j-relate/dbmss/
 e2e/fixtures/config/configstore/
 e2e/fixtures/config/Electron/
- 
+
+.relaterc

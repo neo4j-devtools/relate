@@ -53,9 +53,6 @@ export class AccessModule implements OnApplicationBootstrap {
                 ),
             )
             .then(this.utils.log)
-            .catch((err) => {
-                this.utils.error(err.message || err);
-                throw err;
-            });
+            .catch(({message}) => this.utils.error(message));
     }
 }
