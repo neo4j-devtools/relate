@@ -1,4 +1,5 @@
-import {access, constants} from 'fs-extra';
+import {access, constants, readdir, stat} from 'fs-extra';
+import {map} from 'lodash';
 import {spawn} from 'child_process';
 import path from 'path';
 import {filter, first, flatMap} from 'rxjs/operators';
@@ -30,6 +31,22 @@ export class LocalAccount extends AccountAbstract {
         return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'status')));
     }
 
+    async listDbmss(): Promise<string[]> {
+        const files = await readdir(this.getDBMSRootPath(null));
+        const dbmss: string[] = [];
+
+        await Promise.all(
+            map(files, async (file) => {
+                const fileStats = await stat(path.join(this.getDBMSRootPath(null), file));
+                if (fileStats.isDirectory()) {
+                    dbmss.push(file);
+                }
+            }),
+        );
+
+        return dbmss;
+    }
+
     async createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string> {
         const config = await readPropertiesFile(
             path.join(this.getDBMSRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -55,8 +72,14 @@ export class LocalAccount extends AccountAbstract {
             .finally(() => driver.shutDown().toPromise());
     }
 
-    private getDBMSRootPath(dbmsId: string): string {
-        return path.join(this.config.neo4jDataPath, 'dbmss', dbmsId);
+    private getDBMSRootPath(dbmsId: string | null): string {
+        const dbmssDir = path.join(this.config.neo4jDataPath, 'dbmss');
+
+        if (dbmsId) {
+            return path.join(dbmssDir, dbmsId);
+        }
+
+        return dbmssDir;
     }
 
     private neo4j(dbmsID: string, command: string): Promise<string> {

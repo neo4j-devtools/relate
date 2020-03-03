@@ -14,6 +14,12 @@ export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => [String])
+    listDbmss(@Args('accountId') accountId: string): Promise<string[]> {
+        const account = this.systemProvider.getAccount(accountId);
+        return account.listDbmss();
+    }
+
+    @Query(() => [String])
     statusDbmss(@Args('accountId') accountId: string, @Args(DBMS_IDS) dbmsIds: string[]): Promise<string[]> {
         const account = this.systemProvider.getAccount(accountId);
         return account.statusDbmss(dbmsIds);

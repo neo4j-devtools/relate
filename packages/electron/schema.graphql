@@ -16,5 +16,6 @@ type Mutation {
 }
 
 type Query {
+  listDbmss(accountId: String!): [String!]!
   statusDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
 }
