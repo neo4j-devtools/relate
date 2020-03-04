@@ -32,14 +32,14 @@ export class LocalAccount extends AccountAbstract {
     }
 
     async listDbmss(): Promise<string[]> {
-        const files = await readdir(this.getDBMSRootPath(null));
+        const fileNames = await readdir(this.getDBMSRootPath(null));
         const dbmss: string[] = [];
 
         await Promise.all(
-            map(files, async (file) => {
-                const fileStats = await stat(path.join(this.getDBMSRootPath(null), file));
+            map(fileNames, async (fileName) => {
+                const fileStats = await stat(path.join(this.getDBMSRootPath(null), fileName));
                 if (fileStats.isDirectory()) {
-                    dbmss.push(file);
+                    dbmss.push(fileName);
                 }
             }),
         );
