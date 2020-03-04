@@ -6,5 +6,5 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static aliases = ['ls'];
+    static aliases = ['dbms:ls'];
 }
