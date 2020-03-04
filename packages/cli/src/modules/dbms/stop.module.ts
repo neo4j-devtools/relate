@@ -1,8 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
+import {prompt} from 'enquirer';
+import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider} from '@relate/common';
-import {RequiredArgsError} from '../../errors';
-import {readStdin, isTTY} from '../../stdin';
+import {readStdinArray, isTTY} from '../../stdin';
 
 @Module({
     exports: [],
@@ -24,19 +25,28 @@ export class StopModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                // TODO - Once we have dbms:list we can make the user choose
-                // the DBMS interactively.
-                throw new RequiredArgsError(['dbmsIds']);
+                const dbmss = await account.listDbmss();
+
+                const {selectedDbms} = await prompt({
+                    choices: dbmss.map((dbms) => ({
+                        name: dbms,
+                        value: dbms,
+                    })),
+                    message: 'Select a DBMS',
+                    name: 'selectedDbms',
+                    type: 'select',
+                });
+
+                dbmsIds = [selectedDbms];
             } else {
-                dbmsIds = await readStdin().then((raw) => raw.trim().split(/\n|\s/));
+                dbmsIds = await readStdinArray();
             }
         }
 
+        cli.action.start('Stopping Neo4j');
         return account
             .stopDbmss(dbmsIds)
-            .then((res) => {
-                this.utils.log(...res);
-            })
+            .then(() => cli.action.stop())
             .catch(this.utils.error);
     }
 }

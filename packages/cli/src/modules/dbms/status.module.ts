@@ -1,8 +1,8 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
+import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider} from '@relate/common';
-import {RequiredArgsError} from '../../errors';
-import {readStdin, isTTY} from '../../stdin';
+import {readStdinArray, isTTY} from '../../stdin';
 
 @Module({
     exports: [],
@@ -24,19 +24,31 @@ export class StatusModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                // TODO - Once we have dbms:list we can make the user choose
-                // the DBMS interactively.
-                throw new RequiredArgsError(['dbmsIds']);
+                const dbmss = await account.listDbmss();
+                dbmsIds = dbmss;
             } else {
-                dbmsIds = await readStdin().then((raw) => raw.trim().split(/\n|\s/));
+                const stdinDbmss = await readStdinArray();
+                dbmsIds = stdinDbmss;
             }
         }
 
-        return account
-            .statusDbmss(dbmsIds)
-            .then((res) => {
-                this.utils.log(...res);
-            })
-            .catch(this.utils.error);
+        return account.statusDbmss(dbmsIds).then((res: string[]) => {
+            const table = res.map((r, index) => ({
+                name: dbmsIds[index],
+                status: r.trim(),
+            }));
+
+            cli.table(
+                table,
+                {
+                    name: {},
+                    status: {},
+                },
+                {
+                    printLine: this.utils.log,
+                    ...this.parsed.flags,
+                },
+            );
+        });
     }
 }

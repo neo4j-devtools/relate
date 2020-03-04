@@ -1,3 +1,5 @@
+import {map, filter} from 'lodash';
+
 export function isTTY(): boolean {
     return process.stdin.isTTY || false;
 }
@@ -25,4 +27,12 @@ export function readStdin(): Promise<string> {
             resolve(result);
         });
     });
+}
+
+export async function readStdinArray(): Promise<string[]> {
+    const stdin = await readStdin();
+    const rawLines = stdin.trim().split(/\n|\t/g);
+    const cleanLines = map(rawLines, (rawLine) => rawLine.trim());
+
+    return filter(cleanLines, (cleanLine) => cleanLine !== '');
 }
