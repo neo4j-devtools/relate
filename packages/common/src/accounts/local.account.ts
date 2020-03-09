@@ -17,6 +17,7 @@ import {
     NEO4J_CONF_FILE,
     NEO4J_CONFIG_KEYS,
 } from './account.constants';
+import {IDbms} from '../models/account-config.model';
 
 export class LocalAccount extends AccountAbstract {
     startDbmss(dbmsIds: string[]): Promise<string[]> {
@@ -31,20 +32,26 @@ export class LocalAccount extends AccountAbstract {
         return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'status')));
     }
 
-    async listDbmss(): Promise<string[]> {
+    async listDbmss(): Promise<IDbms[]> {
         const fileNames = await readdir(this.getDBMSRootPath(null));
-        const dbmss: string[] = [];
+        const allDbmss: {[id: string]: IDbms} = {};
+        const configDbmss = this.config.dbmss || {};
 
         await Promise.all(
             map(fileNames, async (fileName) => {
                 const fileStats = await stat(path.join(this.getDBMSRootPath(null), fileName));
-                if (fileStats.isDirectory()) {
-                    dbmss.push(fileName);
+                if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
+                    const id = fileName.replace('dbms-', '');
+                    allDbmss[id] = configDbmss[id] || {
+                        description: '',
+                        id,
+                        name: '',
+                    };
                 }
             }),
         );
 
-        return dbmss;
+        return Object.values(allDbmss);
     }
 
     async createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string> {

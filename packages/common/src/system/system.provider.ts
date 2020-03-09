@@ -52,9 +52,7 @@ export class SystemProvider implements OnModuleInit {
             (account) => path.extname(account).toLocaleLowerCase() === JSON_FILE_EXTENSION,
         );
         const accountConfigs: string[] = await Promise.all(
-            map(availableAccounts, (account) =>
-                readFile(path.join(this.paths.config, ACCOUNTS_DIR_NAME, account), 'utf8'),
-            ),
+            map(availableAccounts, (account) => readFile(path.join(accountsDir, account), 'utf8')),
         );
 
         forEach(accountConfigs, (accountConfigBuffer) => {

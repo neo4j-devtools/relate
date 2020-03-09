@@ -14,10 +14,22 @@ describe('Local account', () => {
         await ensureDir(dbmsRoot);
 
         const config = new AccountConfigModel({
+            dbmss: {
+                '6bb553ba': {
+                    description: 'DBMS with metadata',
+                    id: '6bb553ba',
+                    name: 'Name',
+                },
+                e0aef2ad: {
+                    description: 'DBMS present in the config but not in the DBMS dir.',
+                    id: 'e0aef2ad',
+                    name: "Shouldn't be listed",
+                },
+            },
             id: 'test',
-            user: 'test',
             neo4jDataPath: envPaths().tmp,
             type: ACCOUNT_TYPES.LOCAL,
+            user: 'test',
         });
 
         account = new LocalAccount(config);
@@ -31,9 +43,21 @@ describe('Local account', () => {
     });
 
     test('list dbmss (dbmss installed)', async () => {
-        const expected = ['bar', 'baz', 'foo'];
-        const createDirs = expected.map((dbms) => ensureDir(path.join(dbmsRoot, dbms)));
+        const expected = [
+            {
+                id: '6bb553ba',
+                name: 'Name',
+                description: 'DBMS with metadata',
+            },
+            {
+                id: '998f936e',
+                name: '',
+                description: '',
+            },
+        ];
 
+        const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
+        const createDirs = dirs.map((dbms) => ensureDir(path.join(dbmsRoot, dbms)));
         await Promise.all(createDirs);
 
         const actual = await account.listDbmss();
