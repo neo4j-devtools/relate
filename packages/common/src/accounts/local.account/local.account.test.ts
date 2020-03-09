@@ -1,10 +1,10 @@
 import {ensureDir, remove} from 'fs-extra';
 import path from 'path';
 
-import {AccountConfigModel} from '../models/account-config.model';
+import {AccountConfigModel} from '../../models/account-config.model';
+import {ACCOUNT_TYPES} from '../account.constants';
+import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
-import {ACCOUNT_TYPES} from './account.constants';
-import {envPaths} from '../utils/env-paths';
 
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
@@ -45,14 +45,14 @@ describe('Local account', () => {
     test('list dbmss (dbmss installed)', async () => {
         const expected = [
             {
+                description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
-                description: 'DBMS with metadata',
             },
             {
+                description: '',
                 id: '998f936e',
                 name: '',
-                description: '',
             },
         ];
 

@@ -6,6 +6,10 @@ import {IDbms} from '../models/account-config.model';
 export abstract class AccountAbstract {
     constructor(protected readonly config: AccountConfigModel) {}
 
+    init(): Promise<void> {
+        return Promise.resolve();
+    }
+
     abstract listDbmss(): Promise<IDbms[]>;
 
     abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
