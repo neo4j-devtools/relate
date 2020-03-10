@@ -13,6 +13,17 @@ const DBMS_IDS = {
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
+    @Mutation(() => String)
+    createDbms(
+        @Args('accountId') accountId: string,
+        @Args('name') name: string,
+        @Args('password') password: string,
+        @Args('source') source: string,
+    ): Promise<string> {
+        const account = this.systemProvider.getAccount(accountId);
+        return account.createDbms(name, password, source);
+    }
+
     @Query(() => [String])
     statusDbmss(@Args('accountId') accountId: string, @Args(DBMS_IDS) dbmsIds: string[]): Promise<string[]> {
         const account = this.systemProvider.getAccount(accountId);

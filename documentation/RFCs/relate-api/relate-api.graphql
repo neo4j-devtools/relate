@@ -94,7 +94,7 @@ type Mutation {
 
     # $ relate dbms:create <dbms> [--source=<versionPathOrURL>]
     # account.createDbms(name: string, source?: string): Promise<DBMS>
-    createDbms(accountNameOrId: String!, name: String!, source: String): DBMS!
+    createDbms(accountNameOrId: String!, name: String!, password: String!, source: String): DBMS!
     # $ relate dbms:start <dbms> [<dbms...>]
     # account.startDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
     startDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!

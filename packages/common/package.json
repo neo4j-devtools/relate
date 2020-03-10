@@ -21,6 +21,7 @@
         "dev": "run-s clean-build start"
     },
     "devDependencies": {
+        "@types/decompress": "4.2.3",
         "@types/fs-extra": "8.0.1",
         "@types/jest": "24.9.0",
         "@types/lodash": "4.14.149",
@@ -38,7 +39,9 @@
         "rxjs": ">= 6"
     },
     "dependencies": {
+        "decompress": "4.2.0",
         "fs-extra": "8.1.0",
+        "got": "10.6.0",
         "lodash": "4.17.15",
         "tapestry": "git+https://github.com/huboneo/tapestry.git"
     }
