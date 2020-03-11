@@ -29,8 +29,8 @@ export class StopModule implements OnApplicationBootstrap {
 
                 const {selectedDbms} = await prompt({
                     choices: dbmss.map((dbms) => ({
-                        name: dbms,
-                        value: dbms,
+                        message: `[${dbms.id}] ${dbms.name}`,
+                        name: dbms.id,
                     })),
                     message: 'Select a DBMS',
                     name: 'selectedDbms',

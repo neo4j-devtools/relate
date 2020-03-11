@@ -1,4 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
+import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider} from '@relate/common';
 
@@ -20,7 +21,18 @@ export class ListModule implements OnApplicationBootstrap {
         return account
             .listDbmss()
             .then((dbmss) => {
-                dbmss.forEach((dbms) => this.utils.log(dbms));
+                cli.table(
+                    dbmss,
+                    {
+                        id: {},
+                        name: {},
+                        description: {},
+                    },
+                    {
+                        printLine: this.utils.log,
+                        ...this.parsed.flags,
+                    },
+                );
             })
             .catch(this.utils.error);
     }

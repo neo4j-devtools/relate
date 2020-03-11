@@ -28,6 +28,16 @@ _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technolog
 USAGE
   $ relate dbms:list
 
+OPTIONS
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
+
 ALIASES
   $ relate dbms:ls
 ```

@@ -20,12 +20,12 @@ export class StatusModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const account = this.systemProvider.getAccount(StatusModule.DEFAULT_ACCOUNT_ID);
+        const dbmss = await account.listDbmss();
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                const dbmss = await account.listDbmss();
-                dbmsIds = dbmss;
+                dbmsIds = dbmss.map((dbms) => dbms.id);
             } else {
                 const stdinDbmss = await readStdinArray();
                 dbmsIds = stdinDbmss;
@@ -33,14 +33,23 @@ export class StatusModule implements OnApplicationBootstrap {
         }
 
         return account.statusDbmss(dbmsIds).then((res: string[]) => {
-            const table = res.map((r, index) => ({
-                name: dbmsIds[index],
-                status: r.trim(),
-            }));
+            const table = res.map((status, index) => {
+                const dbms = dbmss.find((d) => d.id === dbmsIds[index]) || {
+                    id: '',
+                    name: '',
+                };
+
+                return {
+                    id: dbms.id,
+                    name: dbms.name,
+                    status: status.trim(),
+                };
+            });
 
             cli.table(
                 table,
                 {
+                    id: {},
                     name: {},
                     status: {},
                 },
