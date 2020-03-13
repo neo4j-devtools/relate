@@ -3,8 +3,8 @@ import {NotAllowedError} from '../errors';
 import {IAuthToken} from 'tapestry';
 
 export class AuraAccount extends AccountAbstract {
-    createDbms(): Promise<string> {
-        throw new NotAllowedError(`${AuraAccount.name} does not support creating a DBMS`);
+    installDbms(_name: string, _credentials: string, _source?: string): Promise<string> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support installing a DBMS`);
     }
 
     startDbmss(_dbmsIds: string[]): Promise<string[]> {

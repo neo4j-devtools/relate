@@ -11,6 +11,7 @@ export enum NEO4J_CONFIG_KEYS {
 
 export const NEO4J_BIN_DIR = 'bin';
 export const NEO4J_BIN_FILE = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
+export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.bat' : 'neo4j-admin';
 export const NEO4J_CONF_DIR = 'conf';
 export const NEO4J_CONF_FILE = 'neo4j.conf';
 export const DEFAULT_NEO4J_HOST = '127.0.0.1';

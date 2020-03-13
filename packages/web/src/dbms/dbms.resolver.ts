@@ -14,14 +14,14 @@ export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Mutation(() => String)
-    createDbms(
+    installDbms(
         @Args('accountId') accountId: string,
         @Args('name') name: string,
-        @Args('password') password: string,
+        @Args('credentials') credentials: string,
         @Args('source') source: string,
     ): Promise<string> {
         const account = this.systemProvider.getAccount(accountId);
-        return account.createDbms(name, password, source);
+        return account.installDbms(name, credentials, source);
     }
 
     @Query(() => [String])
