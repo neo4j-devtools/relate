@@ -1,5 +1,6 @@
 {
     "type": "LOCAL",
     "id": "foo",
-    "user": "bar"
+    "user": "bar",
+    "dbmss": {}
 }

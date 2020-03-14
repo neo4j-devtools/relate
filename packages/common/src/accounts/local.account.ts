@@ -25,7 +25,6 @@ import {
 } from './account.constants';
 import {JSON_FILE_EXTENSION} from '../constants';
 import {envPaths} from '../utils/env-paths';
-
 interface INeo4jDistribution {
     version: string;
     edition: string;
@@ -52,14 +51,13 @@ export class LocalAccount extends AccountAbstract {
 
         // !Source
         if (!source) {
-            // @TODO check downloaded versions and show a list? prompt user? download latest version?
+            // @TODO check downloaded versions and show a list? prompt user? download latest version automatically?
         }
 
         // Source
         if (source) {
             if (this.isValidUrl(source)) {
-                // @TODO need to verify/download and check whats downloaded
-
+                // @TODO need to verify/download
                 console.log(`fetch and install ${source}`);
             } else if (source && /^(\d.){2}\d$/.test(source)) {
                 const edition = 'enterprise';
@@ -174,7 +172,6 @@ export class LocalAccount extends AccountAbstract {
             // check auth enabled and set password
             // 'dbms.security.auth_enabled') === 'true'
             await this.setInitialDatabasePassword(dbmsId, credentials);
-            console.log('+++setInitialPass', await this.setInitialDatabasePassword(dbmsId, credentials));
             // will come back to check the installPluginDependencies situation
         }
     }
@@ -217,14 +214,6 @@ export class LocalAccount extends AccountAbstract {
             return false;
         }
     }
-
-    // const neo4jAdminPath = async (id: string, version: string) => {
-    //     if (process.platform === 'win32') {
-    //         return path.join(await neo4jPath(id, version), 'bin', 'neo4j-admin.bat');
-    //     }
-
-    //     return path.join(await neo4jPath(id, version), 'bin', 'neo4j-admin');
-    // };
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
         const neo4jAdminBinPath = path.join(this.getDBMSRootPath(dbmsID), NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
