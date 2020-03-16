@@ -13,6 +13,6 @@ export default class StatusCommand extends BaseCommand {
     static strict = false;
 
     static flags = {
-        ...cli.table.flags(),
+        ...cli.table.flags({except: ['extended', 'csv']}),
     };
 }

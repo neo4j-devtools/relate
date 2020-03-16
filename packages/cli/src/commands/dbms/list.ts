@@ -8,9 +8,7 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static aliases = ['dbms:ls'];
-
     static flags = {
-        ...cli.table.flags(),
+        ...cli.table.flags({except: ['extended', 'csv']}),
     };
 }
