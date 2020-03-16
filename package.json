@@ -3,6 +3,9 @@
     "private": true,
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
+    "bin": {
+        "relate": "./packages/cli/bin/run"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/neo-technology/daedalus.git"

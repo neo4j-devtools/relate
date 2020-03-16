@@ -26,6 +26,26 @@ USAGE
 ```
 <!-- usagestop -->
 
+# Development
+
+To to run the CLI while developing, you can either execute the run script on the
+`cli` package
+
+```shell
+daedalus$ cd packages/cli
+cli$ npm run build
+cli$ ./bin/run --help
+```
+
+Or link the entire repository and have access to the `relate` command globally.
+
+```shell
+daedalus$ npm link
+daedalus$ relate --help
+```
+
+# Commands
+
 <!-- commands -->
 # Command Topics
 
