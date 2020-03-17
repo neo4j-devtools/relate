@@ -6,6 +6,10 @@ import {ElectronModule} from './electron.module';
 
 jest.setTimeout(30000);
 
+const DBMS_LIST = {
+    query: 'query ListDBMSs { listDbmss(accountId: "foo") { id, name, description } }',
+    variables: {},
+};
 const DBMS_STATUS = {
     query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["test"]) }',
     variables: {},
@@ -43,6 +47,23 @@ describe('DBMSModule', () => {
 
         app = module.createNestApplication();
         await app.init();
+    });
+
+    test('/graphql listDbmss', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(DBMS_LIST)
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {listDbmss} = res.body.data;
+                expect(listDbmss).toEqual([
+                    {
+                        description: 'Dummy DBMS used for e2e tests.',
+                        id: 'test',
+                        name: 'Test',
+                    },
+                ]);
+            });
     });
 
     test('/graphql startDbmss', () => {

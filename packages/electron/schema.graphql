@@ -9,6 +9,12 @@ input AuthTokenInput {
   credentials: String!
 }
 
+type Dbms {
+  id: ID!
+  name: String
+  description: String
+}
+
 type Mutation {
   startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
@@ -16,5 +22,6 @@ type Mutation {
 }
 
 type Query {
+  listDbmss(accountId: String!): [Dbms!]!
   statusDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
 }
