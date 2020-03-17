@@ -1,16 +1,23 @@
-/* eslint-disable no-console */
 import {access, constants, ensureDir, ensureFile, readdir, readFile, rename, writeJson} from 'fs-extra';
 import {filter as filterArray, reduce, some} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import got from 'got';
+import {coerce, satisfies} from 'semver';
 import {spawn} from 'child_process';
 import path from 'path';
 import {filter, first, flatMap} from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {AccountAbstract} from './account.abstract';
-import {NotFoundError} from '../errors';
+import {
+    DbmsExistsError,
+    InvalidArgumentError,
+    InvalidPathError,
+    NotFoundError,
+    NotSupportedError,
+    UndefinedError,
+} from '../errors';
 import {parseNeo4jConfigPort, readPropertiesFile} from '../utils';
 import {
     ACCOUNTS_DIR_NAME,
@@ -22,9 +29,15 @@ import {
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
     NEO4J_CONFIG_KEYS,
+    NEO4J_EDITION_ENTERPRISE,
+    NEO4J,
+    NEO4J_DISTRIBUTION_REGEX,
+    NEO4J_SUPPORTED_VERSION_RANGE,
+    NEO4J_DIST_VERSIONS_URL,
 } from './account.constants';
 import {JSON_FILE_EXTENSION} from '../constants';
 import {envPaths} from '../utils/env-paths';
+
 interface INeo4jDistribution {
     version: string;
     edition: string;
@@ -45,39 +58,49 @@ interface INeo4jDists {
 }
 
 export class LocalAccount extends AccountAbstract {
-    async installDbms(name: string, credentials: string, source?: string): Promise<string> {
-        // Assuming source arg will be version in the form '4.0.1', or a URL (or path?), or undefined
-        console.log(name, source, credentials);
-
-        // !Source
-        if (!source) {
-            // @TODO check downloaded versions and show a list? prompt user? download latest version automatically?
+    async installDbms(name: string, credentials: string, version: string): Promise<string> {
+        if (!version) {
+            return Promise.reject(new UndefinedError('version undefined'));
         }
 
-        // Source
-        if (source) {
-            if (this.isValidUrl(source)) {
-                // @TODO need to verify/download
-                console.log(`fetch and install ${source}`);
-            } else if (source && /^(\d.){2}\d$/.test(source)) {
-                const edition = 'enterprise';
-                const version = source;
-
-                console.log('++++ getDownloadedNeo4jDistributions()', await this.getDownloadedNeo4jDistributions());
-                const neo4jDistributions = await this.getDownloadedNeo4jDistributions();
-                const neo4jDistributionExists = some(neo4jDistributions, (neo4jDistribution) => {
-                    return neo4jDistribution.edition === edition && neo4jDistribution.version === version;
-                });
-
-                console.log('++++ neo4jDistributionExists', neo4jDistributionExists);
-                if (neo4jDistributionExists) {
-                    await this.installNeo4j(name, version, credentials);
-                } else {
-                    await this.fetchNeo4jVersions();
-                }
+        // version as semver e.g. '4.0.0'
+        if (coerce(version) && coerce(version)!.version) {
+            const {version: semver} = coerce(version)!;
+            if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
+                return Promise.reject(new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`));
             }
+            const neo4jDistributions = await this.getDownloadedNeo4jDistributions();
+            const neo4jDistributionExists = some(neo4jDistributions, (neo4jDistribution) => {
+                return neo4jDistribution.edition === NEO4J_EDITION_ENTERPRISE && neo4jDistribution.version === semver;
+            });
+
+            if (!neo4jDistributionExists) {
+                // to complete in a future PR
+                await this.fetchNeo4jVersions();
+                return Promise.resolve('version doesnt exist, so will attempt to download and install');
+            }
+
+            const distributionArchiveFileName = `${NEO4J}-${NEO4J_EDITION_ENTERPRISE}-${semver}${
+                process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
+            }`;
+            await this.installNeo4j(name, semver, credentials, distributionArchiveFileName);
+            return Promise.resolve('installed');
         }
-        return Promise.resolve('done');
+
+        // version as a URL. This needs more investigation and discussion in upcoming wokr.
+        if (this.isValidUrl(version)) {
+            return Promise.resolve(`fetch and install ${version}`);
+        }
+
+        // version as a file path. This needs more discussion in upcoming work.
+        if (this.isValidPath(version)) {
+            if (!(await this.pathExists(version))) {
+                return Promise.reject(new InvalidPathError('supplied path for version is invalid'));
+            }
+            return Promise.resolve(`check and install path ${version}`);
+        }
+
+        return Promise.reject(new InvalidArgumentError('unable to install. Cannot resolve version argument'));
     }
 
     startDbmss(dbmsIds: string[]): Promise<string[]> {
@@ -129,60 +152,57 @@ export class LocalAccount extends AccountAbstract {
 
     protected readonly paths = envPaths();
 
-    /* eslint-disable consistent-return */
-    private async installNeo4j(name: string, version: string, credentials: string): Promise<void> {
-        console.log('name', name);
-        // will move to constants
-        const edition = 'enterprise';
-        const distributionArchiveFileName = `neo4j-${edition}-${version}${
-            process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
-        }`;
-        const distributionPath = path.join(this.paths.cache, 'neo4j', distributionArchiveFileName);
+    private async installNeo4j(
+        name: string,
+        version: string,
+        credentials: string,
+        archiveFileName: string,
+    ): Promise<void> {
+        await ensureDir(path.join(this.paths.cache, NEO4J));
+        const distributionPath = path.join(this.paths.cache, NEO4J, archiveFileName);
         const outputDir = this.getDBMSRootPath(null);
         const id = uuidv4();
         const dbmsId = `dbms-${id}`;
-        console.log('+++distributionPath', distributionPath);
-        console.log('+++outputDir', outputDir);
-        try {
-            await access(path.join(outputDir, dbmsId));
-            console.log(`${outputDir}/${dbmsId} already exists!`);
-            return Promise.reject(new Error('fail'));
-        } catch (_) {
-            await decompress(distributionPath, outputDir);
-            await rename(`${outputDir}/neo4j-${edition}-${version}`, `${outputDir}/${dbmsId}`);
-            await this.updateAccountDbmsConfig(id, name);
 
-            // neo4j config
-            const config = await readPropertiesFile(
-                path.join(this.getDBMSRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
-            );
-            // console.log('+++conf', config);
-            await this.ensureStructure(dbmsId, config);
-            // need to set config here, make a config copy, initial credentials and install plugin dependencies...
-            // @TODO set config (in upcoming PR)
-            // not doing UDC as it "dropped in 4.0. it may return"
-            // conf.set('dbms.security.auth_enabled', 'true');
-            // conf.set('dbms.memory.heap.initial_size', '512m');
-            // conf.set('dbms.memory.heap.max_size', '1G');
-            // conf.set('dbms.memory.pagecache.size', '512m');
-
-            // Save config
-            // await backupConfig(id, version);
-
-            // check auth enabled and set password
-            // 'dbms.security.auth_enabled') === 'true'
-            await this.setInitialDatabasePassword(dbmsId, credentials);
-            // will come back to check the installPluginDependencies situation
+        if (!this.pathExists(path.join(outputDir, dbmsId))) {
+            return Promise.reject(new DbmsExistsError(`${dbmsId} already exists`));
         }
+        await decompress(distributionPath, outputDir);
+        await rename(`${outputDir}/${NEO4J}-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsId}`);
+        await this.updateAccountDbmsConfig(id, name);
+
+        // neo4j config
+        const config = await readPropertiesFile(
+            path.join(this.getDBMSRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+        );
+
+        await this.ensureStructure(dbmsId, config);
+
+        // @TODO set config (in upcoming PR)
+        // not doing UDC as it "dropped in 4.0. it may return"
+        // conf.set('dbms.security.auth_enabled', 'true');
+        // conf.set('dbms.memory.heap.initial_size', '512m');
+        // conf.set('dbms.memory.heap.max_size', '1G');
+        // conf.set('dbms.memory.pagecache.size', '512m');
+
+        // Save config
+        // await backupConfig(id, version);
+
+        // check auth enabled from config and set password
+        // 'dbms.security.auth_enabled') === 'true'
+        await this.setInitialDatabasePassword(dbmsId, credentials);
+
+        // will come back to check the installPluginDependencies situation in future PRs
+        return Promise.resolve();
     }
 
     private async fetchNeo4jVersions(): Promise<INeo4jVersion[] | []> {
-        const response = await got('http://dist.neo4j.org/versions/v1/neo4j-versions.json');
-        console.log('+++response', response.body);
+        await got(NEO4J_DIST_VERSIONS_URL);
         return [];
     }
 
     private async getDownloadedNeo4jDistributions(): Promise<INeo4jDistribution[] | []> {
+        await ensureDir(path.join(this.paths.cache, 'neo4j'));
         const fileNames = await readdir(path.join(this.paths.cache, 'neo4j'));
         const fileNamesFilter = filterArray(fileNames, (fileName) =>
             fileName.endsWith(process.platform === 'win32' ? '.zip' : '.tar.gz'),
@@ -190,7 +210,7 @@ export class LocalAccount extends AccountAbstract {
         return reduce(
             fileNamesFilter,
             (acc: INeo4jDistribution[], fileName: string) => {
-                const match = fileName.match(/^neo4j-([\D]+)-([\S.-]+)-.*/);
+                const match = fileName.match(NEO4J_DISTRIBUTION_REGEX);
                 if (match) {
                     const [, edition, version] = match;
                     acc.push({
@@ -209,6 +229,22 @@ export class LocalAccount extends AccountAbstract {
         try {
             /* eslint-disable no-new */
             new URL(stringVal);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    private isValidPath(stringVal: string): boolean {
+        if (stringVal.split(path.sep).length > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    private async pathExists(pathVal: string): Promise<boolean> {
+        try {
+            await access(pathVal);
             return true;
         } catch (_) {
             return false;
@@ -283,19 +319,19 @@ export class LocalAccount extends AccountAbstract {
 
     private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
         const accountConfig = JSON.parse(
-            await readFile(path.join(this.paths.config, ACCOUNTS_DIR_NAME, `foo${JSON_FILE_EXTENSION}`), 'utf8'),
+            await readFile(
+                path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                'utf8',
+            ),
         );
         accountConfig.dbmss[uuid] = {
             uuid,
             name,
             description: '',
         };
-        await writeJson(path.join(this.paths.config, ACCOUNTS_DIR_NAME, `foo${JSON_FILE_EXTENSION}`), accountConfig);
-        console.log(
-            '++accountConfig 2',
-            JSON.parse(
-                await readFile(path.join(this.paths.config, ACCOUNTS_DIR_NAME, `foo${JSON_FILE_EXTENSION}`), 'utf8'),
-            ),
+        await writeJson(
+            path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            accountConfig,
         );
     }
 }

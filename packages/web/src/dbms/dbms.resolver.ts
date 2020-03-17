@@ -18,10 +18,10 @@ export class DBMSResolver {
         @Args('accountId') accountId: string,
         @Args('name') name: string,
         @Args('credentials') credentials: string,
-        @Args('source') source: string,
+        @Args('version') version: string,
     ): Promise<string> {
         const account = this.systemProvider.getAccount(accountId);
-        return account.installDbms(name, credentials, source);
+        return account.installDbms(name, credentials, version);
     }
 
     @Query(() => [String])

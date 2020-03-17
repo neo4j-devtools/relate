@@ -10,7 +10,7 @@ input AuthTokenInput {
 }
 
 type Mutation {
-  installDbms(source: String!, credentials: String!, name: String!, accountId: String!): String!
+  installDbms(version: String!, credentials: String!, name: String!, accountId: String!): String!
   startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
   createAccessToken(authToken: AuthTokenInput!, dbmsId: String!, appId: String!, accountId: String!): String!

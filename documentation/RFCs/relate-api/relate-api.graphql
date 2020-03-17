@@ -92,9 +92,9 @@ type Mutation {
     # relate.removeAccount(nameOrId: string): Promise<Account>
     removeAccount(nameOrId: String!): Account!
 
-    # $ relate dbms:install <dbms> [--source=<versionPathOrURL>]
-    # account.installDbms(name: string, source?: string): Promise<DBMS>
-    installDbms(accountNameOrId: String!, name: String!, credentials: String!, source: String): DBMS!
+    # $ relate dbms:install <dbms> [--version=<versionPathOrURL>]
+    # account.installDbms(name: string, version: string): Promise<DBMS>
+    installDbms(accountNameOrId: String!, name: String!, credentials: String!, version: String): DBMS!
     # $ relate dbms:start <dbms> [<dbms...>]
     # account.startDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
     startDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
