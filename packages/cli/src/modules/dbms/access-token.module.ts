@@ -13,8 +13,6 @@ import {isTTY, readStdin} from '../../stdin';
 export class AccessTokenModule implements OnApplicationBootstrap {
     static DEFAULT_APP_ID = 'relate';
 
-    static DEFAULT_ACCOUNT_ID = 'foo';
-
     constructor(
         @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
@@ -22,8 +20,8 @@ export class AccessTokenModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const account = this.systemProvider.getAccount(AccessTokenModule.DEFAULT_ACCOUNT_ID);
         const {args, flags} = this.parsed;
+        const account = this.systemProvider.getAccount(flags.account);
         const authToken = new AuthTokenModel({
             credentials: trim(flags.credentials),
             principal: trim(flags.principal),
@@ -55,12 +53,7 @@ export class AccessTokenModule implements OnApplicationBootstrap {
         return account
             .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbmsId, authToken)
             .then((accessToken) =>
-                this.systemProvider.registerAccessToken(
-                    AccessTokenModule.DEFAULT_ACCOUNT_ID,
-                    dbmsId,
-                    authToken.principal,
-                    accessToken,
-                ),
+                this.systemProvider.registerAccessToken(flags.account, dbmsId, authToken.principal, accessToken),
             )
             .then(this.utils.log)
             .catch(({message}) => this.utils.error(message));

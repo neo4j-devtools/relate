@@ -7,24 +7,24 @@ import {ElectronModule} from './electron.module';
 jest.setTimeout(30000);
 
 const DBMS_LIST = {
-    query: 'query ListDBMSs { listDbmss(accountId: "foo") { id, name, description } }',
+    query: 'query ListDBMSs { listDbmss(accountId: "test") { id, name, description } }',
     variables: {},
 };
 const DBMS_STATUS = {
-    query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["test"]) }',
+    query: 'query StatusDBMSs { statusDbmss(accountId: "test", dbmsIds: ["test"]) }',
     variables: {},
 };
 const DBMS_START = {
-    query: 'mutation StartDBMSs { startDbmss(accountId: "foo", dbmsIds: ["test"]) }',
+    query: 'mutation StartDBMSs { startDbmss(accountId: "test", dbmsIds: ["test"]) }',
     variables: {},
 };
 const DBMS_STOP = {
-    query: 'mutation StopDBMSs { stopDbmss(accountId: "foo", dbmsIds: ["test"]) }',
+    query: 'mutation StopDBMSs { stopDbmss(accountId: "test", dbmsIds: ["test"]) }',
     variables: {},
 };
 const DBMS_ACCESS = {
     query: `mutation AccessDBMS($authToken: AuthTokenInput!) {
-        createAccessToken(accountId: "foo", dbmsId: "test", appId: "foo", authToken: $authToken)
+        createAccessToken(accountId: "test", dbmsId: "test", appId: "foo", authToken: $authToken)
     }`,
     variables: {
         authToken: {
@@ -155,7 +155,7 @@ describe('DBMSModule', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send({
-                query: 'query StatusDBMSs { statusDbmss(accountId: "foo", dbmsIds: ["non-existent"]) }',
+                query: 'query StatusDBMSs { statusDbmss(accountId: "test", dbmsIds: ["non-existent"]) }',
             })
             .expect(HTTP_OK)
             .expect((res: request.Response) => {

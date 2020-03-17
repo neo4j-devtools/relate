@@ -16,7 +16,8 @@ export class ListModule implements OnApplicationBootstrap {
     ) {}
 
     onApplicationBootstrap(): Promise<void> {
-        const account = this.systemProvider.getAccount('foo');
+        const {flags} = this.parsed;
+        const account = this.systemProvider.getAccount(flags.account);
 
         return account
             .listDbmss()
@@ -30,7 +31,7 @@ export class ListModule implements OnApplicationBootstrap {
                     },
                     {
                         printLine: this.utils.log,
-                        ...this.parsed.flags,
+                        ...flags,
                     },
                 );
             })
