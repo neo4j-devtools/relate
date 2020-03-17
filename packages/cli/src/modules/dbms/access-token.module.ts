@@ -1,8 +1,8 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {AuthTokenModel, SystemModule, SystemProvider} from '@relate/common';
 import {trim} from 'lodash';
+import {prompt} from 'enquirer';
 
-import {RequiredArgsError} from '../../errors';
 import {isTTY, readStdin} from '../../stdin';
 
 @Module({
@@ -23,20 +23,30 @@ export class AccessTokenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const account = this.systemProvider.getAccount(AccessTokenModule.DEFAULT_ACCOUNT_ID);
-        const {argv, flags} = this.parsed;
+        const {args, flags} = this.parsed;
         const authToken = new AuthTokenModel({
             credentials: trim(flags.credentials),
             principal: trim(flags.principal),
             scheme: 'basic',
         });
         // @todo: figure this out in combination with TTY
-        let [dbmsId] = argv;
+        let {dbmsId} = args;
 
         if (!dbmsId) {
             if (isTTY()) {
-                // TODO - Once we have dbms:list we can make the user choose
-                // the DBMS interactively.
-                throw new RequiredArgsError(['dbmsIds']);
+                const dbmss = await account.listDbmss();
+
+                const {selectedDbms} = await prompt({
+                    choices: dbmss.map((dbms) => ({
+                        message: `[${dbms.id}] ${dbms.name}`,
+                        name: dbms.id,
+                    })),
+                    message: 'Select a DBMS',
+                    name: 'selectedDbms',
+                    type: 'select',
+                });
+
+                dbmsId = selectedDbms;
             } else {
                 dbmsId = await readStdin().then(trim);
             }

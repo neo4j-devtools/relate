@@ -14,6 +14,4 @@ export default class AccessTokenCommand extends BaseCommand {
         credentials: flags.string({char: 'c'}),
         principal: flags.string({char: 'p'}),
     };
-
-    static strict = false;
 }

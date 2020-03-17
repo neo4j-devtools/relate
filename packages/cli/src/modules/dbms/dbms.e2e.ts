@@ -24,6 +24,12 @@ describe('$relate dbms', () => {
         });
 
     test.stdout()
+        .command(['dbms:list'])
+        .it('lists DBMSs', (ctx) => {
+            expect(ctx.stdout).toContain('test');
+        });
+
+    test.stdout()
         .command(['dbms:status', 'test'])
         .it('logs running status', (ctx) => {
             expect(ctx.stdout).toContain('Neo4j is running');
@@ -38,14 +44,11 @@ describe('$relate dbms', () => {
         });
 
     test.stdout()
+        .stderr()
         .command(['dbms:stop', 'test'])
         .it('logs stop message', (ctx) => {
-            if (process.platform === 'win32') {
-                expect(ctx.stdout).toContain('Neo4j service stopped');
-            } else {
-                expect(ctx.stdout).toContain('Stopping Neo4j');
-                expect(ctx.stdout).toContain('stopped');
-            }
+            expect(ctx.stdout).toBe('');
+            expect(ctx.stderr).toContain('done');
         });
 
     test.stdout()
