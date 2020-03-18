@@ -2,5 +2,11 @@
     "type": "LOCAL",
     "id": "foo",
     "user": "bar",
-    "dbmss": {}
+    "dbmss": {
+        "test": {
+            "id": "test",
+            "name": "Test",
+            "description": "Dummy DBMS used for e2e tests."
+        }
+    }
 }
