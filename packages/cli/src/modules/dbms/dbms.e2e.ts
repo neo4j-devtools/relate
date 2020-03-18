@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-jest.setTimeout(30000);
+jest.setTimeout(35000);
 
 jest.mock('fs-extra', () => {
     return {
@@ -24,6 +24,12 @@ describe('$relate dbms', () => {
         });
 
     test.stdout()
+        .command(['dbms:list'])
+        .it('lists DBMSs', (ctx) => {
+            expect(ctx.stdout).toContain('test');
+        });
+
+    test.stdout()
         .command(['dbms:status', 'test'])
         .it('logs running status', (ctx) => {
             expect(ctx.stdout).toContain('Neo4j is running');
@@ -31,21 +37,18 @@ describe('$relate dbms', () => {
 
     test.stdout()
         // arbitrary wait for Neo4j to come online
-        .do(() => new Promise((resolve) => setTimeout(resolve, 20000)))
+        .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
         .command(['dbms:access-token', 'test', '-p neo4j', '-c newpassword'])
         .it('logs access token', (ctx) => {
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
     test.stdout()
+        .stderr()
         .command(['dbms:stop', 'test'])
         .it('logs stop message', (ctx) => {
-            if (process.platform === 'win32') {
-                expect(ctx.stdout).toContain('Neo4j service stopped');
-            } else {
-                expect(ctx.stdout).toContain('Stopping Neo4j');
-                expect(ctx.stdout).toContain('stopped');
-            }
+            expect(ctx.stdout).toBe('');
+            expect(ctx.stderr).toContain('done');
         });
 
     test.stdout()

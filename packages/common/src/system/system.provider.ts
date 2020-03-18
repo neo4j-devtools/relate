@@ -1,7 +1,7 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ensureDir, ensureFile, readdir, readFile} from 'fs-extra';
-import {filter, forEach, map} from 'lodash';
+import {filter, map} from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
 import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
@@ -52,20 +52,20 @@ export class SystemProvider implements OnModuleInit {
             (account) => path.extname(account).toLocaleLowerCase() === JSON_FILE_EXTENSION,
         );
         const accountConfigs: string[] = await Promise.all(
-            map(availableAccounts, (account) =>
-                readFile(path.join(this.paths.config, ACCOUNTS_DIR_NAME, account), 'utf8'),
-            ),
+            map(availableAccounts, (account) => readFile(path.join(accountsDir, account), 'utf8')),
         );
 
-        forEach(accountConfigs, (accountConfigBuffer) => {
+        const createAccountPromises = map(accountConfigs, async (accountConfigBuffer) => {
             const config = JSON.parse(accountConfigBuffer);
             const accountConfig: AccountConfigModel = new AccountConfigModel({
                 ...config,
                 neo4jDataPath: config.neo4jDataPath || this.paths.data,
             });
 
-            this.allAccounts.set(`${accountConfig.id}`, createAccountInstance(accountConfig));
+            this.allAccounts.set(`${accountConfig.id}`, await createAccountInstance(accountConfig));
         });
+
+        await Promise.all(createAccountPromises);
     }
 
     private async verifyInstallation(): Promise<void> {

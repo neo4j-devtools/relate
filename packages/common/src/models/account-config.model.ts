@@ -29,6 +29,7 @@ export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements
     @IsEnum(ACCOUNT_TYPES)
     public type!: ACCOUNT_TYPES;
 
+    // @todo: this is optional and LocalAccount specific
     @IsString()
     public neo4jDataPath!: string;
 

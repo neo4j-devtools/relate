@@ -1,31 +1,25 @@
-import {access, constants, ensureDir, ensureFile, readdir, readFile, rename, writeJson} from 'fs-extra';
-import {filter as filterArray, reduce, some} from 'lodash';
+import {access, ensureDir, ensureFile, readdir, readFile, rename, stat, writeJson} from 'fs-extra';
+import {map, filter as filterArray, reduce, some} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import got from 'got';
 import {coerce, satisfies} from 'semver';
-import {spawn} from 'child_process';
 import path from 'path';
 import {filter, first, flatMap} from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {AccountAbstract} from './account.abstract';
+import {IDbms} from '../../models/account-config.model';
+import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
 import {
     DbmsExistsError,
     InvalidArgumentError,
     InvalidPathError,
-    NotFoundError,
     NotSupportedError,
     UndefinedError,
-} from '../errors';
-import {parseNeo4jConfigPort, readPropertiesFile} from '../utils';
+} from '../../errors';
 import {
-    ACCOUNTS_DIR_NAME,
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HOST,
-    NEO4J_BIN_DIR,
-    NEO4J_BIN_FILE,
-    NEO4J_ADMIN_BIN_FILE,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
     NEO4J_CONFIG_KEYS,
@@ -34,9 +28,14 @@ import {
     NEO4J_DISTRIBUTION_REGEX,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_DIST_VERSIONS_URL,
-} from './account.constants';
-import {JSON_FILE_EXTENSION} from '../constants';
-import {envPaths} from '../utils/env-paths';
+    ACCOUNTS_DIR_NAME
+} from '../account.constants';
+import {JSON_FILE_EXTENSION} from '../../constants';
+import {envPaths} from '../../utils/env-paths';
+import {resolveDbms} from './resolve-dbms';
+import {AccountAbstract} from '../account.abstract';
+import {neo4jCmd} from './neo4j-cmd';
+import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 interface INeo4jDistribution {
     version: string;
@@ -58,6 +57,14 @@ interface INeo4jDists {
 }
 
 export class LocalAccount extends AccountAbstract {
+    private dbmss: {[id: string]: IDbms} = {};
+
+    private paths = envPaths();
+
+    async init(): Promise<void> {
+        await this.discoverDbmss();
+    }
+
     async installDbms(name: string, credentials: string, version: string): Promise<string> {
         if (!version) {
             return Promise.reject(new UndefinedError('version undefined'));
@@ -103,22 +110,30 @@ export class LocalAccount extends AccountAbstract {
         return Promise.reject(new InvalidArgumentError('unable to install. Cannot resolve version argument'));
     }
 
-    startDbmss(dbmsIds: string[]): Promise<string[]> {
-        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'start')));
+    startDbmss(nameOrIds: string[]): Promise<string[]> {
+        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
+        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'start')));
     }
 
-    stopDbmss(dbmsIds: string[]): Promise<string[]> {
-        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'stop')));
+    stopDbmss(nameOrIds: string[]): Promise<string[]> {
+        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
+        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'stop')));
     }
 
-    statusDbmss(dbmsIds: string[]): Promise<string[]> {
-        return Promise.all(dbmsIds.map((id) => this.neo4j(id, 'status')));
+    statusDbmss(nameOrIds: string[]): Promise<string[]> {
+        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
+        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
-    async createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string> {
-        const config = await readPropertiesFile(
-            path.join(this.getDBMSRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
-        );
+    async listDbmss(): Promise<IDbms[]> {
+        // Discover DBMSs again in case there have been changes in the file system.
+        await this.discoverDbmss();
+        return Object.values(this.dbmss);
+    }
+
+    async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
+        const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
+        const config = await readPropertiesFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
         const driver = new Driver<Result>({
@@ -140,17 +155,15 @@ export class LocalAccount extends AccountAbstract {
             .finally(() => driver.shutDown().toPromise());
     }
 
-    private getDBMSRootPath(dbmsId: string | null): string {
+    private getDbmsRootPath(dbmsId: string | null): string {
         const dbmssDir = path.join(this.config.neo4jDataPath, 'dbmss');
 
         if (dbmsId) {
-            return path.join(dbmssDir, dbmsId);
+            return path.join(dbmssDir, `dbms-${dbmsId}`);
         }
 
         return dbmssDir;
     }
-
-    protected readonly paths = envPaths();
 
     private async installNeo4j(
         name: string,
@@ -160,7 +173,7 @@ export class LocalAccount extends AccountAbstract {
     ): Promise<void> {
         await ensureDir(path.join(this.paths.cache, NEO4J));
         const distributionPath = path.join(this.paths.cache, NEO4J, archiveFileName);
-        const outputDir = this.getDBMSRootPath(null);
+        const outputDir = this.getDbmsRootPath(null);
         const id = uuidv4();
         const dbmsId = `dbms-${id}`;
 
@@ -173,7 +186,7 @@ export class LocalAccount extends AccountAbstract {
 
         // neo4j config
         const config = await readPropertiesFile(
-            path.join(this.getDBMSRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
 
         await this.ensureStructure(dbmsId, config);
@@ -252,69 +265,14 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        const neo4jAdminBinPath = path.join(this.getDBMSRootPath(dbmsID), NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
-
-        return new Promise((resolve, reject) => {
-            access(neo4jAdminBinPath, constants.X_OK, (err: NodeJS.ErrnoException | null) => {
-                if (err) {
-                    reject(new NotFoundError(`DBMS "${dbmsID}" not found`));
-                    return;
-                }
-                const data: string[] = [];
-                const collect = (chunk: Buffer) => {
-                    data.push(chunk.toString());
-                };
-
-                const neo4jAdminCommand = spawn(neo4jAdminBinPath, [
-                    'set-initial-password',
-                    process.platform === 'win32' ? `"${credentials}"` : credentials,
-                ]);
-                neo4jAdminCommand.stderr.on('data', collect);
-                neo4jAdminCommand.stderr.on('error', reject);
-                neo4jAdminCommand.stderr.on('close', () => resolve(data.join('')));
-                neo4jAdminCommand.stderr.on('end', () => resolve(data.join('')));
-
-                neo4jAdminCommand.stdout.on('data', collect);
-                neo4jAdminCommand.stdout.on('error', reject);
-                neo4jAdminCommand.stdout.on('close', () => resolve(data.join('')));
-                neo4jAdminCommand.stdout.on('end', () => resolve(data.join('')));
-            });
-        });
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), credentials, 'set-initial-password')
     }
 
     private async ensureStructure(dbmsID: string, config: any): Promise<void> {
         // Currently reading via commented lines, whereas Config on Desktop v1 will have defaults set...
-        await ensureDir(path.join(this.getDBMSRootPath(dbmsID), config.get('#dbms.directories.run')));
-        await ensureDir(path.join(this.getDBMSRootPath(dbmsID), config.get('#dbms.directories.logs')));
-        await ensureFile(path.join(this.getDBMSRootPath(dbmsID), config.get('#dbms.directories.logs'), 'neo4j.log'));
-    }
-
-    private neo4j(dbmsID: string, command: string): Promise<string> {
-        const neo4jBinPath = path.join(this.getDBMSRootPath(dbmsID), NEO4J_BIN_DIR, NEO4J_BIN_FILE);
-
-        return new Promise((resolve, reject) => {
-            access(neo4jBinPath, constants.X_OK, (err: NodeJS.ErrnoException | null) => {
-                if (err) {
-                    reject(new NotFoundError(`DBMS "${dbmsID}" not found`));
-                    return;
-                }
-                const data: string[] = [];
-                const collect = (chunk: Buffer) => {
-                    data.push(chunk.toString());
-                };
-
-                const neo4jCommand = spawn(neo4jBinPath, [command]);
-                neo4jCommand.stderr.on('data', collect);
-                neo4jCommand.stderr.on('error', reject);
-                neo4jCommand.stderr.on('close', () => resolve(data.join('')));
-                neo4jCommand.stderr.on('end', () => resolve(data.join('')));
-
-                neo4jCommand.stdout.on('data', collect);
-                neo4jCommand.stdout.on('error', reject);
-                neo4jCommand.stdout.on('close', () => resolve(data.join('')));
-                neo4jCommand.stdout.on('end', () => resolve(data.join('')));
-            });
-        });
+        await ensureDir(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.run')));
+        await ensureDir(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.logs')));
+        await ensureFile(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
@@ -332,6 +290,25 @@ export class LocalAccount extends AccountAbstract {
         await writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
+        );
+    }
+
+    private async discoverDbmss(): Promise<void> {
+        const fileNames = await readdir(this.getDbmsRootPath(null));
+        const configDbmss = this.config.dbmss || {};
+
+        await Promise.all(
+            map(fileNames, async (fileName) => {
+                const fileStats = await stat(path.join(this.getDbmsRootPath(null), fileName));
+                if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
+                    const id = fileName.replace('dbms-', '');
+                    this.dbmss[id] = configDbmss[id] || {
+                        description: '',
+                        id,
+                        name: '',
+                    };
+                }
+            }),
         );
     }
 }

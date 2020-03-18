@@ -5,10 +5,16 @@ import {InvalidConfigError} from '../errors';
 import {AccountAbstract} from './account.abstract';
 import {LocalAccount} from './local.account';
 
-export function createAccountInstance(config: AccountConfigModel): AccountAbstract {
-    if (config.type === ACCOUNT_TYPES.LOCAL) {
-        return new LocalAccount(config);
+export async function createAccountInstance(config: AccountConfigModel): Promise<AccountAbstract> {
+    let account: AccountAbstract;
+    switch (config.type) {
+        case ACCOUNT_TYPES.LOCAL:
+            account = new LocalAccount(config);
+            break;
+        default:
+            throw new InvalidConfigError(`Account type ${config.type} not supported`);
     }
 
-    throw new InvalidConfigError(`Account type ${config.type} not supported`);
+    await account.init();
+    return account;
 }

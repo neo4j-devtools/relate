@@ -1,8 +1,8 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
+import {prompt} from 'enquirer';
 
 import {SystemModule, SystemProvider} from '@relate/common';
-import {RequiredArgsError} from '../../errors';
-import {readStdin, isTTY} from '../../stdin';
+import {readStdinArray, isTTY} from '../../stdin';
 
 @Module({
     exports: [],
@@ -24,11 +24,21 @@ export class StartModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                // TODO - Once we have dbms:list we can make the user choose
-                // the DBMS interactively.
-                throw new RequiredArgsError(['dbmsIds']);
+                const dbmss = await account.listDbmss();
+
+                const {selectedDbms} = await prompt({
+                    choices: dbmss.map((dbms) => ({
+                        message: `[${dbms.id}] ${dbms.name}`,
+                        name: dbms.id,
+                    })),
+                    message: 'Select a DBMS',
+                    name: 'selectedDbms',
+                    type: 'select',
+                });
+
+                dbmsIds = [selectedDbms];
             } else {
-                dbmsIds = await readStdin().then((raw) => raw.trim().split(/\n|\s/));
+                dbmsIds = await readStdinArray();
             }
         }
 
