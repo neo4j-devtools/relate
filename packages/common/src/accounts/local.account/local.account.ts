@@ -18,7 +18,6 @@ import {
     NEO4J_CONF_FILE,
     NEO4J_CONFIG_KEYS,
     NEO4J_EDITION_ENTERPRISE,
-    NEO4J,
     NEO4J_DISTRIBUTION_REGEX,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_DIST_VERSIONS_URL,
@@ -81,7 +80,7 @@ export class LocalAccount extends AccountAbstract {
                 return Promise.resolve('version doesnt exist, so will attempt to download and install');
             }
 
-            const distributionArchiveFileName = `${NEO4J}-${NEO4J_EDITION_ENTERPRISE}-${semver}${
+            const distributionArchiveFileName = `neo4j-${NEO4J_EDITION_ENTERPRISE}-${semver}${
                 process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
             }`;
             await this.installNeo4j(name, semver, credentials, distributionArchiveFileName);
@@ -165,8 +164,8 @@ export class LocalAccount extends AccountAbstract {
         credentials: string,
         archiveFileName: string,
     ): Promise<void> {
-        await ensureDir(path.join(this.paths.cache, NEO4J));
-        const distributionPath = path.join(this.paths.cache, NEO4J, archiveFileName);
+        await ensureDir(path.join(this.paths.cache, 'neo4j'));
+        const distributionPath = path.join(this.paths.cache, 'neo4j', archiveFileName);
         const outputDir = this.getDbmsRootPath(null);
         const id = uuidv4();
         const dbmsId = `dbms-${id}`;
@@ -175,7 +174,7 @@ export class LocalAccount extends AccountAbstract {
             return Promise.reject(new DbmsExistsError(`${dbmsId} already exists`));
         }
         await decompress(distributionPath, outputDir);
-        await rename(`${outputDir}/${NEO4J}-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsId}`);
+        await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsId}`);
         await this.updateAccountDbmsConfig(id, name);
 
         // neo4j config

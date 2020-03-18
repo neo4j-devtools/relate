@@ -9,7 +9,6 @@ export enum NEO4J_CONFIG_KEYS {
     BOLT_LISTEN_ADDRESS = 'dbms.connector.bolt.listen_address',
 }
 
-export const NEO4J = 'neo4j';
 export const NEO4J_BIN_DIR = 'bin';
 export const NEO4J_BIN_FILE = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
 export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.bat' : 'neo4j-admin';
