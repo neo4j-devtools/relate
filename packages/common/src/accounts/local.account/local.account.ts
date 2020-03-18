@@ -10,13 +10,7 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms} from '../../models/account-config.model';
 import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
-import {
-    DbmsExistsError,
-    InvalidArgumentError,
-    InvalidPathError,
-    NotSupportedError,
-    UndefinedError,
-} from '../../errors';
+import {DbmsExistsError, InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HOST,
@@ -28,7 +22,7 @@ import {
     NEO4J_DISTRIBUTION_REGEX,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_DIST_VERSIONS_URL,
-    ACCOUNTS_DIR_NAME
+    ACCOUNTS_DIR_NAME,
 } from '../account.constants';
 import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths} from '../../utils/env-paths';
@@ -265,7 +259,7 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), credentials, 'set-initial-password')
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), credentials, 'set-initial-password');
     }
 
     private async ensureStructure(dbmsID: string, config: any): Promise<void> {
