@@ -14,7 +14,6 @@ const DBMS_IDS = {
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
-
     @Mutation(() => String)
     installDbms(
         @Args('accountId') accountId: string,
