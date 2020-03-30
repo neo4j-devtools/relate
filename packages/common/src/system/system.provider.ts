@@ -1,13 +1,15 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import {ensureDir, ensureFile, readdir, readFile} from 'fs-extra';
+import {ensureDir, ensureFile, readdir, readFile, writeJSON} from 'fs-extra';
 import {filter, map} from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
 import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
+import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
-import {registerSystemAccessToken} from '../utils';
+import {registerSystemAccessToken, doesPathExist} from '../utils';
+import {TargetExistsError} from '../errors/target-exists.error';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -41,6 +43,32 @@ export class SystemProvider implements OnModuleInit {
         await registerSystemAccessToken(this.knownConnectionsPath, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
+    }
+
+    async initInstallation(): Promise<void> {
+        await this.verifyInstallation();
+        const defaultAccountPath = path.join(
+            this.paths.config,
+            ACCOUNTS_DIR_NAME,
+            DEFAULT_ACCOUNT_NAME + JSON_FILE_EXTENSION,
+        );
+
+        if (this.allAccounts.get(DEFAULT_ACCOUNT_NAME) || doesPathExist(defaultAccountPath)) {
+            throw new TargetExistsError(`Account "${DEFAULT_ACCOUNT_NAME}" exists, will not overwrite`);
+        }
+
+        const config = {
+            id: DEFAULT_ACCOUNT_NAME,
+            neo4jDataPath: this.paths.data,
+            type: ACCOUNT_TYPES.LOCAL,
+            user: undefined,
+            dbmss: {},
+        };
+        const configModel = new AccountConfigModel(config);
+        const defaultAccount = await createAccountInstance(configModel);
+
+        this.allAccounts.set(DEFAULT_ACCOUNT_NAME, defaultAccount);
+        await writeJSON(defaultAccountPath, config, {spaces: 2});
     }
 
     private async discoverAccounts(): Promise<void> {
