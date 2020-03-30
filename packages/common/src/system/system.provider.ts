@@ -14,7 +14,7 @@ import {registerSystemAccessToken} from '../utils';
 export class SystemProvider implements OnModuleInit {
     protected readonly paths = envPaths();
 
-    protected readonly rcPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
+    protected readonly knownConnectionsPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
@@ -39,7 +39,7 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.rcPath, accountId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(this.knownConnectionsPath, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
@@ -71,7 +71,8 @@ export class SystemProvider implements OnModuleInit {
     private async verifyInstallation(): Promise<void> {
         await ensureDir(this.paths.config);
         await ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
+
         await ensureDir(this.paths.data);
-        await ensureFile(this.rcPath);
+        await ensureFile(this.knownConnectionsPath);
     }
 }
