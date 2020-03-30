@@ -6,6 +6,5 @@ export const DBMS_FLAGS = {
     account: flags.string({
         char: 'A',
         description: 'Account to run the command against',
-        default: 'default',
     }),
 };

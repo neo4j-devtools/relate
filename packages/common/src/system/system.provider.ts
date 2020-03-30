@@ -4,8 +4,7 @@ import {ensureDir, ensureFile, readdir, readFile} from 'fs-extra';
 import {filter, map} from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
-import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
-import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance} from '../accounts';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
 import {registerSystemAccessToken} from '../utils';
@@ -23,8 +22,8 @@ export class SystemProvider implements OnModuleInit {
         await this.discoverAccounts();
     }
 
-    getAccount(uuid: string): AccountAbstract {
-        const account = this.allAccounts.get(uuid);
+    getAccount(uuid: string | undefined): AccountAbstract {
+        const account = this.allAccounts.get(uuid ? uuid : DEFAULT_ACCOUNT_NAME);
 
         if (!account) {
             throw new NotFoundError(`Account "${uuid}" not found`);
