@@ -1,66 +1,140 @@
 import {ensureDir, remove} from 'fs-extra';
 import path from 'path';
 
-import {AccountConfigModel} from '../../models/account-config.model';
+import {AccountConfigModel, IDbms} from '../../models/account-config.model';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
+import {InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
+import {neo4jCmd} from './neo4j-cmd';
 
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
     let account: LocalAccount;
 
-    beforeAll(async () => {
-        await ensureDir(dbmsRoot);
+    describe('list dbmss', () => {
+        beforeAll(async () => {
+            await ensureDir(dbmsRoot);
 
-        const config = new AccountConfigModel({
-            dbmss: {
-                '6bb553ba': {
+            const config = new AccountConfigModel({
+                dbmss: {
+                    '6bb553ba': {
+                        description: 'DBMS with metadata',
+                        id: '6bb553ba',
+                        name: 'Name',
+                    },
+                    e0aef2ad: {
+                        description: 'DBMS present in the config but not in the DBMS dir.',
+                        id: 'e0aef2ad',
+                        name: "Shouldn't be listed",
+                    },
+                },
+                id: 'foo',
+                neo4jDataPath: envPaths().tmp,
+                type: ACCOUNT_TYPES.LOCAL,
+                user: 'test',
+            });
+
+            account = new LocalAccount(config);
+        });
+
+        afterAll(() => remove(envPaths().tmp));
+
+        test('list dbmss (no dbmss installed)', async () => {
+            const dbmss = await account.listDbmss();
+            expect(dbmss).toEqual([]);
+        });
+
+        test('list dbmss (dbmss installed)', async () => {
+            const expected = [
+                {
                     description: 'DBMS with metadata',
                     id: '6bb553ba',
                     name: 'Name',
                 },
-                e0aef2ad: {
-                    description: 'DBMS present in the config but not in the DBMS dir.',
-                    id: 'e0aef2ad',
-                    name: "Shouldn't be listed",
+                {
+                    description: '',
+                    id: '998f936e',
+                    name: '',
                 },
-            },
-            id: 'test',
-            neo4jDataPath: envPaths().tmp,
-            type: ACCOUNT_TYPES.LOCAL,
-            user: 'test',
+            ];
+
+            const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
+            const createDirs = dirs.map((dbms) => ensureDir(path.join(dbmsRoot, dbms)));
+            await Promise.all(createDirs);
+
+            const actual = await account.listDbmss();
+            expect(actual.sort()).toEqual(expected);
+        });
+    });
+
+    describe('install dbms', () => {
+        beforeAll(async () => {
+            await ensureDir(dbmsRoot);
+
+            const config = new AccountConfigModel({
+                dbmss: {},
+                id: 'foo',
+                neo4jDataPath: envPaths().tmp,
+                type: ACCOUNT_TYPES.LOCAL,
+                user: 'test',
+            });
+
+            account = new LocalAccount(config);
         });
 
-        account = new LocalAccount(config);
-    });
+        afterAll(() => remove(envPaths().tmp));
 
-    afterAll(() => remove(envPaths().tmp));
+        test('install dbms with no version arg passed', async () => {
+            await expect(account.installDbms('id', 'password', '')).rejects.toThrow(
+                new UndefinedError('version undefined'),
+            );
+        });
 
-    test('list dbmss (no dbmss installed)', async () => {
-        const dbmss = await account.listDbmss();
-        expect(dbmss).toEqual([]);
-    });
+        test('install dbms with invalid version arg passed', async () => {
+            await expect(account.installDbms('id', 'password', 'notAVersionUrlOrFilePath')).rejects.toThrow(
+                new InvalidArgumentError('unable to install. Cannot resolve version argument'),
+            );
+        });
 
-    test('list dbmss (dbmss installed)', async () => {
-        const expected = [
-            {
-                description: 'DBMS with metadata',
-                id: '6bb553ba',
-                name: 'Name',
-            },
-            {
-                description: '',
-                id: '998f936e',
-                name: '',
-            },
-        ];
+        test('install dbms with valid URL version arg passed', async () => {
+            await expect(account.installDbms('id', 'password', 'https://valid.url.com')).resolves.toBe(
+                'fetch and install https://valid.url.com',
+            );
+        });
 
-        const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
-        const createDirs = dirs.map((dbms) => ensureDir(path.join(dbmsRoot, dbms)));
-        await Promise.all(createDirs);
+        test('install dbms with valid file path version arg passed but no such path exists', async () => {
+            await expect(account.installDbms('id', 'password', 'path/to/version')).rejects.toThrow(
+                new InvalidPathError('supplied path for version is invalid'),
+            );
+        });
 
-        const actual = await account.listDbmss();
-        expect(actual.sort()).toEqual(expected);
+        test('install dbms with valid semver version arg passed but not in the supported range', async () => {
+            await expect(account.installDbms('id', 'password', '3.1')).rejects.toThrow(
+                new NotSupportedError('version not in range >=4.x'),
+            );
+        });
+
+        test('install dbms with valid semver version arg passed but is not found in cache', async () => {
+            await expect(account.installDbms('id', 'password', '5')).resolves.toBe(
+                'version doesnt exist, so will attempt to download and install',
+            );
+        });
+
+        test('install dbms with valid semver version arg passed', async () => {
+            let dbmsList: IDbms[];
+
+            await account.installDbms('id', 'password', '4');
+            dbmsList = await account.listDbmss();
+            expect(dbmsList.length).toBe(1);
+            expect(await account.statusDbmss([dbmsList[0].id])).toEqual(['Neo4j is not running\n']);
+            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('neo4j 4.0.0');
+
+            await account.installDbms('id', 'password', '4.0.1');
+            dbmsList = await account.listDbmss();
+            expect(dbmsList.length).toBe(2);
+            expect(await account.statusDbmss([dbmsList[1].id])).toEqual(['Neo4j is not running\n']);
+            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('neo4j 4.0.1');
+        }, 10000);
     });
 });

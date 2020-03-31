@@ -167,15 +167,15 @@ export class LocalAccount extends AccountAbstract {
         await ensureDir(path.join(this.paths.cache, 'neo4j'));
         const distributionPath = path.join(this.paths.cache, 'neo4j', archiveFileName);
         const outputDir = this.getDbmsRootPath(null);
-        const id = uuidv4();
-        const dbmsId = `dbms-${id}`;
+        const dbmsId = uuidv4();
+        const dbmsIdFilename = `dbms-${dbmsId}`;
 
-        if (!this.pathExists(path.join(outputDir, dbmsId))) {
-            return Promise.reject(new DbmsExistsError(`${dbmsId} already exists`));
+        if (!this.pathExists(path.join(outputDir, dbmsIdFilename))) {
+            return Promise.reject(new DbmsExistsError(`${dbmsIdFilename} already exists`));
         }
         await decompress(distributionPath, outputDir);
-        await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsId}`);
-        await this.updateAccountDbmsConfig(id, name);
+        await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsIdFilename}`);
+        await this.updateAccountDbmsConfig(dbmsId, name);
 
         // neo4j config
         const config = await readPropertiesFile(
@@ -192,7 +192,7 @@ export class LocalAccount extends AccountAbstract {
         // conf.set('dbms.memory.pagecache.size', '512m');
 
         // Save config
-        // await backupConfig(id, version);
+        // await backupConfig(dbmsId, version);
 
         // check auth enabled from config and set password
         // 'dbms.security.auth_enabled') === 'true'
@@ -262,10 +262,11 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private async ensureStructure(dbmsID: string, config: any): Promise<void> {
+        const dbmsRoot = this.getDbmsRootPath(dbmsID);
         // Currently reading via commented lines, whereas Config on Desktop v1 will have defaults set...
-        await ensureDir(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.run')));
-        await ensureDir(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.logs')));
-        await ensureFile(path.join(this.getDbmsRootPath(dbmsID), config.get('#dbms.directories.logs'), 'neo4j.log'));
+        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.run')));
+        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.logs')));
+        await ensureFile(path.join(dbmsRoot, config.get('#dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
@@ -276,7 +277,7 @@ export class LocalAccount extends AccountAbstract {
             ),
         );
         accountConfig.dbmss[uuid] = {
-            uuid,
+            id: uuid,
             name,
             description: '',
         };
