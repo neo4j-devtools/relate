@@ -6,7 +6,7 @@ import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
 import {InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
-import {neo4jCmd} from './neo4j-cmd';
+import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
@@ -130,14 +130,14 @@ describe('Local account', () => {
             expect(dbmsList.length).toBe(1);
             message = await account.statusDbmss([dbmsList[0].id]);
             expect(message[0]).toContain('Neo4j is not running');
-            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('neo4j 4.0.4');
+            expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('4.0.4');
 
             await account.installDbms('id', 'password', '4.0.4');
             dbmsList = await account.listDbmss();
             expect(dbmsList.length).toBe(2);
             message = await account.statusDbmss([dbmsList[1].id]);
             expect(message[0]).toContain('Neo4j is not running');
-            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('neo4j 4.0.4');
+            expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('4.0.4');
         }, 20000);
     });
 });

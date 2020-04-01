@@ -5,7 +5,7 @@ import {spawn} from 'child_process';
 import {NotFoundError} from '../../errors';
 import {NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE} from '../account.constants';
 
-export function neo4jAdminCmd(dbmsRootPath: string, credentials: string, command: string): Promise<string> {
+export function neo4jAdminCmd(dbmsRootPath: string, command: string, credentials?: string): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
 
     return new Promise((resolve, reject) => {
@@ -19,10 +19,12 @@ export function neo4jAdminCmd(dbmsRootPath: string, credentials: string, command
                 data.push(chunk.toString());
             };
 
-            const neo4jAdminCommand = spawn(neo4jAdminBinPath, [
-                command,
-                process.platform === 'win32' ? `"${credentials}"` : credentials,
-            ]);
+            const args = [command === 'help' || command === 'version' ? `--${command}` : command];
+            if (credentials) {
+                args.push(process.platform === 'win32' ? `"${credentials}"` : credentials);
+            }
+
+            const neo4jAdminCommand = spawn(neo4jAdminBinPath, args);
             neo4jAdminCommand.stderr.on('data', collect);
             neo4jAdminCommand.stderr.on('error', reject);
             neo4jAdminCommand.stderr.on('close', () => resolve(data.join('')));

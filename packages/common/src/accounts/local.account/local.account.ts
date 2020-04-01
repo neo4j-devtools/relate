@@ -258,7 +258,7 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), credentials, 'set-initial-password');
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
     }
 
     private async ensureStructure(dbmsID: string, config: any): Promise<void> {
