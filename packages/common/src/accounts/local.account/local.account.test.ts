@@ -104,7 +104,7 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid file path version arg passed but no such path exists', async () => {
-            await expect(account.installDbms('id', 'password', 'path/to/version')).rejects.toThrow(
+            await expect(account.installDbms('id', 'password', path.join('path', 'to', 'version'))).rejects.toThrow(
                 new InvalidPathError('supplied path for version is invalid'),
             );
         });
