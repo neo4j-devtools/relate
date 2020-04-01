@@ -124,17 +124,17 @@ describe('Local account', () => {
         test('install dbms with valid semver version arg passed', async () => {
             let dbmsList: IDbms[];
 
-            await account.installDbms('id', 'password', '4');
+            await account.installDbms('id', 'password', '4.0.4');
             dbmsList = await account.listDbmss();
             expect(dbmsList.length).toBe(1);
             expect(await account.statusDbmss([dbmsList[0].id])).toEqual(['Neo4j is not running\n']);
-            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('neo4j 4.0.0');
+            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('neo4j 4.0.4');
 
-            await account.installDbms('id', 'password', '4.0.1');
+            await account.installDbms('id', 'password', '4.0.4');
             dbmsList = await account.listDbmss();
             expect(dbmsList.length).toBe(2);
             expect(await account.statusDbmss([dbmsList[1].id])).toEqual(['Neo4j is not running\n']);
-            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('neo4j 4.0.1');
+            expect(await neo4jCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('neo4j 4.0.4');
         }, 10000);
     });
 });
