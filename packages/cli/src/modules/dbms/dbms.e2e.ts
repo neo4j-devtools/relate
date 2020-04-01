@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-jest.setTimeout(35000);
+jest.setTimeout(50000);
 
 jest.mock('fs-extra', () => {
     return {
