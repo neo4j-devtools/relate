@@ -1,4 +1,4 @@
-import {ensureDir, remove} from 'fs-extra';
+import fse from 'fs-extra';
 import path from 'path';
 
 import {AccountConfigModel, IDbms} from '../../models/account-config.model';
@@ -14,7 +14,7 @@ describe('Local account', () => {
 
     describe('list dbmss', () => {
         beforeAll(async () => {
-            await ensureDir(dbmsRoot);
+            await fse.ensureDir(dbmsRoot);
 
             const config = new AccountConfigModel({
                 dbmss: {
@@ -29,7 +29,7 @@ describe('Local account', () => {
                         name: "Shouldn't be listed",
                     },
                 },
-                id: 'foo',
+                id: 'test',
                 neo4jDataPath: envPaths().tmp,
                 type: ACCOUNT_TYPES.LOCAL,
                 user: 'test',
@@ -38,7 +38,7 @@ describe('Local account', () => {
             account = new LocalAccount(config);
         });
 
-        afterAll(() => remove(envPaths().tmp));
+        afterAll(() => fse.remove(envPaths().tmp));
 
         test('list dbmss (no dbmss installed)', async () => {
             const dbmss = await account.listDbmss();
@@ -60,8 +60,23 @@ describe('Local account', () => {
             ];
 
             const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
-            const createDirs = dirs.map((dbms) => ensureDir(path.join(dbmsRoot, dbms)));
+            const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(dbmsRoot, dbms)));
             await Promise.all(createDirs);
+
+            const actual = await account.listDbmss();
+            expect(actual.sort()).toEqual(expected);
+        });
+
+        test('do not list removed dbmss', async () => {
+            const expected = [
+                {
+                    description: 'DBMS with metadata',
+                    id: '6bb553ba',
+                    name: 'Name',
+                },
+            ];
+
+            await fse.remove(path.join(dbmsRoot, 'dbms-998f936e'));
 
             const actual = await account.listDbmss();
             expect(actual.sort()).toEqual(expected);
@@ -70,11 +85,11 @@ describe('Local account', () => {
 
     describe('install dbms', () => {
         beforeAll(async () => {
-            await ensureDir(dbmsRoot);
+            await fse.ensureDir(dbmsRoot);
 
             const config = new AccountConfigModel({
                 dbmss: {},
-                id: 'foo',
+                id: 'test',
                 neo4jDataPath: envPaths().tmp,
                 type: ACCOUNT_TYPES.LOCAL,
                 user: 'test',
@@ -83,7 +98,7 @@ describe('Local account', () => {
             account = new LocalAccount(config);
         });
 
-        afterAll(() => remove(envPaths().tmp));
+        afterAll(() => fse.remove(envPaths().tmp));
 
         test('install dbms with no version arg passed', async () => {
             await expect(account.installDbms('id', 'password', '')).rejects.toThrow(

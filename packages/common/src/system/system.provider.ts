@@ -1,14 +1,14 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import {ensureDir, ensureFile, readdir, readFile, writeJSON} from 'fs-extra';
-import {filter, map} from 'lodash';
+import fse from 'fs-extra';
+import _ from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
 import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
-import {registerSystemAccessToken, doesPathExist} from '../utils';
+import {registerSystemAccessToken} from '../utils';
 import {TargetExistsError} from '../errors/target-exists.error';
 
 @Injectable()
@@ -53,7 +53,8 @@ export class SystemProvider implements OnModuleInit {
             DEFAULT_ACCOUNT_NAME + JSON_FILE_EXTENSION,
         );
 
-        if (this.allAccounts.get(DEFAULT_ACCOUNT_NAME) || doesPathExist(defaultAccountPath)) {
+        const defaultAccountExists = await fse.pathExists(defaultAccountPath);
+        if (this.allAccounts.get(DEFAULT_ACCOUNT_NAME) || defaultAccountExists) {
             throw new TargetExistsError(`Account "${DEFAULT_ACCOUNT_NAME}" exists, will not overwrite`);
         }
 
@@ -67,22 +68,23 @@ export class SystemProvider implements OnModuleInit {
         const configModel = new AccountConfigModel(config);
         const defaultAccount = await createAccountInstance(configModel);
 
+        await fse.writeJSON(defaultAccountPath, config, {spaces: 2});
         this.allAccounts.set(DEFAULT_ACCOUNT_NAME, defaultAccount);
-        await writeJSON(defaultAccountPath, config, {spaces: 2});
     }
 
     private async discoverAccounts(): Promise<void> {
+        this.allAccounts.clear();
         const accountsDir = path.join(this.paths.config, ACCOUNTS_DIR_NAME);
-        const availableFiles = await readdir(accountsDir);
-        const availableAccounts = filter(
+        const availableFiles = await fse.readdir(accountsDir);
+        const availableAccounts = _.filter(
             availableFiles,
             (account) => path.extname(account).toLocaleLowerCase() === JSON_FILE_EXTENSION,
         );
         const accountConfigs: string[] = await Promise.all(
-            map(availableAccounts, (account) => readFile(path.join(accountsDir, account), 'utf8')),
+            _.map(availableAccounts, (account) => fse.readFile(path.join(accountsDir, account), 'utf8')),
         );
 
-        const createAccountPromises = map(accountConfigs, async (accountConfigBuffer) => {
+        const createAccountPromises = _.map(accountConfigs, async (accountConfigBuffer) => {
             const config = JSON.parse(accountConfigBuffer);
             const accountConfig: AccountConfigModel = new AccountConfigModel({
                 ...config,
@@ -96,10 +98,10 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async verifyInstallation(): Promise<void> {
-        await ensureDir(this.paths.config);
-        await ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
+        await fse.ensureDir(this.paths.config);
+        await fse.ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
 
-        await ensureDir(this.paths.data);
-        await ensureFile(this.knownConnectionsPath);
+        await fse.ensureDir(this.paths.data);
+        await fse.ensureFile(this.knownConnectionsPath);
     }
 }

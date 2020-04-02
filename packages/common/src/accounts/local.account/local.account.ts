@@ -279,6 +279,7 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private async discoverDbmss(): Promise<void> {
+        this.dbmss = {};
         const fileNames = await readdir(this.getDbmsRootPath(null));
         const configDbmss = this.config.dbmss || {};
 
