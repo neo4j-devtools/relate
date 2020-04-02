@@ -50,6 +50,7 @@ daedalus$ relate --help
 # Command Topics
 
 * [`relate account`](./docs/account.md)
+* [`relate app`](./docs/app.md)
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
 * [`relate dbms`](./docs/dbms.md)
 * [`relate help`](./docs/help.md) - display help for relate

@@ -2,7 +2,7 @@ import {IAuthToken} from 'tapestry';
 
 import {AccountAbstract} from './account.abstract';
 import {NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion} from '../models/account-config.model';
+import {IDbms, IDbmsVersion} from '../models';
 
 export class AuraAccount extends AccountAbstract {
     listDbmsVersions(): Promise<IDbmsVersion[]> {

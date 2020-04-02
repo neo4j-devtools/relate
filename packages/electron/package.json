@@ -18,7 +18,7 @@
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "test": "jest",
-        "start:main": "node $(npm bin)/electron ./dist/index.js",
+        "start:main": "electron ./dist/index.js",
         "start": "run-s build:clean start:main"
     },
     "devDependencies": {

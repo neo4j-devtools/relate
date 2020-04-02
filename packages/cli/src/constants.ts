@@ -8,3 +8,4 @@ export const DBMS_FLAGS = {
         description: 'Account to run the command against',
     }),
 };
+export const DEFAULT_WEB_HOST = 'http://localhost:3000';

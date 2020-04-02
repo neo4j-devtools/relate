@@ -55,6 +55,10 @@ export class LocalAccount extends AccountAbstract {
         neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
     };
 
+    public get id(): string {
+        return this.config.id;
+    }
+
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
         await this.discoverDbmss();

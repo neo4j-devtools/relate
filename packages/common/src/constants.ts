@@ -6,3 +6,6 @@ export const RELATE_KNOWN_CONNECTIONS_FILE = 'known_connections';
 export const RELATE_DBMS_DIR = 'dbmss';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
+// @todo: this should be generated when installing daedalus instance
+export const JWT_INSTANCE_TOKEN_SALT = 'hello world!';
+export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
