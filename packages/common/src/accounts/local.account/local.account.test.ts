@@ -1,7 +1,7 @@
 import {ensureDir, remove} from 'fs-extra';
 import path from 'path';
 
-import {AccountConfigModel} from '../../models/account-config.model';
+import {AccountConfigModel, IDbms} from '../../models/account-config.model';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
@@ -122,22 +122,22 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid semver version arg passed', async () => {
-            // let dbmsList: IDbms[];
-            // let message: string[];
+            let dbmsList: IDbms[];
+            let message: string[];
 
             await account.installDbms('id', 'password', '4.0.4');
-            const dbmsList = await account.listDbmss();
+            dbmsList = await account.listDbmss();
             expect(dbmsList.length).toBe(1);
-            const message = await account.statusDbmss([dbmsList[0].id]);
+            message = await account.statusDbmss([dbmsList[0].id]);
             expect(message[0]).toContain('Neo4j is not running');
             expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('4.0.4');
 
-            // await account.installDbms('id', 'password', '4.0.4');
-            // dbmsList = await account.listDbmss();
-            // expect(dbmsList.length).toBe(2);
-            // message = await account.statusDbmss([dbmsList[1].id]);
-            // expect(message[0]).toContain('Neo4j is not running');
-            // expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('4.0.4');
+            await account.installDbms('id', 'password', '4.0.4');
+            dbmsList = await account.listDbmss();
+            expect(dbmsList.length).toBe(2);
+            message = await account.statusDbmss([dbmsList[1].id]);
+            expect(message[0]).toContain('Neo4j is not running');
+            expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('4.0.4');
         }, 30000);
     });
 });
