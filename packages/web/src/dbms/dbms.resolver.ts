@@ -2,19 +2,14 @@ import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
 
 import {SystemProvider, IDbms} from '@relate/common';
-import {Dbms, AccountArgs, DbmssArgs, CreateAccessTokenArgs} from './dbms.types';
+import {Dbms, AccountArgs, DbmssArgs, CreateAccessTokenArgs, InstallDbmsArgs} from './dbms.types';
 
 @Resolver(() => String)
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Mutation(() => String)
-    installDbms(
-        @Args('accountId') accountId: string,
-        @Args('name') name: string,
-        @Args('credentials') credentials: string,
-        @Args('version') version: string,
-    ): Promise<string> {
+    installDbms(@Args() {accountId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
         const account = this.systemProvider.getAccount(accountId);
         return account.installDbms(name, credentials, version);
     }

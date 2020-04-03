@@ -16,10 +16,10 @@ type Dbms {
 }
 
 type Mutation {
-  installDbms(version: String!, credentials: String!, name: String!, accountId: String!): String!
-  startDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
-  stopDbmss(dbmsIds: [String!]!, accountId: String!): [String!]!
-  createAccessToken(authToken: AuthTokenInput!, dbmsId: String!, appId: String!, accountId: String!): String!
+  installDbms(accountId: String!, name: String!, credentials: String!, version: String!): String!
+  startDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
+  stopDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
+  createAccessToken(accountId: String, dbmsId: String!, appId: String!, authToken: AuthTokenInput!): String!
 }
 
 type Query {

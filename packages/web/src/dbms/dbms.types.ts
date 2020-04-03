@@ -29,6 +29,21 @@ export class DbmssArgs {
 }
 
 @ArgsType()
+export class InstallDbmsArgs {
+    @Field(() => String)
+    accountId: string;
+
+    @Field(() => String)
+    name: string;
+
+    @Field(() => String)
+    credentials: string;
+
+    @Field(() => String)
+    version: string;
+}
+
+@ArgsType()
 export class CreateAccessTokenArgs {
     @Field(() => String, {nullable: true})
     accountId?: string;
