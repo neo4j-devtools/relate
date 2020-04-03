@@ -1,4 +1,4 @@
-import {access, ensureDir, ensureFile, readdir, readFile, rename, stat, writeJson} from 'fs-extra';
+import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson} from 'fs-extra';
 import {map, filter as filterArray, reduce, some} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
@@ -94,7 +94,7 @@ export class LocalAccount extends AccountAbstract {
 
         // version as a file path. This needs more discussion in upcoming work.
         if (this.isValidPath(version)) {
-            if (!(await this.pathExists(version))) {
+            if (!(await pathExists(version))) {
                 return Promise.reject(new InvalidPathError('supplied path for version is invalid'));
             }
             return Promise.resolve(`check and install path ${version}`);
@@ -170,7 +170,7 @@ export class LocalAccount extends AccountAbstract {
         const dbmsId = uuidv4();
         const dbmsIdFilename = `dbms-${dbmsId}`;
 
-        if (!this.pathExists(path.join(outputDir, dbmsIdFilename))) {
+        if (await pathExists(path.join(outputDir, dbmsIdFilename))) {
             return Promise.reject(new DbmsExistsError(`${dbmsIdFilename} already exists`));
         }
         await decompress(distributionPath, outputDir);
@@ -246,15 +246,6 @@ export class LocalAccount extends AccountAbstract {
             return true;
         }
         return false;
-    }
-
-    private async pathExists(pathVal: string): Promise<boolean> {
-        try {
-            await access(pathVal);
-            return true;
-        } catch (_) {
-            return false;
-        }
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
