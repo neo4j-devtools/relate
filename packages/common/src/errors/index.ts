@@ -3,3 +3,8 @@ export {NotFoundError} from './not-found.error';
 export {InvalidConfigError} from './invalid-config.error';
 export {NotAllowedError} from './not-allowed.error';
 export {ValidationFailureError} from './validation-failure.error';
+export {DbmsExistsError} from './dbms-exists.error';
+export {NotSupportedError} from './not-supported.error';
+export {UndefinedError} from './undefined.error';
+export {InvalidPathError} from './invalid-path.error';
+export {InvalidArgumentError} from './invalid-argument.error';

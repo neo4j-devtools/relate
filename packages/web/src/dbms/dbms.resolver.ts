@@ -14,6 +14,17 @@ const DBMS_IDS = {
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
+    @Mutation(() => String)
+    installDbms(
+        @Args('accountId') accountId: string,
+        @Args('name') name: string,
+        @Args('credentials') credentials: string,
+        @Args('version') version: string,
+    ): Promise<string> {
+        const account = this.systemProvider.getAccount(accountId);
+        return account.installDbms(name, credentials, version);
+    }
+
     @Query(() => [Dbms])
     listDbmss(@Args('accountId') accountId: string): Promise<IDbms[]> {
         const account = this.systemProvider.getAccount(accountId);

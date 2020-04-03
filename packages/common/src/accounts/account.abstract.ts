@@ -10,6 +10,8 @@ export abstract class AccountAbstract {
         return Promise.resolve();
     }
 
+    abstract installDbms(name: string, credentials: string, version: string): Promise<string>;
+
     abstract listDbmss(): Promise<IDbms[]>;
 
     abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
