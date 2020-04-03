@@ -10,8 +10,6 @@ import {readStdinArray, isTTY} from '../../stdin';
     providers: [],
 })
 export class StatusModule implements OnApplicationBootstrap {
-    static DEFAULT_ACCOUNT_ID = 'foo';
-
     constructor(
         @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
@@ -19,7 +17,8 @@ export class StatusModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const account = this.systemProvider.getAccount(StatusModule.DEFAULT_ACCOUNT_ID);
+        const {flags} = this.parsed;
+        const account = this.systemProvider.getAccount(flags.account);
         const dbmss = await account.listDbmss();
         let dbmsIds = this.parsed.argv;
 
@@ -55,7 +54,7 @@ export class StatusModule implements OnApplicationBootstrap {
                 },
                 {
                     printLine: this.utils.log,
-                    ...this.parsed.flags,
+                    ...flags,
                 },
             );
         });

@@ -18,7 +18,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.0 linux-x64 node-v12.16.0
+@relate/cli/1.0.0 linux-x64 node-v12.16.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -26,9 +26,30 @@ USAGE
 ```
 <!-- usagestop -->
 
+# Development
+
+To to run the CLI while developing, you can either execute the run script on the
+`cli` package
+
+```shell
+daedalus$ cd packages/cli
+cli$ npm run build
+cli$ ./bin/run --help
+```
+
+Or link the entire repository and have access to the `relate` command globally.
+
+```shell
+daedalus$ npm link
+daedalus$ relate --help
+```
+
+# Commands
+
 <!-- commands -->
 # Command Topics
 
+* [`relate account`](./docs/account.md)
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
 * [`relate dbms`](./docs/dbms.md)
 * [`relate help`](./docs/help.md) - display help for relate
