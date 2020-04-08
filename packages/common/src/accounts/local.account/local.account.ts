@@ -10,12 +10,14 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms} from '../../models/account-config.model';
 import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
+import {PropertiesFile} from '../../properties-file';
 import {DbmsExistsError, InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HOST,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
+    NEO4J_CONF_FILE_BACKUP,
     NEO4J_CONFIG_KEYS,
     NEO4J_EDITION_ENTERPRISE,
     NEO4J_DISTRIBUTION_REGEX,
@@ -126,6 +128,8 @@ export class LocalAccount extends AccountAbstract {
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
+
+        // TODO: switch to using the new class for handling neo4j.conf
         const config = await readPropertiesFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
@@ -177,26 +181,24 @@ export class LocalAccount extends AccountAbstract {
         await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsIdFilename}`);
         await this.updateAccountDbmsConfig(dbmsId, name);
 
-        // neo4j config
-        const config = await readPropertiesFile(
+        const config = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
 
+        await config.set('dbms.security.auth_enabled', true);
+        await config.set('dbms.memory.heap.initial_size', '512m');
+        await config.set('dbms.memory.heap.max_size', '1G');
+        await config.set('dbms.memory.pagecache.size', '512m');
+
         await this.ensureStructure(dbmsId, config);
 
-        // @TODO set config (in upcoming PR)
-        // not doing UDC as it "dropped in 4.0. it may return"
-        // conf.set('dbms.security.auth_enabled', 'true');
-        // conf.set('dbms.memory.heap.initial_size', '512m');
-        // conf.set('dbms.memory.heap.max_size', '1G');
-        // conf.set('dbms.memory.pagecache.size', '512m');
+        await config.backupPropertiesFile(
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
+        );
 
-        // Save config
-        // await backupConfig(dbmsId, version);
-
-        // check auth enabled from config and set password
-        // 'dbms.security.auth_enabled') === 'true'
-        await this.setInitialDatabasePassword(dbmsId, credentials);
+        if (config.get('dbms.security.auth_enabled')) {
+            await this.setInitialDatabasePassword(dbmsId, credentials);
+        }
 
         // will come back to check the installPluginDependencies situation in future PRs
         return Promise.resolve();
@@ -252,12 +254,11 @@ export class LocalAccount extends AccountAbstract {
         return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
     }
 
-    private async ensureStructure(dbmsID: string, config: any): Promise<void> {
+    private async ensureStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
-        // Currently reading via commented lines, whereas Config on Desktop v1 will have defaults set...
-        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.run')));
-        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.logs')));
-        await ensureFile(path.join(dbmsRoot, config.get('#dbms.directories.logs'), 'neo4j.log'));
+        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
+        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
+        await ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
