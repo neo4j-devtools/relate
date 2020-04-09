@@ -2,17 +2,7 @@ import {copy} from 'fs-extra';
 import {find, includes} from 'lodash';
 
 import {readPropertiesFile, writePropertiesFile} from './utils';
-import {NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
-
-interface INeo4jConfigDefaults {
-    [key: string]: string;
-}
-
-interface IPropertiesFile {
-    set(key: string, value: string): void;
-    get(key: string): any;
-    backupPropertiesFile(backupPath: string): void;
-}
+import {IPropertiesFile, INeo4jConfigDefaults, NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
 
 export class PropertiesFile implements IPropertiesFile {
     config: Map<string, string>;

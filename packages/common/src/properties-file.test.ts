@@ -1,6 +1,11 @@
-import * as mockUtils from './utils';
-
+import * as utils from './utils';
 import {PropertiesFile} from './properties-file';
+
+jest.mock('./properties-file.constants.ts', () => ({
+    NEO4J_CONFIG_DEFAULTS: {
+        defaultFoo: 'defaultBar',
+    },
+}));
 
 describe('PropertiesFile', () => {
     const path = '/path/to/config/file';
@@ -9,8 +14,8 @@ describe('PropertiesFile', () => {
     let writePropertiesFileSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        readPropertiesFileSpy = jest.spyOn(mockUtils, 'readPropertiesFile');
-        writePropertiesFileSpy = jest.spyOn(mockUtils, 'writePropertiesFile');
+        readPropertiesFileSpy = jest.spyOn(utils, 'readPropertiesFile');
+        writePropertiesFileSpy = jest.spyOn(utils, 'writePropertiesFile');
     });
 
     test('readFile', async () => {
@@ -69,9 +74,8 @@ describe('PropertiesFile', () => {
         const config = await PropertiesFile.readFile(path);
 
         expect(config.get('a.key.that.exists')).toBe('value1');
+        expect(config.get('defaultFoo')).toBe('defaultBar');
         expect(config.get('not.a.key.that.exists')).toBeUndefined();
-        // this is to test getting a default value for now...
-        expect(config.get('dbms.security.auth_enabled')).toBe('true');
     });
 
     afterEach(() => jest.clearAllMocks());
