@@ -29,7 +29,7 @@ import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths} from '../../utils/env-paths';
 import {resolveDbms} from './resolve-dbms';
 import {AccountAbstract} from '../account.abstract';
-import {neo4jCmd} from './neo4j-cmd';
+import {elevatedNeo4jCmd, neo4jCmd} from './neo4j-cmd';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 interface INeo4jDistribution {
@@ -117,6 +117,7 @@ export class LocalAccount extends AccountAbstract {
 
     statusDbmss(nameOrIds: string[]): Promise<string[]> {
         const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
+
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
@@ -185,19 +186,17 @@ export class LocalAccount extends AccountAbstract {
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
 
-        await config.set('dbms.security.auth_enabled', true);
-        await config.set('dbms.memory.heap.initial_size', '512m');
-        await config.set('dbms.memory.heap.max_size', '1G');
-        await config.set('dbms.memory.pagecache.size', '512m');
+        config.set('dbms.security.auth_enabled', true);
+        config.set('dbms.memory.heap.initial_size', '512m');
+        config.set('dbms.memory.heap.max_size', '1G');
+        config.set('dbms.memory.pagecache.size', '512m');
+        // https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_dbms.windows_service_name - defaults to 'neo4j'
+        config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+
+        await config.flush();
 
         if (process.platform === 'win32') {
-            // https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_dbms.windows_service_name - defaults to 'neo4j'
-            // config.set(`dbms.windows_service_name`, '?')
-
-            neo4jCmd(this.getDbmsRootPath(dbmsId), 'install-service');
-
-            // do we need to run `uninstall-service` at this point too?
-            // neo4jCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service')
+            await elevatedNeo4jCmd(this.getDbmsRootPath(dbmsId), 'install-service');
         }
 
         await this.ensureStructure(dbmsId, config);
@@ -289,6 +288,7 @@ export class LocalAccount extends AccountAbstract {
 
     private async discoverDbmss(): Promise<void> {
         this.dbmss = {};
+
         const fileNames = await readdir(this.getDbmsRootPath(null));
         const configDbmss = this.config.dbmss || {};
 

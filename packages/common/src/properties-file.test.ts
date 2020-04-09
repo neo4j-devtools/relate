@@ -22,7 +22,9 @@ describe('PropertiesFile', () => {
         configProperties = new Map([['foo1', 'bar1']]);
         const spy = readPropertiesFileSpy.mockResolvedValue(configProperties);
         const config = await PropertiesFile.readFile(path);
+
         expect(spy).toHaveBeenCalledWith(path);
+
         expect(config.path).toBe(path);
         expect(config.config).toEqual(configProperties);
         expect(config).toBeInstanceOf(PropertiesFile);
@@ -38,14 +40,10 @@ describe('PropertiesFile', () => {
         const config = await PropertiesFile.readFile(path);
 
         await config.set('foo1', 'foobar1');
+        await config.flush();
+
         expect(spy).toHaveBeenCalledWith(
             path,
-            new Map([
-                ['foo1', 'foobar1'],
-                ['#foo2', 'bar2'],
-            ]),
-        );
-        expect(config.config).toEqual(
             new Map([
                 ['foo1', 'foobar1'],
                 ['#foo2', 'bar2'],
@@ -53,14 +51,10 @@ describe('PropertiesFile', () => {
         );
 
         await config.set('foo2', 'foobar2');
+        await config.flush();
+
         expect(spy).toHaveBeenCalledWith(
             path,
-            new Map([
-                ['foo1', 'foobar1'],
-                ['foo2', 'foobar2'],
-            ]),
-        );
-        expect(config.config).toEqual(
             new Map([
                 ['foo1', 'foobar1'],
                 ['foo2', 'foobar2'],
