@@ -2,12 +2,7 @@ import {copy} from 'fs-extra';
 import {find, includes} from 'lodash';
 
 import {readPropertiesFile, writePropertiesFile} from './utils';
-
-const neo4jConfigDefaults = {
-    'dbms.directories.logs': 'logs',
-    'dbms.directories.run': 'run',
-    'dbms.security.auth_enabled': 'true',
-};
+import {NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
 
 interface INeo4jConfigDefaults {
     [key: string]: string;
@@ -34,7 +29,7 @@ export class PropertiesFile implements IPropertiesFile {
 
     public static async readFile(path: string) {
         const config = await readPropertiesFile(path);
-        return new PropertiesFile(config, path, neo4jConfigDefaults);
+        return new PropertiesFile(config, path, NEO4J_CONFIG_DEFAULTS);
     }
 
     public async set(key: string, value: string | boolean) {

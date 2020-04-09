@@ -206,9 +206,7 @@ export class LocalAccount extends AccountAbstract {
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
         );
 
-        if (config.get('dbms.security.auth_enabled')) {
-            await this.setInitialDatabasePassword(dbmsId, credentials);
-        }
+        await this.setInitialDatabasePassword(dbmsId, credentials);
 
         // will come back to check the installPluginDependencies situation in future PRs
         return Promise.resolve();

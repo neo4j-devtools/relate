@@ -1,18 +1,21 @@
-import * as mockReadPropertiesFile from './utils';
+import * as mockUtils from './utils';
 
 import {PropertiesFile} from './properties-file';
-
-// jest.mock('./utils/read-properties-file.ts', () => ({
-//   readPropertiesFile: () => jest.fn()
-// }));
 
 describe('PropertiesFile', () => {
     const path = '/path/to/config/file';
     let configProperties: Map<string, string>;
+    let readPropertiesFileSpy: jest.SpyInstance;
+    let writePropertiesFileSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        readPropertiesFileSpy = jest.spyOn(mockUtils, 'readPropertiesFile');
+        writePropertiesFileSpy = jest.spyOn(mockUtils, 'writePropertiesFile');
+    });
 
     test('readFile', async () => {
         configProperties = new Map([['foo1', 'bar1']]);
-        const spy = jest.spyOn(mockReadPropertiesFile, 'readPropertiesFile').mockResolvedValue(configProperties);
+        const spy = readPropertiesFileSpy.mockResolvedValue(configProperties);
         const config = await PropertiesFile.readFile(path);
         expect(spy).toHaveBeenCalledWith(path);
         expect(config.path).toBe(path);
@@ -25,8 +28,8 @@ describe('PropertiesFile', () => {
             ['foo1', 'bar1'],
             ['#foo2', 'bar2'],
         ]);
-        jest.spyOn(mockReadPropertiesFile, 'readPropertiesFile').mockResolvedValue(configProperties);
-        const spy = jest.spyOn(mockReadPropertiesFile, 'writePropertiesFile').mockResolvedValue(Promise.resolve());
+        readPropertiesFileSpy.mockResolvedValue(configProperties);
+        const spy = writePropertiesFileSpy.mockResolvedValue(Promise.resolve());
         const config = await PropertiesFile.readFile(path);
 
         await config.set('foo1', 'foobar1');
@@ -62,7 +65,7 @@ describe('PropertiesFile', () => {
 
     test('get', async () => {
         configProperties = new Map([['a.key.that.exists', 'value1']]);
-        jest.spyOn(mockReadPropertiesFile, 'readPropertiesFile').mockResolvedValue(configProperties);
+        readPropertiesFileSpy.mockResolvedValue(configProperties);
         const config = await PropertiesFile.readFile(path);
 
         expect(config.get('a.key.that.exists')).toBe('value1');
