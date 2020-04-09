@@ -129,7 +129,7 @@ export class LocalAccount extends AccountAbstract {
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
 
-        // TODO: switch to using the new class for handling neo4j.conf
+        // @todo: switch to using the new class for handling neo4j.conf
         const config = await readPropertiesFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
@@ -189,6 +189,16 @@ export class LocalAccount extends AccountAbstract {
         await config.set('dbms.memory.heap.initial_size', '512m');
         await config.set('dbms.memory.heap.max_size', '1G');
         await config.set('dbms.memory.pagecache.size', '512m');
+
+        if (process.platform === 'win32') {
+            // https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_dbms.windows_service_name - defaults to 'neo4j'
+            // config.set(`dbms.windows_service_name`, '?')
+
+            neo4jCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+
+            // do we need to run `uninstall-service` at this point too?
+            // neo4jCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service')
+        }
 
         await this.ensureStructure(dbmsId, config);
 
