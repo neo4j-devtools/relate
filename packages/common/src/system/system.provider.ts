@@ -4,7 +4,7 @@ import fse from 'fs-extra';
 import _ from 'lodash';
 
 import {envPaths} from '../utils/env-paths';
-import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME, RELATE_DBMS_DIR} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
 import {NotFoundError} from '../errors';
 import {AccountConfigModel} from '../models';
@@ -102,6 +102,7 @@ export class SystemProvider implements OnModuleInit {
         await fse.ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
 
         await fse.ensureDir(this.paths.data);
+        await fse.ensureDir(path.join(this.paths.data, RELATE_DBMS_DIR));
         await fse.ensureFile(this.knownConnectionsPath);
     }
 }

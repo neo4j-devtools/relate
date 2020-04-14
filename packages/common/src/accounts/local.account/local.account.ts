@@ -1,5 +1,5 @@
-import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson} from 'fs-extra';
-import {map, filter as filterArray, reduce, some} from 'lodash';
+import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
+import {map, filter as filterArray, reduce, some, includes, omit} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import got from 'got';
@@ -11,7 +11,15 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 import {IDbms} from '../../models/account-config.model';
 import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
 import {PropertiesFile} from '../../properties-file';
-import {DbmsExistsError, InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
+import {
+    AmbiguousTargetError,
+    DbmsExistsError,
+    InvalidArgumentError,
+    InvalidPathError,
+    NotAllowedError,
+    NotSupportedError,
+    UndefinedError,
+} from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HOST,
@@ -105,6 +113,17 @@ export class LocalAccount extends AccountAbstract {
         return Promise.reject(new InvalidArgumentError('unable to install. Cannot resolve version argument'));
     }
 
+    async uninstallDbms(nameOrId: string): Promise<void> {
+        const {id} = resolveDbms(this.dbmss, nameOrId);
+        const status = await neo4jCmd(this.getDbmsRootPath(id), 'status');
+
+        if (!includes(status, 'Neo4j is not running')) {
+            throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
+        }
+
+        return this.uninstallNeo4j(id);
+    }
+
     startDbmss(nameOrIds: string[]): Promise<string[]> {
         const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'start')));
@@ -180,7 +199,7 @@ export class LocalAccount extends AccountAbstract {
         }
         await decompress(distributionPath, outputDir);
         await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsIdFilename}`);
-        await this.updateAccountDbmsConfig(dbmsId, name);
+        await this.updateAccountDbmsConfig(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -209,6 +228,21 @@ export class LocalAccount extends AccountAbstract {
 
         // will come back to check the installPluginDependencies situation in future PRs
         return Promise.resolve();
+    }
+
+    private async uninstallNeo4j(dbmsId: string): Promise<void> {
+        const dbmsDir = this.getDbmsRootPath(dbmsId);
+        const found = await pathExists(dbmsDir);
+
+        if (!found) {
+            throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
+        }
+
+        if (process.platform === 'win32') {
+            await elevatedNeo4jCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
+        }
+
+        return remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));
     }
 
     private async fetchNeo4jVersions(): Promise<INeo4jVersion[] | []> {
@@ -268,7 +302,7 @@ export class LocalAccount extends AccountAbstract {
         await ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
-    private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
+    private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const accountConfig = JSON.parse(
             await readFile(
                 path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
@@ -276,10 +310,25 @@ export class LocalAccount extends AccountAbstract {
             ),
         );
         accountConfig.dbmss[uuid] = {
+            ...update,
             id: uuid,
-            name,
-            description: '',
         };
+        await writeJson(
+            path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            accountConfig,
+        );
+    }
+
+    private async deleteAccountDbmsConfig(uuid: string): Promise<void> {
+        const accountConfig = JSON.parse(
+            await readFile(
+                path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                'utf8',
+            ),
+        );
+
+        accountConfig.dbmss = omit(accountConfig.dbmss, uuid);
+
         await writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,

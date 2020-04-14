@@ -1,7 +1,7 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-import {AccountConfigModel, IDbms} from '../../models/account-config.model';
+import {AccountConfigModel, IDbms} from '../../models';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
@@ -85,8 +85,6 @@ describe('Local account', () => {
 
     describe('install dbms', () => {
         beforeAll(async () => {
-            await fse.ensureDir(dbmsRoot);
-
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
@@ -98,7 +96,9 @@ describe('Local account', () => {
             account = new LocalAccount(config);
         });
 
-        afterAll(() => fse.remove(envPaths().tmp));
+        afterAll(() =>
+            account.listDbmss().then((dbmss) => Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)))),
+        );
 
         test('install dbms with no version arg passed', async () => {
             await expect(account.installDbms('id', 'password', '')).rejects.toThrow(
