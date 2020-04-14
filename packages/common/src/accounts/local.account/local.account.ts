@@ -37,7 +37,7 @@ import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths} from '../../utils/env-paths';
 import {resolveDbms} from './resolve-dbms';
 import {AccountAbstract} from '../account.abstract';
-import {elevatedNeo4jCmd, neo4jCmd} from './neo4j-cmd';
+import {elevatedNeo4jWindowsCmd, neo4jCmd} from './neo4j-cmd';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 interface INeo4jDistribution {
@@ -215,7 +215,7 @@ export class LocalAccount extends AccountAbstract {
         await config.flush();
 
         if (process.platform === 'win32') {
-            await elevatedNeo4jCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
         }
 
         await this.ensureStructure(dbmsId, config);
@@ -239,7 +239,7 @@ export class LocalAccount extends AccountAbstract {
         }
 
         if (process.platform === 'win32') {
-            await elevatedNeo4jCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
+            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
         return remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));

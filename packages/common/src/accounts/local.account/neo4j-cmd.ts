@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import {exec, spawn} from 'child_process';
 
-import {NotFoundError} from '../../errors';
+import {NotAllowedError, NotFoundError} from '../../errors';
 import {NEO4J_BIN_DIR, NEO4J_BIN_FILE} from '../account.constants';
 
 export function neo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
@@ -33,8 +33,12 @@ export function neo4jCmd(dbmsRootPath: string, command: string): Promise<string>
     });
 }
 
-export function elevatedNeo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
+export function elevatedNeo4jWindowsCmd(dbmsRootPath: string, command: string): Promise<string> {
     const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
+
+    if (process.platform !== 'win32') {
+        throw new NotAllowedError('Elevated commands only allowed in windows environments');
+    }
 
     return new Promise((resolve, reject) => {
         fs.access(neo4jBinPath, fs.constants.X_OK, (err: NodeJS.ErrnoException | null) => {
@@ -43,13 +47,9 @@ export function elevatedNeo4jCmd(dbmsRootPath: string, command: string): Promise
                 return;
             }
 
-            /* eslint-disable max-len */
-            const elevatedCmd =
-                process.platform === 'win32'
-                    ? `Start-Process PowerShell -Verb RunAs "-Command \`"cd '$pwd'; & '${neo4jBinPath}' ${command};\`"" -PassThru -Wait`
-                    : `sudo ${neo4jBinPath} ${command}`;
-            /* eslint-enable max-len */
-            const execOptions = process.platform === 'win32' ? {shell: 'powershell'} : {};
+            // eslint-disable-next-line max-len
+            const elevatedCmd = `Start-Process PowerShell -Verb RunAs "-Command \`"cd '$pwd'; & '${neo4jBinPath}' ${command};\`"" -PassThru -Wait`;
+            const execOptions = {shell: 'powershell'};
 
             exec(elevatedCmd, execOptions, (err2, stdout, stderr) => {
                 if (err2) {
