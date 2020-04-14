@@ -1,5 +1,5 @@
-import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson} from 'fs-extra';
-import {map, filter as filterArray, reduce, some} from 'lodash';
+import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
+import {map, filter as filterArray, reduce, some, includes, omit} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import got from 'got';
@@ -10,12 +10,22 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms} from '../../models/account-config.model';
 import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
-import {DbmsExistsError, InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
+import {PropertiesFile} from '../../properties-file';
+import {
+    AmbiguousTargetError,
+    DbmsExistsError,
+    InvalidArgumentError,
+    InvalidPathError,
+    NotAllowedError,
+    NotSupportedError,
+    UndefinedError,
+} from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HOST,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
+    NEO4J_CONF_FILE_BACKUP,
     NEO4J_CONFIG_KEYS,
     NEO4J_EDITION_ENTERPRISE,
     NEO4J_DISTRIBUTION_REGEX,
@@ -27,7 +37,7 @@ import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths} from '../../utils/env-paths';
 import {resolveDbms} from './resolve-dbms';
 import {AccountAbstract} from '../account.abstract';
-import {neo4jCmd} from './neo4j-cmd';
+import {elevatedNeo4jWindowsCmd, neo4jCmd} from './neo4j-cmd';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 interface INeo4jDistribution {
@@ -103,6 +113,17 @@ export class LocalAccount extends AccountAbstract {
         return Promise.reject(new InvalidArgumentError('unable to install. Cannot resolve version argument'));
     }
 
+    async uninstallDbms(nameOrId: string): Promise<void> {
+        const {id} = resolveDbms(this.dbmss, nameOrId);
+        const status = await neo4jCmd(this.getDbmsRootPath(id), 'status');
+
+        if (!includes(status, 'Neo4j is not running')) {
+            throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
+        }
+
+        return this.uninstallNeo4j(id);
+    }
+
     startDbmss(nameOrIds: string[]): Promise<string[]> {
         const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'start')));
@@ -115,6 +136,7 @@ export class LocalAccount extends AccountAbstract {
 
     statusDbmss(nameOrIds: string[]): Promise<string[]> {
         const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
+
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
@@ -126,6 +148,8 @@ export class LocalAccount extends AccountAbstract {
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
+
+        // @todo: switch to using the new class for handling neo4j.conf
         const config = await readPropertiesFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
@@ -175,31 +199,50 @@ export class LocalAccount extends AccountAbstract {
         }
         await decompress(distributionPath, outputDir);
         await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsIdFilename}`);
-        await this.updateAccountDbmsConfig(dbmsId, name);
+        await this.updateAccountDbmsConfig(dbmsId, {name});
 
-        // neo4j config
-        const config = await readPropertiesFile(
+        const config = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
 
+        config.set('dbms.security.auth_enabled', true);
+        config.set('dbms.memory.heap.initial_size', '512m');
+        config.set('dbms.memory.heap.max_size', '1G');
+        config.set('dbms.memory.pagecache.size', '512m');
+        // https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_dbms.windows_service_name - defaults to 'neo4j'
+        config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+
+        await config.flush();
+
+        if (process.platform === 'win32') {
+            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+        }
+
         await this.ensureStructure(dbmsId, config);
 
-        // @TODO set config (in upcoming PR)
-        // not doing UDC as it "dropped in 4.0. it may return"
-        // conf.set('dbms.security.auth_enabled', 'true');
-        // conf.set('dbms.memory.heap.initial_size', '512m');
-        // conf.set('dbms.memory.heap.max_size', '1G');
-        // conf.set('dbms.memory.pagecache.size', '512m');
+        await config.backupPropertiesFile(
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
+        );
 
-        // Save config
-        // await backupConfig(dbmsId, version);
-
-        // check auth enabled from config and set password
-        // 'dbms.security.auth_enabled') === 'true'
         await this.setInitialDatabasePassword(dbmsId, credentials);
 
         // will come back to check the installPluginDependencies situation in future PRs
         return Promise.resolve();
+    }
+
+    private async uninstallNeo4j(dbmsId: string): Promise<void> {
+        const dbmsDir = this.getDbmsRootPath(dbmsId);
+        const found = await pathExists(dbmsDir);
+
+        if (!found) {
+            throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
+        }
+
+        if (process.platform === 'win32') {
+            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
+        }
+
+        return remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));
     }
 
     private async fetchNeo4jVersions(): Promise<INeo4jVersion[] | []> {
@@ -252,15 +295,14 @@ export class LocalAccount extends AccountAbstract {
         return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
     }
 
-    private async ensureStructure(dbmsID: string, config: any): Promise<void> {
+    private async ensureStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
-        // Currently reading via commented lines, whereas Config on Desktop v1 will have defaults set...
-        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.run')));
-        await ensureDir(path.join(dbmsRoot, config.get('#dbms.directories.logs')));
-        await ensureFile(path.join(dbmsRoot, config.get('#dbms.directories.logs'), 'neo4j.log'));
+        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
+        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
+        await ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
-    private async updateAccountDbmsConfig(uuid: string, name: string): Promise<void> {
+    private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const accountConfig = JSON.parse(
             await readFile(
                 path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
@@ -268,10 +310,25 @@ export class LocalAccount extends AccountAbstract {
             ),
         );
         accountConfig.dbmss[uuid] = {
+            ...update,
             id: uuid,
-            name,
-            description: '',
         };
+        await writeJson(
+            path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            accountConfig,
+        );
+    }
+
+    private async deleteAccountDbmsConfig(uuid: string): Promise<void> {
+        const accountConfig = JSON.parse(
+            await readFile(
+                path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                'utf8',
+            ),
+        );
+
+        accountConfig.dbmss = omit(accountConfig.dbmss, uuid);
+
         await writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
@@ -280,6 +337,7 @@ export class LocalAccount extends AccountAbstract {
 
     private async discoverDbmss(): Promise<void> {
         this.dbmss = {};
+
         const fileNames = await readdir(this.getDbmsRootPath(null));
         const configDbmss = this.config.dbmss || {};
 

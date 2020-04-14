@@ -15,6 +15,7 @@ export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.
 export const NEO4J_DIST_VERSIONS_URL = 'http://dist.neo4j.org/versions/v1/neo4j-versions.json';
 export const NEO4J_CONF_DIR = 'conf';
 export const NEO4J_CONF_FILE = 'neo4j.conf';
+export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
 export const NEO4J_EDITION_ENTERPRISE = 'enterprise';
 export const DEFAULT_NEO4J_HOST = '127.0.0.1';
 export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
