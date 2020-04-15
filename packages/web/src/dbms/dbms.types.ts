@@ -44,6 +44,15 @@ export class InstallDbmsArgs {
 }
 
 @ArgsType()
+export class UninstallDbmsArgs {
+    @Field(() => String)
+    accountId: string;
+
+    @Field(() => String)
+    name: string;
+}
+
+@ArgsType()
 export class CreateAccessTokenArgs {
     @Field(() => String, {nullable: true})
     accountId?: string;

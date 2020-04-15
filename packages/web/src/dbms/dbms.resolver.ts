@@ -2,7 +2,7 @@ import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
 
 import {SystemProvider, IDbms} from '@relate/common';
-import {Dbms, AccountArgs, DbmssArgs, CreateAccessTokenArgs, InstallDbmsArgs} from './dbms.types';
+import {Dbms, AccountArgs, DbmssArgs, CreateAccessTokenArgs, InstallDbmsArgs, UninstallDbmsArgs} from './dbms.types';
 
 @Resolver(() => String)
 export class DBMSResolver {
@@ -12,6 +12,13 @@ export class DBMSResolver {
     installDbms(@Args() {accountId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
         const account = this.systemProvider.getAccount(accountId);
         return account.installDbms(name, credentials, version);
+    }
+
+    @Mutation(() => String)
+    uninstallDbms(@Args() {accountId, name}: UninstallDbmsArgs): Promise<string> {
+        const account = this.systemProvider.getAccount(accountId);
+
+        return account.uninstallDbms(name).then(() => name);
     }
 
     @Query(() => [Dbms])
