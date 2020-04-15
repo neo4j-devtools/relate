@@ -7,7 +7,8 @@ import {SystemProvider} from '@relate/common';
 
 import {ElectronModule} from './electron.module';
 
-jest.setTimeout(30000);
+// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
+jest.setTimeout(60000);
 
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
@@ -126,6 +127,7 @@ describe('DBMSModule', () => {
             });
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip('/graphql accessDbms (started DBMS)', async () => {
         // arbitrary wait for Neo4j to come online
         await new Promise((resolve) => setTimeout(resolve, 20000));

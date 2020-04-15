@@ -13,10 +13,10 @@ export class InstallModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    async onApplicationBootstrap(): Promise<void> {
+    onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const {name} = args;
-        const {accountId, credentials, version} = flags;
+        const {account: accountId, credentials, version} = flags;
         const account = this.systemProvider.getAccount(accountId);
 
         if (!name || !credentials || !version) {
@@ -24,7 +24,8 @@ export class InstallModule implements OnApplicationBootstrap {
             throw new Error(`Not yet implemented`);
         }
 
-        return account.installDbms(name, credentials, version)
+        return account
+            .installDbms(name, credentials, version)
             .then((res) => {
                 this.utils.log(res);
             })

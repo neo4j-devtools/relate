@@ -320,7 +320,10 @@ export class LocalAccount extends AccountAbstract {
             accountConfig,
         );
 
-        this.config = new AccountConfigModel(accountConfig);
+        this.config = new AccountConfigModel({
+            ...this.config,
+            dbmss: accountConfig.dbmss,
+        });
 
         await this.discoverDbmss();
     }
@@ -340,10 +343,12 @@ export class LocalAccount extends AccountAbstract {
             accountConfig,
         );
 
-        this.config = new AccountConfigModel(accountConfig);
+        this.config = new AccountConfigModel({
+            ...this.config,
+            dbmss: accountConfig.dbmss,
+        });
 
         await this.discoverDbmss();
-
     }
 
     private async discoverDbmss(): Promise<void> {
@@ -358,8 +363,12 @@ export class LocalAccount extends AccountAbstract {
 
                 if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
+                    const defaultValues = {
+                        description: '',
+                        name: '',
+                    };
 
-                    this.dbmss[id] = merge({description: '', name: ''}, configDbmss[id], {
+                    this.dbmss[id] = merge(defaultValues, configDbmss[id], {
                         id,
                     });
                 }
