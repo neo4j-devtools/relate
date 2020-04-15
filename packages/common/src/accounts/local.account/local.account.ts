@@ -1,15 +1,14 @@
-import {copy, ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
-import {map, filter as filterArray, reduce, some, includes, omit, merge} from 'lodash';
+import fse from 'fs-extra';
+import _ from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
-import got from 'got';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
-import {filter, first, flatMap} from 'rxjs/operators';
+import rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {IDbms, AccountConfigModel} from '../../models';
-import {parseNeo4jConfigPort, readPropertiesFile} from '../../utils';
+import {IDbms, AccountConfigModel} from '../../models/account-config.model';
+import {parseNeo4jConfigPort, readPropertiesFile, isValidUrl, isValidPath} from '../../utils';
 import {PropertiesFile} from '../../properties-file';
 import {
     AmbiguousTargetError,
@@ -27,9 +26,7 @@ import {
     NEO4J_CONF_FILE_BACKUP,
     NEO4J_CONFIG_KEYS,
     NEO4J_EDITION_ENTERPRISE,
-    NEO4J_DISTRIBUTION_REGEX,
     NEO4J_SUPPORTED_VERSION_RANGE,
-    NEO4J_DIST_VERSIONS_URL,
     ACCOUNTS_DIR_NAME,
 } from '../account.constants';
 import {JSON_FILE_EXTENSION} from '../../constants';
@@ -38,25 +35,7 @@ import {resolveDbms} from './resolve-dbms';
 import {AccountAbstract} from '../account.abstract';
 import {elevatedNeo4jWindowsCmd, neo4jCmd} from './neo4j-cmd';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
-
-interface INeo4jDistribution {
-    version: string;
-    edition: string;
-}
-
-interface INeo4jVersion {
-    version: string;
-    releaseNotes: string;
-    dist?: INeo4jDists;
-    limited: boolean;
-    latest: boolean;
-}
-
-interface INeo4jDists {
-    mac: string;
-    win: string;
-    linux: string;
-}
+import {fetchNeo4jVersions, getDownloadedNeo4jDistributions} from './dbms-versions';
 
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -72,20 +51,19 @@ export class LocalAccount extends AccountAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        if (coerce(version) && coerce(version)!.version && !this.isValidUrl(version) && !this.isValidPath(version)) {
+        if (coerce(version) && coerce(version)!.version && !isValidUrl(version) && !isValidPath(version)) {
             const {version: semver} = coerce(version)!;
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 return Promise.reject(new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`));
             }
-            const neo4jDistributions = await this.getDownloadedNeo4jDistributions();
-            const neo4jDistributionExists = some(neo4jDistributions, (neo4jDistribution) => {
+            const neo4jDistributions = await getDownloadedNeo4jDistributions(this.paths.cache);
+            const neo4jDistributionExists = _.some(neo4jDistributions, (neo4jDistribution) => {
                 return neo4jDistribution.edition === NEO4J_EDITION_ENTERPRISE && neo4jDistribution.version === semver;
             });
 
             if (!neo4jDistributionExists) {
                 // to complete in a future PR
-                await this.fetchNeo4jVersions();
-
+                await fetchNeo4jVersions();
                 throw new NotSupportedError('version doesnt exist, so will attempt to download and install');
             }
 
@@ -102,12 +80,12 @@ export class LocalAccount extends AccountAbstract {
         }
 
         // version as a URL.
-        if (this.isValidUrl(version)) {
+        if (isValidUrl(version)) {
             throw new NotSupportedError(`fetch and install ${version}`);
         }
 
         // version as a file path.
-        if ((await pathExists(version)) && (await stat(version)).isFile()) {
+        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const outputDir = this.getDbmsRootPath(null);
             const cacheDir = path.join(this.paths.cache, 'neo4j');
             const outputDirName = await this.extractFromArchive(version, outputDir, cacheDir);
@@ -121,7 +99,7 @@ export class LocalAccount extends AccountAbstract {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = await neo4jCmd(this.getDbmsRootPath(id), 'status');
 
-        if (!includes(status, 'Neo4j is not running')) {
+        if (!_.includes(status, 'Neo4j is not running')) {
             throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
         }
 
@@ -140,7 +118,6 @@ export class LocalAccount extends AccountAbstract {
 
     statusDbmss(nameOrIds: string[]): Promise<string[]> {
         const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
-
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
@@ -168,9 +145,9 @@ export class LocalAccount extends AccountAbstract {
         return driver
             .query('CALL jwt.security.requestAccess($appId)', {appId})
             .pipe(
-                filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
-                first(),
-                flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
+                rxjs.filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
+                rxjs.first(),
+                rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
             )
             .toPromise()
             .finally(() => driver.shutDown().toPromise());
@@ -192,15 +169,15 @@ export class LocalAccount extends AccountAbstract {
         distributionPath: string,
         outputDirName: string,
     ): Promise<string> {
-        await ensureDir(path.join(this.paths.cache, 'neo4j'));
+        await fse.ensureDir(path.join(this.paths.cache, 'neo4j'));
         const dbmsId = uuidv4();
         const dbmsIdFilename = `dbms-${dbmsId}`;
 
-        if (await pathExists(path.join(distributionPath, dbmsIdFilename))) {
+        if (await fse.pathExists(path.join(distributionPath, dbmsIdFilename))) {
             return Promise.reject(new DbmsExistsError(`${dbmsIdFilename} already exists`));
         }
 
-        await rename(path.join(distributionPath, outputDirName), path.join(distributionPath, dbmsIdFilename));
+        await fse.rename(path.join(distributionPath, outputDirName), path.join(distributionPath, dbmsIdFilename));
         await this.updateAccountDbmsConfig(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
@@ -243,12 +220,12 @@ export class LocalAccount extends AccountAbstract {
 
         // if no version passed in, determine output dir filename from the shortest directory string path
         if (!version) {
-            const outputTopLevelDir = reduce(
-                filterArray(outputFiles, (file) => file.type === 'directory'),
+            const outputTopLevelDir = _.reduce(
+                _.filter(outputFiles, (file) => file.type === 'directory'),
                 (a, b) => (a.path.length <= b.path.length ? a : b),
             );
             if (!outputTopLevelDir) {
-                await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
+                await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(cacheDir, file.path))));
                 throw new FileStructureError(`Unexpected file structure after unpacking`);
             }
             outputDirName = outputTopLevelDir.path;
@@ -259,17 +236,17 @@ export class LocalAccount extends AccountAbstract {
         // check if this is neo4j...
         try {
             await neo4jCmd(path.join(cacheDir, outputDirName), 'status');
-            await copy(path.join(cacheDir, outputDirName), path.join(outputDir, outputDirName));
+            await fse.copy(path.join(cacheDir, outputDirName), path.join(outputDir, outputDirName));
             return outputDirName;
         } catch (e) {
-            await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
+            await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(cacheDir, file.path))));
             throw e;
         }
     }
 
     private async uninstallNeo4j(dbmsId: string): Promise<void> {
         const dbmsDir = this.getDbmsRootPath(dbmsId);
-        const found = await pathExists(dbmsDir);
+        const found = await fse.pathExists(dbmsDir);
 
         if (!found) {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
@@ -279,56 +256,7 @@ export class LocalAccount extends AccountAbstract {
             await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
-        return remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));
-    }
-
-    private async fetchNeo4jVersions(): Promise<INeo4jVersion[] | []> {
-        await got(NEO4J_DIST_VERSIONS_URL);
-        return [];
-    }
-
-    private async getDownloadedNeo4jDistributions(): Promise<INeo4jDistribution[] | []> {
-        await ensureDir(path.join(this.paths.cache, 'neo4j'));
-        const fileNames = await readdir(path.join(this.paths.cache, 'neo4j'));
-        const fileNamesFilter = filterArray(fileNames, (fileName) =>
-            fileName.endsWith(process.platform === 'win32' ? '.zip' : '.tar.gz'),
-        );
-        return reduce(
-            fileNamesFilter,
-            (acc: INeo4jDistribution[], fileName: string) => {
-                const match = fileName.match(NEO4J_DISTRIBUTION_REGEX);
-                if (match) {
-                    const [, edition, version] = match;
-                    acc.push({
-                        edition,
-                        version,
-                    });
-                    return acc;
-                }
-                return acc;
-            },
-            [],
-        );
-    }
-
-    private isValidUrl(stringVal: string): boolean {
-        try {
-            /* eslint-disable no-new */
-            const url = new URL(stringVal);
-            if (['http:', 'https:'].includes(url.protocol)) {
-                return true;
-            }
-            return false;
-        } catch (_) {
-            return false;
-        }
-    }
-
-    private isValidPath(stringVal: string): boolean {
-        if (stringVal.split(path.sep).length > 1) {
-            return true;
-        }
-        return false;
+        return fse.remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
@@ -337,14 +265,14 @@ export class LocalAccount extends AccountAbstract {
 
     private async ensureStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
-        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
-        await ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
-        await ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
+        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
+        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
+        await fse.ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const accountConfig = JSON.parse(
-            await readFile(
+            await fse.readFile(
                 path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
@@ -353,7 +281,7 @@ export class LocalAccount extends AccountAbstract {
             ...update,
             id: uuid,
         };
-        await writeJson(
+        await fse.writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
         );
@@ -368,15 +296,15 @@ export class LocalAccount extends AccountAbstract {
 
     private async deleteAccountDbmsConfig(uuid: string): Promise<void> {
         const accountConfig = JSON.parse(
-            await readFile(
+            await fse.readFile(
                 path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
 
-        accountConfig.dbmss = omit(accountConfig.dbmss, uuid);
+        accountConfig.dbmss = _.omit(accountConfig.dbmss, uuid);
 
-        await writeJson(
+        await fse.writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
         );
@@ -392,13 +320,12 @@ export class LocalAccount extends AccountAbstract {
     private async discoverDbmss(): Promise<void> {
         this.dbmss = {};
 
-        const fileNames = await readdir(this.getDbmsRootPath(null));
+        const fileNames = await fse.readdir(this.getDbmsRootPath(null));
         const configDbmss = this.config.dbmss || {};
 
         await Promise.all(
-            map(fileNames, async (fileName) => {
-                const fileStats = await stat(path.join(this.getDbmsRootPath(null), fileName));
-
+            _.map(fileNames, async (fileName) => {
+                const fileStats = await fse.stat(path.join(this.getDbmsRootPath(null), fileName));
                 if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
                     const defaultValues = {
@@ -406,7 +333,7 @@ export class LocalAccount extends AccountAbstract {
                         name: '',
                     };
 
-                    this.dbmss[id] = merge(defaultValues, configDbmss[id], {
+                    this.dbmss[id] = _.merge(defaultValues, configDbmss[id], {
                         id,
                     });
                 }
