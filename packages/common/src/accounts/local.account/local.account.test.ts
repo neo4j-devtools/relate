@@ -8,6 +8,9 @@ import {LocalAccount} from './local.account';
 import {InvalidArgumentError, InvalidPathError, NotSupportedError} from '../../errors';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
+// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
+jest.setTimeout(60000);
+
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
     let account: LocalAccount;
