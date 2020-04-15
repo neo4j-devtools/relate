@@ -4,6 +4,7 @@
 
 
 * [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
+* [`relate dbms:install [NAME]`](#relate-dbmsinstall-name)
 * [`relate dbms:list`](#relate-dbmslist)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
@@ -22,6 +23,20 @@ OPTIONS
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
+
+## `relate dbms:install [NAME]`
+
+```
+USAGE
+  $ relate dbms:install [NAME]
+
+OPTIONS
+  -A, --account=account          Account to run the command against
+  -C, --credentials=credentials  Initial password to set
+  -V, --version=version          Version to install
+```
+
+_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
 
 ## `relate dbms:list`
 
