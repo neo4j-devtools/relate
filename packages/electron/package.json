@@ -38,6 +38,7 @@
     },
     "devDependencies": {
         "@relate/web": "1.0.0",
+        "@relate/common": "1.0.0",
         "@jest-runner/electron": "2.0.3",
         "@types/fs-extra": "8.0.1",
         "@types/jest": "24.9.0",
