@@ -7,7 +7,7 @@ import path from 'path';
 import rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {IDbms, AccountConfigModel} from '../../models/account-config.model';
+import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models/account-config.model';
 import {parseNeo4jConfigPort, readPropertiesFile, isValidUrl, isValidPath} from '../../utils';
 import {PropertiesFile} from '../../properties-file';
 import {
@@ -25,7 +25,7 @@ import {
     NEO4J_CONF_FILE,
     NEO4J_CONF_FILE_BACKUP,
     NEO4J_CONFIG_KEYS,
-    NEO4J_EDITION_ENTERPRISE,
+    NEO4J_EDITION,
     NEO4J_SUPPORTED_VERSION_RANGE,
     ACCOUNTS_DIR_NAME,
 } from '../account.constants';
@@ -35,7 +35,7 @@ import {resolveDbms} from './resolve-dbms';
 import {AccountAbstract} from '../account.abstract';
 import {elevatedNeo4jWindowsCmd, neo4jCmd} from './neo4j-cmd';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
-import {fetchNeo4jVersions, getDownloadedNeo4jDistributions} from './dbms-versions';
+import {fetchNeo4jVersions, discoverNeo4jDistributions} from './dbms-versions';
 
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -44,6 +44,15 @@ export class LocalAccount extends AccountAbstract {
 
     async init(): Promise<void> {
         await this.discoverDbmss();
+    }
+
+    async listDbmsVersions(): Promise<{[tag: string]: IDbmsVersion[]}> {
+        const distributionsPath = path.join(this.paths.cache, 'neo4j');
+        await fse.ensureDir(distributionsPath);
+        const cached = await discoverNeo4jDistributions(distributionsPath);
+        const online = await fetchNeo4jVersions();
+
+        return {cached, online};
     }
 
     async installDbms(name: string, credentials: string, version: string): Promise<string> {
@@ -56,9 +65,9 @@ export class LocalAccount extends AccountAbstract {
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 return Promise.reject(new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`));
             }
-            const neo4jDistributions = await getDownloadedNeo4jDistributions(this.paths.cache);
+            const neo4jDistributions = await discoverNeo4jDistributions(path.join(this.paths.cache, 'neo4j'));
             const neo4jDistributionExists = _.some(neo4jDistributions, (neo4jDistribution) => {
-                return neo4jDistribution.edition === NEO4J_EDITION_ENTERPRISE && neo4jDistribution.version === semver;
+                return neo4jDistribution.edition === NEO4J_EDITION.ENTERPRISE && neo4jDistribution.version === semver;
             });
 
             if (!neo4jDistributionExists) {
@@ -67,7 +76,7 @@ export class LocalAccount extends AccountAbstract {
                 throw new NotSupportedError('version doesnt exist, so will attempt to download and install');
             }
 
-            const distributionArchiveFileName = `neo4j-${NEO4J_EDITION_ENTERPRISE}-${semver}${
+            const distributionArchiveFileName = `neo4j-${NEO4J_EDITION.ENTERPRISE}-${semver}${
                 process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
             }`;
             const distributionPath = path.join(this.paths.cache, 'neo4j', distributionArchiveFileName);

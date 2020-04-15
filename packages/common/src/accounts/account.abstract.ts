@@ -1,6 +1,6 @@
 import {IAuthToken} from 'tapestry';
 
-import {AccountConfigModel, IDbms} from '../models';
+import {AccountConfigModel, IDbms, IDbmsVersion} from '../models';
 
 export abstract class AccountAbstract {
     get id(): string {
@@ -12,6 +12,8 @@ export abstract class AccountAbstract {
     init(): Promise<void> {
         return Promise.resolve();
     }
+
+    abstract listDbmsVersions(): Promise<{[tag: string]: IDbmsVersion[]}>;
 
     abstract installDbms(name: string, credentials: string, version: string): Promise<string>;
 

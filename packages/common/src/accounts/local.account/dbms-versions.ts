@@ -1,54 +1,90 @@
 import _ from 'lodash';
 import fse from 'fs-extra';
+import {promises as fs} from 'fs';
 import got from 'got';
 import path from 'path';
+import semver from 'semver';
 
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_DISTRIBUTION_REGEX} from '../account.constants';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_SUPPORTED_VERSION_RANGE, NEO4J_EDITION} from '../account.constants';
+import {neo4jAdminCmd} from './neo4j-admin-cmd';
+import {IDbmsVersion} from '../../models';
 
-export interface INeo4jDistribution {
-    version: string;
-    edition: string;
-}
+export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
+    try {
+        const version = await neo4jAdminCmd(dbmsRootDir, '--version').then((v) => semver.coerce(v));
+        if (!version) {
+            return null;
+        }
 
-export const getDownloadedNeo4jDistributions = async (cachePath: string): Promise<INeo4jDistribution[] | []> => {
-    await fse.ensureDir(path.join(cachePath, 'neo4j'));
-    const fileNames = await fse.readdir(path.join(cachePath, 'neo4j'));
-    const fileNamesFilter = _.filter(fileNames, (fileName) =>
-        fileName.endsWith(process.platform === 'win32' ? '.zip' : '.tar.gz'),
-    );
-    return _.reduce(
-        fileNamesFilter,
-        (acc: INeo4jDistribution[], fileName: string) => {
-            const match = fileName.match(NEO4J_DISTRIBUTION_REGEX);
-            if (match) {
-                const [, edition, version] = match;
-                acc.push({
-                    edition,
-                    version,
-                });
-                return acc;
-            }
-            return acc;
-        },
-        [],
-    );
+        const isEnterprise = await fse.pathExists(
+            path.join(dbmsRootDir, 'lib', `neo4j-server-enterprise-${version}.jar`),
+        );
+
+        return {
+            version: version.version,
+            edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
+            dist: dbmsRootDir,
+        };
+    } catch {
+        return null;
+    }
 };
 
-export interface INeo4jVersion {
-    version: string;
-    releaseNotes: string;
-    dist: INeo4jDists;
-    limited: boolean;
-    latest: boolean;
+export const discoverNeo4jDistributions = async (distributionsRoot: string): Promise<IDbmsVersion[]> => {
+    const files = await fs.readdir(distributionsRoot, {withFileTypes: true});
+    const dirs = _.filter(files, (file) => file.isDirectory());
+
+    const distPromises = _.map(dirs, (dir) => {
+        const dbmsRootDir = path.join(distributionsRoot, dir.name);
+        return getDistributionInfo(dbmsRootDir);
+    });
+
+    // Typescript won't understand that I'm trying to filter out null values.
+    const notNull = <TValue>(value: TValue | null | undefined): value is TValue => {
+        return value !== null && value !== undefined;
+    };
+    const dists = _.filter(await Promise.all(distPromises), notNull);
+    return dists.filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
+};
+
+interface IVersionManifest {
+    'dist-tags': {
+        [tag: string]: string;
+    };
+    versions: {
+        [version: string]: {
+            version: string;
+            releaseNotes: string;
+            limited: boolean;
+            latest: boolean;
+            dist: {
+                mac: string;
+                win: string;
+                linux: string;
+            };
+        };
+    };
 }
 
-export interface INeo4jDists {
-    mac: string;
-    win: string;
-    linux: string;
-}
+export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
+    const versionManifest: IVersionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
+    const validVersions = Object.entries(versionManifest.versions).filter(([versionStr, _]) =>
+        semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE),
+    );
 
-export const fetchNeo4jVersions = async (): Promise<INeo4jVersion[] | []> => {
-    await got(NEO4J_DIST_VERSIONS_URL);
-    return [];
+    return validVersions.map(([versionStr, versionObj]) => {
+        let url = versionObj.dist.linux;
+        if (process.platform === 'darwin') {
+            url = versionObj.dist.mac;
+        }
+        if (process.platform === 'win32') {
+            url = versionObj.dist.win;
+        }
+
+        return {
+            version: versionStr,
+            edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
+            dist: url,
+        };
+    });
 };

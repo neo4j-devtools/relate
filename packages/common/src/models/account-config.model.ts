@@ -2,11 +2,17 @@ import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
 
 import {ACCOUNT_TYPES} from '../accounts';
 import {ModelAbstract} from './model.abstract';
+import {NEO4J_EDITION} from '../accounts/account.constants';
 
 export interface IDbms {
     id: string;
     name: string;
     description: string;
+}
+export interface IDbmsVersion {
+    edition: NEO4J_EDITION;
+    version: string;
+    dist: string;
 }
 
 export interface IAccountConfig {
