@@ -161,6 +161,6 @@ describe('Local account', () => {
             message = await account.statusDbmss([dbmsList[1].id]);
             expect(message[0]).toContain('Neo4j is not running');
             expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('4.0.4');
-        }, 30000);
+        });
     });
 });
