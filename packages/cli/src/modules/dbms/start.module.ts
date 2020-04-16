@@ -1,8 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {prompt} from 'enquirer';
-
 import {SystemModule, SystemProvider} from '@relate/common';
+
 import {readStdinArray, isTTY} from '../../stdin';
+import StartCommand from '../../commands/dbms/start';
 
 @Module({
     exports: [],
@@ -11,7 +12,7 @@ import {readStdinArray, isTTY} from '../../stdin';
 })
 export class StartModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof StartCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}

@@ -1,11 +1,11 @@
 import Command from '@oclif/command';
-import {Input} from '@oclif/parser';
+import parser from '@oclif/parser';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {IS_DEVELOPMENT_ENV} from './constants';
 
 export default abstract class BaseCommand extends Command {
-    protected abstract commandClass: Input<any>;
+    protected abstract commandClass: parser.Input<any>;
 
     protected abstract commandModule: Type<any>;
 
