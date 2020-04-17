@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import fse from 'fs-extra';
 import path from 'path';
 
@@ -5,7 +6,7 @@ import {AccountConfigModel, IDbms} from '../../models';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
-import {InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
+import {InvalidArgumentError, NotSupportedError, UndefinedError} from '../../errors';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
 describe('Local account', () => {
@@ -85,6 +86,7 @@ describe('Local account', () => {
 
     describe('install dbms', () => {
         beforeAll(async () => {
+            await fse.ensureDir(dbmsRoot);
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
@@ -108,7 +110,7 @@ describe('Local account', () => {
 
         test('install dbms with invalid version arg passed', async () => {
             await expect(account.installDbms('id', 'password', 'notAVersionUrlOrFilePath')).rejects.toThrow(
-                new InvalidArgumentError('unable to install. Cannot resolve version argument'),
+                new InvalidArgumentError('Provided version argument is not valid semver, url or path.'),
             );
         });
 
@@ -119,9 +121,15 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid file path version arg passed but no such path exists', async () => {
+            const message = 'Provided version argument is not valid semver, url or path.';
+
             await expect(account.installDbms('id', 'password', path.join('path', 'to', 'version'))).rejects.toThrow(
-                new InvalidPathError('supplied path for version is invalid'),
+                new InvalidArgumentError(message),
             );
+
+            await expect(
+                account.installDbms('id', 'password', path.join('path', 'to', 'version', '4.0')),
+            ).rejects.toThrow(new InvalidArgumentError(message));
         });
 
         test('install dbms with valid semver version arg passed but not in the supported range', async () => {

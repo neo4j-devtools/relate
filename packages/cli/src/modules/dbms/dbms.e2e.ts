@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-jest.setTimeout(35000);
+jest.setTimeout(60000);
 
 jest.mock('fs-extra', () => {
     return {
@@ -36,6 +36,7 @@ describe('$relate dbms', () => {
         });
 
     test.stdout()
+        .skip()
         // arbitrary wait for Neo4j to come online
         .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
         .command(['dbms:access-token', 'test', '--principal=neo4j', '--credentials=newpassword', '--account=test'])
