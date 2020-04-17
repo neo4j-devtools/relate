@@ -5,7 +5,12 @@ import got from 'got';
 import path from 'path';
 import semver from 'semver';
 
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_SUPPORTED_VERSION_RANGE, NEO4J_EDITION} from '../account.constants';
+import {
+    NEO4J_DIST_VERSIONS_URL,
+    NEO4J_SUPPORTED_VERSION_RANGE,
+    NEO4J_EDITION,
+    NEO4J_ORIGIN,
+} from '../account.constants';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 import {IDbmsVersion} from '../../models';
 
@@ -24,6 +29,7 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
             version: version.version,
             edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             dist: dbmsRootDir,
+            origin: NEO4J_ORIGIN.CACHED,
         };
     } catch {
         return null;
@@ -68,7 +74,7 @@ interface IVersionManifest {
 
 export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
     const versionManifest: IVersionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
-    const validVersions = Object.entries(versionManifest.versions).filter(([versionStr, _]) =>
+    const validVersions = Object.entries(versionManifest.versions).filter(([versionStr]) =>
         semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE),
     );
 
@@ -85,6 +91,7 @@ export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
             version: versionStr,
             edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             dist: url,
+            origin: NEO4J_ORIGIN.ONLINE,
         };
     });
 };

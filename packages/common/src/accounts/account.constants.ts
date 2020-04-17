@@ -14,6 +14,11 @@ export enum NEO4J_EDITION {
     ENTERPRISE = 'enterprise',
 }
 
+export enum NEO4J_ORIGIN {
+    CACHED = 'cached',
+    ONLINE = 'online',
+}
+
 export const NEO4J_BIN_DIR = 'bin';
 export const NEO4J_BIN_FILE = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
 export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.bat' : 'neo4j-admin';

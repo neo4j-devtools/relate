@@ -46,13 +46,13 @@ export class LocalAccount extends AccountAbstract {
         await this.discoverDbmss();
     }
 
-    async listDbmsVersions(): Promise<{[tag: string]: IDbmsVersion[]}> {
+    async listDbmsVersions(): Promise<IDbmsVersion[]> {
         const distributionsPath = path.join(this.paths.cache, 'neo4j');
         await fse.ensureDir(distributionsPath);
         const cached = await discoverNeo4jDistributions(distributionsPath);
         const online = await fetchNeo4jVersions();
 
-        return {cached, online};
+        return [...cached, ...online];
     }
 
     async installDbms(name: string, credentials: string, version: string): Promise<string> {

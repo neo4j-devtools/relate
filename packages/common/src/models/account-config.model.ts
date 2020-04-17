@@ -2,7 +2,7 @@ import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
 
 import {ACCOUNT_TYPES} from '../accounts';
 import {ModelAbstract} from './model.abstract';
-import {NEO4J_EDITION} from '../accounts/account.constants';
+import {NEO4J_EDITION, NEO4J_ORIGIN} from '../accounts/account.constants';
 
 export interface IDbms {
     id: string;
@@ -13,6 +13,7 @@ export interface IDbmsVersion {
     edition: NEO4J_EDITION;
     version: string;
     dist: string;
+    origin: NEO4J_ORIGIN;
 }
 
 export interface IAccountConfig {

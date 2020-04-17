@@ -13,7 +13,7 @@ export abstract class AccountAbstract {
         return Promise.resolve();
     }
 
-    abstract listDbmsVersions(): Promise<{[tag: string]: IDbmsVersion[]}>;
+    abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
 
     abstract installDbms(name: string, credentials: string, version: string): Promise<string>;
 
