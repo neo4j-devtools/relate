@@ -142,11 +142,8 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid file path version arg passed', async () => {
-            const uuid = await account.installDbms(
-                'id',
-                'password',
-                path.join(envPaths().cache, 'neo4j', 'neo4j-enterprise-4.0.4-unix.tar.gz'),
-            );
+            const archive = `neo4j-enterprise-4.0.4${process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'}`;
+            const uuid = await account.installDbms('id', 'password', path.join(envPaths().cache, 'neo4j', archive));
             expect(uuid).toMatch(UUID_REGEX);
 
             const dbmsList: IDbms[] = await account.listDbmss();
