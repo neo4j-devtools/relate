@@ -73,7 +73,13 @@ interface IVersionManifest {
 }
 
 export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
-    const versionManifest: IVersionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
+    let versionManifest: IVersionManifest;
+    try {
+        versionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
+    } catch {
+        return [];
+    }
+
     const validVersions = Object.entries(versionManifest.versions).filter(([versionStr]) =>
         semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE),
     );
