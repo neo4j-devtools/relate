@@ -4,6 +4,7 @@ import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider} from '@relate/common';
 import {readStdinArray, isTTY} from '../../stdin';
+import StopCommand from '../../commands/dbms/stop';
 
 @Module({
     exports: [],
@@ -12,7 +13,7 @@ import {readStdinArray, isTTY} from '../../stdin';
 })
 export class StopModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof StopCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}

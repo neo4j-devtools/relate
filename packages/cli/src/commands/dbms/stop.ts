@@ -2,8 +2,8 @@ import {StopModule} from '../../modules/dbms/stop.module';
 import BaseCommand from '../../base.command';
 import {DBMS_FLAGS} from '../../constants';
 
-export default class StartCommand extends BaseCommand {
-    commandClass = StartCommand;
+export default class StopCommand extends BaseCommand {
+    commandClass = StopCommand;
 
     commandModule = StopModule;
 

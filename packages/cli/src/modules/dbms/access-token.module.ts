@@ -4,6 +4,7 @@ import {trim} from 'lodash';
 import {prompt} from 'enquirer';
 
 import {isTTY, readStdin} from '../../stdin';
+import AccessTokenCommand from '../../commands/dbms/access-token';
 
 @Module({
     exports: [],
@@ -14,7 +15,7 @@ export class AccessTokenModule implements OnApplicationBootstrap {
     static DEFAULT_APP_ID = 'relate';
 
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof AccessTokenCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
