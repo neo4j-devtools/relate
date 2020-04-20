@@ -9,6 +9,8 @@ import {LocalAccount} from './local.account';
 import {InvalidArgumentError, NotSupportedError, UndefinedError} from '../../errors';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 
+const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
     let account: LocalAccount;
@@ -85,8 +87,10 @@ describe('Local account', () => {
     });
 
     describe('install dbms', () => {
+        // @todo: these tests need better to be better organised.
         beforeAll(async () => {
             await fse.ensureDir(dbmsRoot);
+            await fse.ensureDir(path.join(envPaths().cache, 'neo4j'));
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
@@ -98,9 +102,12 @@ describe('Local account', () => {
             account = new LocalAccount(config);
         });
 
-        afterAll(() =>
-            account.listDbmss().then((dbmss) => Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)))),
-        );
+        afterAll(() => fse.remove(path.join(envPaths().cache, 'neo4j', 'neo4j-enterprise-4.0.4')));
+
+        afterEach(async () => {
+            const dbmss = await account.listDbmss();
+            await Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)));
+        });
 
         test('install dbms with no version arg passed', async () => {
             await expect(account.installDbms('id', 'password', '')).rejects.toThrow(
@@ -114,12 +121,14 @@ describe('Local account', () => {
             );
         });
 
+        // url
         test('install dbms with valid URL version arg passed', async () => {
             await expect(account.installDbms('id', 'password', 'https://valid.url.com')).resolves.toBe(
                 'fetch and install https://valid.url.com',
             );
         });
 
+        // file path
         test('install dbms with valid file path version arg passed but no such path exists', async () => {
             const message = 'Provided version argument is not valid semver, url or path.';
 
@@ -132,6 +141,22 @@ describe('Local account', () => {
             ).rejects.toThrow(new InvalidArgumentError(message));
         });
 
+        test('install dbms with valid file path version arg passed', async () => {
+            const uuid = await account.installDbms(
+                'id',
+                'password',
+                path.join(envPaths().cache, 'neo4j', 'neo4j-enterprise-4.0.4-unix.tar.gz'),
+            );
+            expect(uuid).toMatch(UUID_REGEX);
+
+            const dbmsList: IDbms[] = await account.listDbmss();
+            expect(dbmsList.length).toBe(1);
+            const message = await account.statusDbmss([dbmsList[0].id]);
+            expect(message[0]).toContain('Neo4j is not running');
+            expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('4.0.4');
+        }, 20000);
+
+        // semver
         test('install dbms with valid semver version arg passed but not in the supported range', async () => {
             await expect(account.installDbms('id', 'password', '3.1')).rejects.toThrow(
                 new NotSupportedError('version not in range >=4.x'),

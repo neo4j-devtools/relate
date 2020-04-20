@@ -1,4 +1,4 @@
-import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
+import {copy, ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
 import {map, filter as filterArray, reduce, some, includes, omit} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
@@ -95,7 +95,9 @@ export class LocalAccount extends AccountAbstract {
             const distributionPath = path.join(this.paths.cache, 'neo4j', distributionArchiveFileName);
 
             const outputDir = this.getDbmsRootPath(null);
-            const outputDirName = await this.extractFromArchive(distributionPath, outputDir, semver);
+            const cacheDir = path.join(this.paths.cache, 'neo4j');
+            // can rework this section once the listing of dbmss goes in, will be easier to reason about.
+            const outputDirName = await this.extractFromArchive(distributionPath, outputDir, cacheDir, semver);
             return this.installNeo4j(name, credentials, outputDir, outputDirName);
         }
 
@@ -107,7 +109,8 @@ export class LocalAccount extends AccountAbstract {
         // version as a file path.
         if ((await pathExists(version)) && (await stat(version)).isFile()) {
             const outputDir = this.getDbmsRootPath(null);
-            const outputDirName = await this.extractFromArchive(version, outputDir);
+            const cacheDir = path.join(this.paths.cache, 'neo4j');
+            const outputDirName = await this.extractFromArchive(version, outputDir, cacheDir);
             return this.installNeo4j(name, credentials, outputDir, outputDirName);
         }
 
@@ -229,8 +232,13 @@ export class LocalAccount extends AccountAbstract {
         return dbmsId;
     }
 
-    private async extractFromArchive(distributionPath: string, outputDir: string, version?: string): Promise<string> {
-        const outputFiles = await decompress(distributionPath, outputDir);
+    private async extractFromArchive(
+        distributionPath: string,
+        outputDir: string,
+        cacheDir: string,
+        version?: string,
+    ): Promise<string> {
+        const outputFiles = await decompress(distributionPath, cacheDir);
         let outputDirName;
 
         // if no version passed in, determine output dir filename from the shortest directory string path
@@ -240,7 +248,7 @@ export class LocalAccount extends AccountAbstract {
                 (a, b) => (a.path.length <= b.path.length ? a : b),
             );
             if (!outputTopLevelDir) {
-                await Promise.all(map(outputFiles, (file) => remove(path.join(outputDir, file.path))));
+                await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
                 throw new FileStructureError(`Unexpected file structure after unpacking`);
             }
             outputDirName = outputTopLevelDir.path;
@@ -250,10 +258,11 @@ export class LocalAccount extends AccountAbstract {
 
         // check if this is neo4j...
         try {
-            await neo4jCmd(path.join(outputDir, outputDirName), 'status');
+            await neo4jCmd(path.join(cacheDir, outputDirName), 'status');
+            await copy(path.join(cacheDir, outputDirName), path.join(outputDir, outputDirName));
             return outputDirName;
         } catch (e) {
-            await Promise.all(map(outputFiles, (file) => remove(path.join(outputDir, file.path))));
+            await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
             throw e;
         }
     }
