@@ -5,8 +5,11 @@ import {AccountConfigModel, IDbms} from '../../models';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
-import {InvalidArgumentError, InvalidPathError, NotSupportedError, UndefinedError} from '../../errors';
+import {InvalidArgumentError, InvalidPathError, NotSupportedError} from '../../errors';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
+
+// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
+jest.setTimeout(60000);
 
 describe('Local account', () => {
     const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
@@ -68,6 +71,8 @@ describe('Local account', () => {
         });
 
         test('do not list removed dbmss', async () => {
+            const dbmsId = '998f936e';
+            await fse.remove(path.join(dbmsRoot, `dbms-${dbmsId}`));
             const expected = [
                 {
                     description: 'DBMS with metadata',
@@ -76,15 +81,15 @@ describe('Local account', () => {
                 },
             ];
 
-            await fse.remove(path.join(dbmsRoot, 'dbms-998f936e'));
-
             const actual = await account.listDbmss();
-            expect(actual.sort()).toEqual(expected);
+            expect(actual).toEqual(expected);
         });
     });
 
     describe('install dbms', () => {
         beforeAll(async () => {
+            await fse.ensureDir(dbmsRoot);
+
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
@@ -96,13 +101,16 @@ describe('Local account', () => {
             account = new LocalAccount(config);
         });
 
-        afterAll(() =>
-            account.listDbmss().then((dbmss) => Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)))),
-        );
+        afterAll(async () => {
+            const dbmss = await account.listDbmss();
+
+            await Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)));
+            await fse.remove(dbmsRoot);
+        });
 
         test('install dbms with no version arg passed', async () => {
             await expect(account.installDbms('id', 'password', '')).rejects.toThrow(
-                new UndefinedError('version undefined'),
+                new InvalidArgumentError('Version must be specified'),
             );
         });
 
@@ -113,8 +121,8 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid URL version arg passed', async () => {
-            await expect(account.installDbms('id', 'password', 'https://valid.url.com')).resolves.toBe(
-                'fetch and install https://valid.url.com',
+            await expect(account.installDbms('id', 'password', 'https://valid.url.com')).rejects.toThrow(
+                new NotSupportedError('fetch and install https://valid.url.com'),
             );
         });
 
@@ -131,8 +139,8 @@ describe('Local account', () => {
         });
 
         test('install dbms with valid semver version arg passed but is not found in cache', async () => {
-            await expect(account.installDbms('id', 'password', '5')).resolves.toBe(
-                'version doesnt exist, so will attempt to download and install',
+            await expect(account.installDbms('id', 'password', '5')).rejects.toThrow(
+                new NotSupportedError('version doesnt exist, so will attempt to download and install'),
             );
         });
 
@@ -153,6 +161,6 @@ describe('Local account', () => {
             message = await account.statusDbmss([dbmsList[1].id]);
             expect(message[0]).toContain('Neo4j is not running');
             expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[1].id}`), 'version')).toContain('4.0.4');
-        }, 30000);
+        });
     });
 });

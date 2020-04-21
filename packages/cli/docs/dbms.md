@@ -4,10 +4,12 @@
 
 
 * [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
+* [`relate dbms:install [NAME]`](#relate-dbmsinstall-name)
 * [`relate dbms:list`](#relate-dbmslist)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
+* [`relate dbms:uninstall [DBMSID]`](#relate-dbmsuninstall-dbmsid)
 
 ## `relate dbms:access-token [DBMSID]`
 
@@ -17,11 +19,25 @@ USAGE
 
 OPTIONS
   -A, --account=account          Account to run the command against
-  -c, --credentials=credentials
-  -p, --principal=principal
+  -c, --credentials=credentials  (required)
+  -p, --principal=principal      (required)
 ```
 
-_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
+_See code: [dist\commands\dbms\access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\access-token.ts)_
+
+## `relate dbms:install [NAME]`
+
+```
+USAGE
+  $ relate dbms:install [NAME]
+
+OPTIONS
+  -A, --account=account          Account to run the command against
+  -C, --credentials=credentials  Initial password to set
+  -V, --version=version          Version to install
+```
+
+_See code: [dist\commands\dbms\install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\install.ts)_
 
 ## `relate dbms:list`
 
@@ -39,7 +55,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/list.ts)_
+_See code: [dist\commands\dbms\list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\list.ts)_
 
 ## `relate dbms:start [DBMSIDS]`
 
@@ -51,7 +67,7 @@ OPTIONS
   -A, --account=account  Account to run the command against
 ```
 
-_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/start.ts)_
+_See code: [dist\commands\dbms\start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\start.ts)_
 
 ## `relate dbms:status [DBMSIDS]`
 
@@ -69,7 +85,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/status.ts)_
+_See code: [dist\commands\dbms\status.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\status.ts)_
 
 ## `relate dbms:stop [DBMSIDS]`
 
@@ -81,4 +97,16 @@ OPTIONS
   -A, --account=account  Account to run the command against
 ```
 
-_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
+_See code: [dist\commands\dbms\stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\stop.ts)_
+
+## `relate dbms:uninstall [DBMSID]`
+
+```
+USAGE
+  $ relate dbms:uninstall [DBMSID]
+
+OPTIONS
+  -A, --account=account  Account to run the command against
+```
+
+_See code: [dist\commands\dbms\uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\uninstall.ts)_
