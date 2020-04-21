@@ -3,7 +3,11 @@ import parser from '@oclif/parser';
 import {CLIError} from '@oclif/errors';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
+import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
+
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
+
+const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.CLI);
 
 export default abstract class BaseCommand extends Command {
     protected abstract commandClass: parser.Input<any>;
@@ -22,6 +26,7 @@ export default abstract class BaseCommand extends Command {
 
         return NestFactory.createApplicationContext(
             {
+                imports: [SystemModule, ...dynamicModules],
                 module: this.commandModule,
                 providers: [
                     {
