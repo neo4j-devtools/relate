@@ -1,5 +1,3 @@
-import {getInstalledExtensions} from './utils';
-
 export const JSON_FILE_EXTENSION = '.json';
 
 export const DEFAULT_ACCOUNT_NAME = 'default';
@@ -17,5 +15,3 @@ export const PACKAGE_JSON = 'package.json';
 export const EXTENSION_MANIFEST = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_INDEX_HTML = 'index.html';
-
-export const INSTALLED_EXTENSIONS = getInstalledExtensions();

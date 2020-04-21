@@ -2,7 +2,7 @@ import {DynamicModule} from '@nestjs/common';
 import {filter, map} from 'lodash';
 
 import {EXTENSION_TYPES} from '../models';
-import {INSTALLED_EXTENSIONS} from '../constants';
+import {INSTALLED_EXTENSIONS} from '../installed-extensions';
 import {InvalidArgumentError} from '../errors';
 
 export function loadExtensionsFor(targetType: EXTENSION_TYPES): Promise<DynamicModule>[] {

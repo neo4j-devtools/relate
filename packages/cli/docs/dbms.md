@@ -24,11 +24,15 @@ OPTIONS
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
 =======
 _See code: [dist\commands\dbms\access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\access-token.ts)_
 <<<<<<< HEAD
 >>>>>>> Added support for extensions in all packages
+=======
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
+>>>>>>> Added unix style bin scripts
 
 ## `relate dbms:install [NAME]`
 
@@ -43,12 +47,16 @@ OPTIONS
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
 =======
 _See code: [dist\commands\dbms\install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\install.ts)_
 =======
 >>>>>>> Added support for extensions in all packages
 >>>>>>> Added support for extensions in all packages
+=======
+_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
+>>>>>>> Added unix style bin scripts
 
 ## `relate dbms:list`
 
@@ -109,11 +117,15 @@ OPTIONS
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
 =======
 _See code: [dist\commands\dbms\stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\stop.ts)_
 <<<<<<< HEAD
 >>>>>>> Added support for extensions in all packages
+=======
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
+>>>>>>> Added unix style bin scripts
 
 ## `relate dbms:uninstall [DBMSID]`
 
@@ -126,9 +138,13 @@ OPTIONS
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/uninstall.ts)_
 =======
 _See code: [dist\commands\dbms\uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\uninstall.ts)_
 =======
 >>>>>>> Added support for extensions in all packages
 >>>>>>> Added support for extensions in all packages
+=======
+_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/uninstall.ts)_
+>>>>>>> Added unix style bin scripts

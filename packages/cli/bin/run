@@ -1,7 +1,7 @@
-#!/usr/bin/env node
-/* eslint-disable */
+#!/bin/sh
 
-require('../dist/index.js')
-    .bootstrap()
-    .then(require('@oclif/command/flush'))
-    .catch(require('@oclif/errors/handle'));
+canonical=$(cd -P -- "$(dirname -- "$0")" && printf '%s' "$(pwd -P)")
+
+export NODE_PATH=${canonical}/../node_modules:${canonical}/../../../node_modules
+
+node ${canonical}/run.js "$@"
