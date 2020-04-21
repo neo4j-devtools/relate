@@ -314,8 +314,11 @@ export class LocalAccount extends AccountAbstract {
     private isValidUrl(stringVal: string): boolean {
         try {
             /* eslint-disable no-new */
-            new URL(stringVal);
-            return true;
+            const url = new URL(stringVal);
+            if (['http:', 'https:'].includes(url.protocol)) {
+                return true;
+            }
+            return false;
         } catch (_) {
             return false;
         }
