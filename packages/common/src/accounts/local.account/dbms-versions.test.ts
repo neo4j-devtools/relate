@@ -8,6 +8,9 @@ import path from 'path';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
+// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
+jest.setTimeout(60000);
+
 describe('DBMS versions (local account)', () => {
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, 'neo4j');
