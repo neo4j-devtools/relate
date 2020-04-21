@@ -94,8 +94,7 @@ describe('DBMSModule', () => {
             .expect((res: request.Response) => {
                 const {listDbmss} = res.body.data;
                 expect(listDbmss[0].name).toBe(TEST_DB_NAME);
-                // this is 2 as it picks up dbms-test
-                expect(listDbmss.length).toBe(2);
+                expect(listDbmss.length).toBe(1);
             });
     });
 
