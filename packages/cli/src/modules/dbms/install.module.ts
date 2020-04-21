@@ -1,6 +1,8 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 
+import InstallCommand from '../../commands/dbms/install';
+
 @Module({
     exports: [],
     imports: [SystemModule],
@@ -8,7 +10,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 })
 export class InstallModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof InstallCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}

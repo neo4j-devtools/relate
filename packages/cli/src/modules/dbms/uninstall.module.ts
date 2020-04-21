@@ -3,6 +3,7 @@ import {prompt} from 'enquirer';
 import {SystemModule, SystemProvider} from '@relate/common';
 
 import {readStdinArray, isTTY} from '../../stdin';
+import UninstallCommand from '../../commands/dbms/uninstall';
 
 @Module({
     exports: [],
@@ -11,7 +12,7 @@ import {readStdinArray, isTTY} from '../../stdin';
 })
 export class UninstallModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<any>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof UninstallCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}

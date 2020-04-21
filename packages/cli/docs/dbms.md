@@ -19,8 +19,8 @@ USAGE
 
 OPTIONS
   -A, --account=account          Account to run the command against
-  -C, --credentials=credentials
-  -P, --principal=principal
+  -c, --credentials=credentials  (required)
+  -p, --principal=principal      (required)
 ```
 
 _See code: [dist\commands\dbms\access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist\commands\dbms\access-token.ts)_
