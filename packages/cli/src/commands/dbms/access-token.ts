@@ -13,7 +13,13 @@ export default class AccessTokenCommand extends BaseCommand {
 
     static flags = {
         ...DBMS_FLAGS,
-        credentials: flags.string({char: 'C'}),
-        principal: flags.string({char: 'P'}),
+        credentials: flags.string({
+            char: 'c',
+            required: true,
+        }),
+        principal: flags.string({
+            char: 'p',
+            required: true,
+        }),
     };
 }
