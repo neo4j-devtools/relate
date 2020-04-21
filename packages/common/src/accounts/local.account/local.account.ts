@@ -7,9 +7,9 @@ import path from 'path';
 import rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models/account-config.model';
-import {parseNeo4jConfigPort, readPropertiesFile, isValidUrl, isValidPath} from '../../utils';
-import {PropertiesFile} from '../../properties-file';
+import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
+import {AccountAbstract} from '../account.abstract';
+import {PropertiesFile} from '../../system';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -30,12 +30,16 @@ import {
     ACCOUNTS_DIR_NAME,
 } from '../account.constants';
 import {JSON_FILE_EXTENSION} from '../../constants';
-import {envPaths} from '../../utils/env-paths';
-import {resolveDbms} from './resolve-dbms';
-import {AccountAbstract} from '../account.abstract';
-import {elevatedNeo4jWindowsCmd, neo4jCmd} from './neo4j-cmd';
-import {neo4jAdminCmd} from './neo4j-admin-cmd';
-import {fetchNeo4jVersions, discoverNeo4jDistributions, getDistributionInfo} from './dbms-versions';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath} from '../../utils';
+import {
+    resolveDbms,
+    elevatedNeo4jWindowsCmd,
+    neo4jCmd,
+    neo4jAdminCmd,
+    fetchNeo4jVersions,
+    discoverNeo4jDistributions,
+    getDistributionInfo,
+} from './utils';
 
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -62,6 +66,7 @@ export class LocalAccount extends AccountAbstract {
 
         if (coerce(version) && coerce(version)!.version && !isValidUrl(version) && !isValidPath(version)) {
             const {version: semver} = coerce(version)!;
+
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
@@ -77,7 +82,7 @@ export class LocalAccount extends AccountAbstract {
                 throw new NotSupportedError('version doesnt exist, so will attempt to download and install');
             }
 
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(null), requestedDistribution.dist);
+            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
         }
 
         // version as a URL.
@@ -89,7 +94,7 @@ export class LocalAccount extends AccountAbstract {
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const cacheDir = path.join(this.paths.cache, 'neo4j');
             const extractedDistPath = await this.extractFromArchive(version, cacheDir);
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(null), extractedDistPath);
+            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
@@ -129,9 +134,7 @@ export class LocalAccount extends AccountAbstract {
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
-
-        // @todo: switch to using the new class for handling neo4j.conf
-        const config = await readPropertiesFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
+        const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
         const driver = new Driver<Result>({
@@ -153,7 +156,7 @@ export class LocalAccount extends AccountAbstract {
             .finally(() => driver.shutDown().toPromise());
     }
 
-    private getDbmsRootPath(dbmsId: string | null): string {
+    private getDbmsRootPath(dbmsId?: string): string {
         const dbmssDir = path.join(this.config.neo4jDataPath || this.paths.data, 'dbmss');
 
         if (dbmsId) {
@@ -199,7 +202,7 @@ export class LocalAccount extends AccountAbstract {
             await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
         }
 
-        await this.ensureStructure(dbmsId, config);
+        await this.ensureDbmsStructure(dbmsId, config);
 
         await config.backupPropertiesFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
@@ -256,8 +259,9 @@ export class LocalAccount extends AccountAbstract {
         return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
     }
 
-    private async ensureStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
+    private async ensureDbmsStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
+
         await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
         await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
         await fse.ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
@@ -313,12 +317,13 @@ export class LocalAccount extends AccountAbstract {
     private async discoverDbmss(): Promise<void> {
         this.dbmss = {};
 
-        const fileNames = await fse.readdir(this.getDbmsRootPath(null));
+        const root = this.getDbmsRootPath();
+        const fileNames = await fse.readdir(root);
         const configDbmss = this.config.dbmss || {};
 
         await Promise.all(
             _.map(fileNames, async (fileName) => {
-                const fileStats = await fse.stat(path.join(this.getDbmsRootPath(null), fileName));
+                const fileStats = await fse.stat(path.join(root, fileName));
                 if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
                     const defaultValues = {

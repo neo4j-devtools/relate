@@ -3,13 +3,11 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import _ from 'lodash';
 
-import {envPaths} from '../utils/env-paths';
 import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME, RELATE_DBMS_DIR} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
-import {NotFoundError} from '../errors';
+import {NotFoundError, TargetExistsError} from '../errors';
 import {AccountConfigModel} from '../models';
-import {registerSystemAccessToken} from '../utils';
-import {TargetExistsError} from '../errors/target-exists.error';
+import {envPaths, registerSystemAccessToken} from '../utils';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {

@@ -1,10 +1,11 @@
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../account.constants';
-import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
-
-import {envPaths} from '../../utils/env-paths';
 import fse from 'fs-extra';
 import nock from 'nock';
 import path from 'path';
+
+import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
+
+import {envPaths} from '../../../utils';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../account.constants';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 

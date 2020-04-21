@@ -10,13 +10,14 @@ import {
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_EDITION,
     NEO4J_ORIGIN,
-} from '../account.constants';
+} from '../../account.constants';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
-import {IDbmsVersion} from '../../models';
+import {IDbmsVersion} from '../../../models';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
         const version = await neo4jAdminCmd(dbmsRootDir, '--version').then((v) => semver.coerce(v));
+
         if (!version) {
             return null;
         }
@@ -26,10 +27,10 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
         );
 
         return {
-            version: version.version,
-            edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             dist: dbmsRootDir,
+            edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             origin: NEO4J_ORIGIN.CACHED,
+            version: version.version,
         };
     } catch {
         return null;
@@ -50,6 +51,7 @@ export const discoverNeo4jDistributions = async (distributionsRoot: string): Pro
         return value !== null && value !== undefined;
     };
     const dists = _.filter(await Promise.all(distPromises), notNull);
+
     return dists.filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
 };
 
@@ -86,18 +88,20 @@ export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
 
     return validVersions.map(([versionStr, versionObj]) => {
         let url = versionObj.dist.linux;
+
         if (process.platform === 'darwin') {
             url = versionObj.dist.mac;
         }
+
         if (process.platform === 'win32') {
             url = versionObj.dist.win;
         }
 
         return {
-            version: versionStr,
-            edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             dist: url,
+            edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             origin: NEO4J_ORIGIN.ONLINE,
+            version: versionStr,
         };
     });
 };

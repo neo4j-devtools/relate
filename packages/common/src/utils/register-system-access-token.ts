@@ -1,6 +1,5 @@
-import {readPropertiesFile} from './read-properties-file';
-import {writePropertiesFile} from './write-properties-file';
 import {getAccessTokenRCKey} from './get-access-token-rc-key';
+import {PropertiesFile} from '../system';
 
 export async function registerSystemAccessToken(
     knownConnectionsPath: string,
@@ -8,11 +7,11 @@ export async function registerSystemAccessToken(
     dbmsId: string,
     dbmsUser: string,
     accessToken: string,
-) {
+): Promise<void> {
     const key = getAccessTokenRCKey(accountId, dbmsId, dbmsUser);
-    const properties = await readPropertiesFile(knownConnectionsPath);
+    const properties = await PropertiesFile.readFile(knownConnectionsPath);
 
     properties.set(key, accessToken);
 
-    return writePropertiesFile(knownConnectionsPath, properties);
+    return properties.flush();
 }
