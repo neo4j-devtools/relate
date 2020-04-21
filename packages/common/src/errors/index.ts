@@ -6,5 +6,5 @@ export {ValidationFailureError} from './validation-failure.error';
 export {DbmsExistsError} from './dbms-exists.error';
 export {NotSupportedError} from './not-supported.error';
 export {UndefinedError} from './undefined.error';
-export {InvalidPathError} from './invalid-path.error';
 export {InvalidArgumentError} from './invalid-argument.error';
+export {FileStructureError} from './file-structure.error';

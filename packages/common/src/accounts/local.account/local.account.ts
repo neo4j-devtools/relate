@@ -1,4 +1,4 @@
-import {ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
+import {copy, ensureDir, ensureFile, pathExists, readdir, readFile, rename, stat, writeJson, remove} from 'fs-extra';
 import {map, filter as filterArray, reduce, some, includes, omit, merge} from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
@@ -15,9 +15,9 @@ import {
     AmbiguousTargetError,
     DbmsExistsError,
     InvalidArgumentError,
-    InvalidPathError,
     NotAllowedError,
     NotSupportedError,
+    FileStructureError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -72,8 +72,7 @@ export class LocalAccount extends AccountAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        // version as semver e.g. '4.0.0'
-        if (coerce(version) && coerce(version)!.version) {
+        if (coerce(version) && coerce(version)!.version && !this.isValidUrl(version) && !this.isValidPath(version)) {
             const {version: semver} = coerce(version)!;
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 return Promise.reject(new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`));
@@ -93,25 +92,29 @@ export class LocalAccount extends AccountAbstract {
             const distributionArchiveFileName = `neo4j-${NEO4J_EDITION_ENTERPRISE}-${semver}${
                 process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
             }`;
+            const distributionPath = path.join(this.paths.cache, 'neo4j', distributionArchiveFileName);
 
-            return this.installNeo4j(name, semver, credentials, distributionArchiveFileName);
+            const outputDir = this.getDbmsRootPath(null);
+            const cacheDir = path.join(this.paths.cache, 'neo4j');
+            // can rework this section once the listing of dbmss goes in, will be easier to reason about.
+            const outputDirName = await this.extractFromArchive(distributionPath, outputDir, cacheDir, semver);
+            return this.installNeo4j(name, credentials, outputDir, outputDirName);
         }
 
-        // version as a URL. This needs more investigation and discussion in upcoming wokr.
+        // version as a URL.
         if (this.isValidUrl(version)) {
             throw new NotSupportedError(`fetch and install ${version}`);
         }
 
-        // version as a file path. This needs more discussion in upcoming work.
-        if (this.isValidPath(version)) {
-            if (!(await pathExists(version))) {
-                throw new InvalidPathError('supplied path for version is invalid');
-            }
-
-            throw new NotSupportedError(`check and install path ${version}`);
+        // version as a file path.
+        if ((await pathExists(version)) && (await stat(version)).isFile()) {
+            const outputDir = this.getDbmsRootPath(null);
+            const cacheDir = path.join(this.paths.cache, 'neo4j');
+            const outputDirName = await this.extractFromArchive(version, outputDir, cacheDir);
+            return this.installNeo4j(name, credentials, outputDir, outputDirName);
         }
 
-        throw new InvalidArgumentError('unable to install. Cannot resolve version argument');
+        throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
     async uninstallDbms(nameOrId: string): Promise<void> {
@@ -185,22 +188,19 @@ export class LocalAccount extends AccountAbstract {
 
     private async installNeo4j(
         name: string,
-        version: string,
         credentials: string,
-        archiveFileName: string,
+        distributionPath: string,
+        outputDirName: string,
     ): Promise<string> {
         await ensureDir(path.join(this.paths.cache, 'neo4j'));
-        const distributionPath = path.join(this.paths.cache, 'neo4j', archiveFileName);
-        const outputDir = this.getDbmsRootPath(null);
         const dbmsId = uuidv4();
         const dbmsIdFilename = `dbms-${dbmsId}`;
-        const alreadyExists = await pathExists(path.join(outputDir, dbmsIdFilename));
 
-        if (alreadyExists) {
-            throw new DbmsExistsError(`${dbmsIdFilename} already exists`);
+        if (await pathExists(path.join(distributionPath, dbmsIdFilename))) {
+            return Promise.reject(new DbmsExistsError(`${dbmsIdFilename} already exists`));
         }
-        await decompress(distributionPath, outputDir);
-        await rename(`${outputDir}/neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`, `${outputDir}/${dbmsIdFilename}`);
+
+        await rename(path.join(distributionPath, outputDirName), path.join(distributionPath, dbmsIdFilename));
         await this.updateAccountDbmsConfig(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
@@ -230,6 +230,41 @@ export class LocalAccount extends AccountAbstract {
 
         // will come back to check the installPluginDependencies situation in future PRs
         return dbmsId;
+    }
+
+    private async extractFromArchive(
+        distributionPath: string,
+        outputDir: string,
+        cacheDir: string,
+        version?: string,
+    ): Promise<string> {
+        const outputFiles = await decompress(distributionPath, cacheDir);
+        let outputDirName;
+
+        // if no version passed in, determine output dir filename from the shortest directory string path
+        if (!version) {
+            const outputTopLevelDir = reduce(
+                filterArray(outputFiles, (file) => file.type === 'directory'),
+                (a, b) => (a.path.length <= b.path.length ? a : b),
+            );
+            if (!outputTopLevelDir) {
+                await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
+                throw new FileStructureError(`Unexpected file structure after unpacking`);
+            }
+            outputDirName = outputTopLevelDir.path;
+        } else {
+            outputDirName = `neo4j-${NEO4J_EDITION_ENTERPRISE}-${version}`;
+        }
+
+        // check if this is neo4j...
+        try {
+            await neo4jCmd(path.join(cacheDir, outputDirName), 'status');
+            await copy(path.join(cacheDir, outputDirName), path.join(outputDir, outputDirName));
+            return outputDirName;
+        } catch (e) {
+            await Promise.all(map(outputFiles, (file) => remove(path.join(cacheDir, file.path))));
+            throw e;
+        }
     }
 
     private async uninstallNeo4j(dbmsId: string): Promise<void> {
@@ -279,8 +314,11 @@ export class LocalAccount extends AccountAbstract {
     private isValidUrl(stringVal: string): boolean {
         try {
             /* eslint-disable no-new */
-            new URL(stringVal);
-            return true;
+            const url = new URL(stringVal);
+            if (['http:', 'https:'].includes(url.protocol)) {
+                return true;
+            }
+            return false;
         } catch (_) {
             return false;
         }

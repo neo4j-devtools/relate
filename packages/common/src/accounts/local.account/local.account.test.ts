@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import fse from 'fs-extra';
 import path from 'path';
 
@@ -5,8 +6,10 @@ import {AccountConfigModel, IDbms} from '../../models';
 import {ACCOUNT_TYPES} from '../account.constants';
 import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
-import {InvalidArgumentError, InvalidPathError, NotSupportedError} from '../../errors';
+import {InvalidArgumentError, NotSupportedError} from '../../errors';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
+
+const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
 // seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
 jest.setTimeout(60000);
@@ -87,9 +90,10 @@ describe('Local account', () => {
     });
 
     describe('install dbms', () => {
+        // @todo: these tests need better to be better organised.
         beforeAll(async () => {
             await fse.ensureDir(dbmsRoot);
-
+            await fse.ensureDir(path.join(envPaths().cache, 'neo4j'));
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
@@ -102,10 +106,13 @@ describe('Local account', () => {
         });
 
         afterAll(async () => {
-            const dbmss = await account.listDbmss();
-
-            await Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)));
+            await fse.remove(path.join(envPaths().cache, 'neo4j', 'neo4j-enterprise-4.0.4'));
             await fse.remove(dbmsRoot);
+        });
+
+        afterEach(async () => {
+            const dbmss = await account.listDbmss();
+            await Promise.all(dbmss.map(({id}) => account.uninstallDbms(id)));
         });
 
         test('install dbms with no version arg passed', async () => {
@@ -116,22 +123,43 @@ describe('Local account', () => {
 
         test('install dbms with invalid version arg passed', async () => {
             await expect(account.installDbms('id', 'password', 'notAVersionUrlOrFilePath')).rejects.toThrow(
-                new InvalidArgumentError('unable to install. Cannot resolve version argument'),
+                new InvalidArgumentError('Provided version argument is not valid semver, url or path.'),
             );
         });
 
+        // url
         test('install dbms with valid URL version arg passed', async () => {
             await expect(account.installDbms('id', 'password', 'https://valid.url.com')).rejects.toThrow(
                 new NotSupportedError('fetch and install https://valid.url.com'),
             );
         });
 
+        // file path
         test('install dbms with valid file path version arg passed but no such path exists', async () => {
+            const message = 'Provided version argument is not valid semver, url or path.';
+
             await expect(account.installDbms('id', 'password', path.join('path', 'to', 'version'))).rejects.toThrow(
-                new InvalidPathError('supplied path for version is invalid'),
+                new InvalidArgumentError(message),
             );
+
+            await expect(
+                account.installDbms('id', 'password', path.join('path', 'to', 'version', '4.0')),
+            ).rejects.toThrow(new InvalidArgumentError(message));
         });
 
+        test('install dbms with valid file path version arg passed', async () => {
+            const archive = `neo4j-enterprise-4.0.4${process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'}`;
+            const uuid = await account.installDbms('id', 'password', path.join(envPaths().cache, 'neo4j', archive));
+            expect(uuid).toMatch(UUID_REGEX);
+
+            const dbmsList: IDbms[] = await account.listDbmss();
+            expect(dbmsList.length).toBe(1);
+            const message = await account.statusDbmss([dbmsList[0].id]);
+            expect(message[0]).toContain('Neo4j is not running');
+            expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('4.0.4');
+        });
+
+        // semver
         test('install dbms with valid semver version arg passed but not in the supported range', async () => {
             await expect(account.installDbms('id', 'password', '3.1')).rejects.toThrow(
                 new NotSupportedError('version not in range >=4.x'),
