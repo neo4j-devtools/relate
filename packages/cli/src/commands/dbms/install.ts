@@ -11,8 +11,6 @@ export default class InstallCommand extends BaseCommand {
 
     static args = [{name: 'name'}];
 
-    static strict = false;
-
     static flags = {
         ...DBMS_FLAGS,
         credentials: flags.string({

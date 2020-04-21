@@ -9,8 +9,6 @@ export default class UninstallCommand extends BaseCommand {
 
     static args = [{name: 'dbmsId'}];
 
-    static strict = false;
-
     static flags = {
         ...DBMS_FLAGS,
     };
