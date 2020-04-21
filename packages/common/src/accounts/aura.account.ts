@@ -9,6 +9,10 @@ export class AuraAccount extends AccountAbstract {
         throw new NotAllowedError(`${AuraAccount.name} does not support installing a DBMS`);
     }
 
+    uninstallDbms(_name: string): Promise<void> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support uninstalling a DBMS`);
+    }
+
     listDbmss(): Promise<IDbms[]> {
         throw new NotAllowedError(`${AuraAccount.name} does not support listing DBMSs`);
     }

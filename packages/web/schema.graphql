@@ -17,6 +17,7 @@ type Dbms {
 
 type Mutation {
   installDbms(accountId: String!, name: String!, credentials: String!, version: String!): String!
+  uninstallDbms(accountId: String!, name: String!): String!
   startDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(accountId: String, dbmsId: String!, appId: String!, authToken: AuthTokenInput!): String!

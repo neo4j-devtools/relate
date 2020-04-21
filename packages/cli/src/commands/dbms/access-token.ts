@@ -13,11 +13,6 @@ export default class AccessTokenCommand extends BaseCommand {
 
     static flags = {
         ...DBMS_FLAGS,
-        account: flags.string({
-            char: 'A',
-            description: 'Account to run the command against',
-            required: true,
-        }),
         credentials: flags.string({
             char: 'c',
             required: true,

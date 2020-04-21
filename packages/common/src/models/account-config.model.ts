@@ -12,7 +12,7 @@ export interface IDbms {
 export interface IAccountConfig {
     id: string;
     user: any;
-    neo4jDataPath: string;
+    neo4jDataPath?: string;
     type: ACCOUNT_TYPES;
     dbmss?: {[key: string]: IDbms};
 }
@@ -31,7 +31,8 @@ export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements
 
     // @todo: this is optional and LocalAccount specific
     @IsString()
-    public neo4jDataPath!: string;
+    @IsOptional()
+    public neo4jDataPath?: string;
 
     @IsOptional()
     public dbmss?: {[key: string]: IDbms};
