@@ -24,986 +24,15 @@ Third-party licenses
 --------------------
 
 
-├─ BSD-3-Clause
-│  ├─ @apollo/protobufjs@1.0.3
-│  │  ├─ repository: https://github.com/apollographql/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/aspromise@1.1.2
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/base64@1.1.2
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/codegen@2.0.4
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/eventemitter@1.1.0
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/fetch@1.1.0
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/float@1.0.2
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/inquire@1.1.0
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/path@1.1.2
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/pool@1.1.0
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ @protobufjs/utf8@1.1.0
-│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
-│  │  └─ publisher: Daniel Wirtz
-│  ├─ qs@6.7.0
-│  │  ├─ repository: https://github.com/ljharb/qs
-│  │  └─ publisher
-│  ├─ duplexer3@0.1.4
-│  │  ├─ url: http://www.fknsrs.biz/
-│  │  ├─ repository: https://github.com/floatdrop/duplexer3
-│  │  └─ publisher: Conrad Pankoff
-│  ├─ ieee754@1.1.13
-│  │  ├─ url: http://feross.org
-│  │  ├─ repository: https://github.com/feross/ieee754
-│  │  └─ publisher: Feross Aboukhadijeh
-│  ├─ sprintf-js@1.0.3
-│  │  ├─ url: http://alexei.ro/
-│  │  ├─ repository: https://github.com/alexei/sprintf.js
-│  │  └─ publisher: Alexandru Marasteanu
-│  ├─ abab@2.0.3
-│  │  ├─ repository: https://github.com/jsdom/abab
-│  │  └─ publisher: Jeff Carpenter
-│  ├─ babel-plugin-istanbul@5.2.0
-│  │  ├─ repository: https://github.com/istanbuljs/babel-plugin-istanbul
-│  │  └─ publisher: Thai Pangsakulyanont @dtinth
-│  ├─ bcrypt-pbkdf@1.0.2
-│  │  ├─ repository: https://github.com/joyent/node-bcrypt-pbkdf
-│  │  └─ publisher
-│  ├─ istanbul-lib-coverage@2.0.5
-│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
-│  │  └─ publisher: Krishnan Anantheswaran
-│  ├─ istanbul-lib-instrument@3.3.0
-│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
-│  │  └─ publisher: Krishnan Anantheswaran
-│  ├─ istanbul-lib-report@2.0.8
-│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
-│  │  └─ publisher: Krishnan Anantheswaran
-│  ├─ istanbul-lib-source-maps@3.0.6
-│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
-│  │  └─ publisher: Krishnan Anantheswaran
-│  ├─ istanbul-reports@2.2.7
-│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
-│  │  └─ publisher: Krishnan Anantheswaran
-│  ├─ makeerror@1.0.11
-│  │  ├─ repository: https://github.com/daaku/nodejs-makeerror
-│  │  └─ publisher: Naitik Shah
-│  ├─ node-pre-gyp@0.14.0
-│  │  ├─ repository: https://github.com/mapbox/node-pre-gyp
-│  │  └─ publisher: Dane Springmeyer
-│  ├─ qs@6.5.2
-│  │  ├─ repository: https://github.com/ljharb/qs
-│  │  └─ publisher
-│  ├─ source-map@0.5.7
-│  │  ├─ repository: https://github.com/mozilla/source-map
-│  │  └─ publisher: Nick Fitzgerald
-│  ├─ source-map@0.6.1
-│  │  ├─ repository: https://github.com/mozilla/source-map
-│  │  └─ publisher: Nick Fitzgerald
-│  ├─ tmpl@1.0.4
-│  │  ├─ repository: https://github.com/daaku/nodejs-tmpl
-│  │  └─ publisher: Naitik Shah
-│  └─ tough-cookie@2.5.0
-│     ├─ repository: https://github.com/salesforce/tough-cookie
-│     └─ publisher: Jeremy Stashewsky
 ├─ MIT
-│  ├─ @apollographql/apollo-tools@0.4.3
-│  │  ├─ repository: https://github.com/apollographql/apollo-tooling
-│  │  └─ publisher: Apollo GraphQL
-│  ├─ @apollographql/graphql-playground-html@1.6.24
-│  │  ├─ repository: https://github.com/graphcool/graphql-playground
-│  │  └─ publisher
-│  ├─ @dsherret/to-absolute-glob@2.0.2
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/to-absolute-glob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ @kamilkisiela/graphql-tools@4.0.6
-│  │  ├─ repository: https://github.com/apollographql/graphql-tools
-│  │  └─ publisher: Jonas Helfer
-│  ├─ @nestjs/common@6.11.1
+│  ├─ @nestjs/common@7.0.8
 │  │  ├─ repository: https://github.com/nestjs/nest
 │  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nestjs/config@0.1.0
-│  │  ├─ repository: https://github.com/nestjs/config
-│  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nestjs/core@6.11.1
+│  ├─ @nestjs/core@7.0.8
 │  │  ├─ repository: https://github.com/nestjs/nest
 │  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nestjs/graphql@6.5.3
-│  │  ├─ repository
-│  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nestjs/platform-express@6.11.1
-│  │  ├─ repository: https://github.com/nestjs/nest
-│  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nestjs/testing@6.11.1
-│  │  ├─ repository: https://github.com/nestjs/nest
-│  │  └─ publisher: Kamil Mysliwiec
-│  ├─ @nodelib/fs.scandir@2.1.3
-│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir
-│  │  └─ publisher
-│  ├─ @nodelib/fs.stat@2.0.3
-│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat
-│  │  └─ publisher
-│  ├─ @nodelib/fs.walk@1.2.4
-│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk
-│  │  └─ publisher
 │  ├─ @nuxtjs/opencollective@0.2.2
 │  │  ├─ repository: https://github.com/nuxt-community/opencollective
-│  │  └─ publisher
-│  ├─ @types/accepts@1.3.5
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/body-parser@1.17.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/connect@3.4.33
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/cookies@0.7.4
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/cors@2.8.6
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/events@3.0.0
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/express-serve-static-core@4.17.2
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/express@4.17.2
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/fs-capacitor@2.0.0
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/glob@7.1.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/graphql-upload@8.0.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/graphql@14.2.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/http-assert@1.5.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/keygrip@1.0.2
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/koa-compose@3.2.5
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/koa@2.11.0
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/long@4.0.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/mime@2.0.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/minimatch@3.0.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/node-fetch@2.5.4
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/node@10.17.13
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/node@13.1.7
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/range-parser@1.2.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/semver@6.2.1
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/serve-static@1.13.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/validator@10.11.3
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @types/ws@6.0.4
-│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-│  │  └─ publisher
-│  ├─ @wry/equality@0.1.9
-│  │  ├─ repository: https://github.com/benjamn/wryware
-│  │  └─ publisher: Ben Newman
-│  ├─ accepts@1.3.7
-│  │  ├─ repository: https://github.com/jshttp/accepts
-│  │  └─ publisher
-│  ├─ aggregate-error@3.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/aggregate-error
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ ansi-regex@2.1.1
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/chalk/ansi-regex
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ ansi-styles@3.2.1
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/chalk/ansi-styles
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ apollo-cache-control@0.8.11
-│  │  ├─ repository: https://github.com/apollographql/apollo-cache-control-js
-│  │  └─ publisher: Martijn Walraven
-│  ├─ apollo-datasource@0.6.4
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-datasource
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-engine-reporting-protobuf@0.4.4
-│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting/tree/master/packages/apollo-engine-reporting-protobuf
-│  │  └─ publisher: Apollo
-│  ├─ apollo-engine-reporting@1.4.14
-│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
-│  │  └─ publisher: Apollo
-│  ├─ apollo-env@0.6.1
-│  │  ├─ repository: https://github.com/apollographql/apollo-tooling
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-graphql@0.3.7
-│  │  ├─ repository
-│  │  └─ publisher: Apollo
-│  ├─ apollo-link@1.2.13
-│  │  ├─ repository: https://github.com/apollographql/apollo-link
-│  │  └─ publisher: Evans Hauser
-│  ├─ apollo-server-caching@0.5.1
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-caching
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-server-core@2.9.16
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-core
-│  │  └─ publisher: Jonas Helfer
-│  ├─ apollo-server-env@2.4.3
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-env
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-server-errors@2.3.4
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-errors
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-server-express@2.9.16
-│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-express
-│  │  └─ publisher: opensource@apollographql.com
-│  ├─ apollo-server-plugin-base@0.6.10
-│  │  ├─ repository
-│  │  └─ publisher: Apollo
-│  ├─ apollo-server-types@0.2.10
-│  │  ├─ repository
-│  │  └─ publisher: Apollo
-│  ├─ apollo-tracing@0.8.11
-│  │  ├─ repository: https://github.com/apollographql/apollo-tracing-js
-│  │  └─ publisher: Martijn Walraven
-│  ├─ apollo-utilities@1.3.3
-│  │  ├─ repository: https://github.com/apollographql/apollo-client
-│  │  └─ publisher: James Baxley
-│  ├─ append-field@1.0.0
-│  │  ├─ repository: https://github.com/LinusU/node-append-field
-│  │  └─ publisher: Linus Unnebäck
-│  ├─ array-differ@3.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/array-differ
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ array-flatten@1.1.1
-│  │  ├─ url: http://blakeembrey.me
-│  │  ├─ repository: https://github.com/blakeembrey/array-flatten
-│  │  └─ publisher: Blake Embrey
-│  ├─ array-union@2.1.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/array-union
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ arrify@2.0.1
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/arrify
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ async-limiter@1.0.1
-│  │  ├─ repository: https://github.com/strml/async-limiter
-│  │  └─ publisher: Samuel Reed
-│  ├─ async-retry@1.3.1
-│  │  ├─ repository: https://github.com/zeit/async-retry
-│  │  └─ publisher
-│  ├─ asyncro@3.0.0
-│  │  ├─ repository: https://github.com/developit/asyncro
-│  │  └─ publisher: Jason Miller
-│  ├─ axios@0.19.2
-│  │  ├─ repository: https://github.com/axios/axios
-│  │  └─ publisher: Matt Zabriskie
-│  ├─ backo2@1.0.2
-│  │  ├─ repository: https://github.com/mokesmokes/backo
-│  │  └─ publisher
-│  ├─ balanced-match@1.0.0
-│  │  ├─ url: http://juliangruber.com
-│  │  ├─ repository: https://github.com/juliangruber/balanced-match
-│  │  └─ publisher: Julian Gruber
-│  ├─ binary-extensions@2.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/binary-extensions
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ body-parser@1.19.0
-│  │  ├─ repository: https://github.com/expressjs/body-parser
-│  │  └─ publisher
-│  ├─ brace-expansion@1.1.11
-│  │  ├─ url: http://juliangruber.com
-│  │  ├─ repository: https://github.com/juliangruber/brace-expansion
-│  │  └─ publisher: Julian Gruber
-│  ├─ braces@3.0.2
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/micromatch/braces
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ buffer-from@1.1.1
-│  │  ├─ repository: https://github.com/LinusU/buffer-from
-│  │  └─ publisher
-│  ├─ busboy@0.2.14
-│  │  ├─ repository: https://github.com/mscdex/busboy
-│  │  └─ publisher: Brian White
-│  ├─ busboy@0.3.1
-│  │  ├─ repository: https://github.com/mscdex/busboy
-│  │  └─ publisher: Brian White
-│  ├─ bytes@3.1.0
-│  │  ├─ url: http://tjholowaychuk.com
-│  │  ├─ repository: https://github.com/visionmedia/bytes.js
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ chalk@2.4.2
-│  │  ├─ repository: https://github.com/chalk/chalk
-│  │  └─ publisher
-│  ├─ chokidar@3.1.1
-│  │  ├─ url: https://paulmillr.com
-│  │  ├─ repository: https://github.com/paulmillr/chokidar
-│  │  └─ publisher: Paul Miller
-│  ├─ class-validator@0.11.0
-│  │  ├─ repository: https://github.com/typestack/class-validator
-│  │  └─ publisher: Umed Khudoiberdiev
-│  ├─ clean-stack@2.2.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/clean-stack
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ code-block-writer@10.1.0
-│  │  ├─ repository: https://github.com/dsherret/code-block-writer
-│  │  └─ publisher: David Sherret
-│  ├─ color-convert@1.9.3
-│  │  ├─ repository: https://github.com/Qix-/color-convert
-│  │  └─ publisher: Heather Arthur
-│  ├─ color-name@1.1.3
-│  │  ├─ repository: https://github.com/dfcreative/color-name
-│  │  └─ publisher: DY
-│  ├─ concat-map@0.0.1
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/node-concat-map
-│  │  └─ publisher: James Halliday
-│  ├─ concat-stream@1.6.2
-│  │  ├─ repository: https://github.com/maxogden/concat-stream
-│  │  └─ publisher: Max Ogden
-│  ├─ consola@2.11.3
-│  │  ├─ repository: https://github.com/nuxt/consola
-│  │  └─ publisher
-│  ├─ content-disposition@0.5.3
-│  │  ├─ repository: https://github.com/jshttp/content-disposition
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ content-type@1.0.4
-│  │  ├─ repository: https://github.com/jshttp/content-type
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ cookie-signature@1.0.6
-│  │  ├─ repository: https://github.com/visionmedia/node-cookie-signature
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ cookie@0.4.0
-│  │  ├─ repository: https://github.com/jshttp/cookie
-│  │  └─ publisher: Roman Shtylman
-│  ├─ core-js@3.6.4
-│  │  ├─ repository: https://github.com/zloirock/core-js
-│  │  └─ publisher
-│  ├─ core-util-is@1.0.2
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/core-util-is
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ cors@2.8.5
-│  │  ├─ url: https://github.com/troygoode/
-│  │  ├─ repository: https://github.com/expressjs/cors
-│  │  └─ publisher: Troy Goode
-│  ├─ cross-fetch@3.0.4
-│  │  ├─ repository: https://github.com/lquixada/cross-fetch
-│  │  └─ publisher: Leonardo Quixada
-│  ├─ debug@2.6.9
-│  │  ├─ repository: https://github.com/visionmedia/debug
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ debug@3.1.0
-│  │  ├─ repository: https://github.com/visionmedia/debug
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ deepmerge@4.0.0
-│  │  ├─ repository: https://github.com/TehShrike/deepmerge
-│  │  └─ publisher
-│  ├─ define-properties@1.1.3
-│  │  ├─ repository: https://github.com/ljharb/define-properties
-│  │  └─ publisher: Jordan Harband
-│  ├─ depd@1.1.2
-│  │  ├─ repository: https://github.com/dougwilson/nodejs-depd
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ deprecated-decorator@0.1.6
-│  │  ├─ repository: https://github.com/vilic/deprecated-decorator
-│  │  └─ publisher: vilicvane
-│  ├─ destroy@1.0.4
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/stream-utils/destroy
-│  │  └─ publisher: Jonathan Ong
-│  ├─ dicer@0.2.5
-│  │  ├─ repository: https://github.com/mscdex/dicer
-│  │  └─ publisher: Brian White
-│  ├─ dicer@0.3.0
-│  │  ├─ repository: https://github.com/mscdex/dicer
-│  │  └─ publisher: Brian White
-│  ├─ dir-glob@3.0.1
-│  │  ├─ url: github.com/kevva
-│  │  ├─ repository: https://github.com/kevva/dir-glob
-│  │  └─ publisher: Kevin Mårtensson
-│  ├─ ee-first@1.1.1
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/jonathanong/ee-first
-│  │  └─ publisher: Jonathan Ong
-│  ├─ encodeurl@1.0.2
-│  │  ├─ repository: https://github.com/pillarjs/encodeurl
-│  │  └─ publisher
-│  ├─ es-abstract@1.17.1
-│  │  ├─ url: http://ljharb.codes
-│  │  ├─ repository: https://github.com/ljharb/es-abstract
-│  │  └─ publisher: Jordan Harband
-│  ├─ es-abstract@1.17.4
-│  │  ├─ url: http://ljharb.codes
-│  │  ├─ repository: https://github.com/ljharb/es-abstract
-│  │  └─ publisher: Jordan Harband
-│  ├─ es-to-primitive@1.2.1
-│  │  ├─ repository: https://github.com/ljharb/es-to-primitive
-│  │  └─ publisher: Jordan Harband
-│  ├─ es6-iterator@2.0.3
-│  │  ├─ url: http://www.medikoo.com/
-│  │  ├─ repository: https://github.com/medikoo/es6-iterator
-│  │  └─ publisher: Mariusz Nowak
-│  ├─ escape-html@1.0.3
-│  │  ├─ repository: https://github.com/component/escape-html
-│  │  └─ publisher
-│  ├─ escape-string-regexp@1.0.5
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/escape-string-regexp
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ etag@1.8.1
-│  │  ├─ repository: https://github.com/jshttp/etag
-│  │  └─ publisher
-│  ├─ event-emitter@0.3.5
-│  │  ├─ url: http://www.medikoo.com/
-│  │  ├─ repository: https://github.com/medikoo/event-emitter
-│  │  └─ publisher: Mariusz Nowak
-│  ├─ eventemitter3@3.1.2
-│  │  ├─ repository: https://github.com/primus/eventemitter3
-│  │  └─ publisher: Arnout Kazemier
-│  ├─ express@4.17.1
-│  │  ├─ repository: https://github.com/expressjs/express
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ fast-glob@3.0.4
-│  │  ├─ url: canonium.com
-│  │  ├─ repository: https://github.com/mrmlnc/fast-glob
-│  │  └─ publisher: Denis Malinochkin
-│  ├─ fast-glob@3.1.1
-│  │  ├─ url: https://mrmlnc.com
-│  │  ├─ repository: https://github.com/mrmlnc/fast-glob
-│  │  └─ publisher: Denis Malinochkin
-│  ├─ fast-json-stable-stringify@2.1.0
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/epoberezkin/fast-json-stable-stringify
-│  │  └─ publisher: James Halliday
-│  ├─ fast-safe-stringify@2.0.7
-│  │  ├─ repository: https://github.com/davidmarkclements/fast-safe-stringify
-│  │  └─ publisher: David Mark Clements
-│  ├─ fill-range@7.0.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/fill-range
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ finalhandler@1.1.2
-│  │  ├─ repository: https://github.com/pillarjs/finalhandler
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ follow-redirects@1.5.10
-│  │  ├─ url: https://ruben.verborgh.org/
-│  │  ├─ repository: https://github.com/follow-redirects/follow-redirects
-│  │  └─ publisher: Ruben Verborgh
-│  ├─ forwarded@0.1.2
-│  │  ├─ repository: https://github.com/jshttp/forwarded
-│  │  └─ publisher
-│  ├─ fresh@0.5.2
-│  │  ├─ url: http://tjholowaychuk.com
-│  │  ├─ repository: https://github.com/jshttp/fresh
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ fs-capacitor@2.0.4
-│  │  ├─ repository: https://github.com/mike-marcacci/fs-capacitor
-│  │  └─ publisher: Mike Marcacci
-│  ├─ fs-extra@8.1.0
-│  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
-│  │  └─ publisher: JP Richardson
-│  ├─ fsevents@2.1.2
-│  │  ├─ repository: https://github.com/fsevents/fsevents
-│  │  └─ publisher
-│  ├─ function-bind@1.1.1
-│  │  ├─ repository: https://github.com/Raynos/function-bind
-│  │  └─ publisher: Raynos
-│  ├─ globby@10.0.2
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/globby
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ graphql-extensions@0.10.10
-│  │  ├─ repository: https://github.com/apollographql/graphql-extensions
-│  │  └─ publisher: Martijn Walraven
-│  ├─ graphql-import@0.7.1
-│  │  ├─ repository: https://github.com/graphcool/graphql-import
-│  │  └─ publisher
-│  ├─ graphql-query-complexity@0.3.0
-│  │  ├─ repository: https://github.com/slicknode/graphql-query-complexity
-│  │  └─ publisher: Ivo Meißner
-│  ├─ graphql-subscriptions@1.1.0
-│  │  ├─ repository: https://github.com/apollostack/graphql-subscriptions
-│  │  └─ publisher
-│  ├─ graphql-tag@2.10.1
-│  │  ├─ repository: https://github.com/apollostack/graphql-tag
-│  │  └─ publisher
-│  ├─ graphql-toolkit@0.5.0
-│  │  ├─ repository: https://github.com/dotansimha/graphql-toolkit
-│  │  └─ publisher: Dotan Simha
-│  ├─ graphql-tools@4.0.5
-│  │  ├─ repository: https://github.com/apollographql/graphql-tools
-│  │  └─ publisher: Jonas Helfer
-│  ├─ graphql-tools@4.0.6
-│  │  ├─ repository: https://github.com/apollographql/graphql-tools
-│  │  └─ publisher: Jonas Helfer
-│  ├─ graphql-upload@8.1.0
-│  │  ├─ url: https://jaydenseric.com
-│  │  ├─ repository: https://github.com/jaydenseric/graphql-upload
-│  │  └─ publisher: Jayden Seric
-│  ├─ graphql@14.6.0
-│  │  ├─ repository: https://github.com/graphql/graphql-js
-│  │  └─ publisher
-│  ├─ has-flag@3.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/has-flag
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ has-symbols@1.0.1
-│  │  ├─ url: http://ljharb.codes
-│  │  ├─ repository: https://github.com/ljharb/has-symbols
-│  │  └─ publisher: Jordan Harband
-│  ├─ has@1.0.3
-│  │  ├─ repository: https://github.com/tarruda/has
-│  │  └─ publisher: Thiago de Arruda
-│  ├─ http-errors@1.7.2
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/jshttp/http-errors
-│  │  └─ publisher: Jonathan Ong
-│  ├─ http-errors@1.7.3
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/jshttp/http-errors
-│  │  └─ publisher: Jonathan Ong
-│  ├─ iconv-lite@0.4.24
-│  │  ├─ repository: https://github.com/ashtuchkin/iconv-lite
-│  │  └─ publisher: Alexander Shtuchkin
-│  ├─ ignore@5.1.4
-│  │  ├─ repository: https://github.com/kaelzhang/node-ignore
-│  │  └─ publisher: kael
-│  ├─ indent-string@3.2.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/indent-string
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ ipaddr.js@1.9.0
-│  │  ├─ repository: https://github.com/whitequark/ipaddr.js
-│  │  └─ publisher: whitequark
-│  ├─ is-absolute@1.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-absolute
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-binary-path@2.1.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/is-binary-path
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ is-callable@1.1.5
-│  │  ├─ url: http://ljharb.codes
-│  │  ├─ repository: https://github.com/ljharb/is-callable
-│  │  └─ publisher: Jordan Harband
-│  ├─ is-date-object@1.0.2
-│  │  ├─ repository: https://github.com/ljharb/is-date-object
-│  │  └─ publisher: Jordan Harband
-│  ├─ is-extglob@1.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-extglob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-extglob@2.1.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-extglob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-glob@2.0.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-glob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-glob@4.0.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/micromatch/is-glob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-invalid-path@0.1.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-invalid-path
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-negated-glob@1.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-negated-glob
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-number@7.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-number
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-promise@2.1.0
-│  │  ├─ repository: https://github.com/then/is-promise
-│  │  └─ publisher: ForbesLindesay
-│  ├─ is-regex@1.0.5
-│  │  ├─ repository: https://github.com/ljharb/is-regex
-│  │  └─ publisher: Jordan Harband
-│  ├─ is-relative@1.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-relative
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-symbol@1.0.3
-│  │  ├─ repository: https://github.com/inspect-js/is-symbol
-│  │  └─ publisher: Jordan Harband
-│  ├─ is-unc-path@1.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-unc-path
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-valid-path@0.1.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-valid-path
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ is-windows@1.0.2
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/is-windows
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ isarray@0.0.1
-│  │  ├─ url: http://juliangruber.com
-│  │  ├─ repository: https://github.com/juliangruber/isarray
-│  │  └─ publisher: Julian Gruber
-│  ├─ isarray@1.0.0
-│  │  ├─ url: http://juliangruber.com
-│  │  ├─ repository: https://github.com/juliangruber/isarray
-│  │  └─ publisher: Julian Gruber
-│  ├─ iterall@1.3.0
-│  │  ├─ url: http://leebyron.com/
-│  │  ├─ repository: https://github.com/leebyron/iterall
-│  │  └─ publisher: Lee Byron
-│  ├─ jsonfile@4.0.0
-│  │  ├─ repository: https://github.com/jprichardson/node-jsonfile
-│  │  └─ publisher: JP Richardson
-│  ├─ lodash.get@4.4.2
-│  │  ├─ url: http://allyoucanleet.com/
-│  │  ├─ repository: https://github.com/lodash/lodash
-│  │  └─ publisher: John-David Dalton
-│  ├─ lodash.set@4.3.2
-│  │  ├─ url: http://allyoucanleet.com/
-│  │  ├─ repository: https://github.com/lodash/lodash
-│  │  └─ publisher: John-David Dalton
-│  ├─ lodash.sortby@4.7.0
-│  │  ├─ url: http://allyoucanleet.com/
-│  │  ├─ repository: https://github.com/lodash/lodash
-│  │  └─ publisher: John-David Dalton
-│  ├─ lodash@4.17.15
-│  │  ├─ repository: https://github.com/lodash/lodash
-│  │  └─ publisher: John-David Dalton
-│  ├─ lru-queue@0.1.0
-│  │  ├─ url: http://www.medikoo.com/
-│  │  ├─ repository: https://github.com/medikoo/lru-queue
-│  │  └─ publisher: Mariusz Nowak
-│  ├─ media-typer@0.3.0
-│  │  ├─ repository: https://github.com/jshttp/media-typer
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ merge-descriptors@1.0.1
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/component/merge-descriptors
-│  │  └─ publisher: Jonathan Ong
-│  ├─ merge-graphql-schemas@1.7.0
-│  │  ├─ repository: https://github.com/Urigo/merge-graphql-schemas
-│  │  └─ publisher: OK GROW!
-│  ├─ merge2@1.3.0
-│  │  ├─ repository: https://github.com/teambition/merge2
-│  │  └─ publisher
-│  ├─ methods@1.1.2
-│  │  ├─ repository: https://github.com/jshttp/methods
-│  │  └─ publisher
-│  ├─ micromatch@4.0.2
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/micromatch/micromatch
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ mime-db@1.43.0
-│  │  ├─ repository: https://github.com/jshttp/mime-db
-│  │  └─ publisher
-│  ├─ mime-types@2.1.26
-│  │  ├─ repository: https://github.com/jshttp/mime-types
-│  │  └─ publisher
-│  ├─ mime@1.6.0
-│  │  ├─ url: http://github.com/broofa
-│  │  ├─ repository: https://github.com/broofa/node-mime
-│  │  └─ publisher: Robert Kieffer
-│  ├─ minimist@0.0.8
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/minimist
-│  │  └─ publisher: James Halliday
-│  ├─ mkdirp@0.5.1
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/node-mkdirp
-│  │  └─ publisher: James Halliday
-│  ├─ ms@2.0.0
-│  │  ├─ repository: https://github.com/zeit/ms
-│  │  └─ publisher
-│  ├─ ms@2.1.1
-│  │  ├─ repository: https://github.com/zeit/ms
-│  │  └─ publisher
-│  ├─ multer@1.4.2
-│  │  ├─ repository: https://github.com/expressjs/multer
-│  │  └─ publisher
-│  ├─ multimatch@4.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/multimatch
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ negotiator@0.6.2
-│  │  ├─ repository: https://github.com/jshttp/negotiator
-│  │  └─ publisher
-│  ├─ next-tick@1.0.0
-│  │  ├─ url: http://www.medikoo.com/
-│  │  ├─ repository: https://github.com/medikoo/next-tick
-│  │  └─ publisher: Mariusz Nowak
-│  ├─ node-fetch@2.6.0
-│  │  ├─ repository: https://github.com/bitinn/node-fetch
-│  │  └─ publisher: David Frank
-│  ├─ normalize-path@3.0.0
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/jonschlinkert/normalize-path
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ object-assign@4.1.1
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/object-assign
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ object-hash@2.0.1
-│  │  ├─ repository: https://github.com/puleos/object-hash
-│  │  └─ publisher: Scott Puleo
-│  ├─ object-inspect@1.7.0
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/object-inspect
-│  │  └─ publisher: James Halliday
-│  ├─ object-keys@1.1.1
-│  │  ├─ url: http://ljharb.codes
-│  │  ├─ repository: https://github.com/ljharb/object-keys
-│  │  └─ publisher: Jordan Harband
-│  ├─ object-path@0.11.4
-│  │  ├─ repository: https://github.com/mariocasciaro/object-path
-│  │  └─ publisher: Mario Casciaro
-│  ├─ object.assign@4.1.0
-│  │  ├─ repository: https://github.com/ljharb/object.assign
-│  │  └─ publisher: Jordan Harband
-│  ├─ object.getownpropertydescriptors@2.1.0
-│  │  ├─ repository: https://github.com/es-shims/object.getownpropertydescriptors
-│  │  └─ publisher: Jordan Harband
-│  ├─ on-finished@2.3.0
-│  │  ├─ repository: https://github.com/jshttp/on-finished
-│  │  └─ publisher
-│  ├─ optional@0.1.4
-│  │  ├─ repository: https://github.com/tony-o/node-optional
-│  │  └─ publisher
-│  ├─ parseurl@1.3.3
-│  │  ├─ repository: https://github.com/pillarjs/parseurl
-│  │  └─ publisher
-│  ├─ path-is-absolute@1.0.1
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/path-is-absolute
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ path-to-regexp@0.1.7
-│  │  ├─ repository: https://github.com/component/path-to-regexp
-│  │  └─ publisher
-│  ├─ path-to-regexp@3.2.0
-│  │  ├─ repository: https://github.com/pillarjs/path-to-regexp
-│  │  └─ publisher
-│  ├─ path-type@4.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/path-type
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ picomatch@2.2.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/micromatch/picomatch
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ process-nextick-args@2.0.1
-│  │  ├─ repository: https://github.com/calvinmetcalf/process-nextick-args
-│  │  └─ publisher
-│  ├─ proxy-addr@2.0.5
-│  │  ├─ repository: https://github.com/jshttp/proxy-addr
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ range-parser@1.2.1
-│  │  ├─ url: http://tjholowaychuk.com
-│  │  ├─ repository: https://github.com/jshttp/range-parser
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ raw-body@2.4.0
-│  │  ├─ url: http://jongleberry.com
-│  │  ├─ repository: https://github.com/stream-utils/raw-body
-│  │  └─ publisher: Jonathan Ong
-│  ├─ readable-stream@1.1.14
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/readable-stream
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ readable-stream@2.3.7
-│  │  ├─ repository: https://github.com/nodejs/readable-stream
-│  │  └─ publisher
-│  ├─ readdirp@3.3.0
-│  │  ├─ url: thlorenz.com
-│  │  ├─ repository: https://github.com/paulmillr/readdirp
-│  │  └─ publisher: Thorsten Lorenz
-│  ├─ resolve-from@4.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/resolve-from
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ retry@0.12.0
-│  │  ├─ url: http://debuggable.com/
-│  │  ├─ repository: https://github.com/tim-kos/node-retry
-│  │  └─ publisher: Tim Koschützki
-│  ├─ reusify@1.0.4
-│  │  ├─ repository: https://github.com/mcollina/reusify
-│  │  └─ publisher: Matteo Collina
-│  ├─ run-parallel@1.1.9
-│  │  ├─ url: http://feross.org/
-│  │  ├─ repository: https://github.com/feross/run-parallel
-│  │  └─ publisher: Feross Aboukhadijeh
-│  ├─ safe-buffer@5.1.2
-│  │  ├─ url: http://feross.org
-│  │  ├─ repository: https://github.com/feross/safe-buffer
-│  │  └─ publisher: Feross Aboukhadijeh
-│  ├─ safe-buffer@5.2.0
-│  │  ├─ url: http://feross.org
-│  │  ├─ repository: https://github.com/feross/safe-buffer
-│  │  └─ publisher: Feross Aboukhadijeh
-│  ├─ safer-buffer@2.1.2
-│  │  ├─ url: https://github.com/ChALkeR
-│  │  ├─ repository: https://github.com/ChALkeR/safer-buffer
-│  │  └─ publisher: Nikita Skovoroda
-│  ├─ send@0.17.1
-│  │  ├─ repository: https://github.com/pillarjs/send
-│  │  └─ publisher: TJ Holowaychuk
-│  ├─ serve-static@1.14.1
-│  │  ├─ repository: https://github.com/expressjs/serve-static
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ slash@3.0.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/sindresorhus/slash
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ statuses@1.5.0
-│  │  ├─ repository: https://github.com/jshttp/statuses
-│  │  └─ publisher
-│  ├─ streamsearch@0.1.2
-│  │  ├─ repository: https://github.com/mscdex/streamsearch
-│  │  └─ publisher: Brian White
-│  ├─ string.prototype.trimleft@2.1.1
-│  │  ├─ repository: https://github.com/es-shims/String.prototype.trimLeft
-│  │  └─ publisher: Jordan Harband
-│  ├─ string.prototype.trimright@2.1.1
-│  │  ├─ repository: https://github.com/es-shims/String.prototype.trimRight
-│  │  └─ publisher: Jordan Harband
-│  ├─ string_decoder@0.10.31
-│  │  ├─ repository: https://github.com/rvagg/string_decoder
-│  │  └─ publisher
-│  ├─ string_decoder@1.1.1
-│  │  ├─ repository: https://github.com/nodejs/string_decoder
-│  │  └─ publisher
-│  ├─ subscriptions-transport-ws@0.9.16
-│  │  ├─ repository: https://github.com/apollostack/subscriptions-transport-ws
-│  │  └─ publisher
-│  ├─ supports-color@5.5.0
-│  │  ├─ url: sindresorhus.com
-│  │  ├─ repository: https://github.com/chalk/supports-color
-│  │  └─ publisher: Sindre Sorhus
-│  ├─ symbol-observable@1.2.0
-│  │  ├─ repository: https://github.com/blesh/symbol-observable
-│  │  └─ publisher: Ben Lesh
-│  ├─ to-regex-range@5.0.1
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/micromatch/to-regex-range
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ toidentifier@1.0.0
-│  │  ├─ repository: https://github.com/component/toidentifier
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ ts-invariant@0.4.4
-│  │  ├─ repository: https://github.com/apollographql/invariant-packages
-│  │  └─ publisher: Ben Newman
-│  ├─ ts-morph@4.0.1
-│  │  ├─ repository: https://github.com/dsherret/ts-morph
-│  │  └─ publisher: David Sherret
-│  ├─ type-graphql@0.17.6
-│  │  ├─ url: https://github.com/19majkel94
-│  │  ├─ repository: https://github.com/19majkel94/type-graphql
-│  │  └─ publisher: Michał Lytek
-│  ├─ type-is@1.6.18
-│  │  ├─ repository: https://github.com/jshttp/type-is
-│  │  └─ publisher
-│  ├─ typedarray@0.0.6
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/typedarray
-│  │  └─ publisher: James Halliday
-│  ├─ unc-path-regex@0.1.2
-│  │  ├─ url: https://github.com/jonschlinkert
-│  │  ├─ repository: https://github.com/regexhq/unc-path-regex
-│  │  └─ publisher: Jon Schlinkert
-│  ├─ universalify@0.1.2
-│  │  ├─ repository: https://github.com/RyanZim/universalify
-│  │  └─ publisher: Ryan Zimmerman
-│  ├─ unpipe@1.0.0
-│  │  ├─ repository: https://github.com/stream-utils/unpipe
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ util-deprecate@1.0.2
-│  │  ├─ url: http://n8.io/
-│  │  ├─ repository: https://github.com/TooTallNate/util-deprecate
-│  │  └─ publisher: Nathan Rajlich
-│  ├─ util.promisify@1.0.1
-│  │  ├─ repository: https://github.com/ljharb/util.promisify
-│  │  └─ publisher: Jordan Harband
-│  ├─ utils-merge@1.0.1
-│  │  ├─ url: http://www.jaredhanson.net/
-│  │  ├─ repository: https://github.com/jaredhanson/utils-merge
-│  │  └─ publisher: Jared Hanson
-│  ├─ uuid@3.3.3
-│  │  ├─ repository: https://github.com/kelektiv/node-uuid
-│  │  └─ publisher
-│  ├─ uuid@3.4.0
-│  │  ├─ repository: https://github.com/uuidjs/uuid
-│  │  └─ publisher
-│  ├─ validator@12.0.0
-│  │  ├─ repository: https://github.com/chriso/validator.js
-│  │  └─ publisher: Chris O'Hara
-│  ├─ vary@1.1.2
-│  │  ├─ repository: https://github.com/jshttp/vary
-│  │  └─ publisher: Douglas Christopher Wilson
-│  ├─ whatwg-fetch@3.0.0
-│  │  ├─ repository: https://github.com/github/fetch
-│  │  └─ publisher
-│  ├─ ws@5.2.2
-│  │  ├─ url: http://2x.io
-│  │  ├─ repository: https://github.com/websockets/ws
-│  │  └─ publisher: Einar Otto Stangvik
-│  ├─ ws@6.2.1
-│  │  ├─ url: http://2x.io
-│  │  ├─ repository: https://github.com/websockets/ws
-│  │  └─ publisher: Einar Otto Stangvik
-│  ├─ xtend@4.0.2
-│  │  ├─ repository: https://github.com/Raynos/xtend
-│  │  └─ publisher: Raynos
-│  ├─ zen-observable-ts@0.8.20
-│  │  ├─ repository: https://github.com/apollographql/apollo-link
-│  │  └─ publisher: Evans Hauser
-│  ├─ zen-observable@0.8.15
-│  │  ├─ repository: https://github.com/zenparsing/zen-observable
 │  │  └─ publisher
 │  ├─ @oclif/command@1.5.19
 │  │  ├─ repository: https://github.com/oclif/command
@@ -1042,7 +71,13 @@ Third-party licenses
 │  ├─ @types/keyv@3.1.1
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
+│  ├─ @types/node@13.1.7
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
 │  ├─ @types/responselike@1.0.0
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/validator@13.0.0
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ ansi-colors@3.2.4
@@ -1053,6 +88,10 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/ansi-escapes
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-regex@2.1.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-regex
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ ansi-regex@3.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/chalk/ansi-regex
@@ -1060,6 +99,10 @@ Third-party licenses
 │  ├─ ansi-regex@4.1.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/chalk/ansi-regex
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-styles@3.2.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-styles
 │  │  └─ publisher: Sindre Sorhus
 │  ├─ ansicolors@0.3.2
 │  │  ├─ url: thlorenz.com
@@ -1071,6 +114,9 @@ Third-party licenses
 │  ├─ autobind-decorator@2.4.0
 │  │  ├─ repository: https://github.com/andreypopp/autobind-decorator
 │  │  └─ publisher: Andrey Popp
+│  ├─ axios@0.19.2
+│  │  ├─ repository: https://github.com/axios/axios
+│  │  └─ publisher: Matt Zabriskie
 │  ├─ base64-js@1.3.1
 │  │  ├─ repository: https://github.com/beatgammit/base64-js
 │  │  └─ publisher: T. Jameson Little
@@ -1089,7 +135,7 @@ Third-party licenses
 │  ├─ buffer-fill@1.0.0
 │  │  ├─ repository: https://github.com/LinusU/buffer-fill
 │  │  └─ publisher
-│  ├─ buffer@5.4.3
+│  ├─ buffer@5.6.0
 │  │  ├─ url: http://feross.org
 │  │  ├─ repository: https://github.com/feross/buffer
 │  │  └─ publisher: Feross Aboukhadijeh
@@ -1104,7 +150,17 @@ Third-party licenses
 │  │  ├─ url: thlorenz.com
 │  │  ├─ repository: https://github.com/thlorenz/cardinal
 │  │  └─ publisher: Thorsten Lorenz
+│  ├─ chalk@2.4.2
+│  │  ├─ repository: https://github.com/chalk/chalk
+│  │  └─ publisher
+│  ├─ class-validator@0.12.1
+│  │  ├─ repository: https://github.com/typestack/class-validator
+│  │  └─ publisher: Umed Khudoiberdiev
 │  ├─ clean-stack@1.3.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/clean-stack
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ clean-stack@2.2.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/clean-stack
 │  │  └─ publisher: Sindre Sorhus
@@ -1122,15 +178,31 @@ Third-party licenses
 │  │  ├─ url: http://lukechilds.co.uk
 │  │  ├─ repository: https://github.com/lukechilds/clone-response
 │  │  └─ publisher: Luke Childs
+│  ├─ color-convert@1.9.3
+│  │  ├─ repository: https://github.com/Qix-/color-convert
+│  │  └─ publisher: Heather Arthur
+│  ├─ color-name@1.1.3
+│  │  ├─ repository: https://github.com/dfcreative/color-name
+│  │  └─ publisher: DY
 │  ├─ colors@1.4.0
 │  │  ├─ repository: https://github.com/Marak/colors.js
 │  │  └─ publisher: Marak Squires
 │  ├─ commander@2.8.1
 │  │  ├─ repository: https://github.com/tj/commander.js
 │  │  └─ publisher: TJ Holowaychuk
+│  ├─ consola@2.11.3
+│  │  ├─ repository: https://github.com/nuxt/consola
+│  │  └─ publisher
+│  ├─ core-util-is@1.0.2
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/core-util-is
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ cross-spawn@6.0.5
 │  │  ├─ repository: https://github.com/moxystudio/node-cross-spawn
 │  │  └─ publisher: André Cruz
+│  ├─ debug@3.1.0
+│  │  ├─ repository: https://github.com/visionmedia/debug
+│  │  └─ publisher: TJ Holowaychuk
 │  ├─ debug@3.2.6
 │  │  ├─ repository: https://github.com/visionmedia/debug
 │  │  └─ publisher: TJ Holowaychuk
@@ -1157,7 +229,7 @@ Third-party licenses
 │  │  ├─ url: https://github.com/kevva
 │  │  ├─ repository: https://github.com/kevva/decompress-unzip
 │  │  └─ publisher: Kevin Mårtensson
-│  ├─ decompress@4.2.0
+│  ├─ decompress@4.2.1
 │  │  ├─ url: github.com/kevva
 │  │  ├─ repository: https://github.com/kevva/decompress
 │  │  └─ publisher: Kevin Mårtensson
@@ -1175,10 +247,25 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/enquirer/enquirer
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ es6-iterator@2.0.3
+│  │  ├─ url: http://www.medikoo.com/
+│  │  ├─ repository: https://github.com/medikoo/es6-iterator
+│  │  └─ publisher: Mariusz Nowak
+│  ├─ escape-string-regexp@1.0.5
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/escape-string-regexp
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ event-emitter@0.3.5
+│  │  ├─ url: http://www.medikoo.com/
+│  │  ├─ repository: https://github.com/medikoo/event-emitter
+│  │  └─ publisher: Mariusz Nowak
 │  ├─ extract-stack@1.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/extract-stack
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ fast-safe-stringify@2.0.7
+│  │  ├─ repository: https://github.com/davidmarkclements/fast-safe-stringify
+│  │  └─ publisher: David Mark Clements
 │  ├─ fd-slicer@1.1.0
 │  │  ├─ repository: https://github.com/andrewrk/node-fd-slicer
 │  │  └─ publisher: Andrew Kelley
@@ -1194,6 +281,10 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/file-type
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ follow-redirects@1.5.10
+│  │  ├─ url: https://ruben.verborgh.org/
+│  │  ├─ repository: https://github.com/follow-redirects/follow-redirects
+│  │  └─ publisher: Ruben Verborgh
 │  ├─ fs-constants@1.0.0
 │  │  ├─ url: @mafintosh
 │  │  ├─ repository: https://github.com/mafintosh/fs-constants
@@ -1202,6 +293,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
 │  │  └─ publisher: JP Richardson
 │  ├─ fs-extra@7.0.1
+│  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
+│  │  └─ publisher: JP Richardson
+│  ├─ fs-extra@8.1.0
 │  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
 │  │  └─ publisher: JP Richardson
 │  ├─ get-stream@2.3.1
@@ -1222,10 +316,18 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/has-flag
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ has-flag@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/has-flag
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ hyperlinker@1.0.0
 │  │  ├─ url: github.com/jamestalmage
 │  │  ├─ repository: https://github.com/jamestalmage/hyperlinker
 │  │  └─ publisher: James Talmage
+│  ├─ indent-string@3.2.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/indent-string
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ indent-string@4.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/indent-string
@@ -1238,6 +340,9 @@ Third-party licenses
 │  │  ├─ url: https://github.com/shinnn
 │  │  ├─ repository: https://github.com/shinnn/is-natural-number.js
 │  │  └─ publisher: Shinnosuke Watanabe
+│  ├─ is-promise@2.1.0
+│  │  ├─ repository: https://github.com/then/is-promise
+│  │  └─ publisher: ForbesLindesay
 │  ├─ is-stream@1.1.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/is-stream
@@ -1246,6 +351,10 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/is-wsl
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ isarray@1.0.0
+│  │  ├─ url: http://juliangruber.com
+│  │  ├─ repository: https://github.com/juliangruber/isarray
+│  │  └─ publisher: Julian Gruber
 │  ├─ js-yaml@3.13.1
 │  │  ├─ repository: https://github.com/nodeca/js-yaml
 │  │  └─ publisher: Vladimir Zapparov
@@ -1253,6 +362,9 @@ Third-party licenses
 │  │  ├─ url: http://dominictarr.com
 │  │  ├─ repository: https://github.com/dominictarr/json-buffer
 │  │  └─ publisher: Dominic Tarr
+│  ├─ jsonfile@4.0.0
+│  │  ├─ repository: https://github.com/jprichardson/node-jsonfile
+│  │  └─ publisher: JP Richardson
 │  ├─ keyv@4.0.0
 │  │  ├─ url: http://lukechilds.co.uk
 │  │  ├─ repository: https://github.com/lukechilds/keyv
@@ -1267,10 +379,17 @@ Third-party licenses
 │  ├─ lodash.templatesettings@4.2.0
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
+│  ├─ lodash@4.17.15
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
 │  ├─ lowercase-keys@2.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/lowercase-keys
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ lru-queue@0.1.0
+│  │  ├─ url: http://www.medikoo.com/
+│  │  ├─ repository: https://github.com/medikoo/lru-queue
+│  │  └─ publisher: Mariusz Nowak
 │  ├─ make-dir@1.3.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/make-dir
@@ -1287,19 +406,36 @@ Third-party licenses
 │  │  ├─ url: https://github.com/ichernev
 │  │  ├─ repository: https://github.com/moment/moment
 │  │  └─ publisher: Iskren Ivov Chernev
+│  ├─ ms@2.0.0
+│  │  ├─ repository: https://github.com/zeit/ms
+│  │  └─ publisher
 │  ├─ ms@2.1.2
 │  │  ├─ repository: https://github.com/zeit/ms
 │  │  └─ publisher
 │  ├─ natural-orderby@2.0.3
 │  │  ├─ repository: https://github.com/yobacca/natural-orderby
 │  │  └─ publisher: Olaf Ennen
+│  ├─ next-tick@1.0.0
+│  │  ├─ url: http://www.medikoo.com/
+│  │  ├─ repository: https://github.com/medikoo/next-tick
+│  │  └─ publisher: Mariusz Nowak
 │  ├─ nice-try@1.0.5
 │  │  ├─ repository: https://github.com/electerious/nice-try
 │  │  └─ publisher
+│  ├─ node-fetch@2.6.0
+│  │  ├─ repository: https://github.com/bitinn/node-fetch
+│  │  └─ publisher: David Frank
 │  ├─ normalize-url@4.5.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/normalize-url
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ object-assign@4.1.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/object-assign
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ object-hash@2.0.3
+│  │  ├─ repository: https://github.com/puleos/object-hash
+│  │  └─ publisher: Scott Puleo
 │  ├─ p-cancelable@2.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/p-cancelable
@@ -1320,6 +456,9 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/path-key
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ path-to-regexp@3.2.0
+│  │  ├─ repository: https://github.com/pillarjs/path-to-regexp
+│  │  └─ publisher
 │  ├─ pend@1.2.0
 │  │  ├─ repository: https://github.com/andrewrk/node-pend
 │  │  └─ publisher: Andrew Kelley
@@ -1339,9 +478,15 @@ Third-party licenses
 │  │  ├─ url: github.com/floatdrop
 │  │  ├─ repository: https://github.com/floatdrop/pinkie
 │  │  └─ publisher: Vsevolod Strukchinsky
+│  ├─ process-nextick-args@2.0.1
+│  │  ├─ repository: https://github.com/calvinmetcalf/process-nextick-args
+│  │  └─ publisher
 │  ├─ pump@3.0.0
 │  │  ├─ repository: https://github.com/mafintosh/pump
 │  │  └─ publisher: Mathias Buus Madsen
+│  ├─ readable-stream@2.3.7
+│  │  ├─ repository: https://github.com/nodejs/readable-stream
+│  │  └─ publisher
 │  ├─ redeyed@2.1.1
 │  │  ├─ url: thlorenz.com
 │  │  ├─ repository: https://github.com/thlorenz/redeyed
@@ -1349,6 +494,10 @@ Third-party licenses
 │  ├─ responselike@2.0.0
 │  │  ├─ repository: https://github.com/lukechilds/responselike
 │  │  └─ publisher: lukechilds
+│  ├─ safe-buffer@5.1.2
+│  │  ├─ url: http://feross.org
+│  │  ├─ repository: https://github.com/feross/safe-buffer
+│  │  └─ publisher: Feross Aboukhadijeh
 │  ├─ seek-bzip@1.0.5
 │  │  ├─ repository: https://github.com/cscott/seek-bzip
 │  │  └─ publisher
@@ -1368,6 +517,9 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/string-width
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ string_decoder@1.1.1
+│  │  ├─ repository: https://github.com/nodejs/string_decoder
+│  │  └─ publisher
 │  ├─ strip-ansi@4.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/chalk/strip-ansi
@@ -1380,6 +532,10 @@ Third-party licenses
 │  │  ├─ url: https://github.com/shinnn
 │  │  ├─ repository: https://github.com/shinnn/node-strip-dirs
 │  │  └─ publisher: Shinnosuke Watanabe
+│  ├─ supports-color@5.5.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/supports-color
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ supports-hyperlinks@1.0.1
 │  │  ├─ url: github.com/jamestalmage
 │  │  ├─ repository: https://github.com/jamestalmage/supports-hyperlinks
@@ -1402,12 +558,28 @@ Third-party licenses
 │  ├─ treeify@1.1.0
 │  │  ├─ repository: https://github.com/notatestuser/treeify
 │  │  └─ publisher: Luke Plaster
-│  ├─ unbzip2-stream@1.3.3
+│  ├─ unbzip2-stream@1.4.1
 │  │  ├─ repository: https://github.com/regular/unbzip2-stream
 │  │  └─ publisher: Jan Bölsche
+│  ├─ universalify@0.1.2
+│  │  ├─ repository: https://github.com/RyanZim/universalify
+│  │  └─ publisher: Ryan Zimmerman
+│  ├─ util-deprecate@1.0.2
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/util-deprecate
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ uuid@3.3.3
+│  │  ├─ repository: https://github.com/kelektiv/node-uuid
+│  │  └─ publisher
 │  ├─ uuid@7.0.2
 │  │  ├─ repository: https://github.com/uuidjs/uuid
 │  │  └─ publisher
+│  ├─ uuid@7.0.3
+│  │  ├─ repository: https://github.com/uuidjs/uuid
+│  │  └─ publisher
+│  ├─ validator@13.0.0
+│  │  ├─ repository: https://github.com/chriso/validator.js
+│  │  └─ publisher: Chris O'Hara
 │  ├─ widest-line@2.0.1
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/widest-line
@@ -1420,6 +592,9 @@ Third-party licenses
 │  │  ├─ url: http://2x.io
 │  │  ├─ repository: https://github.com/websockets/ws
 │  │  └─ publisher: Einar Otto Stangvik
+│  ├─ xtend@4.0.2
+│  │  ├─ repository: https://github.com/Raynos/xtend
+│  │  └─ publisher: Raynos
 │  ├─ yauzl@2.10.0
 │  │  ├─ repository: https://github.com/thejoshwolfe/yauzl
 │  │  └─ publisher: Josh Wolfe
@@ -1599,6 +774,9 @@ Third-party licenses
 │  │  ├─ url: github.com/kevva
 │  │  ├─ repository: https://github.com/kevva/astral-regex
 │  │  └─ publisher: Kevin Mårtensson
+│  ├─ async-limiter@1.0.1
+│  │  ├─ repository: https://github.com/strml/async-limiter
+│  │  └─ publisher: Samuel Reed
 │  ├─ asynckit@0.4.0
 │  │  ├─ repository: https://github.com/alexindigo/asynckit
 │  │  └─ publisher: Alex Indigo
@@ -1615,6 +793,10 @@ Third-party licenses
 │  ├─ babel-preset-jest@24.9.0
 │  │  ├─ repository: https://github.com/facebook/jest
 │  │  └─ publisher
+│  ├─ balanced-match@1.0.0
+│  │  ├─ url: http://juliangruber.com
+│  │  ├─ repository: https://github.com/juliangruber/balanced-match
+│  │  └─ publisher: Julian Gruber
 │  ├─ base@0.11.2
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/node-base/base
@@ -1623,6 +805,10 @@ Third-party licenses
 │  │  ├─ url: http://tootallnate.net
 │  │  ├─ repository: https://github.com/TooTallNate/node-bindings
 │  │  └─ publisher: Nathan Rajlich
+│  ├─ brace-expansion@1.1.11
+│  │  ├─ url: http://juliangruber.com
+│  │  ├─ repository: https://github.com/juliangruber/brace-expansion
+│  │  └─ publisher: Julian Gruber
 │  ├─ braces@2.3.2
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/micromatch/braces
@@ -1633,6 +819,9 @@ Third-party licenses
 │  ├─ bs-logger@0.2.6
 │  │  ├─ repository: https://github.com/huafu/bs-logger
 │  │  └─ publisher: Huafu Gandon
+│  ├─ buffer-from@1.1.1
+│  │  ├─ repository: https://github.com/LinusU/buffer-from
+│  │  └─ publisher
 │  ├─ cache-base@1.0.1
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/cache-base
@@ -1675,6 +864,10 @@ Third-party licenses
 │  ├─ component-emitter@1.3.0
 │  │  ├─ repository: https://github.com/component/emitter
 │  │  └─ publisher
+│  ├─ concat-map@0.0.1
+│  │  ├─ url: http://substack.net
+│  │  ├─ repository: https://github.com/substack/node-concat-map
+│  │  └─ publisher: James Halliday
 │  ├─ convert-source-map@1.7.0
 │  │  ├─ url: http://thlorenz.com
 │  │  ├─ repository: https://github.com/thlorenz/convert-source-map
@@ -1697,6 +890,9 @@ Third-party licenses
 │  │  ├─ url: https://domenic.me/
 │  │  ├─ repository: https://github.com/jsdom/data-urls
 │  │  └─ publisher: Domenic Denicola
+│  ├─ debug@2.6.9
+│  │  ├─ repository: https://github.com/visionmedia/debug
+│  │  └─ publisher: TJ Holowaychuk
 │  ├─ decamelize@1.2.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/decamelize
@@ -1712,6 +908,9 @@ Third-party licenses
 │  │  ├─ url: http://thlorenz.com
 │  │  ├─ repository: https://github.com/thlorenz/deep-is
 │  │  └─ publisher: Thorsten Lorenz
+│  ├─ define-properties@1.1.3
+│  │  ├─ repository: https://github.com/ljharb/define-properties
+│  │  └─ publisher: Jordan Harband
 │  ├─ define-property@0.2.5
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/define-property
@@ -1753,6 +952,9 @@ Third-party licenses
 │  │  ├─ url: http://ljharb.codes
 │  │  ├─ repository: https://github.com/ljharb/es-abstract
 │  │  └─ publisher: Jordan Harband
+│  ├─ es-to-primitive@1.2.1
+│  │  ├─ repository: https://github.com/ljharb/es-to-primitive
+│  │  └─ publisher: Jordan Harband
 │  ├─ exec-sh@0.3.4
 │  │  ├─ repository: https://github.com/tsertkov/exec-sh
 │  │  └─ publisher: Aleksandr Tsertkov
@@ -1793,6 +995,10 @@ Third-party licenses
 │  ├─ fast-deep-equal@3.1.1
 │  │  ├─ repository: https://github.com/epoberezkin/fast-deep-equal
 │  │  └─ publisher: Evgeny Poberezkin
+│  ├─ fast-json-stable-stringify@2.1.0
+│  │  ├─ url: http://substack.net
+│  │  ├─ repository: https://github.com/epoberezkin/fast-json-stable-stringify
+│  │  └─ publisher: James Halliday
 │  ├─ fast-levenshtein@2.0.6
 │  │  ├─ url: http://www.hiddentao.com/
 │  │  ├─ repository: https://github.com/hiddentao/fast-levenshtein
@@ -1824,6 +1030,9 @@ Third-party licenses
 │  ├─ fsevents@1.2.12
 │  │  ├─ repository: https://github.com/strongloop/fsevents
 │  │  └─ publisher: Philipp Dunkel
+│  ├─ function-bind@1.1.1
+│  │  ├─ repository: https://github.com/Raynos/function-bind
+│  │  └─ publisher: Raynos
 │  ├─ gensync@1.0.0-beta.1
 │  │  ├─ repository
 │  │  └─ publisher: Logan Smyth
@@ -1850,6 +1059,10 @@ Third-party licenses
 │  │  ├─ url: https://www.ahmadnassri.com/
 │  │  ├─ repository: https://github.com/ahmadnassri/node-har-validator
 │  │  └─ publisher: Ahmad Nassri
+│  ├─ has-symbols@1.0.1
+│  │  ├─ url: http://ljharb.codes
+│  │  ├─ repository: https://github.com/ljharb/has-symbols
+│  │  └─ publisher: Jordan Harband
 │  ├─ has-value@0.3.1
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/has-value
@@ -1866,6 +1079,9 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/has-values
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ has@1.0.3
+│  │  ├─ repository: https://github.com/tarruda/has
+│  │  └─ publisher: Thiago de Arruda
 │  ├─ html-encoding-sniffer@1.0.2
 │  │  ├─ url: https://domenic.me/
 │  │  ├─ repository: https://github.com/jsdom/html-encoding-sniffer
@@ -1876,6 +1092,9 @@ Third-party licenses
 │  ├─ http-signature@1.2.0
 │  │  ├─ repository: https://github.com/joyent/node-http-signature
 │  │  └─ publisher: Joyent, Inc
+│  ├─ iconv-lite@0.4.24
+│  │  ├─ repository: https://github.com/ashtuchkin/iconv-lite
+│  │  └─ publisher: Alexander Shtuchkin
 │  ├─ import-local@2.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/import-local
@@ -1903,6 +1122,10 @@ Third-party licenses
 │  │  ├─ url: http://feross.org/
 │  │  ├─ repository: https://github.com/feross/is-buffer
 │  │  └─ publisher: Feross Aboukhadijeh
+│  ├─ is-callable@1.1.5
+│  │  ├─ url: http://ljharb.codes
+│  │  ├─ repository: https://github.com/ljharb/is-callable
+│  │  └─ publisher: Jordan Harband
 │  ├─ is-ci@2.0.0
 │  │  ├─ url: https://twitter.com/wa7son
 │  │  ├─ repository: https://github.com/watson/is-ci
@@ -1915,6 +1138,9 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/is-data-descriptor
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ is-date-object@1.0.2
+│  │  ├─ repository: https://github.com/ljharb/is-date-object
+│  │  └─ publisher: Jordan Harband
 │  ├─ is-descriptor@0.1.6
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/is-descriptor
@@ -1947,10 +1173,20 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/is-plain-object
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ is-regex@1.0.5
+│  │  ├─ repository: https://github.com/ljharb/is-regex
+│  │  └─ publisher: Jordan Harband
+│  ├─ is-symbol@1.0.3
+│  │  ├─ repository: https://github.com/inspect-js/is-symbol
+│  │  └─ publisher: Jordan Harband
 │  ├─ is-typedarray@1.0.0
 │  │  ├─ url: http://hughsk.io/
 │  │  ├─ repository: https://github.com/hughsk/is-typedarray
 │  │  └─ publisher: Hugh Kennedy
+│  ├─ is-windows@1.0.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-windows
+│  │  └─ publisher: Jon Schlinkert
 │  ├─ isobject@2.1.0
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/isobject
@@ -2111,6 +1347,10 @@ Third-party licenses
 │  │  ├─ url: http://allyoucanleet.com/
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
+│  ├─ lodash.sortby@4.7.0
+│  │  ├─ url: http://allyoucanleet.com/
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
 │  ├─ loose-envify@1.4.0
 │  │  ├─ repository: https://github.com/zertosh/loose-envify
 │  │  └─ publisher: Andres Suarez
@@ -2137,6 +1377,12 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/micromatch/micromatch
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ mime-db@1.43.0
+│  │  ├─ repository: https://github.com/jshttp/mime-db
+│  │  └─ publisher
+│  ├─ mime-types@2.1.26
+│  │  ├─ repository: https://github.com/jshttp/mime-types
+│  │  └─ publisher
 │  ├─ minimist@1.2.5
 │  │  ├─ url: http://substack.net
 │  │  ├─ repository: https://github.com/substack/minimist
@@ -2204,10 +1450,24 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/object-copy
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ object-inspect@1.7.0
+│  │  ├─ url: http://substack.net
+│  │  ├─ repository: https://github.com/substack/object-inspect
+│  │  └─ publisher: James Halliday
+│  ├─ object-keys@1.1.1
+│  │  ├─ url: http://ljharb.codes
+│  │  ├─ repository: https://github.com/ljharb/object-keys
+│  │  └─ publisher: Jordan Harband
 │  ├─ object-visit@1.0.1
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/object-visit
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ object.assign@4.1.0
+│  │  ├─ repository: https://github.com/ljharb/object.assign
+│  │  └─ publisher: Jordan Harband
+│  ├─ object.getownpropertydescriptors@2.1.0
+│  │  ├─ repository: https://github.com/es-shims/object.getownpropertydescriptors
+│  │  └─ publisher: Jordan Harband
 │  ├─ object.pick@1.3.0
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/object.pick
@@ -2258,6 +1518,10 @@ Third-party licenses
 │  ├─ path-exists@3.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/path-exists
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ path-is-absolute@1.0.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/path-is-absolute
 │  │  └─ publisher: Sindre Sorhus
 │  ├─ path-parse@1.0.6
 │  │  ├─ repository: https://github.com/jbgutierrez/path-parse
@@ -2370,6 +1634,10 @@ Third-party licenses
 │  │  ├─ url: http://substack.net
 │  │  ├─ repository: https://github.com/substack/safe-regex
 │  │  └─ publisher: James Halliday
+│  ├─ safer-buffer@2.1.2
+│  │  ├─ url: https://github.com/ChALkeR
+│  │  ├─ repository: https://github.com/ChALkeR/safer-buffer
+│  │  └─ publisher: Nikita Skovoroda
 │  ├─ sane@4.1.0
 │  │  ├─ repository: https://github.com/amasad/sane
 │  │  └─ publisher: amasad
@@ -2523,6 +1791,12 @@ Third-party licenses
 │  │  ├─ url: https://github.com/jonschlinkert
 │  │  ├─ repository: https://github.com/jonschlinkert/use
 │  │  └─ publisher: Jon Schlinkert
+│  ├─ util.promisify@1.0.1
+│  │  ├─ repository: https://github.com/ljharb/util.promisify
+│  │  └─ publisher: Jordan Harband
+│  ├─ uuid@3.4.0
+│  │  ├─ repository: https://github.com/uuidjs/uuid
+│  │  └─ publisher
 │  ├─ verror@1.10.0
 │  │  ├─ repository: https://github.com/davepacheco/node-verror
 │  │  └─ publisher
@@ -2551,14 +1825,763 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/chalk/wrap-ansi
 │  │  └─ publisher: Sindre Sorhus
-│  └─ yargs@13.3.2
-│     ├─ repository: https://github.com/yargs/yargs
+│  ├─ ws@5.2.2
+│  │  ├─ url: http://2x.io
+│  │  ├─ repository: https://github.com/websockets/ws
+│  │  └─ publisher: Einar Otto Stangvik
+│  ├─ yargs@13.3.2
+│  │  ├─ repository: https://github.com/yargs/yargs
+│  │  └─ publisher
+│  ├─ @apollographql/apollo-tools@0.4.5
+│  │  ├─ repository: https://github.com/apollographql/apollo-tooling
+│  │  └─ publisher: Apollo GraphQL
+│  ├─ @apollographql/graphql-playground-html@1.6.24
+│  │  ├─ repository: https://github.com/graphcool/graphql-playground
+│  │  └─ publisher
+│  ├─ @babel/runtime@7.9.2
+│  │  ├─ repository: https://github.com/babel/babel
+│  │  └─ publisher: Sebastian McKenzie
+│  ├─ @dsherret/to-absolute-glob@2.0.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/to-absolute-glob
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ @graphql-toolkit/common@0.10.4
+│  │  ├─ repository: https://github.com/ardatan/graphql-toolkit
+│  │  └─ publisher: Dotan Simha
+│  ├─ @graphql-toolkit/file-loading@0.10.4
+│  │  ├─ repository: https://github.com/ardatan/graphql-toolkit
+│  │  └─ publisher: Dotan Simha
+│  ├─ @graphql-toolkit/schema-merging@0.10.4
+│  │  ├─ repository: https://github.com/ardatan/graphql-toolkit
+│  │  └─ publisher: Dotan Simha
+│  ├─ @nestjs/config@0.4.0
+│  │  ├─ repository: https://github.com/nestjs/config
+│  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nestjs/graphql@7.3.4
+│  │  ├─ repository: https://github.com/nestjs/graphql
+│  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nestjs/mapped-types@0.0.3
+│  │  ├─ repository: https://github.com/nestjs/mapped-types
+│  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nestjs/platform-express@7.0.8
+│  │  ├─ repository: https://github.com/nestjs/nest
+│  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nodelib/fs.scandir@2.1.3
+│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir
+│  │  └─ publisher
+│  ├─ @nodelib/fs.stat@2.0.3
+│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat
+│  │  └─ publisher
+│  ├─ @nodelib/fs.walk@1.2.4
+│  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk
+│  │  └─ publisher
+│  ├─ @ts-morph/common@0.4.0
+│  │  ├─ repository: https://github.com/dsherret/ts-morph
+│  │  └─ publisher: David Sherret
+│  ├─ @types/accepts@1.3.5
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/body-parser@1.17.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/body-parser@1.19.0
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/connect@3.4.33
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/content-disposition@0.5.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/cookies@0.7.4
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/cors@2.8.6
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/express-serve-static-core@4.17.2
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/express-serve-static-core@4.17.5
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/express@4.17.2
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/express@4.17.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/express@4.17.6
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/fs-capacitor@2.0.0
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/graphql-upload@8.0.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/http-assert@1.5.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/istanbul-lib-report@1.1.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/keygrip@1.0.2
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/koa-compose@3.2.5
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/koa@2.11.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/long@4.0.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/mime@2.0.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/minimatch@3.0.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/node-fetch@2.5.4
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/node-fetch@2.5.5
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/node@10.17.20
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/qs@6.9.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/range-parser@1.2.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/serve-static@1.13.3
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/ws@6.0.4
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/yargs@13.0.5
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/yargs@13.0.6
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @wry/equality@0.1.11
+│  │  ├─ repository: https://github.com/benjamn/wryware
+│  │  └─ publisher: Ben Newman
+│  ├─ accepts@1.3.7
+│  │  ├─ repository: https://github.com/jshttp/accepts
+│  │  └─ publisher
+│  ├─ agent-base@4.2.1
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-agent-base
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ agent-base@5.1.1
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-agent-base
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ agentkeepalive@4.1.0
+│  │  ├─ url: https://fengmk2.com
+│  │  ├─ repository: https://github.com/node-modules/agentkeepalive
+│  │  └─ publisher: fengmk2
+│  ├─ aggregate-error@3.0.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/aggregate-error
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ apollo-cache-control@0.9.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-cache-control-js
+│  │  └─ publisher: Martijn Walraven
+│  ├─ apollo-datasource@0.7.0
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-datasource
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-engine-reporting-protobuf@0.4.4
+│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting/tree/master/packages/apollo-engine-reporting-protobuf
+│  │  └─ publisher: Apollo
+│  ├─ apollo-engine-reporting@1.7.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
+│  │  └─ publisher: Apollo
+│  ├─ apollo-env@0.6.2
+│  │  ├─ repository: https://github.com/apollographql/apollo-tooling
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-graphql@0.4.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-link-http-common@0.2.16
+│  │  ├─ repository: https://github.com/apollographql/apollo-link
+│  │  └─ publisher: Evans Hauser
+│  ├─ apollo-link@1.2.14
+│  │  ├─ repository: https://github.com/apollographql/apollo-link
+│  │  └─ publisher: Evans Hauser
+│  ├─ apollo-server-caching@0.5.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-caching
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-core@2.12.0
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-core
+│  │  └─ publisher: Jonas Helfer
+│  ├─ apollo-server-env@2.4.3
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-env
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-errors@2.4.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-errors
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-express@2.12.0
+│  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-express
+│  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-plugin-base@0.7.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-server-types@0.3.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-tracing@0.9.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-tracing-js
+│  │  └─ publisher: Martijn Walraven
+│  ├─ apollo-upload-client@13.0.0
+│  │  ├─ url: https://jaydenseric.com
+│  │  ├─ repository: https://github.com/jaydenseric/apollo-upload-client
+│  │  └─ publisher: Jayden Seric
+│  ├─ apollo-utilities@1.3.3
+│  │  ├─ repository: https://github.com/apollographql/apollo-client
+│  │  └─ publisher: James Baxley
+│  ├─ append-field@1.0.0
+│  │  ├─ repository: https://github.com/LinusU/node-append-field
+│  │  └─ publisher: Linus Unnebäck
+│  ├─ array-differ@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/array-differ
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ array-flatten@1.1.1
+│  │  ├─ url: http://blakeembrey.me
+│  │  ├─ repository: https://github.com/blakeembrey/array-flatten
+│  │  └─ publisher: Blake Embrey
+│  ├─ array-union@2.1.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/array-union
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ arrify@2.0.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/arrify
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ async-retry@1.3.1
+│  │  ├─ repository: https://github.com/zeit/async-retry
+│  │  └─ publisher
+│  ├─ backo2@1.0.2
+│  │  ├─ repository: https://github.com/mokesmokes/backo
+│  │  └─ publisher
+│  ├─ binary-extensions@2.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/binary-extensions
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ body-parser@1.19.0
+│  │  ├─ repository: https://github.com/expressjs/body-parser
+│  │  └─ publisher
+│  ├─ braces@3.0.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/braces
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ busboy@0.2.14
+│  │  ├─ repository: https://github.com/mscdex/busboy
+│  │  └─ publisher: Brian White
+│  ├─ busboy@0.3.1
+│  │  ├─ repository: https://github.com/mscdex/busboy
+│  │  └─ publisher: Brian White
+│  ├─ bytes@3.1.0
+│  │  ├─ url: http://tjholowaychuk.com
+│  │  ├─ repository: https://github.com/visionmedia/bytes.js
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ camel-case@4.1.1
+│  │  ├─ url: http://blakeembrey.me
+│  │  ├─ repository: https://github.com/blakeembrey/change-case
+│  │  └─ publisher: Blake Embrey
+│  ├─ chokidar@3.3.1
+│  │  ├─ url: https://paulmillr.com
+│  │  ├─ repository: https://github.com/paulmillr/chokidar
+│  │  └─ publisher: Paul Miller
+│  ├─ class-transformer@0.2.3
+│  │  ├─ repository: https://github.com/pleerock/class-transformer
+│  │  └─ publisher: Umed Khudoiberdiev
+│  ├─ code-block-writer@10.1.0
+│  │  ├─ repository: https://github.com/dsherret/code-block-writer
+│  │  └─ publisher: David Sherret
+│  ├─ concat-stream@1.6.2
+│  │  ├─ repository: https://github.com/maxogden/concat-stream
+│  │  └─ publisher: Max Ogden
+│  ├─ content-disposition@0.5.3
+│  │  ├─ repository: https://github.com/jshttp/content-disposition
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ content-type@1.0.4
+│  │  ├─ repository: https://github.com/jshttp/content-type
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ cookie-signature@1.0.6
+│  │  ├─ repository: https://github.com/visionmedia/node-cookie-signature
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ cookie@0.4.0
+│  │  ├─ repository: https://github.com/jshttp/cookie
+│  │  └─ publisher: Roman Shtylman
+│  ├─ core-js@3.6.4
+│  │  ├─ repository: https://github.com/zloirock/core-js
+│  │  └─ publisher
+│  ├─ core-js@3.6.5
+│  │  ├─ repository: https://github.com/zloirock/core-js
+│  │  └─ publisher
+│  ├─ cors@2.8.5
+│  │  ├─ url: https://github.com/troygoode/
+│  │  ├─ repository: https://github.com/expressjs/cors
+│  │  └─ publisher: Troy Goode
+│  ├─ deepmerge@4.2.2
+│  │  ├─ repository: https://github.com/TehShrike/deepmerge
+│  │  └─ publisher
+│  ├─ depd@1.1.2
+│  │  ├─ repository: https://github.com/dougwilson/nodejs-depd
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ deprecated-decorator@0.1.6
+│  │  ├─ repository: https://github.com/vilic/deprecated-decorator
+│  │  └─ publisher: vilicvane
+│  ├─ destroy@1.0.4
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/stream-utils/destroy
+│  │  └─ publisher: Jonathan Ong
+│  ├─ dicer@0.2.5
+│  │  ├─ repository: https://github.com/mscdex/dicer
+│  │  └─ publisher: Brian White
+│  ├─ dicer@0.3.0
+│  │  ├─ repository: https://github.com/mscdex/dicer
+│  │  └─ publisher: Brian White
+│  ├─ dir-glob@3.0.1
+│  │  ├─ url: github.com/kevva
+│  │  ├─ repository: https://github.com/kevva/dir-glob
+│  │  └─ publisher: Kevin Mårtensson
+│  ├─ ee-first@1.1.1
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/jonathanong/ee-first
+│  │  └─ publisher: Jonathan Ong
+│  ├─ encodeurl@1.0.2
+│  │  ├─ repository: https://github.com/pillarjs/encodeurl
+│  │  └─ publisher
+│  ├─ encoding@0.1.12
+│  │  ├─ repository: https://github.com/andris9/encoding
+│  │  └─ publisher: Andris Reinman
+│  ├─ err-code@1.1.2
+│  │  ├─ url: http://indigounited.com
+│  │  ├─ repository: https://github.com/IndigoUnited/js-err-code
+│  │  └─ publisher: IndigoUnited
+│  ├─ es-abstract@1.17.1
+│  │  ├─ url: http://ljharb.codes
+│  │  ├─ repository: https://github.com/ljharb/es-abstract
+│  │  └─ publisher: Jordan Harband
+│  ├─ es-abstract@1.17.4
+│  │  ├─ url: http://ljharb.codes
+│  │  ├─ repository: https://github.com/ljharb/es-abstract
+│  │  └─ publisher: Jordan Harband
+│  ├─ es6-promise@4.2.8
+│  │  ├─ url: Conversion to ES6 API by Jake Archibald
+│  │  ├─ repository: https://github.com/stefanpenner/es6-promise
+│  │  └─ publisher: Yehuda Katz, Tom Dale, Stefan Penner and contributors
+│  ├─ es6-promisify@5.0.0
+│  │  ├─ repository: https://github.com/digitaldesignlabs/es6-promisify
+│  │  └─ publisher: Mike Hall
+│  ├─ escape-html@1.0.3
+│  │  ├─ repository: https://github.com/component/escape-html
+│  │  └─ publisher
+│  ├─ etag@1.8.1
+│  │  ├─ repository: https://github.com/jshttp/etag
+│  │  └─ publisher
+│  ├─ eventemitter3@3.1.2
+│  │  ├─ repository: https://github.com/primus/eventemitter3
+│  │  └─ publisher: Arnout Kazemier
+│  ├─ express@4.17.1
+│  │  ├─ repository: https://github.com/expressjs/express
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ extract-files@8.1.0
+│  │  ├─ url: https://jaydenseric.com
+│  │  ├─ repository: https://github.com/jaydenseric/extract-files
+│  │  └─ publisher: Jayden Seric
+│  ├─ fast-glob@3.2.2
+│  │  ├─ url: https://mrmlnc.com
+│  │  ├─ repository: https://github.com/mrmlnc/fast-glob
+│  │  └─ publisher: Denis Malinochkin
+│  ├─ fill-range@7.0.1
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/fill-range
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ finalhandler@1.1.2
+│  │  ├─ repository: https://github.com/pillarjs/finalhandler
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ form-data@3.0.0
+│  │  ├─ url: http://debuggable.com/
+│  │  ├─ repository: https://github.com/form-data/form-data
+│  │  └─ publisher: Felix Geisendörfer
+│  ├─ forwarded@0.1.2
+│  │  ├─ repository: https://github.com/jshttp/forwarded
+│  │  └─ publisher
+│  ├─ fresh@0.5.2
+│  │  ├─ url: http://tjholowaychuk.com
+│  │  ├─ repository: https://github.com/jshttp/fresh
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ fs-capacitor@2.0.4
+│  │  ├─ repository: https://github.com/mike-marcacci/fs-capacitor
+│  │  └─ publisher: Mike Marcacci
+│  ├─ fsevents@2.1.2
+│  │  ├─ repository: https://github.com/fsevents/fsevents
+│  │  └─ publisher
+│  ├─ globby@11.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/globby
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ graphql-extensions@0.11.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Martijn Walraven
+│  ├─ graphql-subscriptions@1.1.0
+│  │  ├─ repository: https://github.com/apollostack/graphql-subscriptions
+│  │  └─ publisher
+│  ├─ graphql-tag@2.10.3
+│  │  ├─ repository: https://github.com/apollographql/graphql-tag
+│  │  └─ publisher
+│  ├─ graphql-tools@4.0.8
+│  │  ├─ repository: https://github.com/apollographql/graphql-tools
+│  │  └─ publisher: Jonas Helfer
+│  ├─ graphql-tools@5.0.0
+│  │  ├─ repository: https://github.com/apollographql/graphql-tools
+│  │  └─ publisher: Jonas Helfer
+│  ├─ graphql-upload@8.1.0
+│  │  ├─ url: https://jaydenseric.com
+│  │  ├─ repository: https://github.com/jaydenseric/graphql-upload
+│  │  └─ publisher: Jayden Seric
+│  ├─ graphql@14.6.0
+│  │  ├─ repository: https://github.com/graphql/graphql-js
+│  │  └─ publisher
+│  ├─ http-errors@1.7.2
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/jshttp/http-errors
+│  │  └─ publisher: Jonathan Ong
+│  ├─ http-errors@1.7.3
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/jshttp/http-errors
+│  │  └─ publisher: Jonathan Ong
+│  ├─ http-proxy-agent@3.0.0
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-http-proxy-agent
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ https-proxy-agent@4.0.0
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-https-proxy-agent
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ humanize-ms@1.2.1
+│  │  ├─ url: http://deadhorse.me
+│  │  ├─ repository: https://github.com/node-modules/humanize-ms
+│  │  └─ publisher: dead-horse
+│  ├─ iferr@0.1.5
+│  │  ├─ repository: https://github.com/shesek/iferr
+│  │  └─ publisher: Nadav Ivgi
+│  ├─ ignore@5.1.4
+│  │  ├─ repository: https://github.com/kaelzhang/node-ignore
+│  │  └─ publisher: kael
+│  ├─ ip@1.1.5
+│  │  ├─ repository: https://github.com/indutny/node-ip
+│  │  └─ publisher: Fedor Indutny
+│  ├─ ipaddr.js@1.9.1
+│  │  ├─ repository: https://github.com/whitequark/ipaddr.js
+│  │  └─ publisher: whitequark
+│  ├─ is-absolute@1.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-absolute
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-binary-path@2.1.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/is-binary-path
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ is-extglob@2.1.1
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-extglob
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-glob@4.0.1
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/is-glob
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-lambda@1.0.1
+│  │  ├─ url: https://twitter.com/wa7son
+│  │  ├─ repository: https://github.com/watson/is-lambda
+│  │  └─ publisher: Thomas Watson Steen
+│  ├─ is-negated-glob@1.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-negated-glob
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-number@7.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-number
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-relative@1.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-relative
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ is-unc-path@1.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/is-unc-path
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ isarray@0.0.1
+│  │  ├─ url: http://juliangruber.com
+│  │  ├─ repository: https://github.com/juliangruber/isarray
+│  │  └─ publisher: Julian Gruber
+│  ├─ iterall@1.2.2
+│  │  ├─ url: http://leebyron.com/
+│  │  ├─ repository: https://github.com/leebyron/iterall
+│  │  └─ publisher: Lee Byron
+│  ├─ iterall@1.3.0
+│  │  ├─ url: http://leebyron.com/
+│  │  ├─ repository: https://github.com/leebyron/iterall
+│  │  └─ publisher: Lee Byron
+│  ├─ lodash.get@4.4.2
+│  │  ├─ url: http://allyoucanleet.com/
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ lodash.set@4.3.2
+│  │  ├─ url: http://allyoucanleet.com/
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ lodash.xorby@4.7.0
+│  │  ├─ url: http://allyoucanleet.com/
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
+│  ├─ loglevel@1.6.8
+│  │  ├─ url: http://tim-perry.co.uk
+│  │  ├─ repository: https://github.com/pimterry/loglevel
+│  │  └─ publisher: Tim Perry
+│  ├─ lower-case@2.0.1
+│  │  ├─ url: http://blakeembrey.me
+│  │  ├─ repository: https://github.com/blakeembrey/change-case
+│  │  └─ publisher: Blake Embrey
+│  ├─ media-typer@0.3.0
+│  │  ├─ repository: https://github.com/jshttp/media-typer
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ merge-descriptors@1.0.1
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/component/merge-descriptors
+│  │  └─ publisher: Jonathan Ong
+│  ├─ merge-graphql-schemas@1.7.8
+│  │  ├─ repository: https://github.com/Urigo/merge-graphql-schemas
+│  │  └─ publisher: The Guild
+│  ├─ merge2@1.3.0
+│  │  ├─ repository: https://github.com/teambition/merge2
+│  │  └─ publisher
+│  ├─ methods@1.1.2
+│  │  ├─ repository: https://github.com/jshttp/methods
+│  │  └─ publisher
+│  ├─ micromatch@4.0.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/micromatch
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ mime@1.6.0
+│  │  ├─ url: http://github.com/broofa
+│  │  ├─ repository: https://github.com/broofa/node-mime
+│  │  └─ publisher: Robert Kieffer
+│  ├─ minipass-fetch@1.2.1
+│  │  ├─ repository: https://github.com/npm/minipass-fetch
+│  │  └─ publisher
+│  ├─ minizlib@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minizlib
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ mkdirp@1.0.4
+│  │  ├─ repository: https://github.com/isaacs/node-mkdirp
+│  │  └─ publisher
+│  ├─ ms@2.1.1
+│  │  ├─ repository: https://github.com/zeit/ms
+│  │  └─ publisher
+│  ├─ multer@1.4.2
+│  │  ├─ repository: https://github.com/expressjs/multer
+│  │  └─ publisher
+│  ├─ multimatch@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/multimatch
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ negotiator@0.6.2
+│  │  ├─ repository: https://github.com/jshttp/negotiator
+│  │  └─ publisher
+│  ├─ no-case@3.0.3
+│  │  ├─ url: http://blakeembrey.me
+│  │  ├─ repository: https://github.com/blakeembrey/change-case
+│  │  └─ publisher: Blake Embrey
+│  ├─ normalize-path@3.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/normalize-path
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ object-path@0.11.4
+│  │  ├─ repository: https://github.com/mariocasciaro/object-path
+│  │  └─ publisher: Mario Casciaro
+│  ├─ on-finished@2.3.0
+│  │  ├─ repository: https://github.com/jshttp/on-finished
+│  │  └─ publisher
+│  ├─ p-map@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/p-map
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ parseurl@1.3.3
+│  │  ├─ repository: https://github.com/pillarjs/parseurl
+│  │  └─ publisher
+│  ├─ pascal-case@3.1.1
+│  │  ├─ url: http://blakeembrey.me
+│  │  ├─ repository: https://github.com/blakeembrey/change-case
+│  │  └─ publisher: Blake Embrey
+│  ├─ path-to-regexp@0.1.7
+│  │  ├─ repository: https://github.com/component/path-to-regexp
+│  │  └─ publisher
+│  ├─ path-type@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/path-type
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ picomatch@2.2.1
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/picomatch
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ picomatch@2.2.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/picomatch
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ promise-retry@1.1.1
+│  │  ├─ url: http://indigounited.com
+│  │  ├─ repository: https://github.com/IndigoUnited/node-promise-retry
+│  │  └─ publisher: IndigoUnited
+│  ├─ proxy-addr@2.0.6
+│  │  ├─ repository: https://github.com/jshttp/proxy-addr
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ range-parser@1.2.1
+│  │  ├─ url: http://tjholowaychuk.com
+│  │  ├─ repository: https://github.com/jshttp/range-parser
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ raw-body@2.4.0
+│  │  ├─ url: http://jongleberry.com
+│  │  ├─ repository: https://github.com/stream-utils/raw-body
+│  │  └─ publisher: Jonathan Ong
+│  ├─ react-is@16.12.0
+│  │  ├─ repository: https://github.com/facebook/react
+│  │  └─ publisher
+│  ├─ readable-stream@1.1.14
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/readable-stream
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ readdirp@3.3.0
+│  │  ├─ url: thlorenz.com
+│  │  ├─ repository: https://github.com/paulmillr/readdirp
+│  │  └─ publisher: Thorsten Lorenz
+│  ├─ regenerator-runtime@0.13.5
+│  │  ├─ repository: https://github.com/facebook/regenerator/tree/master/packages/regenerator-runtime
+│  │  └─ publisher: Ben Newman
+│  ├─ retry@0.10.1
+│  │  ├─ url: http://debuggable.com/
+│  │  ├─ repository: https://github.com/tim-kos/node-retry
+│  │  └─ publisher: Tim Koschützki
+│  ├─ retry@0.12.0
+│  │  ├─ url: http://debuggable.com/
+│  │  ├─ repository: https://github.com/tim-kos/node-retry
+│  │  └─ publisher: Tim Koschützki
+│  ├─ reusify@1.0.4
+│  │  ├─ repository: https://github.com/mcollina/reusify
+│  │  └─ publisher: Matteo Collina
+│  ├─ run-parallel@1.1.9
+│  │  ├─ url: http://feross.org/
+│  │  ├─ repository: https://github.com/feross/run-parallel
+│  │  └─ publisher: Feross Aboukhadijeh
+│  ├─ send@0.17.1
+│  │  ├─ repository: https://github.com/pillarjs/send
+│  │  └─ publisher: TJ Holowaychuk
+│  ├─ serve-static@1.14.1
+│  │  ├─ repository: https://github.com/expressjs/serve-static
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ slash@3.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/slash
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ smart-buffer@4.1.0
+│  │  ├─ repository: https://github.com/JoshGlazebrook/smart-buffer
+│  │  └─ publisher: Josh Glazebrook
+│  ├─ socks-proxy-agent@4.0.2
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-socks-proxy-agent
+│  │  └─ publisher: Nathan Rajlich
+│  ├─ socks@2.3.3
+│  │  ├─ repository: https://github.com/JoshGlazebrook/socks
+│  │  └─ publisher: Josh Glazebrook
+│  ├─ statuses@1.5.0
+│  │  ├─ repository: https://github.com/jshttp/statuses
+│  │  └─ publisher
+│  ├─ streamsearch@0.1.2
+│  │  ├─ repository: https://github.com/mscdex/streamsearch
+│  │  └─ publisher: Brian White
+│  ├─ string.prototype.trimleft@2.1.1
+│  │  ├─ repository: https://github.com/es-shims/String.prototype.trimLeft
+│  │  └─ publisher: Jordan Harband
+│  ├─ string.prototype.trimright@2.1.1
+│  │  ├─ repository: https://github.com/es-shims/String.prototype.trimRight
+│  │  └─ publisher: Jordan Harband
+│  ├─ string_decoder@0.10.31
+│  │  ├─ repository: https://github.com/rvagg/string_decoder
+│  │  └─ publisher
+│  ├─ subscriptions-transport-ws@0.9.16
+│  │  ├─ repository: https://github.com/apollostack/subscriptions-transport-ws
+│  │  └─ publisher
+│  ├─ symbol-observable@1.2.0
+│  │  ├─ repository: https://github.com/blesh/symbol-observable
+│  │  └─ publisher: Ben Lesh
+│  ├─ to-regex-range@5.0.1
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/micromatch/to-regex-range
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ toidentifier@1.0.0
+│  │  ├─ repository: https://github.com/component/toidentifier
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ ts-invariant@0.4.4
+│  │  ├─ repository: https://github.com/apollographql/invariant-packages
+│  │  └─ publisher: Ben Newman
+│  ├─ ts-morph@7.0.2
+│  │  ├─ repository: https://github.com/dsherret/ts-morph
+│  │  └─ publisher: David Sherret
+│  ├─ type-is@1.6.18
+│  │  ├─ repository: https://github.com/jshttp/type-is
+│  │  └─ publisher
+│  ├─ typedarray@0.0.6
+│  │  ├─ url: http://substack.net
+│  │  ├─ repository: https://github.com/substack/typedarray
+│  │  └─ publisher: James Halliday
+│  ├─ unc-path-regex@0.1.2
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/regexhq/unc-path-regex
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ unixify@1.0.0
+│  │  ├─ url: https://github.com/jonschlinkert
+│  │  ├─ repository: https://github.com/jonschlinkert/unixify
+│  │  └─ publisher: Jon Schlinkert
+│  ├─ unpipe@1.0.0
+│  │  ├─ repository: https://github.com/stream-utils/unpipe
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ util.promisify@1.0.0
+│  │  ├─ repository: https://github.com/ljharb/util.promisify
+│  │  └─ publisher: Jordan Harband
+│  ├─ utils-merge@1.0.1
+│  │  ├─ url: http://www.jaredhanson.net/
+│  │  ├─ repository: https://github.com/jaredhanson/utils-merge
+│  │  └─ publisher: Jared Hanson
+│  ├─ vary@1.1.2
+│  │  ├─ repository: https://github.com/jshttp/vary
+│  │  └─ publisher: Douglas Christopher Wilson
+│  ├─ ws@6.2.1
+│  │  ├─ url: http://2x.io
+│  │  ├─ repository: https://github.com/websockets/ws
+│  │  └─ publisher: Einar Otto Stangvik
+│  ├─ zen-observable-ts@0.8.21
+│  │  ├─ repository: https://github.com/apollographql/apollo-link
+│  │  └─ publisher: Evans Hauser
+│  └─ zen-observable@0.8.15
+│     ├─ repository: https://github.com/zenparsing/zen-observable
 │     └─ publisher
 ├─ ISC
-│  ├─ anymatch@3.1.1
-│  │  ├─ url: https://github.com/es128
-│  │  ├─ repository: https://github.com/micromatch/anymatch
-│  │  └─ publisher: Elan Shanker
+│  ├─ @oclif/linewrap@1.0.0
+│  │  ├─ repository: https://github.com/heroku/node-linewrap
+│  │  └─ publisher: Jeff Dickey
 │  ├─ cli-color@2.0.0
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/cli-color
@@ -2583,62 +2606,33 @@ Third-party licenses
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/es5-ext/tree/ext
 │  │  └─ publisher: Mariusz Nowak
-│  ├─ fastq@1.6.0
-│  │  ├─ repository: https://github.com/mcollina/fastq
-│  │  └─ publisher: Matteo Collina
-│  ├─ fs.realpath@1.0.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/fs.realpath
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ glob-parent@5.1.0
-│  │  ├─ url: https://gulpjs.com/
-│  │  ├─ repository: https://github.com/gulpjs/glob-parent
-│  │  └─ publisher: Gulp Team
-│  ├─ glob@7.1.4
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/node-glob
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ glob@7.1.6
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/node-glob
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ graceful-fs@4.2.3
 │  │  ├─ repository: https://github.com/isaacs/node-graceful-fs
 │  │  └─ publisher
-│  ├─ inflight@1.0.6
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/npm/inflight
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ inherits@2.0.3
 │  │  ├─ repository: https://github.com/isaacs/inherits
 │  │  └─ publisher
-│  ├─ inherits@2.0.4
-│  │  ├─ repository: https://github.com/isaacs/inherits
-│  │  └─ publisher
+│  ├─ isexe@2.0.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/isexe
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ iterare@1.2.0
 │  │  ├─ repository: https://github.com/felixfbecker/iterare
 │  │  └─ publisher: Felix Becker
-│  ├─ lru-cache@5.1.1
-│  │  ├─ repository: https://github.com/isaacs/node-lru-cache
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ memoizee@0.4.14
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/memoizee
 │  │  └─ publisher: Mariusz Nowak
-│  ├─ minimatch@3.0.4
-│  │  ├─ url: http://blog.izs.me
-│  │  ├─ repository: https://github.com/isaacs/minimatch
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ once@1.4.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/once
 │  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ semver@6.3.0
+│  ├─ semver@5.7.1
 │  │  ├─ repository: https://github.com/npm/node-semver
 │  │  └─ publisher
-│  ├─ setprototypeof@1.1.1
-│  │  ├─ repository: https://github.com/wesleytodd/setprototypeof
-│  │  └─ publisher: Wes Todd
+│  ├─ semver@7.1.3
+│  │  ├─ repository: https://github.com/npm/node-semver
+│  │  └─ publisher
 │  ├─ timers-ext@0.1.7
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/timers-ext
@@ -2651,30 +2645,13 @@ Third-party licenses
 │  │  ├─ url: https://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/type
 │  │  └─ publisher: Mariusz Nowak
-│  ├─ wrappy@1.0.2
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/npm/wrappy
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ yallist@3.1.1
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/yallist
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ @oclif/linewrap@1.0.0
-│  │  ├─ repository: https://github.com/heroku/node-linewrap
-│  │  └─ publisher: Jeff Dickey
-│  ├─ isexe@2.0.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/isexe
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ semver@5.7.1
-│  │  ├─ repository: https://github.com/npm/node-semver
-│  │  └─ publisher
-│  ├─ semver@7.1.3
-│  │  ├─ repository: https://github.com/npm/node-semver
-│  │  └─ publisher
 │  ├─ which@1.3.1
 │  │  ├─ url: http://blog.izs.me
 │  │  ├─ repository: https://github.com/isaacs/node-which
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ wrappy@1.0.2
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/wrappy
 │  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ abbrev@1.1.1
 │  │  ├─ repository: https://github.com/isaacs/abbrev-js
@@ -2708,12 +2685,20 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/fs-minipass
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ fs.realpath@1.0.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/fs.realpath
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ gauge@2.7.4
 │  │  ├─ repository: https://github.com/iarna/gauge
 │  │  └─ publisher: Rebecca Turner
 │  ├─ get-caller-file@2.0.5
 │  │  ├─ repository: https://github.com/stefanpenner/get-caller-file
 │  │  └─ publisher: Stefan Penner
+│  ├─ glob@7.1.6
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/node-glob
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ har-schema@2.0.0
 │  │  ├─ url: https://www.ahmadnassri.com/
 │  │  ├─ repository: https://github.com/ahmadnassri/har-schema
@@ -2729,6 +2714,13 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/ignore-walk
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ inflight@1.0.6
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/inflight
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ inherits@2.0.4
+│  │  ├─ repository: https://github.com/isaacs/inherits
+│  │  └─ publisher
 │  ├─ ini@1.3.5
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/ini
@@ -2740,6 +2732,10 @@ Third-party licenses
 │  ├─ make-error@1.3.6
 │  │  ├─ repository: https://github.com/JsCommunity/make-error
 │  │  └─ publisher: Julien Fontanet
+│  ├─ minimatch@3.0.4
+│  │  ├─ url: http://blog.izs.me
+│  │  ├─ repository: https://github.com/isaacs/minimatch
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ minipass@2.9.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/minipass
@@ -2794,6 +2790,9 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/sax-js
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ semver@6.3.0
+│  │  ├─ repository: https://github.com/npm/node-semver
+│  │  └─ publisher
 │  ├─ set-blocking@2.0.0
 │  │  ├─ repository: https://github.com/yargs/set-blocking
 │  │  └─ publisher: Ben Coe
@@ -2828,19 +2827,208 @@ Third-party licenses
 │  ├─ y18n@4.0.0
 │  │  ├─ repository: https://github.com/yargs/y18n
 │  │  └─ publisher: Ben Coe
+│  ├─ yallist@3.1.1
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/yallist
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ yargs-parser@10.1.0
 │  │  ├─ repository: https://github.com/yargs/yargs-parser
 │  │  └─ publisher: Ben Coe
-│  └─ yargs-parser@13.1.2
-│     ├─ repository: https://github.com/yargs/yargs-parser
-│     └─ publisher: Ben Coe
-├─ BSD-2-Clause
-│  ├─ dotenv-expand@5.1.0
+│  ├─ yargs-parser@13.1.2
+│  │  ├─ repository: https://github.com/yargs/yargs-parser
+│  │  └─ publisher: Ben Coe
+│  ├─ anymatch@3.1.1
+│  │  ├─ url: https://github.com/es128
+│  │  ├─ repository: https://github.com/micromatch/anymatch
+│  │  └─ publisher: Elan Shanker
+│  ├─ cacache@14.0.0
+│  │  ├─ repository: https://github.com/npm/cacache
+│  │  └─ publisher: Kat Marchán
+│  ├─ copy-concurrently@1.0.5
+│  │  ├─ url: http://re-becca.org/
+│  │  ├─ repository: https://github.com/npm/copy-concurrently
+│  │  └─ publisher: Rebecca Turner
+│  ├─ fastq@1.7.0
+│  │  ├─ repository: https://github.com/mcollina/fastq
+│  │  └─ publisher: Matteo Collina
+│  ├─ figgy-pudding@3.5.2
+│  │  ├─ repository: https://github.com/npm/figgy-pudding
+│  │  └─ publisher: Kat Marchán
+│  ├─ fs-minipass@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/fs-minipass
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ fs-write-stream-atomic@1.0.10
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/fs-write-stream-atomic
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ glob-parent@5.1.0
+│  │  ├─ url: https://gulpjs.com/
+│  │  ├─ repository: https://github.com/gulpjs/glob-parent
+│  │  └─ publisher: Gulp Team
+│  ├─ glob-parent@5.1.1
+│  │  ├─ url: https://gulpjs.com/
+│  │  ├─ repository: https://github.com/gulpjs/glob-parent
+│  │  └─ publisher: Gulp Team
+│  ├─ infer-owner@1.0.4
+│  │  ├─ url: https://izs.me
+│  │  ├─ repository: https://github.com/npm/infer-owner
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ lru-cache@5.1.1
+│  │  ├─ repository: https://github.com/isaacs/node-lru-cache
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ make-fetch-happen@7.1.1
+│  │  ├─ repository: https://github.com/npm/make-fetch-happen
+│  │  └─ publisher: Kat Marchán
+│  ├─ minipass-collect@1.0.2
+│  │  ├─ url: https://izs.me
 │  │  ├─ repository
-│  │  └─ publisher: motdotla
-│  ├─ dotenv@8.2.0
-│  │  ├─ repository: https://github.com/motdotla/dotenv
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass-flush@1.0.5
+│  │  ├─ url: https://izs.me
+│  │  ├─ repository: https://github.com/isaacs/minipass-flush
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass-pipeline@1.2.2
+│  │  ├─ url: https://izs.me
+│  │  ├─ repository
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass-sized@1.0.3
+│  │  ├─ url: https://izs.me
+│  │  ├─ repository: https://github.com/isaacs/minipass-sized
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass@3.1.1
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minipass
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ move-concurrently@1.0.1
+│  │  ├─ url: http://re-becca.org/
+│  │  ├─ repository: https://github.com/npm/move-concurrently
+│  │  └─ publisher: Rebecca Turner
+│  ├─ promise-inflight@1.0.1
+│  │  ├─ url: http://re-becca.org/
+│  │  ├─ repository: https://github.com/iarna/promise-inflight
+│  │  └─ publisher: Rebecca Turner
+│  ├─ run-queue@1.0.3
+│  │  ├─ url: http://re-becca.org/
+│  │  ├─ repository: https://github.com/iarna/run-queue
+│  │  └─ publisher: Rebecca Turner
+│  ├─ setprototypeof@1.1.1
+│  │  ├─ repository: https://github.com/wesleytodd/setprototypeof
+│  │  └─ publisher: Wes Todd
+│  ├─ ssri@7.1.0
+│  │  ├─ repository: https://github.com/npm/ssri
+│  │  └─ publisher: Kat Marchán
+│  ├─ tar@6.0.1
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/node-tar
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ unique-filename@1.1.1
+│  │  ├─ url: http://re-becca.org/
+│  │  ├─ repository: https://github.com/iarna/unique-filename
+│  │  └─ publisher: Rebecca Turner
+│  ├─ unique-slug@2.0.2
+│  │  ├─ url: http://re-becca.org
+│  │  ├─ repository: https://github.com/iarna/unique-slug
+│  │  └─ publisher: Rebecca Turner
+│  └─ yallist@4.0.0
+│     ├─ url: http://blog.izs.me/
+│     ├─ repository: https://github.com/isaacs/yallist
+│     └─ publisher: Isaac Z. Schlueter
+├─ BSD-3-Clause
+│  ├─ duplexer3@0.1.4
+│  │  ├─ url: http://www.fknsrs.biz/
+│  │  ├─ repository: https://github.com/floatdrop/duplexer3
+│  │  └─ publisher: Conrad Pankoff
+│  ├─ ieee754@1.1.13
+│  │  ├─ url: http://feross.org
+│  │  ├─ repository: https://github.com/feross/ieee754
+│  │  └─ publisher: Feross Aboukhadijeh
+│  ├─ sprintf-js@1.0.3
+│  │  ├─ url: http://alexei.ro/
+│  │  ├─ repository: https://github.com/alexei/sprintf.js
+│  │  └─ publisher: Alexandru Marasteanu
+│  ├─ abab@2.0.3
+│  │  ├─ repository: https://github.com/jsdom/abab
+│  │  └─ publisher: Jeff Carpenter
+│  ├─ babel-plugin-istanbul@5.2.0
+│  │  ├─ repository: https://github.com/istanbuljs/babel-plugin-istanbul
+│  │  └─ publisher: Thai Pangsakulyanont @dtinth
+│  ├─ bcrypt-pbkdf@1.0.2
+│  │  ├─ repository: https://github.com/joyent/node-bcrypt-pbkdf
 │  │  └─ publisher
+│  ├─ istanbul-lib-coverage@2.0.5
+│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
+│  │  └─ publisher: Krishnan Anantheswaran
+│  ├─ istanbul-lib-instrument@3.3.0
+│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
+│  │  └─ publisher: Krishnan Anantheswaran
+│  ├─ istanbul-lib-report@2.0.8
+│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
+│  │  └─ publisher: Krishnan Anantheswaran
+│  ├─ istanbul-lib-source-maps@3.0.6
+│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
+│  │  └─ publisher: Krishnan Anantheswaran
+│  ├─ istanbul-reports@2.2.7
+│  │  ├─ repository: https://github.com/istanbuljs/istanbuljs
+│  │  └─ publisher: Krishnan Anantheswaran
+│  ├─ makeerror@1.0.11
+│  │  ├─ repository: https://github.com/daaku/nodejs-makeerror
+│  │  └─ publisher: Naitik Shah
+│  ├─ node-pre-gyp@0.14.0
+│  │  ├─ repository: https://github.com/mapbox/node-pre-gyp
+│  │  └─ publisher: Dane Springmeyer
+│  ├─ qs@6.5.2
+│  │  ├─ repository: https://github.com/ljharb/qs
+│  │  └─ publisher
+│  ├─ source-map@0.5.7
+│  │  ├─ repository: https://github.com/mozilla/source-map
+│  │  └─ publisher: Nick Fitzgerald
+│  ├─ source-map@0.6.1
+│  │  ├─ repository: https://github.com/mozilla/source-map
+│  │  └─ publisher: Nick Fitzgerald
+│  ├─ tmpl@1.0.4
+│  │  ├─ repository: https://github.com/daaku/nodejs-tmpl
+│  │  └─ publisher: Naitik Shah
+│  ├─ tough-cookie@2.5.0
+│  │  ├─ repository: https://github.com/salesforce/tough-cookie
+│  │  └─ publisher: Jeremy Stashewsky
+│  ├─ @apollo/protobufjs@1.0.3
+│  │  ├─ repository: https://github.com/apollographql/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/aspromise@1.1.2
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/base64@1.1.2
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/codegen@2.0.4
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/eventemitter@1.1.0
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/fetch@1.1.0
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/float@1.0.2
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/inquire@1.1.0
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/path@1.1.2
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/pool@1.1.0
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  ├─ @protobufjs/utf8@1.1.0
+│  │  ├─ repository: https://github.com/dcodeIO/protobuf.js
+│  │  └─ publisher: Daniel Wirtz
+│  └─ qs@6.7.0
+│     ├─ repository: https://github.com/ljharb/qs
+│     └─ publisher
+├─ BSD-2-Clause
 │  ├─ esprima@4.0.1
 │  │  ├─ repository: https://github.com/jquery/esprima
 │  │  └─ publisher: Ariya Hidayat
@@ -2866,30 +3054,44 @@ Third-party licenses
 │  ├─ uri-js@4.2.2
 │  │  ├─ repository: https://github.com/garycourt/uri-js
 │  │  └─ publisher: Gary Court
-│  └─ webidl-conversions@4.0.2
-│     ├─ url: https://domenic.me/
-│     ├─ repository: https://github.com/jsdom/webidl-conversions
-│     └─ publisher: Domenic Denicola
+│  ├─ webidl-conversions@4.0.2
+│  │  ├─ url: https://domenic.me/
+│  │  ├─ repository: https://github.com/jsdom/webidl-conversions
+│  │  └─ publisher: Domenic Denicola
+│  ├─ dotenv-expand@5.1.0
+│  │  ├─ repository
+│  │  └─ publisher: motdotla
+│  ├─ dotenv@8.2.0
+│  │  ├─ repository: https://github.com/motdotla/dotenv
+│  │  └─ publisher
+│  └─ http-cache-semantics@4.0.3
+│     ├─ url: https://kornel.ski/
+│     ├─ repository: https://github.com/kornelski/http-cache-semantics
+│     └─ publisher: Kornel Lesiński
 ├─ (MIT AND Apache-2.0)
-│  └─ google-libphonenumber@3.2.6
+│  └─ google-libphonenumber@3.2.8
 │     ├─ repository: https://github.com/ruimarinho/google-libphonenumber
 │     └─ publisher: Rui Marinho
+├─ WTFPL
+│  ├─ password-prompt@1.1.2
+│  │  ├─ repository: https://github.com/jdxcode/password-prompt
+│  │  └─ publisher: Jeff Dickey @jdxcode
+│  └─ left-pad@1.3.0
+│     ├─ repository: https://github.com/stevemao/left-pad
+│     └─ publisher: azer
 ├─ Apache-2.0
-│  ├─ long@4.0.0
-│  │  ├─ repository: https://github.com/dcodeIO/long.js
-│  │  └─ publisher: Daniel Wirtz
 │  ├─ reflect-metadata@0.1.13
 │  │  ├─ url: http://github.com/rbuckton
 │  │  ├─ repository: https://github.com/rbuckton/reflect-metadata
 │  │  └─ publisher: Ron Buckton
-│  ├─ rxjs@6.5.4
+│  ├─ rxjs@6.5.5
 │  │  ├─ repository: https://github.com/reactivex/rxjs
 │  │  └─ publisher: Ben Lesh
 │  ├─ tslib@1.10.0
 │  │  ├─ repository: https://github.com/Microsoft/tslib
 │  │  └─ publisher: Microsoft Corp.
-│  ├─ typescript@3.7.4
-│  │  ├─ repository: https://github.com/Microsoft/TypeScript
+│  ├─ tslib@1.11.1
+│  │  ├─ repository: https://github.com/Microsoft/tslib
 │  │  └─ publisher: Microsoft Corp.
 │  ├─ @cnakazawa/watch@1.0.4
 │  │  ├─ repository: https://github.com/mikeal/watch
@@ -2931,6 +3133,9 @@ Third-party licenses
 │  │  ├─ url: http://www.futurealoof.com
 │  │  ├─ repository: https://github.com/mikeal/tunnel-agent
 │  │  └─ publisher: Mikeal Rogers
+│  ├─ typescript@3.7.4
+│  │  ├─ repository: https://github.com/Microsoft/TypeScript
+│  │  └─ publisher: Microsoft Corp.
 │  ├─ validate-npm-package-license@3.0.4
 │  │  ├─ url: https://kemitchell.com
 │  │  ├─ repository: https://github.com/kemitchell/validate-npm-package-license.js
@@ -2938,26 +3143,16 @@ Third-party licenses
 │  ├─ walker@1.0.7
 │  │  ├─ repository: https://github.com/daaku/nodejs-walker
 │  │  └─ publisher: Naitik Shah
-│  └─ xml-name-validator@3.0.0
-│     ├─ url: https://domenic.me/
-│     ├─ repository: https://github.com/jsdom/xml-name-validator
-│     └─ publisher: Domenic Denicola
-├─ (MIT AND BSD-3-Clause)
-│  └─ sha.js@2.4.11
-│     ├─ url: dominictarr.com
-│     ├─ repository: https://github.com/crypto-browserify/sha.js
-│     └─ publisher: Dominic Tarr
-├─ MIT*
-│  └─ valid-url@1.0.9
-│     ├─ repository: https://github.com/ogt/valid-url
-│     └─ publisher
-├─ WTFPL
-│  ├─ password-prompt@1.1.2
-│  │  ├─ repository: https://github.com/jdxcode/password-prompt
-│  │  └─ publisher: Jeff Dickey @jdxcode
-│  └─ left-pad@1.3.0
-│     ├─ repository: https://github.com/stevemao/left-pad
-│     └─ publisher: azer
+│  ├─ xml-name-validator@3.0.0
+│  │  ├─ url: https://domenic.me/
+│  │  ├─ repository: https://github.com/jsdom/xml-name-validator
+│  │  └─ publisher: Domenic Denicola
+│  ├─ long@4.0.0
+│  │  ├─ repository: https://github.com/dcodeIO/long.js
+│  │  └─ publisher: Daniel Wirtz
+│  └─ typescript@3.8.3
+│     ├─ repository: https://github.com/Microsoft/TypeScript
+│     └─ publisher: Microsoft Corp.
 ├─ GPL-3.0
 │  └─ tapestry@1.0.0
 │     ├─ repository: https://github.com/huboneo/tapestry
@@ -2990,8 +3185,20 @@ Third-party licenses
 │     ├─ url: https://github.com/shinnn
 │     ├─ repository: https://github.com/shinnn/spdx-license-ids
 │     └─ publisher: Shinnosuke Watanabe
-└─ Unlicense
-   └─ tweetnacl@0.14.5
-      ├─ repository: https://github.com/dchest/tweetnacl-js
-      └─ publisher: TweetNaCl-js contributors
+├─ Unlicense
+│  └─ tweetnacl@0.14.5
+│     ├─ repository: https://github.com/dchest/tweetnacl-js
+│     └─ publisher: TweetNaCl-js contributors
+├─ MIT*
+│  ├─ @apollo/federation@0.14.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  └─ @apollo/gateway@0.14.1
+│     ├─ repository
+│     └─ publisher: opensource@apollographql.com
+└─ (MIT AND BSD-3-Clause)
+   └─ sha.js@2.4.11
+      ├─ url: dominictarr.com
+      ├─ repository: https://github.com/crypto-browserify/sha.js
+      └─ publisher: Dominic Tarr
 

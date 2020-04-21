@@ -1,4 +1,4 @@
-import {ObjectType, ArgsType, Field, ID} from 'type-graphql';
+import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
 import {AuthTokenInput} from './dto/auth-token.input';
 
 @ObjectType()

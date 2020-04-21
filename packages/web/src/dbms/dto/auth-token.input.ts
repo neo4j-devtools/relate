@@ -1,5 +1,5 @@
 import {Equals} from 'class-validator';
-import {Field, InputType} from 'type-graphql';
+import {Field, InputType} from '@nestjs/graphql';
 import {IAuthToken} from '@relate/common';
 
 @InputType()
