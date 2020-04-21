@@ -157,7 +157,7 @@ describe('Local account', () => {
             const message = await account.statusDbmss([dbmsList[0].id]);
             expect(message[0]).toContain('Neo4j is not running');
             expect(await neo4jAdminCmd(path.join(dbmsRoot, `dbms-${dbmsList[0].id}`), 'version')).toContain('4.0.4');
-        }, 20000);
+        });
 
         // semver
         test('install dbms with valid semver version arg passed but not in the supported range', async () => {
