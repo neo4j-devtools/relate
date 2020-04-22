@@ -3,9 +3,6 @@ import {test} from '@oclif/test';
 import InstallCommand from '../../commands/dbms/install';
 import UninstallCommand from '../../commands/dbms/uninstall';
 
-// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
-jest.setTimeout(60000);
-
 jest.mock('fs-extra', () => {
     return {
         writeFile: (_path: string, data: string) => Promise.resolve(data),

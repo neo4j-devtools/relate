@@ -7,9 +7,6 @@ import {SystemProvider} from '@relate/common';
 
 import {WebModule} from '../web.module';
 
-// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
-jest.setTimeout(60000);
-
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
 const TEST_DB_NAME = 'test-db';
