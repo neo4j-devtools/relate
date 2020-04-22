@@ -3,15 +3,15 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
-import {SystemProvider} from '@relate/common';
+import {SystemProvider, IDbms} from '@relate/common';
 
 import {WebModule} from '../web.module';
 
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'test-db';
+const TEST_DB_NAME = 'web/src/dbms/dbms.e2e.ts';
 const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = '4.0.4';
+const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
 const DBMS_LIST = {
     query: 'query ListDBMSs($accountId: String!) { listDbmss(accountId: $accountId) { id, name, description } }',
@@ -90,8 +90,7 @@ describe('DBMSModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {listDbmss} = res.body.data;
-                expect(listDbmss[0].name).toBe(TEST_DB_NAME);
-                expect(listDbmss.length).toBe(1);
+                expect(listDbmss.map(({name}: IDbms) => name)).toContain(TEST_DB_NAME);
             });
     });
 
