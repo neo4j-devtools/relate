@@ -3,7 +3,7 @@ import {filter, map} from 'lodash';
 
 import {SystemProvider} from './system.provider';
 import {EXTENSION_TYPES} from '../models';
-import {INSTALLED_EXTENSIONS} from '../installed-extensions';
+import {INSTALLED_EXTENSIONS} from '../utils/get-installed-extensions';
 
 const dynamicModules: Promise<DynamicModule>[] = map(
     filter(INSTALLED_EXTENSIONS, ({type}) => type === EXTENSION_TYPES.SYSTEM),

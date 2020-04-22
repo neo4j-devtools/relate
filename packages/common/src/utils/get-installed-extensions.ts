@@ -13,6 +13,8 @@ import {
     PACKAGE_JSON,
 } from '../constants';
 
+export const INSTALLED_EXTENSIONS = getInstalledExtensions();
+
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
  */
