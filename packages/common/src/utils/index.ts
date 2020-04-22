@@ -1,3 +1,5 @@
+export {isValidPath} from './is-valid-path';
+export {isValidUrl} from './is-valid-url';
 export {arrayHasItems} from './array-has-items';
 export {readPropertiesFile} from './read-properties-file';
 export {writePropertiesFile} from './write-properties-file';

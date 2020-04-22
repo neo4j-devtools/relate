@@ -15,10 +15,10 @@ const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0
 jest.setTimeout(60000);
 
 describe('Local account', () => {
-    const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
-    let account: LocalAccount;
-
     describe('list dbmss', () => {
+        const dbmsRoot = path.join(envPaths().tmp, 'dbmss');
+        let account: LocalAccount;
+
         beforeAll(async () => {
             await fse.ensureDir(dbmsRoot);
 
@@ -90,24 +90,19 @@ describe('Local account', () => {
     });
 
     describe('install dbms', () => {
+        const dbmsRoot = path.join(envPaths().data, 'dbmss');
+        let account: LocalAccount;
         // @todo: these tests need better to be better organised.
         beforeAll(async () => {
-            await fse.ensureDir(dbmsRoot);
-            await fse.ensureDir(path.join(envPaths().cache, 'neo4j'));
             const config = new AccountConfigModel({
                 dbmss: {},
                 id: 'test',
-                neo4jDataPath: envPaths().tmp,
+                neo4jDataPath: envPaths().data,
                 type: ACCOUNT_TYPES.LOCAL,
                 user: 'test',
             });
 
             account = new LocalAccount(config);
-        });
-
-        afterAll(async () => {
-            await fse.remove(path.join(envPaths().cache, 'neo4j', 'neo4j-enterprise-4.0.4'));
-            await fse.remove(dbmsRoot);
         });
 
         afterEach(async () => {
@@ -149,7 +144,8 @@ describe('Local account', () => {
 
         test('install dbms with valid file path version arg passed', async () => {
             const archive = `neo4j-enterprise-4.0.4${process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'}`;
-            const uuid = await account.installDbms('id', 'password', path.join(envPaths().cache, 'neo4j', archive));
+            const archivePath = path.join(envPaths().cache, 'neo4j', archive);
+            const uuid = await account.installDbms('id', 'password', archivePath);
             expect(uuid).toMatch(UUID_REGEX);
 
             const dbmsList: IDbms[] = await account.listDbmss();

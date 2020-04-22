@@ -2,9 +2,13 @@ import {IAuthToken} from 'tapestry';
 
 import {AccountAbstract} from './account.abstract';
 import {NotAllowedError} from '../errors';
-import {IDbms} from '../models/account-config.model';
+import {IDbms, IDbmsVersion} from '../models/account-config.model';
 
 export class AuraAccount extends AccountAbstract {
+    listDbmsVersions(): Promise<IDbmsVersion[]> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support listing DBMS versions`);
+    }
+
     installDbms(_name: string, _credentials: string, _version: string): Promise<string> {
         throw new NotAllowedError(`${AuraAccount.name} does not support installing a DBMS`);
     }
