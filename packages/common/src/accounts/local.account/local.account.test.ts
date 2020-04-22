@@ -3,11 +3,12 @@ import fse from 'fs-extra';
 import path from 'path';
 
 import {AccountConfigModel, IDbms} from '../../models';
-import {ACCOUNT_TYPES} from '../account.constants';
-import {envPaths} from '../../utils/env-paths';
 import {LocalAccount} from './local.account';
+
 import {InvalidArgumentError, NotSupportedError} from '../../errors';
-import {neo4jAdminCmd} from './neo4j-admin-cmd';
+import {ACCOUNT_TYPES} from '../account.constants';
+import {envPaths} from '../../utils';
+import {neo4jAdminCmd} from './utils';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 

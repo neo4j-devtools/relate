@@ -1,7 +1,7 @@
 import {copy} from 'fs-extra';
 import {find, includes} from 'lodash';
 
-import {readPropertiesFile, writePropertiesFile} from './utils';
+import {readPropertiesFile, writePropertiesFile} from '../../utils';
 import {IPropertiesFile, INeo4jConfigDefaults, NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
 
 export class PropertiesFile implements IPropertiesFile {

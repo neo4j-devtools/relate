@@ -2,8 +2,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import {spawn} from 'child_process';
 
-import {NotFoundError} from '../../errors';
-import {NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE} from '../account.constants';
+import {NotFoundError} from '../../../errors';
+import {NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE} from '../../account.constants';
 
 export function neo4jAdminCmd(dbmsRootPath: string, command: string, credentials?: string): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
