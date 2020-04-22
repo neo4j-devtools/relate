@@ -9,7 +9,6 @@ import {LocalAccount} from './local.account';
 const TMP_HOME = path.join(envPaths().tmp, 'local-account.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, 'dbmss');
 
-// TODO - use install here (?)
 describe('LocalAccount - list', () => {
     let account: LocalAccount;
 
