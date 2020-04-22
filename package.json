@@ -17,7 +17,7 @@
         "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
         "lerna:bootstrap": "lerna bootstrap",
-        "prepare": "run-s lerna:clean lerna:bootstrap generate:licenses",
+        "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js"
     },
     "devDependencies": {
