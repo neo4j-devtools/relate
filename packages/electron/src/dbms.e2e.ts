@@ -7,14 +7,11 @@ import {SystemProvider} from '@relate/common';
 
 import {ElectronModule} from './electron.module';
 
-// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
-jest.setTimeout(60000);
-
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'test-db';
+const TEST_DB_NAME = __filename;
 const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = '4.0.4';
+const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
 const DBMS_LIST = {
     query: 'query ListDBMSs($accountId: String!) { listDbmss(accountId: $accountId) { id, name, description } }',
@@ -93,8 +90,7 @@ describe('DBMSModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {listDbmss} = res.body.data;
-                expect(listDbmss[0].name).toBe(TEST_DB_NAME);
-                expect(listDbmss.length).toBe(1);
+                expect(listDbmss.map(({name}: any) => name)).toContain(TEST_DB_NAME);
             });
     });
 

@@ -46,6 +46,10 @@ where files are stored and how to override the default paths.
 $ npm test
 ```
 
+Tests are run concurrently, so never assume an exact amount of DBMSs installed at
+any given point in your tests. Instead, use unique names when installing new DBMSs
+(UUIDs or file paths), and uninstall them at the end or your test suite.
+
 ### Linting
 
 ```

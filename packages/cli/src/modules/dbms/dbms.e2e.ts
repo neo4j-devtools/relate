@@ -3,9 +3,6 @@ import {test} from '@oclif/test';
 import InstallCommand from '../../commands/dbms/install';
 import UninstallCommand from '../../commands/dbms/uninstall';
 
-// seriously windows... (ノಠ益ಠ)ノ彡 sǝldᴉɔuᴉɹd
-jest.setTimeout(60000);
-
 jest.mock('fs-extra', () => {
     return {
         writeFile: (_path: string, data: string) => Promise.resolve(data),
@@ -14,9 +11,9 @@ jest.mock('fs-extra', () => {
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ACCOUNT_ID = 'test';
-const TEST_DB_NAME = 'test-db';
+const TEST_DB_NAME = 'cli/src/modules/dbms/dbms.e2e.ts';
 const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = '4.0.4';
+const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
 describe('$relate dbms', () => {
     beforeAll(() =>
