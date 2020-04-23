@@ -1,10 +1,10 @@
-import fse from 'fs-extra';
+import fse, {ensureFile} from 'fs-extra';
 import _ from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
-import rxjs from 'rxjs/operators';
+import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
@@ -28,6 +28,11 @@ import {
     NEO4J_EDITION,
     NEO4J_SUPPORTED_VERSION_RANGE,
     ACCOUNTS_DIR_NAME,
+    NEO4J_JWT_ADDON_NAME,
+    NEO4J_JWT_ADDON_VERSION,
+    NEO4J_PLUGIN_DIR,
+    NEO4J_CERT_DIR,
+    NEO4J_JWT_CONF_FILE,
 } from '../account.constants';
 import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath} from '../../utils';
@@ -39,6 +44,7 @@ import {
     fetchNeo4jVersions,
     discoverNeo4jDistributions,
     getDistributionInfo,
+    generatePluginCerts,
 } from './utils';
 
 export class LocalAccount extends AccountAbstract {
@@ -70,6 +76,7 @@ export class LocalAccount extends AccountAbstract {
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
+
             const distributions = await discoverNeo4jDistributions(path.join(this.paths.cache, 'neo4j'));
             const requestedDistribution = _.find(
                 distributions,
@@ -203,12 +210,11 @@ export class LocalAccount extends AccountAbstract {
         }
 
         await this.ensureDbmsStructure(dbmsId, config);
-
         await config.backupPropertiesFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
         );
-
         await this.setInitialDatabasePassword(dbmsId, credentials);
+        await this.installSecurityPlugin(dbmsId);
 
         // will come back to check the installPluginDependencies situation in future PRs
         return dbmsId;
@@ -259,6 +265,52 @@ export class LocalAccount extends AccountAbstract {
         return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
     }
 
+    private async installSecurityPlugin(dbmsId: string): Promise<void> {
+        const pathToDbms = this.getDbmsRootPath(dbmsId);
+        const pluginSource = path.join(this.paths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
+        const pluginTarget = path.join(
+            pathToDbms,
+            NEO4J_PLUGIN_DIR,
+            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
+        );
+        const publicKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.cert.pem');
+        const privateKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.key.pem');
+        // @todo: figure out a better passphase thats not publicly available
+        const {publicKey, privateKey} = generatePluginCerts(dbmsId);
+
+        await fse.copy(pluginSource, pluginTarget);
+        await fse.writeFile(publicKeyTarget, publicKey, 'utf8');
+        await fse.writeFile(privateKeyTarget, privateKey, 'utf8');
+
+        const neo4jConfig = await PropertiesFile.readFile(
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+        );
+
+        neo4jConfig.set(
+            `dbms.security.authentication_providers`,
+            `plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin,native`,
+        );
+        neo4jConfig.set(
+            `dbms.security.authorization_providers`,
+            `plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin,native`,
+        );
+        neo4jConfig.set(`dbms.security.procedures.unrestricted`, `jwt.security.*`);
+
+        await neo4jConfig.flush();
+
+        const jwtConfigPath = path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_JWT_CONF_FILE);
+
+        await ensureFile(jwtConfigPath);
+
+        const jwtConfig = await PropertiesFile.readFile(path.join(jwtConfigPath));
+
+        jwtConfig.set(`jwt.auth.public_key`, `${NEO4J_CERT_DIR}/security.cert.pem`);
+        jwtConfig.set(`jwt.auth.private_key`, `${NEO4J_CERT_DIR}/security.key.pem`);
+        jwtConfig.set(`jwt.auth.private_key_password`, dbmsId);
+
+        await jwtConfig.flush();
+    }
+
     private async ensureDbmsStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
 
@@ -274,9 +326,12 @@ export class LocalAccount extends AccountAbstract {
                 'utf8',
             ),
         );
-        accountConfig.dbmss[uuid] = {
-            ...update,
-            id: uuid,
+        accountConfig.dbmss = {
+            ...accountConfig.dbmss,
+            [uuid]: {
+                ...update,
+                id: uuid,
+            },
         };
         await fse.writeJson(
             path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
