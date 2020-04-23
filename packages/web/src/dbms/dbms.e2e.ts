@@ -9,7 +9,7 @@ import {WebModule} from '../web.module';
 
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'web/src/dbms/dbms.e2e.ts';
+const TEST_DB_NAME = __filename;
 const TEST_DB_CREDENTIALS = 'newpassword';
 const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 

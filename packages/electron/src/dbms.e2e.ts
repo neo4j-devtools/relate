@@ -9,7 +9,7 @@ import {ElectronModule} from './electron.module';
 
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'electron/src/dbms.e2e.ts';
+const TEST_DB_NAME = __filename;
 const TEST_DB_CREDENTIALS = 'newpassword';
 const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
