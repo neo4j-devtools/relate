@@ -1,4 +1,4 @@
-import fse, {ensureFile} from 'fs-extra';
+import fse from 'fs-extra';
 import _ from 'lodash';
 import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
@@ -275,7 +275,7 @@ export class LocalAccount extends AccountAbstract {
         );
         const publicKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.cert.pem');
         const privateKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.key.pem');
-        // @todo: figure out a better passphase thats not publicly available
+        // @todo: figure out a better passphrase that's not publicly available
         const {publicKey, privateKey} = generatePluginCerts(dbmsId);
 
         await fse.copy(pluginSource, pluginTarget);
@@ -300,7 +300,7 @@ export class LocalAccount extends AccountAbstract {
 
         const jwtConfigPath = path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_JWT_CONF_FILE);
 
-        await ensureFile(jwtConfigPath);
+        await fse.ensureFile(jwtConfigPath);
 
         const jwtConfig = await PropertiesFile.readFile(path.join(jwtConfigPath));
 
