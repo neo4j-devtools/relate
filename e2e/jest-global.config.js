@@ -5,5 +5,5 @@ module.exports = {
     verbose: true,
     // Windows builds are incredibly slow, and filesystem operations tend
     // to take that long.
-    testTimeout: 60000,
+    testTimeout: 120000,
 };
