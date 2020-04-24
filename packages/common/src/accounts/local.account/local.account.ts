@@ -16,6 +16,7 @@ import {
     NotAllowedError,
     NotSupportedError,
     NotFoundError,
+    InvalidConfigError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -155,23 +156,32 @@ export class LocalAccount extends AccountAbstract {
         const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
-        const driver = new Driver<Result>({
-            connectionConfig: {
-                authToken,
-                host,
-                port,
-            },
-        });
+        try {
+            const driver = new Driver<Result>({
+                connectionConfig: {
+                    authToken,
+                    host,
+                    port,
+                },
+            });
 
-        return driver
-            .query('CALL jwt.security.requestAccess($appId)', {appId})
-            .pipe(
-                rxjs.filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
-                rxjs.first(),
-                rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
-            )
-            .toPromise()
-            .finally(() => driver.shutDown().toPromise());
+            const token = await driver
+                .query('CALL jwt.security.requestAccess($appId)', {appId})
+                .pipe(
+                    rxjs.first(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
+                    rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
+                )
+                .toPromise()
+                .finally(() => driver.shutDown().toPromise());
+
+            if (!token) {
+                throw new InvalidArgumentError('Unable to create access token');
+            }
+
+            return token;
+        } catch (e) {
+            throw new InvalidConfigError('Unable to connect to DBMS');
+        }
     }
 
     private getDbmsRootPath(dbmsId?: string): string {

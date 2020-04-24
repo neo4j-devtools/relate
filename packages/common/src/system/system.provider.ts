@@ -156,7 +156,7 @@ export class SystemProvider implements OnModuleInit {
         const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
 
         return new Promise((resolve, reject) => {
-            jwt.verify(launchToken, jwtTokenSalt, (err, decoded: any) => {
+            jwt.verify(launchToken, jwtTokenSalt, (err: any, decoded: any) => {
                 if (err) {
                     reject(new ValidationFailureError('Failed to decode App Launch Token'));
                     return;

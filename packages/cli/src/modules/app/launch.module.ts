@@ -40,6 +40,6 @@ export class LaunchModule implements OnApplicationBootstrap {
                     this.utils.log(`Launching app "${appId}" with token ${launchToken}`),
                 ]),
             )
-            .catch(this.utils.error);
+            .catch(({message}) => this.utils.error(message));
     }
 }
