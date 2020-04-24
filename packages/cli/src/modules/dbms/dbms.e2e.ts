@@ -55,7 +55,6 @@ describe('$relate dbms', () => {
         });
 
     test.stdout()
-        .skip()
         // arbitrary wait for Neo4j to come online
         .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
         .command([

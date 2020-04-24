@@ -123,8 +123,7 @@ describe('DBMSModule', () => {
             });
     });
 
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip('/graphql accessDbms (started DBMS)', async () => {
+    test('/graphql accessDbms (started DBMS)', async () => {
         // arbitrary wait for Neo4j to come online
         await new Promise((resolve) => setTimeout(resolve, 20000));
 

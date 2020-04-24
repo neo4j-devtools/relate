@@ -29,8 +29,13 @@ export class PropertiesFile implements IPropertiesFile {
                 entry[0] = key;
             }
             entry[1] = val.toString();
+
+            return configEntries;
         }
-        return configEntries;
+
+        this.config.set(key, val.toString());
+
+        return [...this.config];
     }
 
     public get(key: string): string {
