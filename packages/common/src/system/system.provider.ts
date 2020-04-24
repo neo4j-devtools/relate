@@ -8,17 +8,21 @@ import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES
 import {NotFoundError, TargetExistsError} from '../errors';
 import {AccountConfigModel} from '../models';
 import {envPaths, registerSystemAccessToken} from '../utils';
+import {ensurePaths} from '../system';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
-    protected readonly paths = envPaths();
-
-    protected readonly knownConnectionsPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
+    protected readonly paths = {
+        ...envPaths(),
+        accountsPath: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
+        dbmssPath: path.join(envPaths().data, RELATE_DBMS_DIR),
+        knownConnectionsFilePath: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
+    };
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await this.verifyInstallation();
+        await ensurePaths(this.paths);
         await this.discoverAccounts();
     }
 
@@ -38,13 +42,13 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.knownConnectionsPath, accountId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(this.paths.knownConnectionsFilePath, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
 
     async initInstallation(): Promise<void> {
-        await this.verifyInstallation();
+        await ensurePaths(this.paths);
         const defaultAccountPath = path.join(
             this.paths.config,
             ACCOUNTS_DIR_NAME,
@@ -93,14 +97,5 @@ export class SystemProvider implements OnModuleInit {
         });
 
         await Promise.all(createAccountPromises);
-    }
-
-    private async verifyInstallation(): Promise<void> {
-        await fse.ensureDir(this.paths.config);
-        await fse.ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
-
-        await fse.ensureDir(this.paths.data);
-        await fse.ensureDir(path.join(this.paths.data, RELATE_DBMS_DIR));
-        await fse.ensureFile(this.knownConnectionsPath);
     }
 }

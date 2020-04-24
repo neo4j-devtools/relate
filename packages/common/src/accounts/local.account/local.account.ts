@@ -9,7 +9,7 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
 import {AccountAbstract} from '../account.abstract';
-import {PropertiesFile} from '../../system';
+import {PropertiesFile, ensurePaths} from '../../system';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -50,16 +50,18 @@ import {
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
 
-    private paths = envPaths();
+    private readonly paths = {
+        ...envPaths(),
+        neo4jDistributionPath: path.join(envPaths().cache, 'neo4j'),
+    };
 
     async init(): Promise<void> {
+        await ensurePaths(this.paths);
         await this.discoverDbmss();
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {
-        const distributionsPath = path.join(this.paths.cache, 'neo4j');
-        await fse.ensureDir(distributionsPath);
-        const cached = await discoverNeo4jDistributions(distributionsPath);
+        const cached = await discoverNeo4jDistributions(this.paths.neo4jDistributionPath);
         const online = await fetchNeo4jVersions();
 
         return [...cached, ...online];
