@@ -1,17 +1,7 @@
 import _ from 'lodash';
 import fse from 'fs-extra';
 
-import {EnvPaths} from '../../utils/env-paths';
-
-export interface ILocalAccountDirPaths extends EnvPaths {
-    neo4jDistributionPath: string;
-}
-
-export interface ISystemProviderPaths extends EnvPaths {
-    accountsPath: string;
-    dbmssPath: string;
-    knownConnectionsFilePath: string;
-}
+import {ILocalAccountDirPaths, ISystemProviderPaths} from './ensure-files.constants';
 
 export const ensurePaths = (paths: ILocalAccountDirPaths | ISystemProviderPaths): Promise<void[]> => {
     /* eslint-disable consistent-return */
