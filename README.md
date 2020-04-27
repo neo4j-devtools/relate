@@ -42,13 +42,15 @@ where files are stored and how to override the default paths.
 
 ### Testing
 
+For testing you will need to copy _and_ extract a neo4j archive in the
+`./e2e/fixtures/cache/neo4j-relate/` directory. Use version 4.0.4 or set the
+`TEST_NEO4J_VERSION` environment variable to whatever version you're testing against.
+
 ```
 $ npm test
 ```
 
-Tests are run concurrently, so never assume an exact amount of DBMSs installed at
-any given point in your tests. Instead, use unique names when installing new DBMSs
-(UUIDs or file paths), and uninstall them at the end or your test suite.
+Check [TESTING.md](./documentation/TESTING.md) for more information.
 
 ### Linting
 

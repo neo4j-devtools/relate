@@ -1,92 +1,57 @@
-/* eslint-disable max-len */
-
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
-import {SystemProvider, IDbms} from '@relate/common';
+import {TestDbmss, IDbms} from '@relate/common';
 
 import {WebModule} from '../web.module';
 
-const TEST_ACCOUNT_ID = 'test';
+let TEST_DB_NAME: string;
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = __filename;
-const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
-const DBMS_LIST = {
-    query: 'query ListDBMSs($accountId: String!) { listDbmss(accountId: $accountId) { id, name, description } }',
-    variables: {accountId: TEST_ACCOUNT_ID},
-};
-const DBMS_STATUS = {
-    query:
-        'query StatusDBMSs($accountId: String!, $dbName: [String!]!) { statusDbmss(accountId: $accountId, dbmsIds: $dbName) }',
-    variables: {
-        accountId: TEST_ACCOUNT_ID,
-        dbName: [TEST_DB_NAME],
-    },
-};
-const DBMS_START = {
-    query:
-        'mutation StartDBMSs($accountId: String!, $dbName: [String!]!) { startDbmss(accountId: $accountId, dbmsIds: $dbName) }',
-    variables: {
-        accountId: TEST_ACCOUNT_ID,
-        dbName: [TEST_DB_NAME],
-    },
-};
-const DBMS_STOP = {
-    query:
-        'mutation StopDBMSs($accountId: String!, $dbName: [String!]!) { stopDbmss(accountId: $accountId, dbmsIds: $dbName) }',
-    variables: {
-        accountId: TEST_ACCOUNT_ID,
-        dbName: [TEST_DB_NAME],
-    },
-};
-const DBMS_ACCESS = {
-    query: `mutation AccessDBMS($accountId: String!, $dbName: String!, $authToken: AuthTokenInput!) {
-        createAccessToken(accountId: $accountId, dbmsId: $dbName, appId: "foo", authToken: $authToken)
-    }`,
-    variables: {
-        accountId: TEST_ACCOUNT_ID,
-        appId: TEST_APP_ID,
-        authToken: {
-            credentials: 'newpassword',
-            principal: 'neo4j',
-            scheme: 'basic',
-        },
-        dbName: TEST_DB_NAME,
-    },
-};
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const HTTP_OK = 200;
 
+const queryBody = (query: string, variables?: {[key: string]: any}) => ({
+    query,
+    variables: {
+        accountId: 'test',
+        dbmsNames: [TEST_DB_NAME],
+        dbmsName: TEST_DB_NAME,
+        ...variables,
+    },
+});
+
 describe('DBMSModule', () => {
     let app: INestApplication;
+    const dbmss: TestDbmss = new TestDbmss(__filename);
 
     beforeAll(async () => {
+        TEST_DB_NAME = await dbmss.createDbms();
+
         const module = await Test.createTestingModule({
             imports: [WebModule],
         }).compile();
 
         app = module.createNestApplication();
         await app.init();
-        const systemProvider = app.get(SystemProvider);
-
-        await systemProvider
-            .getAccount(TEST_ACCOUNT_ID)
-            .installDbms(TEST_DB_NAME, TEST_DB_CREDENTIALS, TEST_DB_VERSION);
     });
 
-    afterAll(async () => {
-        const systemProvider = app.get(SystemProvider);
-
-        await systemProvider.getAccount(TEST_ACCOUNT_ID).uninstallDbms(TEST_DB_NAME);
-        await app.close();
-    });
+    afterAll(() => dbmss.teardown());
 
     test('/graphql listDbmss', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_LIST)
+            .send(
+                queryBody(
+                    `query ListDBMSSs($accountId: String!) {
+                        listDbmss(accountId: $accountId) {
+                            id,
+                            name,
+                            description
+                        }
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {listDbmss} = res.body.data;
@@ -97,7 +62,13 @@ describe('DBMSModule', () => {
     test('/graphql startDbmss', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_START)
+            .send(
+                queryBody(
+                    `mutation StartDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
+                        startDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {startDbmss} = res.body.data;
@@ -115,7 +86,13 @@ describe('DBMSModule', () => {
     test('/graphql statusDbmss (started DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_STATUS)
+            .send(
+                queryBody(
+                    `query StatusDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
+                        statusDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {statusDbmss} = res.body.data;
@@ -129,7 +106,31 @@ describe('DBMSModule', () => {
 
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_ACCESS)
+            .send(
+                queryBody(
+                    `mutation AccessDBMS(
+                        $accountId: String!,
+                        $dbmsName: String!,
+                        $authToken: AuthTokenInput!,
+                        $appId: String!
+                    ) {
+                        createAccessToken(
+                            accountId: $accountId,
+                            dbmsId: $dbmsName,
+                            appId: $appId,
+                            authToken: $authToken
+                        )
+                    }`,
+                    {
+                        appId: TEST_APP_ID,
+                        authToken: {
+                            credentials: 'password',
+                            principal: 'neo4j',
+                            scheme: 'basic',
+                        },
+                    },
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {createAccessToken} = res.body.data;
@@ -140,7 +141,13 @@ describe('DBMSModule', () => {
     test('/graphql stopDbmss', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_STOP)
+            .send(
+                queryBody(
+                    `mutation StopDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
+                        stopDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {stopDbmss} = res.body.data;
@@ -157,7 +164,13 @@ describe('DBMSModule', () => {
     test('/graphql statusDbmss (stopped DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send(DBMS_STATUS)
+            .send(
+                queryBody(
+                    `query StatusDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
+                        statusDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {statusDbmss} = res.body.data;
@@ -168,9 +181,13 @@ describe('DBMSModule', () => {
     test('/graphql statusDbmss (non existent account)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send({
-                query: 'query StatusDBMSs { statusDbmss(accountId: "non-existent", dbmsIds: ["test"]) }',
-            })
+            .send(
+                queryBody(
+                    `query StatusDBMSs {
+                        statusDbmss(accountId: "non-existent", dbmsIds: ["test"])
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {errors} = res.body;
@@ -182,11 +199,13 @@ describe('DBMSModule', () => {
     test('/graphql statusDbmss (non existent DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
-            .send({
-                query:
-                    'query StatusDBMSs($accountId: String!) { statusDbmss(accountId: $accountId, dbmsIds: ["non-existent"]) }',
-                variables: {accountId: TEST_ACCOUNT_ID},
-            })
+            .send(
+                queryBody(
+                    `query StatusDBMSs($accountId: String!) {
+                        statusDbmss(accountId: $accountId, dbmsIds: ["non-existent"])
+                    }`,
+                ),
+            )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {errors} = res.body;
