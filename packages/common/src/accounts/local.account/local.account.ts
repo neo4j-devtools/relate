@@ -316,9 +316,9 @@ export class LocalAccount extends AccountAbstract {
     private async ensureDbmsStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
 
-        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
-        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
-        await fse.ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.run')));
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.logs')));
+        await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {

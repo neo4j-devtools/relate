@@ -3,7 +3,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {SystemModule} from './system.module';
 import {SystemProvider} from './system.provider';
 
-describe('SampleService', () => {
+describe('System Provider', () => {
     let provider: SystemProvider;
 
     beforeEach(async () => {
