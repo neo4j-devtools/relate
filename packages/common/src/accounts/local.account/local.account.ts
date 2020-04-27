@@ -9,7 +9,7 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
 import {AccountAbstract} from '../account.abstract';
-import {PropertiesFile, ensurePaths} from '../../system';
+import {PropertiesFile, ensureDirs} from '../../system';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -56,7 +56,7 @@ export class LocalAccount extends AccountAbstract {
     };
 
     async init(): Promise<void> {
-        await ensurePaths(this.paths);
+        await ensureDirs(this.paths);
         await this.discoverDbmss();
     }
 

@@ -3,26 +3,29 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import _ from 'lodash';
 
-import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME, RELATE_DBMS_DIR} from '../constants';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
 import {NotFoundError, TargetExistsError} from '../errors';
 import {AccountConfigModel} from '../models';
 import {envPaths, registerSystemAccessToken} from '../utils';
-import {ensurePaths} from '../system';
+import {ensureDirs, ensureFiles} from '../system';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
     protected readonly paths = {
         ...envPaths(),
         accountsPath: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
-        dbmssPath: path.join(envPaths().data, RELATE_DBMS_DIR),
-        knownConnectionsFilePath: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
+    };
+
+    protected readonly files = {
+        knownConnections: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
     };
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await ensurePaths(this.paths);
+        await ensureDirs(this.paths);
+        await ensureFiles(this.files);
         await this.discoverAccounts();
     }
 
@@ -42,13 +45,14 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.paths.knownConnectionsFilePath, accountId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(this.files.knownConnections, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
 
     async initInstallation(): Promise<void> {
-        await ensurePaths(this.paths);
+        await ensureDirs(this.paths);
+        await ensureFiles(this.files);
         const defaultAccountPath = path.join(
             this.paths.config,
             ACCOUNTS_DIR_NAME,

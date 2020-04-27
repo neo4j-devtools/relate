@@ -4,8 +4,10 @@ export interface ILocalAccountDirPaths extends EnvPaths {
     neo4jDistributionPath: string;
 }
 
-export interface ISystemProviderPaths extends EnvPaths {
+export interface ISystemProviderDirPaths extends EnvPaths {
     accountsPath: string;
-    dbmssPath: string;
-    knownConnectionsFilePath: string;
+}
+
+export interface ISystemProviderFilePaths {
+    knownConnections: string;
 }

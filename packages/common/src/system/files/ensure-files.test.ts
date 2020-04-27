@@ -4,8 +4,8 @@ import path from 'path';
 import _ from 'lodash';
 
 import {envPaths} from '../../utils/';
-import {ensurePaths} from './ensure-files';
-import {ILocalAccountDirPaths, ISystemProviderPaths} from './ensure-files.constants';
+import {ensureDirs, ensureFiles} from './ensure-files';
+import {ILocalAccountDirPaths, ISystemProviderDirPaths, ISystemProviderFilePaths} from './ensure-files.constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'ensure-files');
 
@@ -22,13 +22,13 @@ describe('ensure-files', () => {
 
     afterEach(() => fse.remove(TMP_HOME));
 
-    test('ensurePaths: ensure directories are created correctly', async () => {
+    test('ensureDirs: ensure directories are created correctly', async () => {
         const expectedFileNames = [...defaultFileNames, 'neo4jDist'];
         const paths: ILocalAccountDirPaths = {
             ...defaultPaths,
             neo4jDistributionPath: path.join(TMP_HOME, 'neo4jDist'),
         };
-        await ensurePaths(paths);
+        await ensureDirs(paths);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
         expect(dirFiles.length).toBe(Object.keys(paths).length);
 
@@ -38,22 +38,24 @@ describe('ensure-files', () => {
         expect(_.filter(dirFiles, (file) => file.isDirectory()).length).toBe(5);
     });
 
-    test('ensurePaths: ensure directories and files are created correctly', async () => {
-        const expectedFileNames = [...defaultFileNames, 'accounts', 'dbmss', 'known_connections'];
-        const paths: ISystemProviderPaths = {
+    test('ensureDirs and ensureFiles: ensure directories and files are created correctly', async () => {
+        const expectedFileNames = [...defaultFileNames, 'accounts', 'known_connections'];
+        const paths: ISystemProviderDirPaths = {
             ...defaultPaths,
             accountsPath: path.join(TMP_HOME, 'accounts'),
-            dbmssPath: path.join(TMP_HOME, 'dbmss'),
-            knownConnectionsFilePath: path.join(TMP_HOME, 'known_connections'),
+        };
+        const files: ISystemProviderFilePaths = {
+            knownConnections: path.join(TMP_HOME, 'known_connections'),
         };
 
-        await ensurePaths(paths);
+        await ensureDirs(paths);
+        await ensureFiles(files);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
-        expect(dirFiles.length).toBe(Object.keys(paths).length);
+        expect(dirFiles.length).toBe(Object.keys(paths).length + Object.keys(files).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());
 
         expect(_.filter(dirFiles, (file) => file.isFile()).length).toBe(1);
-        expect(_.filter(dirFiles, (file) => file.isDirectory()).length).toBe(6);
+        expect(_.filter(dirFiles, (file) => file.isDirectory()).length).toBe(5);
     });
 });
