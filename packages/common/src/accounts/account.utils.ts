@@ -1,4 +1,5 @@
 import {v4 as uuid} from 'uuid';
+import path from 'path';
 
 import {AccountConfigModel} from '../models';
 import {ACCOUNT_TYPES} from './account.constants';
@@ -6,6 +7,7 @@ import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
 
 import {AccountAbstract} from './account.abstract';
 import {LocalAccount} from './local.account';
+import {envPaths} from '../utils';
 
 export async function createAccountInstance(config: AccountConfigModel): Promise<AccountAbstract> {
     let account: AccountAbstract;
@@ -26,16 +28,26 @@ export class TestDbmss {
 
     account: AccountAbstract;
 
-    constructor(account: AccountAbstract) {
+    constructor(private filename: string, account?: AccountAbstract) {
         if (process.env.NODE_ENV !== 'test') {
-            throw new NotSupportedError('Cannot use DbmsGen outside of testing environment');
+            throw new NotSupportedError('Cannot use TestDbmss outside of testing environment');
         }
 
-        this.account = account;
+        const config = new AccountConfigModel({
+            dbmss: {},
+            id: 'test',
+            neo4jDataPath: envPaths().data,
+            type: ACCOUNT_TYPES.LOCAL,
+            user: 'test',
+        });
+
+        this.account = account || new LocalAccount(config);
     }
 
     createName(): string {
-        const name = uuid();
+        const shortUUID = uuid().slice(0, 8);
+        const name = `[${shortUUID}] ${path.relative('..', this.filename)}`;
+
         this.dbmsNames.push(name);
         return name;
     }
@@ -49,14 +61,17 @@ export class TestDbmss {
     }
 
     async teardown(): Promise<void> {
-        const uninstallAll = this.dbmsNames.map((name) =>
-            this.account.uninstallDbms(name).catch((e) => {
+        const uninstallAll = this.dbmsNames.map(async (name) => {
+            try {
+                await this.account.stopDbmss([name]);
+                await this.account.uninstallDbms(name);
+            } catch (e) {
                 if (e instanceof NotFoundError) {
                     return;
                 }
                 throw e;
-            }),
-        );
+            }
+        });
         await Promise.all(uninstallAll);
     }
 }

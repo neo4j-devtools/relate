@@ -28,12 +28,10 @@ describe('LocalAccount - install', () => {
         });
 
         account = new LocalAccount(config);
-        dbmss = new TestDbmss(account);
+        dbmss = new TestDbmss(__filename, account);
     });
 
-    afterAll(async () => {
-        await dbmss.teardown();
-    });
+    afterAll(() => dbmss.teardown());
 
     test('with no version', async () => {
         await expect(account.installDbms(dbmss.createName(), 'password', '')).rejects.toThrow(

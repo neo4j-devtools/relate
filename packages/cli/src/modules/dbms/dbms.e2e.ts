@@ -1,7 +1,11 @@
 import {test} from '@oclif/test';
+import {TestDbmss} from '@relate/common';
 
-import InstallCommand from '../../commands/dbms/install';
-import UninstallCommand from '../../commands/dbms/uninstall';
+import AccessTokenCommand from '../../commands/dbms/access-token';
+import ListCommand from '../../commands/dbms/list';
+import StartCommand from '../../commands/dbms/start';
+import StatusCommand from '../../commands/dbms/status';
+import StopCommand from '../../commands/dbms/stop';
 
 jest.mock('fs-extra', () => {
     return {
@@ -11,82 +15,68 @@ jest.mock('fs-extra', () => {
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ACCOUNT_ID = 'test';
-const TEST_DB_NAME = 'cli/src/modules/dbms/dbms.e2e.ts';
-const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
+let TEST_DB_NAME: string;
 
 describe('$relate dbms', () => {
-    beforeAll(() =>
-        InstallCommand.run([
-            TEST_DB_NAME,
-            '--credentials',
-            TEST_DB_CREDENTIALS,
-            '--version',
-            TEST_DB_VERSION,
-            '--account',
-            TEST_ACCOUNT_ID,
-        ]),
-    );
+    const dbmss = new TestDbmss(__filename);
 
-    afterAll(() => UninstallCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]));
+    beforeAll(async () => {
+        TEST_DB_NAME = await dbmss.createDbms();
+    });
 
-    test.stdout()
-        .command(['dbms:start', TEST_DB_NAME, '--account', TEST_ACCOUNT_ID])
-        .it('logs start message', (ctx) => {
-            if (process.platform === 'win32') {
-                expect(ctx.stdout).toContain('Neo4j service started');
-            } else {
-                expect(ctx.stdout).toContain('Directories in use');
-                expect(ctx.stdout).toContain('Starting Neo4j');
-                expect(ctx.stdout).toContain('Started neo4j (pid');
-            }
-        });
+    afterAll(() => dbmss.teardown());
 
-    test.stdout()
-        .command(['dbms:list', '--account', TEST_ACCOUNT_ID])
-        .it('lists DBMSs', (ctx) => {
-            expect(ctx.stdout).toContain(TEST_DB_NAME);
-        });
+    test.stdout().it('logs start message', async (ctx) => {
+        await StartCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+        if (process.platform === 'win32') {
+            expect(ctx.stdout).toContain('Neo4j service started');
+        } else {
+            expect(ctx.stdout).toContain('Directories in use');
+            expect(ctx.stdout).toContain('Starting Neo4j');
+            expect(ctx.stdout).toContain('Started neo4j (pid');
+        }
+    });
 
-    test.stdout()
-        .command(['dbms:status', TEST_DB_NAME, '--account', TEST_ACCOUNT_ID])
-        .it('logs running status', (ctx) => {
-            expect(ctx.stdout).toContain('Neo4j is running');
-        });
+    test.stdout().it('lists DBMSs', async (ctx) => {
+        await ListCommand.run(['--account', TEST_ACCOUNT_ID]);
+        expect(ctx.stdout).toContain(TEST_DB_NAME);
+    });
+
+    test.stdout().it('logs running status', async (ctx) => {
+        await StatusCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+        expect(ctx.stdout).toContain('Neo4j is running');
+    });
 
     test.stdout()
         // arbitrary wait for Neo4j to come online
         .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
-        .command([
-            'dbms:access-token',
-            TEST_DB_NAME,
-            '--principal=neo4j',
-            '--credentials=newpassword',
-            '--account',
-            TEST_ACCOUNT_ID,
-        ])
-        .it('logs access token', (ctx) => {
+        .it('logs access token', async (ctx) => {
+            await AccessTokenCommand.run([
+                TEST_DB_NAME,
+                '--principal=neo4j',
+                '--credentials=password',
+                '--account',
+                TEST_ACCOUNT_ID,
+            ]);
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
     test.stdout()
         .stderr()
-        .command(['dbms:stop', TEST_DB_NAME, '--account', TEST_ACCOUNT_ID])
-        .it('logs stop message', (ctx) => {
+        .it('logs stop message', async (ctx) => {
+            await StopCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
             expect(ctx.stdout).toBe('');
             expect(ctx.stderr).toContain('done');
         });
 
-    test.stdout()
-        .command(['dbms:status', TEST_DB_NAME, '--account', TEST_ACCOUNT_ID])
-        .it('logs stopped status', (ctx) => {
-            expect(ctx.stdout).toContain('Neo4j is not running');
-        });
+    test.stdout().it('logs stopped status', async (ctx) => {
+        await StatusCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+        expect(ctx.stdout).toContain('Neo4j is not running');
+    });
 
-    test.stdout()
-        .command(['dbms:status', 'non-existent', '--account', TEST_ACCOUNT_ID])
-        .catch((ctx) => {
-            expect(ctx.message).toContain('DBMS "non-existent" not found');
-        })
-        .it('errors when trying to access a non existing dbms');
+    test.it('errors when trying to access a non existing dbms', async () => {
+        const command = StatusCommand.run(['non-existent', '--account', TEST_ACCOUNT_ID]);
+        const expectedError = new Error('DBMS "non-existent" not found');
+        await expect(command).rejects.toThrow(expectedError);
+    });
 });
