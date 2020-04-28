@@ -39,7 +39,7 @@ describe('PropertiesFile', () => {
         const spy = writePropertiesFileSpy.mockResolvedValue(Promise.resolve());
         const config = await PropertiesFile.readFile(path);
 
-        await config.set('foo1', 'foobar1');
+        config.set('foo1', 'foobar1');
         await config.flush();
 
         expect(spy).toHaveBeenCalledWith(
@@ -50,7 +50,7 @@ describe('PropertiesFile', () => {
             ]),
         );
 
-        await config.set('foo2', 'foobar2');
+        config.set('foo2', 'foobar2');
         await config.flush();
 
         expect(spy).toHaveBeenCalledWith(

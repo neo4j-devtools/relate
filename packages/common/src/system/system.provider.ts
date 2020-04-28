@@ -3,22 +3,29 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import _ from 'lodash';
 
-import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME, RELATE_DBMS_DIR} from '../constants';
+import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
 import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
 import {NotFoundError, TargetExistsError} from '../errors';
 import {AccountConfigModel} from '../models';
 import {envPaths, registerSystemAccessToken} from '../utils';
+import {ensureDirs, ensureFiles} from '../system';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
-    protected readonly paths = envPaths();
+    protected readonly dirPaths = {
+        ...envPaths(),
+        accounts: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
+    };
 
-    protected readonly knownConnectionsPath = path.join(this.paths.data, RELATE_KNOWN_CONNECTIONS_FILE);
+    protected readonly filePaths = {
+        knownConnections: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
+    };
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await this.verifyInstallation();
+        await ensureDirs(this.dirPaths);
+        await ensureFiles(this.filePaths);
         await this.discoverAccounts();
     }
 
@@ -38,15 +45,16 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.knownConnectionsPath, accountId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
 
     async initInstallation(): Promise<void> {
-        await this.verifyInstallation();
+        await ensureDirs(this.dirPaths);
+        await ensureFiles(this.filePaths);
         const defaultAccountPath = path.join(
-            this.paths.config,
+            this.dirPaths.config,
             ACCOUNTS_DIR_NAME,
             DEFAULT_ACCOUNT_NAME + JSON_FILE_EXTENSION,
         );
@@ -58,7 +66,7 @@ export class SystemProvider implements OnModuleInit {
 
         const config = {
             id: DEFAULT_ACCOUNT_NAME,
-            neo4jDataPath: this.paths.data,
+            neo4jDataPath: this.dirPaths.data,
             type: ACCOUNT_TYPES.LOCAL,
             user: undefined,
             dbmss: {},
@@ -72,7 +80,7 @@ export class SystemProvider implements OnModuleInit {
 
     private async discoverAccounts(): Promise<void> {
         this.allAccounts.clear();
-        const accountsDir = path.join(this.paths.config, ACCOUNTS_DIR_NAME);
+        const accountsDir = path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME);
         const availableFiles = await fse.readdir(accountsDir);
         const availableAccounts = _.filter(
             availableFiles,
@@ -86,21 +94,12 @@ export class SystemProvider implements OnModuleInit {
             const config = JSON.parse(accountConfigBuffer);
             const accountConfig: AccountConfigModel = new AccountConfigModel({
                 ...config,
-                neo4jDataPath: config.neo4jDataPath || this.paths.data,
+                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
             });
 
             this.allAccounts.set(`${accountConfig.id}`, await createAccountInstance(accountConfig));
         });
 
         await Promise.all(createAccountPromises);
-    }
-
-    private async verifyInstallation(): Promise<void> {
-        await fse.ensureDir(this.paths.config);
-        await fse.ensureDir(path.join(this.paths.config, ACCOUNTS_DIR_NAME));
-
-        await fse.ensureDir(this.paths.data);
-        await fse.ensureDir(path.join(this.paths.data, RELATE_DBMS_DIR));
-        await fse.ensureFile(this.knownConnectionsPath);
     }
 }

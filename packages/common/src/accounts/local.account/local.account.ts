@@ -9,7 +9,7 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
 import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
 import {AccountAbstract} from '../account.abstract';
-import {PropertiesFile} from '../../system';
+import {PropertiesFile, ensureDirs} from '../../system';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -50,16 +50,18 @@ import {
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
 
-    private paths = envPaths();
+    private readonly dirPaths = {
+        ...envPaths(),
+        neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
+    };
 
     async init(): Promise<void> {
+        await ensureDirs(this.dirPaths);
         await this.discoverDbmss();
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {
-        const distributionsPath = path.join(this.paths.cache, 'neo4j');
-        await fse.ensureDir(distributionsPath);
-        const cached = await discoverNeo4jDistributions(distributionsPath);
+        const cached = await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution);
         const online = await fetchNeo4jVersions();
 
         return [...cached, ...online];
@@ -77,7 +79,7 @@ export class LocalAccount extends AccountAbstract {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
-            const distributions = await discoverNeo4jDistributions(path.join(this.paths.cache, 'neo4j'));
+            const distributions = await discoverNeo4jDistributions(path.join(this.dirPaths.cache, 'neo4j'));
             const requestedDistribution = _.find(
                 distributions,
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
@@ -99,7 +101,7 @@ export class LocalAccount extends AccountAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const cacheDir = path.join(this.paths.cache, 'neo4j');
+            const cacheDir = path.join(this.dirPaths.cache, 'neo4j');
             const extractedDistPath = await this.extractFromArchive(version, cacheDir);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
@@ -164,7 +166,7 @@ export class LocalAccount extends AccountAbstract {
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.config.neo4jDataPath || this.paths.data, 'dbmss');
+        const dbmssDir = path.join(this.config.neo4jDataPath || this.dirPaths.data, 'dbmss');
 
         if (dbmsId) {
             return path.join(dbmssDir, `dbms-${dbmsId}`);
@@ -200,8 +202,9 @@ export class LocalAccount extends AccountAbstract {
         config.set('dbms.memory.heap.initial_size', '512m');
         config.set('dbms.memory.heap.max_size', '1G');
         config.set('dbms.memory.pagecache.size', '512m');
-        // https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/#config_dbms.windows_service_name - defaults to 'neo4j'
-        config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+        if (process.platform === 'win32') {
+            config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+        }
 
         await config.flush();
 
@@ -267,7 +270,7 @@ export class LocalAccount extends AccountAbstract {
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
         const pathToDbms = this.getDbmsRootPath(dbmsId);
-        const pluginSource = path.join(this.paths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
+        const pluginSource = path.join(this.dirPaths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
         const pluginTarget = path.join(
             pathToDbms,
             NEO4J_PLUGIN_DIR,
@@ -314,15 +317,15 @@ export class LocalAccount extends AccountAbstract {
     private async ensureDbmsStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
 
-        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.run')));
-        await fse.ensureDir(path.join(dbmsRoot, await config.get('dbms.directories.logs')));
-        await fse.ensureFile(path.join(dbmsRoot, await config.get('dbms.directories.logs'), 'neo4j.log'));
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.run')));
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.logs')));
+        await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
     private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const accountConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -334,7 +337,7 @@ export class LocalAccount extends AccountAbstract {
             },
         };
         await fse.writeJson(
-            path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
         );
 
@@ -349,7 +352,7 @@ export class LocalAccount extends AccountAbstract {
     private async deleteAccountDbmsConfig(uuid: string): Promise<void> {
         const accountConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -357,7 +360,7 @@ export class LocalAccount extends AccountAbstract {
         accountConfig.dbmss = _.omit(accountConfig.dbmss, uuid);
 
         await fse.writeJson(
-            path.join(this.paths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             accountConfig,
         );
 
