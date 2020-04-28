@@ -24,13 +24,13 @@ describe('ensure-files', () => {
 
     test('ensureDirs: ensure directories are created correctly', async () => {
         const expectedFileNames = [...defaultFileNames, 'neo4jDist'];
-        const paths: ILocalAccountDirPaths = {
+        const dirPaths: ILocalAccountDirPaths = {
             ...defaultPaths,
-            neo4jDistributionPath: path.join(TMP_HOME, 'neo4jDist'),
+            neo4jDistribution: path.join(TMP_HOME, 'neo4jDist'),
         };
-        await ensureDirs(paths);
+        await ensureDirs(dirPaths);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
-        expect(dirFiles.length).toBe(Object.keys(paths).length);
+        expect(dirFiles.length).toBe(Object.keys(dirPaths).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());
 
@@ -40,18 +40,18 @@ describe('ensure-files', () => {
 
     test('ensureDirs and ensureFiles: ensure directories and files are created correctly', async () => {
         const expectedFileNames = [...defaultFileNames, 'accounts', 'known_connections'];
-        const paths: ISystemProviderDirPaths = {
+        const dirPaths: ISystemProviderDirPaths = {
             ...defaultPaths,
-            accountsPath: path.join(TMP_HOME, 'accounts'),
+            accounts: path.join(TMP_HOME, 'accounts'),
         };
-        const files: ISystemProviderFilePaths = {
+        const filePaths: ISystemProviderFilePaths = {
             knownConnections: path.join(TMP_HOME, 'known_connections'),
         };
 
-        await ensureDirs(paths);
-        await ensureFiles(files);
+        await ensureDirs(dirPaths);
+        await ensureFiles(filePaths);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
-        expect(dirFiles.length).toBe(Object.keys(paths).length + Object.keys(files).length);
+        expect(dirFiles.length).toBe(Object.keys(dirPaths).length + Object.keys(filePaths).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());
 

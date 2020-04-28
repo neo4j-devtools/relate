@@ -12,20 +12,20 @@ import {ensureDirs, ensureFiles} from '../system';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
-    protected readonly paths = {
+    protected readonly dirPaths = {
         ...envPaths(),
-        accountsPath: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
+        accounts: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
     };
 
-    protected readonly files = {
+    protected readonly filePaths = {
         knownConnections: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
     };
 
     protected readonly allAccounts: Map<string, AccountAbstract> = new Map<string, AccountAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await ensureDirs(this.paths);
-        await ensureFiles(this.files);
+        await ensureDirs(this.dirPaths);
+        await ensureFiles(this.filePaths);
         await this.discoverAccounts();
     }
 
@@ -45,16 +45,16 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.files.knownConnections, accountId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
 
     async initInstallation(): Promise<void> {
-        await ensureDirs(this.paths);
-        await ensureFiles(this.files);
+        await ensureDirs(this.dirPaths);
+        await ensureFiles(this.filePaths);
         const defaultAccountPath = path.join(
-            this.paths.config,
+            this.dirPaths.config,
             ACCOUNTS_DIR_NAME,
             DEFAULT_ACCOUNT_NAME + JSON_FILE_EXTENSION,
         );
@@ -66,7 +66,7 @@ export class SystemProvider implements OnModuleInit {
 
         const config = {
             id: DEFAULT_ACCOUNT_NAME,
-            neo4jDataPath: this.paths.data,
+            neo4jDataPath: this.dirPaths.data,
             type: ACCOUNT_TYPES.LOCAL,
             user: undefined,
             dbmss: {},
@@ -80,7 +80,7 @@ export class SystemProvider implements OnModuleInit {
 
     private async discoverAccounts(): Promise<void> {
         this.allAccounts.clear();
-        const accountsDir = path.join(this.paths.config, ACCOUNTS_DIR_NAME);
+        const accountsDir = path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME);
         const availableFiles = await fse.readdir(accountsDir);
         const availableAccounts = _.filter(
             availableFiles,
@@ -94,7 +94,7 @@ export class SystemProvider implements OnModuleInit {
             const config = JSON.parse(accountConfigBuffer);
             const accountConfig: AccountConfigModel = new AccountConfigModel({
                 ...config,
-                neo4jDataPath: config.neo4jDataPath || this.paths.data,
+                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
             });
 
             this.allAccounts.set(`${accountConfig.id}`, await createAccountInstance(accountConfig));

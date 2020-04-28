@@ -1,11 +1,11 @@
 import {EnvPaths} from '../../utils/env-paths';
 
 export interface ILocalAccountDirPaths extends EnvPaths {
-    neo4jDistributionPath: string;
+    neo4jDistribution: string;
 }
 
 export interface ISystemProviderDirPaths extends EnvPaths {
-    accountsPath: string;
+    accounts: string;
 }
 
 export interface ISystemProviderFilePaths {
