@@ -2,7 +2,6 @@ import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
-import {DEFAULT_WEB_HOST} from '../../constants';
 import LaunchCommand from '../../commands/app/launch';
 
 @Module({
@@ -17,10 +16,10 @@ export class LaunchModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    async onApplicationBootstrap(): Promise<any> {
+    onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
         const {appId} = args;
-        const {account: accountId, principal, dbmsId, host = DEFAULT_WEB_HOST} = flags;
+        const {account: accountId, principal, dbmsId, host} = flags;
         const account = this.systemProvider.getAccount(accountId);
 
         if (!appId || !principal || !dbmsId) {
@@ -39,7 +38,6 @@ export class LaunchModule implements OnApplicationBootstrap {
                     cli.open(`${host}/apps/${appId}?_appLaunchToken=${launchToken}`),
                     this.utils.log(`Launching app "${appId}" with token ${launchToken}`),
                 ]),
-            )
-            .catch(({message}) => this.utils.error(message));
+            );
     }
 }

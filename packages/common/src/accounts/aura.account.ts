@@ -36,4 +36,8 @@ export class AuraAccount extends AccountAbstract {
     createAccessToken(_appId: string, _dbmsId: string, _authToken: IAuthToken): Promise<string> {
         throw new NotAllowedError(`${AuraAccount.name} does not support creating access tokens`);
     }
+
+    updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support updating DBMSs config`);
+    }
 }

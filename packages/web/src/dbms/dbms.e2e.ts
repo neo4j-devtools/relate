@@ -124,7 +124,7 @@ describe('DBMSModule', () => {
                     {
                         appId: TEST_APP_ID,
                         authToken: {
-                            credentials: 'password',
+                            credentials: TestDbmss.DBMS_CREDENTIALS,
                             principal: 'neo4j',
                             scheme: 'basic',
                         },

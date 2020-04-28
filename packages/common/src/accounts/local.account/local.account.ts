@@ -145,6 +145,17 @@ export class LocalAccount extends AccountAbstract {
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
+    async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<void> {
+        const dbmsId = resolveDbms(this.dbmss, nameOrId).id;
+        const neo4jConfig = await PropertiesFile.readFile(
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+        );
+
+        properties.forEach((value, key) => neo4jConfig.set(key, value));
+
+        await neo4jConfig.flush();
+    }
+
     async listDbmss(): Promise<IDbms[]> {
         // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();

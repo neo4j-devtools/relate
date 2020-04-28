@@ -78,7 +78,6 @@
         "clean": "rimraf dist",
         "test": "jest",
         "add:readme": "git add README.md",
-        "version": "run-s build:readme add:readme",
-        "dev": "./bin/run dbms:access-token ohyeah --principal neo4j --credentials foo"
+        "version": "run-s build:readme add:readme"
     }
 }

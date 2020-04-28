@@ -1,7 +1,9 @@
 import {test} from '@oclif/test';
-import InstallCommand from '../../commands/dbms/install';
-import UninstallCommand from '../../commands/dbms/uninstall';
-import StopCommand from '../../commands/dbms/stop';
+import {TestDbmss} from '@relate/common';
+
+import AccessTokenCommand from '../../commands/dbms/access-token';
+import LaunchCommand from '../../commands/app/launch';
+import StartCommand from '../../commands/dbms/start';
 
 jest.mock('cli-ux', () => {
     return {
@@ -12,47 +14,37 @@ jest.mock('cli-ux', () => {
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ACCOUNT_ID = 'test';
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'app.e2e.ts';
-const TEST_DB_CREDENTIALS = 'newpassword';
-const TEST_DB_VERSION = process.env.TEST_NEO4J_VERSION || '';
+let TEST_DB_NAME: string;
 
 describe('$relate app', () => {
-    beforeAll(() =>
-        InstallCommand.run([
-            TEST_DB_NAME,
-            '--credentials',
-            TEST_DB_CREDENTIALS,
-            '--version',
-            TEST_DB_VERSION,
-            '--account',
-            TEST_ACCOUNT_ID,
-        ]),
-    );
+    const dbmss = new TestDbmss(__filename);
 
-    afterAll(async () => {
-        await StopCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
-        await UninstallCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+    beforeAll(async () => {
+        TEST_DB_NAME = await dbmss.createDbms();
     });
 
-    test.stdout()
-        .command(['dbms:start', TEST_DB_NAME, `--account=${TEST_ACCOUNT_ID}`])
+    afterAll(() => dbmss.teardown());
+
+    test.stdout().it('logs app launch token', async (ctx) => {
+        await StartCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+
         // arbitrary wait for Neo4j to come online
-        .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
-        .command([
-            'dbms:access-token',
+        await new Promise((resolve) => setTimeout(resolve, 25000));
+
+        await AccessTokenCommand.run([
             TEST_DB_NAME,
             '--principal=neo4j',
-            `--credentials=${TEST_DB_CREDENTIALS}`,
+            `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
             `--account=${TEST_ACCOUNT_ID}`,
-        ])
-        .command([
-            'app:launch',
+        ]);
+
+        await LaunchCommand.run([
             TEST_APP_ID,
             `--dbmsId=${TEST_DB_NAME}`,
             '--principal=neo4j',
             `--account=${TEST_ACCOUNT_ID}`,
-        ])
-        .it('logs app launch token', (ctx) => {
-            expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
-        });
+        ]);
+
+        expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
+    });
 });
