@@ -10,6 +10,7 @@ import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 import got from 'got';
 import stream from 'stream';
 import {promisify} from 'util';
+import hasha from 'hasha';
 
 import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
 import {AccountAbstract} from '../account.abstract';
@@ -237,6 +238,8 @@ export class LocalAccount extends AccountAbstract {
         );
 
         const requestedDistributionUrl = requestedDistribution!.dist;
+        const shaSum = await this.getCheckSum(`${requestedDistributionUrl}.sha256`);
+        console.log('++shaSum', shaSum);
 
         // just so its obvious that its currently in progress.
         const tmpName = uuidv4();
@@ -253,6 +256,9 @@ export class LocalAccount extends AccountAbstract {
         try {
             await pipeline(got.stream(requestedDistributionUrl), fse.createWriteStream(tmpPath));
             console.log('++continue');
+
+            // verify hash first
+            await this.verifyHash(shaSum, tmpPath);
             // rename the tmp output
             await fse.rename(tmpPath, archivePath);
             // extract to cache dir
@@ -260,11 +266,29 @@ export class LocalAccount extends AccountAbstract {
             // remove tmp output
             return fse.remove(tmpPath);
         } catch (error) {
-            console.log('++error');
             // remove tmp output
             await fse.remove(tmpPath);
-            throw new Error('Problem downloading!!!');
+            throw new Error(`An error occured downloading/installing: ${error}`);
         }
+    }
+
+    private async getCheckSum(url: string): Promise<string> {
+        try {
+            const response = await got(url);
+            const {body: shaSum} = response;
+            return shaSum;
+        } catch (error) {
+            throw new Error('unable to get checksum.');
+        }
+    }
+
+    private async verifyHash(expectedShasumHash: string, pathToFile: string, algorithm = 'sha256'): Promise<string> {
+        const hash = await hasha.fromFile(pathToFile, {algorithm});
+        if (hash !== expectedShasumHash) {
+            throw new Error('hashes do not match. Something went wrong!');
+        }
+        console.log('++hashes match');
+        return hash;
     }
 
     private async extractFromArchive(archivePath: string, outputDir: string): Promise<string> {
