@@ -24,6 +24,7 @@
         "@nestjs/testing": "7.0.8",
         "@types/decompress": "4.2.3",
         "@types/fs-extra": "8.0.1",
+        "@types/got": "9.6.10",
         "@types/jest": "24.9.0",
         "@types/lodash": "4.14.149",
         "@types/node": "13.1.7",
