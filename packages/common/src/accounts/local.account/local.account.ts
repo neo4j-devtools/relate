@@ -406,7 +406,7 @@ export class LocalAccount extends AccountAbstract {
                         // @todo: change this in extensions PR
                         connectionUri: 'neo4j://127.0.0.1:7687',
                         id,
-                        config
+                        config,
                     });
                 }
             }),
