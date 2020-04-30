@@ -2,6 +2,6 @@
 
 canonical=$(cd -P -- "$(dirname -- "$0")" && printf '%s' "$(pwd -P)")
 
-export NODE_PATH=${canonical}/../node_modules:${canonical}/../../../node_modules
+export NODE_PATH=${canonical}/../node_modules
 
 node ${canonical}/run.js "$@"
