@@ -1,9 +1,11 @@
 import {DynamicModule} from '@nestjs/common';
 import {filter, map} from 'lodash';
 
-import {EXTENSION_TYPES} from '../models';
-import {INSTALLED_EXTENSIONS} from './get-installed-extensions';
+import {getInstalledExtensions} from './get-installed-extensions';
 import {InvalidArgumentError} from '../errors';
+import {EXTENSION_TYPES} from '../constants';
+
+const INSTALLED_EXTENSIONS = getInstalledExtensions();
 
 export function loadExtensionsFor(targetType: EXTENSION_TYPES): Promise<DynamicModule>[] {
     if (targetType === EXTENSION_TYPES.STATIC) {

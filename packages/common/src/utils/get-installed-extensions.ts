@@ -3,7 +3,7 @@ import {ensureDirSync, lstatSync, pathExistsSync, readdirSync, readJSONSync} fro
 import {compact, flatMap, map, values} from 'lodash';
 
 import {envPaths} from './env-paths';
-import {EXTENSION_TYPES, ExtensionModel, IInstalledExtension} from '../models';
+import {ExtensionModel, IInstalledExtension} from '../models';
 import {InvalidArgumentError} from '../errors';
 import {
     EXTENSION_DIR_NAME,
@@ -11,9 +11,8 @@ import {
     EXTENSION_MANIFEST_KEY,
     EXTENSION_MANIFEST,
     PACKAGE_JSON,
+    EXTENSION_TYPES,
 } from '../constants';
-
-export const INSTALLED_EXTENSIONS = getInstalledExtensions();
 
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
@@ -29,13 +28,13 @@ export function getInstalledExtensions(): IInstalledExtension[] {
 
             const files = readdirSync(dirPath);
 
-            return map(files, (file): ExtensionModel | null => {
+            return map(files, (file): IInstalledExtension | null => {
                 const fullPath = path.join(dirPath, file);
 
                 try {
                     return mapContentsToExtension(fullPath, file);
                 } catch (e) {
-                    // @todo: error logging
+                    // @todo: error logging?
                     return null;
                 }
             });
@@ -43,7 +42,7 @@ export function getInstalledExtensions(): IInstalledExtension[] {
     );
 }
 
-function mapContentsToExtension(fullPath: string, name: string): ExtensionModel {
+function mapContentsToExtension(fullPath: string, name: string): IInstalledExtension {
     const manifestPath = path.join(fullPath, EXTENSION_MANIFEST);
     const packagePath = path.join(fullPath, PACKAGE_JSON);
     const indexHtmlPath = path.join(fullPath, EXTENSION_INDEX_HTML);

@@ -22,7 +22,7 @@ export class AccessTokenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const account = this.systemProvider.getAccount(flags.account);
+        const account = await this.systemProvider.getAccount(flags.account);
         const authToken = new AuthTokenModel({
             credentials: trim(flags.credentials),
             principal: trim(flags.principal),
@@ -51,10 +51,12 @@ export class AccessTokenModule implements OnApplicationBootstrap {
             }
         }
 
+        const dbms = await account.getDbms(dbmsId);
+
         return account
-            .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbmsId, authToken)
+            .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbms.id, authToken)
             .then((accessToken) =>
-                this.systemProvider.registerAccessToken(account.id, dbmsId, authToken.principal, accessToken),
+                this.systemProvider.registerAccessToken(account.id, dbms.id, authToken.principal, accessToken),
             )
             .then(this.utils.log);
     }

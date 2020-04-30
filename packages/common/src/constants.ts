@@ -15,3 +15,12 @@ export const PACKAGE_JSON = 'package.json';
 export const EXTENSION_MANIFEST = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_INDEX_HTML = 'index.html';
+
+export enum EXTENSION_TYPES {
+    SYSTEM = 'SYSTEM',
+    CLI = 'CLI',
+    WEB = 'WEB',
+    ELECTRON = 'ELECTRON',
+    // TASK = 'TASK',
+    STATIC = 'STATIC',
+}

@@ -19,6 +19,7 @@ $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
 <<<<<<< HEAD
+<<<<<<< HEAD
 @relate/cli/1.0.0 darwin-x64 node-v12.14.1
 =======
 <<<<<<< HEAD
@@ -27,6 +28,9 @@ $ relate (-v|--version|version)
 @relate/cli/1.0.0 darwin-x64 node-v12.14.1
 >>>>>>> Added unix style bin scripts
 >>>>>>> Added unix style bin scripts
+=======
+@relate/cli/1.0.0 darwin-x64 node-v12.14.1
+>>>>>>> Fixes from GRAND extension testing
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND

@@ -1,21 +1,10 @@
-import {DynamicModule, Module} from '@nestjs/common';
-import {filter, map} from 'lodash';
+import {Module} from '@nestjs/common';
 
 import {SystemProvider} from './system.provider';
-import {EXTENSION_TYPES} from '../models';
-import {INSTALLED_EXTENSIONS} from '../utils/get-installed-extensions';
+import {loadExtensionsFor} from '../utils/load-extensions-for';
+import {EXTENSION_TYPES} from '../constants';
 
-const dynamicModules: Promise<DynamicModule>[] = map(
-    filter(INSTALLED_EXTENSIONS, ({type}) => type === EXTENSION_TYPES.SYSTEM),
-    async ({main}) => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const {default: module} = await require(main);
-
-        return {
-            module,
-        };
-    },
-);
+const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.SYSTEM);
 
 @Module({
     exports: [SystemProvider],

@@ -5,11 +5,13 @@ import {ACCOUNT_TYPES} from '../account.constants';
 import {AccountConfigModel} from '../../models';
 import {envPaths} from '../../utils';
 import {LocalAccount} from './local.account';
+import {PropertiesFile} from '../../system/files';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-account.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, 'dbmss');
 
 describe('LocalAccount - list', () => {
+    const dummyConf = new PropertiesFile(new Map(), 'nowhere');
     let account: LocalAccount;
 
     beforeAll(async () => {
@@ -19,12 +21,14 @@ describe('LocalAccount - list', () => {
             dbmss: {
                 '6bb553ba': {
                     connectionUri: 'neo4j://127.0.0.1:7687',
+                    config: dummyConf,
                     description: 'DBMS with metadata',
                     id: '6bb553ba',
                     name: 'Name',
                 },
                 e0aef2ad: {
                     connectionUri: 'neo4j://127.0.0.1:7687',
+                    config: dummyConf,
                     description: 'DBMS present in the config but not in the DBMS dir.',
                     id: 'e0aef2ad',
                     name: "Shouldn't be listed",
@@ -50,12 +54,14 @@ describe('LocalAccount - list', () => {
         const expected = [
             {
                 connectionUri: 'neo4j://127.0.0.1:7687',
+                config: dummyConf,
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
             },
             {
                 connectionUri: 'neo4j://127.0.0.1:7687',
+                config: dummyConf,
                 description: '',
                 id: '998f936e',
                 name: '',
@@ -85,6 +91,7 @@ describe('LocalAccount - list', () => {
         const expected = [
             {
                 connectionUri: 'neo4j://127.0.0.1:7687',
+                config: dummyConf,
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',

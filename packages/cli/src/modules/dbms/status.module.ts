@@ -19,7 +19,7 @@ export class StatusModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = this.systemProvider.getAccount(flags.account);
+        const account = await this.systemProvider.getAccount(flags.account);
         const dbmss = await account.listDbmss();
         let dbmsIds = this.parsed.argv;
 
