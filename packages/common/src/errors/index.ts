@@ -9,3 +9,5 @@ export {UndefinedError} from './undefined.error';
 export {InvalidArgumentError} from './invalid-argument.error';
 export {FileStructureError} from './file-structure.error';
 export {TargetExistsError} from './target-exists.error';
+export {FetchError} from './fetch.error';
+export {NotEqualError} from './not-equal.error';
