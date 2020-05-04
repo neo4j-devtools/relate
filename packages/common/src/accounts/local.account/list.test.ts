@@ -63,7 +63,16 @@ describe('LocalAccount - list', () => {
         await Promise.all(createDirs);
 
         const actual = await account.listDbmss();
-        expect(actual).toEqual(expected);
+        const sortedActual = actual.sort((a, b) => {
+            if (a.name > b.name) {
+                return -1;
+            }
+            if (b.name > a.name) {
+                return 1;
+            }
+            return 0;
+        });
+        expect(sortedActual).toEqual(expected);
     });
 
     test('do not list removed dbmss', async () => {
