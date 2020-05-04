@@ -72,8 +72,8 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     await verifyHash(shaSum, tmpPath);
 
     // extract to cache dir first
-    const info = await extractFromArchive(tmpPath, neo4jDistributionPath);
-    const archiveName = `neo4j-${info.edition}-${info.version}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
+    const {edition: neo4jEdition, version: neo4jVersion} = await extractFromArchive(tmpPath, neo4jDistributionPath);
+    const archiveName = `neo4j-${neo4jEdition}-${neo4jVersion}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
     const archivePath = path.join(neo4jDistributionPath, archiveName);
     // rename the tmp output
     await fse.rename(tmpPath, archivePath);
