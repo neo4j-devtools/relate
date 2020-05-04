@@ -63,21 +63,17 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     // output to tmp dir initially instead of neo4jDistribution dir?
     const tmpPath = path.join(neo4jDistributionPath, tmpName);
 
-    // not sure how else to handle this other than parsing the url or doing this.
-    /* eslint-disable max-len */
-    const archiveName = `neo4j-${requestedDistribution!.edition}-${
-        requestedDistribution!.version
-    }${NEO4J_ARCHIVE_FILE_SUFFIX}`;
-    const archivePath = path.join(neo4jDistributionPath, archiveName);
-
     // download and pipe to tmpPath
     await pipeline(requestedDistributionUrl, tmpPath);
     // verify the hash
     await verifyHash(shaSum, tmpPath);
+
+    // extract to cache dir first
+    const info = await extractFromArchive(tmpPath, neo4jDistributionPath);
+    const archiveName = `neo4j-${info.edition}-${info.version}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
+    const archivePath = path.join(neo4jDistributionPath, archiveName);
     // rename the tmp output
     await fse.rename(tmpPath, archivePath);
-    // extract to cache dir
-    await extractFromArchive(archivePath, neo4jDistributionPath);
     // remove tmp output
     return fse.remove(tmpPath);
 };

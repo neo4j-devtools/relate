@@ -102,7 +102,7 @@ export class LocalAccount extends AccountAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const extractedDistPath = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
+            const {extractedDistPath} = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
