@@ -10,7 +10,7 @@ import hasha from 'hasha';
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../account.constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractFromArchive} from './extract-neo4j';
-import {FetchError, NotEqualError} from '../../../errors';
+import {FetchError, IntegrityError, NotFoundError} from '../../../errors';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
@@ -43,7 +43,7 @@ export const verifyHash = async (
     if (hash !== expectedShasumHash) {
         // remove tmp output
         await fse.remove(pathToFile);
-        throw new NotEqualError('Expected hash mismatch');
+        throw new IntegrityError('Expected hash mismatch');
     }
     return hash;
 };
@@ -55,7 +55,10 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
     );
 
-    const requestedDistributionUrl = requestedDistribution!.dist;
+    if (!requestedDistribution) {
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+    }
+    const requestedDistributionUrl = requestedDistribution.dist;
     const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
 
     // just so its obvious that its currently in progress.
