@@ -64,7 +64,7 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     const tmpPath = path.join(neo4jDistributionPath, tmpName);
 
     // not sure how else to handle this other than parsing the url or doing this.
-    /* eslint-disable no-alert, no-console */
+    /* eslint-disable max-len */
     const archiveName = `neo4j-${requestedDistribution!.edition}-${
         requestedDistribution!.version
     }${NEO4J_ARCHIVE_FILE_SUFFIX}`;
