@@ -40,10 +40,20 @@ export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements
     @IsEnum(ACCOUNT_TYPES)
     public type!: ACCOUNT_TYPES;
 
-    // @todo: this is optional and LocalAccount specific
+    // @todo: this is LocalAccount specific
     @IsString()
     @IsOptional()
     public neo4jDataPath?: string;
+
+    // @todo: this is RemoteAccount specific
+    @IsString()
+    @IsOptional()
+    public relateURL?: string;
+
+    // @todo: this is RemoteAccount specific
+    @IsString()
+    @IsOptional()
+    public relateAccount?: string;
 
     @IsOptional()
     public dbmss?: {[key: string]: IDbms};

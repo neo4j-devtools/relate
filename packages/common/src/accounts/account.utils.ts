@@ -8,12 +8,16 @@ import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
 import {AccountAbstract} from './account.abstract';
 import {LocalAccount} from './local.account';
 import {envPaths} from '../utils';
+import {RemoteAccount} from './remote.account';
 
 export async function createAccountInstance(config: AccountConfigModel): Promise<AccountAbstract> {
     let account: AccountAbstract;
     switch (config.type) {
         case ACCOUNT_TYPES.LOCAL:
             account = new LocalAccount(config);
+            break;
+        case ACCOUNT_TYPES.REMOTE:
+            account = new RemoteAccount(config);
             break;
         default:
             throw new InvalidConfigError(`Account type ${config.type} not supported`);
