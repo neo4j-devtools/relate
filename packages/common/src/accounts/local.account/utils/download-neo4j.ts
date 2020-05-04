@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 import fse from 'fs-extra';
 import got from 'got';
@@ -11,70 +10,74 @@ import hasha from 'hasha';
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../account.constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractFromArchive} from './extract-neo4j';
-import { FetchError, NotEqualError } from '../../../errors';
-
-export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-  const onlineVersions = await fetchNeo4jVersions();
-  const requestedDistribution = _.find(
-      onlineVersions,
-      (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
-  );
-
-  const requestedDistributionUrl = requestedDistribution!.dist;
-  const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
-
-  // just so its obvious that its currently in progress.
-  const tmpName = uuidv4();
-  // output to tmp dir initially instead of neo4jDistribution dir?
-  const tmpPath = path.join(neo4jDistributionPath, tmpName);
-
-  // not sure how else to handle this other than parsing the url or doing this.
-  const archiveName = `neo4j-${requestedDistribution!.edition}-${requestedDistribution!.version}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
-  const archivePath = path.join(neo4jDistributionPath, archiveName);
-
-  // download and pipe to tmpPath
-  await pipeline(requestedDistributionUrl, tmpPath)
-  // verify the hash
-  await verifyHash(shaSum, tmpPath);
-  // rename the tmp output
-  await fse.rename(tmpPath, archivePath);
-  // extract to cache dir
-  await extractFromArchive(archivePath, neo4jDistributionPath);
-  // remove tmp output
-  return fse.remove(tmpPath);
-}
-
-export const pipeline = async (url: string, outputPath: string): Promise<void> => {
-  const streamPipeline = promisify(stream.pipeline);
-
-  try {
-    await streamPipeline(
-      got.stream(url),
-      fse.createWriteStream(outputPath)
-    )
-  } catch (e) {
-    // remove tmp output
-    await fse.remove(outputPath);
-    throw new FetchError(e);
-  }
-}
+import {FetchError, NotEqualError} from '../../../errors';
 
 export const getCheckSum = async (url: string): Promise<string> => {
-  try {
-      const response = await got(url);
-      const {body: shaSum} = response;
-      return shaSum;
-  } catch (e) {
-      throw new FetchError(e);
-  }
-}
+    try {
+        const response = await got(url);
+        const {body: shaSum} = response;
+        return shaSum;
+    } catch (e) {
+        throw new FetchError(e);
+    }
+};
 
-export const verifyHash = async (expectedShasumHash: string, pathToFile: string, algorithm = NEO4J_SHA_ALGORITHM): Promise<string> => {
-  const hash = await hasha.fromFile(pathToFile, {algorithm});
-  if (hash !== expectedShasumHash) {
-      // remove tmp output
-      await fse.remove(pathToFile);
-      throw new NotEqualError('Expected hash mismatch');
-  }
-  return hash;
-}
+export const pipeline = async (url: string, outputPath: string): Promise<void> => {
+    const streamPipeline = promisify(stream.pipeline);
+
+    try {
+        await streamPipeline(got.stream(url), fse.createWriteStream(outputPath));
+    } catch (e) {
+        // remove tmp output
+        await fse.remove(outputPath);
+        throw new FetchError(e);
+    }
+};
+
+export const verifyHash = async (
+    expectedShasumHash: string,
+    pathToFile: string,
+    algorithm = NEO4J_SHA_ALGORITHM,
+): Promise<string> => {
+    const hash = await hasha.fromFile(pathToFile, {algorithm});
+    if (hash !== expectedShasumHash) {
+        // remove tmp output
+        await fse.remove(pathToFile);
+        throw new NotEqualError('Expected hash mismatch');
+    }
+    return hash;
+};
+
+export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
+    const onlineVersions = await fetchNeo4jVersions();
+    const requestedDistribution = _.find(
+        onlineVersions,
+        (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
+    );
+
+    const requestedDistributionUrl = requestedDistribution!.dist;
+    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
+
+    // just so its obvious that its currently in progress.
+    const tmpName = uuidv4();
+    // output to tmp dir initially instead of neo4jDistribution dir?
+    const tmpPath = path.join(neo4jDistributionPath, tmpName);
+
+    // not sure how else to handle this other than parsing the url or doing this.
+    /* eslint-disable no-alert, no-console */
+    const archiveName = `neo4j-${requestedDistribution!.edition}-${
+        requestedDistribution!.version
+    }${NEO4J_ARCHIVE_FILE_SUFFIX}`;
+    const archivePath = path.join(neo4jDistributionPath, archiveName);
+
+    // download and pipe to tmpPath
+    await pipeline(requestedDistributionUrl, tmpPath);
+    // verify the hash
+    await verifyHash(shaSum, tmpPath);
+    // rename the tmp output
+    await fse.rename(tmpPath, archivePath);
+    // extract to cache dir
+    await extractFromArchive(archivePath, neo4jDistributionPath);
+    // remove tmp output
+    return fse.remove(tmpPath);
+};
