@@ -28,36 +28,35 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
   // output to tmp dir initially instead of neo4jDistribution dir?
   const tmpPath = path.join(neo4jDistributionPath, tmpName);
 
+  // not sure how else to handle this other than parsing the url or doing this.
   const archiveName = `neo4j-${requestedDistribution!.edition}-${requestedDistribution!.version}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
   const archivePath = path.join(neo4jDistributionPath, archiveName);
 
-  const pipeline = promisify(stream.pipeline);
-
-  try {
-    await pipeline(
-        got.stream(requestedDistributionUrl),
-        fse.createWriteStream(tmpPath)
-    );
-  } catch (e) {
-    // remove tmp output
-    await fse.remove(tmpPath);
-    throw new FetchError(e);
-  }
-
-  try {
-    await verifyHash(shaSum, tmpPath);
-  } catch (e) {
-    // remove tmp output
-    await fse.remove(tmpPath);
-    throw e;
-  }
-
+  // download and pipe to tmpPath
+  await pipeline(requestedDistributionUrl, tmpPath)
+  // verify the hash
+  await verifyHash(shaSum, tmpPath);
   // rename the tmp output
   await fse.rename(tmpPath, archivePath);
   // extract to cache dir
   await extractFromArchive(archivePath, neo4jDistributionPath);
   // remove tmp output
   return fse.remove(tmpPath);
+}
+
+export const pipeline = async (url: string, outputPath: string): Promise<void> => {
+  const streamPipeline = promisify(stream.pipeline);
+
+  try {
+    await streamPipeline(
+      got.stream(url),
+      fse.createWriteStream(outputPath)
+    )
+  } catch (e) {
+    // remove tmp output
+    await fse.remove(outputPath);
+    throw new FetchError(e);
+  }
 }
 
 export const getCheckSum = async (url: string): Promise<string> => {
@@ -73,6 +72,8 @@ export const getCheckSum = async (url: string): Promise<string> => {
 export const verifyHash = async (expectedShasumHash: string, pathToFile: string, algorithm = NEO4J_SHA_ALGORITHM): Promise<string> => {
   const hash = await hasha.fromFile(pathToFile, {algorithm});
   if (hash !== expectedShasumHash) {
+      // remove tmp output
+      await fse.remove(pathToFile);
       throw new NotEqualError('Expected hash mismatch');
   }
   return hash;
