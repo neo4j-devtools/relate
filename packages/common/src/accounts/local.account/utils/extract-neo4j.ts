@@ -5,8 +5,13 @@ import path from 'path';
 
 import {FileStructureError} from '../../../errors';
 import {getDistributionInfo} from '../utils';
+import {IDbmsVersion} from '../../../models/account-config.model';
 
-export const extractFromArchive = async (archivePath: string, outputDir: string): Promise<string> => {
+interface IExtractedArchive extends IDbmsVersion {
+    extractedDistPath: string;
+}
+
+export const extractFromArchive = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
     const outputFiles = await decompress(archivePath, outputDir);
     // determine output dir filename from the shortest directory string path
     const outputTopLevelDir = _.reduce(
@@ -17,15 +22,18 @@ export const extractFromArchive = async (archivePath: string, outputDir: string)
         await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
         throw new FileStructureError(`Unexpected file structure after unpacking`);
     }
-    const extractedDirPath = path.join(outputDir, outputTopLevelDir.path);
+    const extractedDistPath = path.join(outputDir, outputTopLevelDir.path);
 
     // check if this is neo4j...
     try {
-        const info = await getDistributionInfo(extractedDirPath);
+        const info = await getDistributionInfo(extractedDistPath);
         if (!info) {
             throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
         }
-        return extractedDirPath;
+        return {
+            ...info,
+            extractedDistPath,
+        };
     } catch (e) {
         await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
         throw e;

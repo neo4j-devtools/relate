@@ -15,6 +15,7 @@ import {
     InvalidArgumentError,
     NotAllowedError,
     NotSupportedError,
+    NotFoundError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -86,13 +87,17 @@ export class LocalAccount extends AccountAbstract {
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
                 await downloadNeo4j(semver, this.dirPaths.neo4jDistribution);
-                requestedDistribution = _.find(
+                const requestedDistributionAfterDownload = _.find(
                     await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution),
                     (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
                 );
+                if (!requestedDistributionAfterDownload) {
+                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                }
+                requestedDistribution = requestedDistributionAfterDownload;
             }
 
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution!.dist);
+            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
         }
 
         // version as a URL.
@@ -102,7 +107,7 @@ export class LocalAccount extends AccountAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const extractedDistPath = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
+            const {extractedDistPath} = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
