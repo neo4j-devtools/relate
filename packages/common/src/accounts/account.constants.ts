@@ -37,7 +37,7 @@ export const NEO4J_SUPPORTED_VERSION_RANGE = '>=4.x';
 export const NEO4J_JWT_ADDON_NAME = 'neo4j-jwt-addon';
 export const NEO4J_JWT_ADDON_VERSION = '1.0.0-SNAPSHOT';
 export const NEO4J_JWT_CONF_FILE = 'jwt-auth-addon.conf';
-export const NEO4J_SHA_ALGORITHM = 'sha256'
+export const NEO4J_SHA_ALGORITHM = 'sha256';
 
 export const NEO4J_JWT_CERT_BIT_LENGTH = 2048;
 export const NEO4J_JWT_CERT_VALIDITY_YEARS = 30;

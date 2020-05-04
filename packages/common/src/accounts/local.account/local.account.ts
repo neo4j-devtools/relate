@@ -1,4 +1,3 @@
-/* eslint-disable no-console, max-len */
 import fse from 'fs-extra';
 import _ from 'lodash';
 import {v4 as uuidv4} from 'uuid';
@@ -44,7 +43,7 @@ import {
     discoverNeo4jDistributions,
     generatePluginCerts,
     downloadNeo4j,
-    extractFromArchive
+    extractFromArchive,
 } from './utils';
 
 export class LocalAccount extends AccountAbstract {
