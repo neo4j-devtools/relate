@@ -14,7 +14,7 @@ USAGE
 OPTIONS
   -A, --account=account      Account to run the command against
   -D, --dbmsId=dbmsId        (required)
-  -H, --host=host
+  -H, --host=host            [default: http://localhost:3000]
   -P, --principal=principal  (required)
 ```
 
