@@ -30,6 +30,7 @@
         "@relate/common": "1.0.0",
         "cli-ux": "5.4.5",
         "enquirer": "2.3.4",
+        "fs-extra": "9.0.0",
         "lodash": "4.17.15",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5",
@@ -38,6 +39,7 @@
     "devDependencies": {
         "@oclif/dev-cli": "1.22.2",
         "@oclif/test": "1.2.5",
+        "@types/fs-extra": "8.1.0",
         "@types/jest": "25.1.0",
         "@types/lodash": "4.14.149",
         "@types/node": "10.17.13",

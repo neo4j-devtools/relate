@@ -1,5 +1,7 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
+import path from 'path';
+import fse from 'fs-extra';
 
 import InstallCommand from '../../commands/dbms/install';
 
@@ -15,15 +17,21 @@ export class InstallModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    onApplicationBootstrap(): Promise<void> {
+    async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const {name} = args;
-        const {account: accountId, credentials, version} = flags;
+        const {account: accountId, credentials} = flags;
+        let {version} = flags;
         const account = this.systemProvider.getAccount(accountId);
 
         if (!name || !credentials || !version) {
             // @todo: figure this out in combination with TTY
             throw new Error(`Not yet implemented`);
+        }
+
+        const pathVersion = path.resolve(version);
+        if (await fse.pathExists(pathVersion)) {
+            version = pathVersion;
         }
 
         return account
