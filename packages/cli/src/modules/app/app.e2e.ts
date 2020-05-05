@@ -27,26 +27,28 @@ describe('$relate app', () => {
 
     afterAll(() => dbmss.teardown());
 
-    test.stdout().it('logs app launch token', async (ctx) => {
-        await StartCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+    test.stdout()
+        .skip()
+        .it('logs app launch token', async (ctx) => {
+            await StartCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
 
-        // arbitrary wait for Neo4j to come online
-        await new Promise((resolve) => setTimeout(resolve, 25000));
+            // arbitrary wait for Neo4j to come online
+            await new Promise((resolve) => setTimeout(resolve, 25000));
 
-        await AccessTokenCommand.run([
-            TEST_DB_NAME,
-            '--principal=neo4j',
-            `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
-            `--account=${TEST_ACCOUNT_ID}`,
-        ]);
+            await AccessTokenCommand.run([
+                TEST_DB_NAME,
+                '--principal=neo4j',
+                `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
+                `--account=${TEST_ACCOUNT_ID}`,
+            ]);
 
-        await LaunchCommand.run([
-            TEST_APP_ID,
-            `--dbmsId=${TEST_DB_NAME}`,
-            '--principal=neo4j',
-            `--account=${TEST_ACCOUNT_ID}`,
-        ]);
+            await LaunchCommand.run([
+                TEST_APP_ID,
+                `--dbmsId=${TEST_DB_NAME}`,
+                '--principal=neo4j',
+                `--account=${TEST_ACCOUNT_ID}`,
+            ]);
 
-        expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
-    });
+            expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
+        });
 });
