@@ -19,7 +19,15 @@ export class AppsResolver {
         @Args('appId') appId: string,
         @Args('launchToken') launchToken: string,
     ): Promise<AppLaunchData> {
-        return this.systemProvider.parseAppLaunchToken(appId, launchToken);
+        const {accountId, dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appId, launchToken);
+        const account = await this.systemProvider.getAccount(accountId);
+        const dbms = await account.getDbms(dbmsId);
+
+        return {
+            accountId: account.id,
+            dbms,
+            ...rest,
+        };
     }
 
     @Mutation(() => AppLaunchToken)

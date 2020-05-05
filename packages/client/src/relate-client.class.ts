@@ -3,7 +3,11 @@ import {APP_LAUNCH_DATA_RESOLVER, DEFAULT_CLIENT_REMOTE} from './constants';
 
 export interface IAppLaunchData {
     accessToken: string;
-    dbmsId: string;
+    dbms: {
+        id: string;
+        name: string;
+        connectionUri: string;
+    };
     principal: string;
 }
 

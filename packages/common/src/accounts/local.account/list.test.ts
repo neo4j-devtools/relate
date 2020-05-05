@@ -18,11 +18,13 @@ describe('LocalAccount - list', () => {
         const config = new AccountConfigModel({
             dbmss: {
                 '6bb553ba': {
+                    connectionUri: 'nowhere',
                     description: 'DBMS with metadata',
                     id: '6bb553ba',
                     name: 'Name',
                 },
                 e0aef2ad: {
+                    connectionUri: 'nowhere',
                     description: 'DBMS present in the config but not in the DBMS dir.',
                     id: 'e0aef2ad',
                     name: "Shouldn't be listed",
@@ -47,11 +49,13 @@ describe('LocalAccount - list', () => {
     test('list dbmss installed', async () => {
         const expected = [
             {
+                connectionUri: 'nowhere',
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
             },
             {
+                connectionUri: 'nowhere',
                 description: '',
                 id: '998f936e',
                 name: '',
@@ -80,6 +84,7 @@ describe('LocalAccount - list', () => {
         await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbmsId}`));
         const expected = [
             {
+                connectionUri: 'nowhere',
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',

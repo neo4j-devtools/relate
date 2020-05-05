@@ -3,16 +3,19 @@ import {resolveDbms} from './resolve-dbms';
 describe('resolveDbms', () => {
     const dbmss = {
         c9992c2f: {
+            connectionUri: 'nowhere',
             description: '',
             id: 'c9992c2f',
             name: 'Unique Name',
         },
         e45a7499: {
+            connectionUri: 'nowhere',
             description: '',
             id: 'e45a7499',
             name: 'Ambiguous Name',
         },
         f2bdb05c: {
+            connectionUri: 'nowhere',
             description: '',
             id: 'f2bdb05c',
             name: 'Ambiguous Name',

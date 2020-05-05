@@ -21,6 +21,10 @@ export class AuraAccount extends AccountAbstract {
         throw new NotAllowedError(`${AuraAccount.name} does not support listing DBMSs`);
     }
 
+    getDbms(_nameOrId: string): Promise<IDbms> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support getting DBMS`);
+    }
+
     startDbmss(_dbmsIds: string[]): Promise<string[]> {
         throw new NotAllowedError(`${AuraAccount.name} does not support starting DBMSs`);
     }

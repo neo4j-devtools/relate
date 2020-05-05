@@ -162,6 +162,13 @@ export class LocalAccount extends AccountAbstract {
         return Object.values(this.dbmss);
     }
 
+    async getDbms(nameOrId: string): Promise<IDbms> {
+        // Discover DBMSs again in case there have been changes in the file system.
+        await this.discoverDbmss();
+
+        return resolveDbms(this.dbmss, nameOrId);
+    }
+
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
         const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
@@ -394,6 +401,8 @@ export class LocalAccount extends AccountAbstract {
                     };
 
                     this.dbmss[id] = _.merge(defaultValues, configDbmss[id], {
+                        // @todo: change this in extensions PR
+                        connectionUri: 'neo4j://127.0.0.1:7687',
                         id,
                     });
                 }

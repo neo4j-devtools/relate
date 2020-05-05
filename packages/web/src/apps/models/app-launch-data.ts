@@ -1,4 +1,7 @@
 import {Field, ObjectType} from '@nestjs/graphql';
+import {IDbms} from '@relate/common';
+
+import {Dbms} from '../../dbms/dbms.types';
 
 @ObjectType()
 export class AppLaunchData {
@@ -8,8 +11,8 @@ export class AppLaunchData {
     @Field(() => String)
     appId: string;
 
-    @Field(() => String)
-    dbmsId: string;
+    @Field(() => Dbms)
+    dbms: IDbms;
 
     @Field(() => String)
     principal: string;

@@ -5,7 +5,7 @@
 type AppLaunchData {
   accountId: String!
   appId: String!
-  dbmsId: String!
+  dbms: Dbms!
   principal: String!
   accessToken: String!
 }
@@ -25,6 +25,7 @@ type Dbms {
   id: ID!
   name: String
   description: String
+  connectionUri: String
 }
 
 type Mutation {
