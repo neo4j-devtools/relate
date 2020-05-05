@@ -85,7 +85,7 @@ describe('LocalAccount - install', () => {
         );
     });
 
-    test('with valid, non cached version (semver)', async () => {
+    test.skip('with valid, non cached version (semver)', async () => {
         await expect(account.installDbms(dbmss.createName(), 'password', '5.0')).rejects.toThrow(
             new NotSupportedError('version doesnt exist, so will attempt to download and install'),
         );

@@ -1,6 +1,5 @@
 import fse from 'fs-extra';
 import _ from 'lodash';
-import decompress from 'decompress';
 import {v4 as uuidv4} from 'uuid';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
@@ -16,7 +15,7 @@ import {
     InvalidArgumentError,
     NotAllowedError,
     NotSupportedError,
-    FileStructureError,
+    NotFoundError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -43,8 +42,9 @@ import {
     neo4jAdminCmd,
     fetchNeo4jVersions,
     discoverNeo4jDistributions,
-    getDistributionInfo,
     generatePluginCerts,
+    downloadNeo4j,
+    extractFromArchive,
 } from './utils';
 
 export class LocalAccount extends AccountAbstract {
@@ -79,16 +79,22 @@ export class LocalAccount extends AccountAbstract {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
-            const distributions = await discoverNeo4jDistributions(path.join(this.dirPaths.cache, 'neo4j'));
-            const requestedDistribution = _.find(
-                distributions,
+            let requestedDistribution = _.find(
+                await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution),
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
             );
 
+            // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
-                // to complete in a future PR
-                await fetchNeo4jVersions();
-                throw new NotSupportedError('version doesnt exist, so will attempt to download and install');
+                await downloadNeo4j(semver, this.dirPaths.neo4jDistribution);
+                const requestedDistributionAfterDownload = _.find(
+                    await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution),
+                    (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
+                );
+                if (!requestedDistributionAfterDownload) {
+                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                }
+                requestedDistribution = requestedDistributionAfterDownload;
             }
 
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
@@ -101,8 +107,7 @@ export class LocalAccount extends AccountAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const cacheDir = path.join(this.dirPaths.cache, 'neo4j');
-            const extractedDistPath = await this.extractFromArchive(version, cacheDir);
+            const {extractedDistPath} = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
@@ -221,32 +226,6 @@ export class LocalAccount extends AccountAbstract {
 
         // will come back to check the installPluginDependencies situation in future PRs
         return dbmsId;
-    }
-
-    private async extractFromArchive(archivePath: string, outputDir: string): Promise<string> {
-        const outputFiles = await decompress(archivePath, outputDir);
-        // determine output dir filename from the shortest directory string path
-        const outputTopLevelDir = _.reduce(
-            _.filter(outputFiles, (file) => file.type === 'directory'),
-            (a, b) => (a.path.length <= b.path.length ? a : b),
-        );
-        if (!outputTopLevelDir) {
-            await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
-            throw new FileStructureError(`Unexpected file structure after unpacking`);
-        }
-        const extractedDirPath = path.join(outputDir, outputTopLevelDir.path);
-
-        // check if this is neo4j...
-        try {
-            const info = await getDistributionInfo(extractedDirPath);
-            if (!info) {
-                throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
-            }
-            return extractedDirPath;
-        } catch (e) {
-            await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
-            throw e;
-        }
     }
 
     private async uninstallNeo4j(dbmsId: string): Promise<void> {
