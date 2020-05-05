@@ -46,7 +46,9 @@ const APP_LAUNCH_DATA = {
             appLaunchData(appId: $appId, launchToken: $launchToken) {
                 accountId
                 appId
-                dbmsId
+                dbms {
+                    id
+                }
                 principal
                 accessToken
             }
@@ -119,7 +121,15 @@ describe('AppsModule', () => {
             .expect((res: request.Response) => {
                 const {appLaunchData = {}} = res.body.data;
 
-                expect(appLaunchData).toEqual(CREATE_APP_LAUNCH_TOKEN.variables);
+                expect(appLaunchData).toEqual({
+                    accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
+                    accountId: CREATE_APP_LAUNCH_TOKEN.variables.accountId,
+                    appId: CREATE_APP_LAUNCH_TOKEN.variables.appId,
+                    principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
+                    dbms: {
+                        id: CREATE_APP_LAUNCH_TOKEN.variables.dbmsId,
+                    },
+                });
             });
     });
 
