@@ -1,7 +1,7 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 
-import {AccountConfigModel} from '../models';
+import {AccountConfigModel, IDbms} from '../models';
 import {ACCOUNT_TYPES} from './account.constants';
 import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
 
@@ -24,6 +24,8 @@ export async function createAccountInstance(config: AccountConfigModel): Promise
 }
 
 export class TestDbmss {
+    static DBMS_CREDENTIALS = 'password';
+
     dbmsNames: string[] = [];
 
     account: AccountAbstract;
@@ -52,12 +54,31 @@ export class TestDbmss {
         return name;
     }
 
-    async createDbms(): Promise<string> {
+    async createDbms(): Promise<IDbms> {
         const version = process.env.TEST_NEO4J_VERSION || '4.0.4';
         const name = this.createName();
 
-        await this.account.installDbms(name, 'password', version);
-        return name;
+        await this.account.installDbms(name, TestDbmss.DBMS_CREDENTIALS, version);
+
+        const shortUUID = uuid().slice(0, 8);
+        const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
+            // Weight char codes before summing them, to avoid collisions when
+            // strings contain the same characters.
+            return sum + char.charCodeAt(0) * (index + 1);
+        }, 0);
+
+        // Increments of 10 to avoid collisions between the 3 different ports,
+        // and max offset of 30k.
+        const portOffset = (numUUID * 10) % 30000;
+
+        const properties = new Map<string, string>();
+        properties.set('dbms.connector.bolt.listen_address', `:${7687 + portOffset}`);
+        properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
+        properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
+        properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
+        await this.account.updateDbmsConfig(name, properties);
+
+        return this.account.getDbms(name);
     }
 
     async teardown(): Promise<void> {

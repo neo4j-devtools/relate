@@ -34,11 +34,8 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        return account
-            .installDbms(name, credentials, version)
-            .then((res) => {
-                this.utils.log(res);
-            })
-            .catch(this.utils.error);
+        return account.installDbms(name, credentials, version).then((res) => {
+            this.utils.log(res);
+        });
     }
 }

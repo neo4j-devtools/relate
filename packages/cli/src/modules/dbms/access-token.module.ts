@@ -56,7 +56,6 @@ export class AccessTokenModule implements OnApplicationBootstrap {
             .then((accessToken) =>
                 this.systemProvider.registerAccessToken(account.id, dbmsId, authToken.principal, accessToken),
             )
-            .then(this.utils.log)
-            .catch(({message}) => this.utils.error(message));
+            .then(this.utils.log);
     }
 }

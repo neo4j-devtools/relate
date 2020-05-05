@@ -2,12 +2,19 @@ import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import _ from 'lodash';
+import jwt from 'jsonwebtoken';
 
-import {JSON_FILE_EXTENSION, RELATE_KNOWN_CONNECTIONS_FILE, DEFAULT_ACCOUNT_NAME} from '../constants';
-import {AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance, ACCOUNT_TYPES} from '../accounts';
-import {NotFoundError, TargetExistsError} from '../errors';
-import {AccountConfigModel} from '../models';
-import {envPaths, registerSystemAccessToken} from '../utils';
+import {
+    DEFAULT_ACCOUNT_NAME,
+    JSON_FILE_EXTENSION,
+    JWT_INSTANCE_TOKEN_SALT,
+    RELATE_KNOWN_CONNECTIONS_FILE,
+    TWENTY_FOUR_HOURS_SECONDS,
+} from '../constants';
+import {ACCOUNT_TYPES, AccountAbstract, ACCOUNTS_DIR_NAME, createAccountInstance} from '../accounts';
+import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
+import {AccountConfigModel, AppLaunchTokenModel, IAppLaunchToken} from '../models';
+import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {ensureDirs, ensureFiles} from '../system';
 
 @Injectable()
@@ -78,6 +85,16 @@ export class SystemProvider implements OnModuleInit {
         this.allAccounts.set(DEFAULT_ACCOUNT_NAME, defaultAccount);
     }
 
+    async getAccessToken(accountId: string, dbmsId: string, dbmsUser: string): Promise<string> {
+        const token = await getSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser);
+
+        if (!token) {
+            throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);
+        }
+
+        return token;
+    }
+
     private async discoverAccounts(): Promise<void> {
         this.allAccounts.clear();
         const accountsDir = path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME);
@@ -101,5 +118,75 @@ export class SystemProvider implements OnModuleInit {
         });
 
         await Promise.all(createAccountPromises);
+    }
+
+    createAppLaunchToken(
+        accountId: string,
+        appId: string,
+        dbmsId: string,
+        principal: string,
+        accessToken: string,
+    ): Promise<string> {
+        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
+        const validated = JSON.parse(
+            JSON.stringify(
+                new AppLaunchTokenModel({
+                    accessToken,
+                    accountId,
+                    appId,
+                    dbmsId,
+                    principal,
+                }),
+            ),
+        );
+
+        return new Promise((resolve, reject) => {
+            jwt.sign(validated, jwtTokenSalt, {expiresIn: TWENTY_FOUR_HOURS_SECONDS}, (err, token) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(token);
+            });
+        });
+    }
+
+    parseAppLaunchToken(appId: string, launchToken: string): Promise<IAppLaunchToken> {
+        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
+
+        return new Promise((resolve, reject) => {
+            jwt.verify(launchToken, jwtTokenSalt, (err: any, decoded: any) => {
+                if (err) {
+                    reject(new ValidationFailureError('Failed to decode App Launch Token'));
+                    return;
+                }
+
+                if (decoded.appId !== appId) {
+                    reject(new ValidationFailureError('App Launch Token mismatch'));
+                    return;
+                }
+
+                try {
+                    resolve(
+                        new AppLaunchTokenModel({
+                            accessToken: decoded.accessToken,
+                            accountId: decoded.accountId,
+                            appId: decoded.appId,
+                            dbmsId: decoded.dbmsId,
+                            principal: decoded.principal,
+                        }),
+                    );
+                    return;
+                } catch (e) {
+                    if (e instanceof ValidationFailureError) {
+                        reject(e);
+                        return;
+                    }
+
+                    reject(new ValidationFailureError('Invalid App Launch Token'));
+                }
+            });
+        });
     }
 }

@@ -21,22 +21,19 @@ export class ListModule implements OnApplicationBootstrap {
         const {flags} = this.parsed;
         const account = this.systemProvider.getAccount(flags.account);
 
-        return account
-            .listDbmss()
-            .then((dbmss) => {
-                cli.table(
-                    dbmss,
-                    {
-                        id: {},
-                        name: {},
-                        description: {},
-                    },
-                    {
-                        printLine: this.utils.log,
-                        ...flags,
-                    },
-                );
-            })
-            .catch(this.utils.error);
+        return account.listDbmss().then((dbmss) => {
+            cli.table(
+                dbmss,
+                {
+                    id: {},
+                    name: {},
+                    description: {},
+                },
+                {
+                    printLine: this.utils.log,
+                    ...flags,
+                },
+            );
+        });
     }
 }

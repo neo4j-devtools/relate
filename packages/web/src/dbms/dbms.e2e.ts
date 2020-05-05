@@ -26,7 +26,9 @@ describe('DBMSModule', () => {
     const dbmss: TestDbmss = new TestDbmss(__filename);
 
     beforeAll(async () => {
-        TEST_DB_NAME = await dbmss.createDbms();
+        const {name} = await dbmss.createDbms();
+
+        TEST_DB_NAME = name;
 
         const module = await Test.createTestingModule({
             imports: [WebModule],
@@ -124,7 +126,7 @@ describe('DBMSModule', () => {
                     {
                         appId: TEST_APP_ID,
                         authToken: {
-                            credentials: 'password',
+                            credentials: TestDbmss.DBMS_CREDENTIALS,
                             principal: 'neo4j',
                             scheme: 'basic',
                         },

@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AppLaunchData {
+  accountId: String!
+  appId: String!
+  dbms: Dbms!
+  principal: String!
+  accessToken: String!
+}
+
+type AppLaunchToken {
+  token: String!
+  path: String!
+}
+
 input AuthTokenInput {
   scheme: String!
   principal: String!
@@ -12,9 +25,11 @@ type Dbms {
   id: ID!
   name: String
   description: String
+  connectionUri: String
 }
 
 type Mutation {
+  createAppLaunchToken(accessToken: String!, principal: String!, dbmsId: String!, appId: String!, accountId: String!): AppLaunchToken!
   installDbms(accountId: String!, name: String!, credentials: String!, version: String!): String!
   uninstallDbms(accountId: String!, name: String!): String!
   startDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
@@ -23,6 +38,7 @@ type Mutation {
 }
 
 type Query {
+  appLaunchData(launchToken: String!, appId: String!): AppLaunchData!
   listDbmss(accountId: String): [Dbms!]!
   statusDbmss(accountId: String, dbmsIds: [String!]!): [String!]!
 }

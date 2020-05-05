@@ -8,6 +8,7 @@ export interface IDbms {
     id: string;
     name: string;
     description: string;
+    connectionUri: string;
 }
 export interface IDbmsVersion {
     edition: NEO4J_EDITION;
