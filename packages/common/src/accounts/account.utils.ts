@@ -1,7 +1,7 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 
-import {AccountConfigModel} from '../models';
+import {AccountConfigModel, IDbms} from '../models';
 import {ACCOUNT_TYPES} from './account.constants';
 import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
 
@@ -54,7 +54,7 @@ export class TestDbmss {
         return name;
     }
 
-    async createDbms(): Promise<string> {
+    async createDbms(): Promise<IDbms> {
         const version = process.env.TEST_NEO4J_VERSION || '4.0.4';
         const name = this.createName();
 
@@ -78,7 +78,7 @@ export class TestDbmss {
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
         await this.account.updateDbmsConfig(name, properties);
 
-        return name;
+        return this.account.getDbms(name);
     }
 
     async teardown(): Promise<void> {

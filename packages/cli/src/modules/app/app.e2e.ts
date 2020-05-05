@@ -20,7 +20,9 @@ describe('$relate app', () => {
     const dbmss = new TestDbmss(__filename);
 
     beforeAll(async () => {
-        TEST_DB_NAME = await dbmss.createDbms();
+        const {name} = await dbmss.createDbms();
+
+        TEST_DB_NAME = name;
     });
 
     afterAll(() => dbmss.teardown());
