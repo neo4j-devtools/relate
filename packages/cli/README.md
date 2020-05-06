@@ -18,19 +18,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-<<<<<<< HEAD
-<<<<<<< HEAD
 @relate/cli/1.0.0 darwin-x64 node-v12.14.1
-=======
-<<<<<<< HEAD
-@relate/cli/1.0.0 linux-x64 node-v12.16.1
-=======
-@relate/cli/1.0.0 darwin-x64 node-v12.14.1
->>>>>>> Added unix style bin scripts
->>>>>>> Added unix style bin scripts
-=======
-@relate/cli/1.0.0 darwin-x64 node-v12.14.1
->>>>>>> Fixes from GRAND extension testing
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
