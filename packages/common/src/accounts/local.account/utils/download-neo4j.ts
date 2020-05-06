@@ -22,6 +22,8 @@ export const getCheckSum = async (url: string): Promise<string> => {
     }
 };
 
+// @todo: this still needs a test in future as I couldn't figure out the tests just yet.
+// https://dev.to/cdanielsen/testing-streams-a-primer-3n6e has some interesting points to start with.
 export const pipeline = async (url: string, outputPath: string): Promise<void> => {
     const streamPipeline = promisify(stream.pipeline);
 
