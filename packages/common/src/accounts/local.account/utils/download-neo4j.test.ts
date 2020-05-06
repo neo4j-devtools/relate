@@ -1,6 +1,7 @@
 import fse from 'fs-extra';
 import path from 'path';
 import nock from 'nock';
+import hasha from 'hasha';
 import * as uuid from 'uuid';
 
 import * as downloadNeo4j from './download-neo4j';
@@ -9,7 +10,7 @@ import * as extractNeo4j from './extract-neo4j';
 
 import {envPaths} from '../../../utils';
 import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_ARCHIVE_FILE_SUFFIX, NEO4J_SHA_ALGORITHM} from '../../account.constants';
-import {NotFoundError, FetchError} from '../../../errors';
+import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
 
 jest.mock('uuid');
 
@@ -17,6 +18,7 @@ const TEST_VERSION = '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
 const TMP_NEO4J_DIST_PATH = path.join(envPaths().tmp, 'neo4j_dist');
 const TMP_UUID = 'tmp_uuid';
+const TMP_FILE_CONTENTS = 'test file contents';
 const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, TMP_UUID);
 const EXPECTED_HASH_VALUE = 'test_hash1234';
 const ARCHIVE_PATH = path.join(
@@ -33,10 +35,9 @@ const DBMS_VERSION = {
 describe('Download Neo4j (to local cache)', () => {
     beforeEach(() => fse.ensureDir(TMP_NEO4J_DIST_PATH));
 
-    afterEach(() => {
-        jest.restoreAllMocks();
-        fse.remove(TMP_NEO4J_DIST_PATH);
-    });
+    afterEach(() => jest.restoreAllMocks());
+
+    afterAll(() => fse.remove(TMP_NEO4J_DIST_PATH));
 
     test('downloadNeo4j: successfuly download and extract neo4j', async () => {
         // setup spies
@@ -111,5 +112,22 @@ describe('Download Neo4j (to local cache)', () => {
         await expect(downloadNeo4j.getCheckSum(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`)).rejects.toThrow(
             new FetchError('RequestError: something bad happened'),
         );
+    });
+
+    describe('verifyHash', () => {
+        beforeAll(() => fse.writeFile(TMP_PATH, TMP_FILE_CONTENTS));
+
+        afterAll(() => fse.remove(TMP_PATH));
+
+        test('hash match', async () => {
+            const hash = await hasha.fromFile(TMP_PATH, {algorithm: NEO4J_SHA_ALGORITHM});
+            expect(await downloadNeo4j.verifyHash(hash!, TMP_PATH)).toBe(hash);
+        });
+
+        test('hash mismatch', async () => {
+            await expect(downloadNeo4j.verifyHash(EXPECTED_HASH_VALUE, TMP_PATH)).rejects.toThrow(
+                new IntegrityError('Expected hash mismatch'),
+            );
+        });
     });
 });

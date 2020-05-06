@@ -5,8 +5,10 @@ import {AccountConfigModel} from '../../models';
 import {TestDbmss} from '../account.utils';
 import {envPaths} from '../../utils';
 import {getDistributionInfo} from './utils';
-import {InvalidArgumentError, NotSupportedError} from '../../errors';
+import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import {LocalAccount} from './local.account';
+import * as downloadNeo4j from './utils/download-neo4j';
+import * as dbmsVersions from './utils/dbms-versions';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const DATA_HOME = envPaths().data;
@@ -32,6 +34,8 @@ describe('LocalAccount - install', () => {
     });
 
     afterAll(() => dbmss.teardown());
+
+    afterEach(() => jest.restoreAllMocks());
 
     test('with no version', async () => {
         await expect(account.installDbms(dbmss.createName(), 'password', '')).rejects.toThrow(
@@ -85,9 +89,31 @@ describe('LocalAccount - install', () => {
         );
     });
 
-    test.skip('with valid, non cached version (semver)', async () => {
-        await expect(account.installDbms(dbmss.createName(), 'password', '5.0')).rejects.toThrow(
-            new NotSupportedError('version doesnt exist, so will attempt to download and install'),
+    test('with valid, non cached version (semver)', async () => {
+        // initially mock appearance of no downloaded neo4j dists
+        const discoverNeo4jDistributionsSpy = jest
+            .spyOn(dbmsVersions, 'discoverNeo4jDistributions')
+            .mockImplementationOnce(() => Promise.resolve([]));
+        jest.spyOn(downloadNeo4j, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
+
+        const dbmsId = await account.installDbms(dbmss.createName(), 'password', TEST_NEO4J_VERSION);
+
+        expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
+
+        const message = await account.statusDbmss([dbmsId]);
+        expect(message[0]).toContain('Neo4j is not running');
+
+        const info = await getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
+        expect(info?.version).toEqual(TEST_NEO4J_VERSION);
+    });
+
+    test('with invalid, non cached version (semver)', async () => {
+        const message = `Unable to find the requested version: ${TEST_NEO4J_VERSION} online`;
+        jest.spyOn(dbmsVersions, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve([]));
+        jest.spyOn(downloadNeo4j, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
+
+        await expect(account.installDbms(dbmss.createName(), 'password', TEST_NEO4J_VERSION)).rejects.toThrow(
+            new NotFoundError(message),
         );
     });
 

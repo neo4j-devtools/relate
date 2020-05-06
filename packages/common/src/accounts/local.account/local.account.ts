@@ -41,11 +41,11 @@ import {
     neo4jCmd,
     neo4jAdminCmd,
     fetchNeo4jVersions,
-    discoverNeo4jDistributions,
     generatePluginCerts,
-    downloadNeo4j,
     extractFromArchive,
 } from './utils';
+import {discoverNeo4jDistributions} from './utils/dbms-versions';
+import {downloadNeo4j} from './utils/download-neo4j';
 
 export class LocalAccount extends AccountAbstract {
     private dbmss: {[id: string]: IDbms} = {};
