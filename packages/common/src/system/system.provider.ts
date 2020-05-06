@@ -8,6 +8,7 @@ import {
     DEFAULT_ACCOUNT_NAME,
     JSON_FILE_EXTENSION,
     JWT_INSTANCE_TOKEN_SALT,
+    DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
     TWENTY_FOUR_HOURS_SECONDS,
 } from '../constants';
@@ -22,6 +23,7 @@ export class SystemProvider implements OnModuleInit {
     protected readonly dirPaths = {
         ...envPaths(),
         accounts: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
+        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
     };
 
     protected readonly filePaths = {
@@ -36,7 +38,9 @@ export class SystemProvider implements OnModuleInit {
         await this.discoverAccounts();
     }
 
-    getAccount(uuid: string | undefined): AccountAbstract {
+    async getAccount(uuid?: string): Promise<AccountAbstract> {
+        await this.discoverAccounts();
+
         const account = this.allAccounts.get(uuid ? uuid : DEFAULT_ACCOUNT_NAME);
 
         if (!account) {
@@ -55,6 +59,16 @@ export class SystemProvider implements OnModuleInit {
         await registerSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
+    }
+
+    async getAccessToken(accountId: string, dbmsId: string, dbmsUser: string): Promise<string> {
+        const token = await getSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser);
+
+        if (!token) {
+            throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);
+        }
+
+        return token;
     }
 
     async initInstallation(): Promise<void> {
@@ -83,16 +97,6 @@ export class SystemProvider implements OnModuleInit {
 
         await fse.writeJSON(defaultAccountPath, config, {spaces: 2});
         this.allAccounts.set(DEFAULT_ACCOUNT_NAME, defaultAccount);
-    }
-
-    async getAccessToken(accountId: string, dbmsId: string, dbmsUser: string): Promise<string> {
-        const token = await getSystemAccessToken(this.filePaths.knownConnections, accountId, dbmsId, dbmsUser);
-
-        if (!token) {
-            throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);
-        }
-
-        return token;
     }
 
     private async discoverAccounts(): Promise<void> {

@@ -16,11 +16,11 @@ export class LaunchModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    onApplicationBootstrap(): Promise<any> {
+    async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
         const {appId} = args;
         const {account: accountId, principal, dbmsId, host} = flags;
-        const account = this.systemProvider.getAccount(accountId);
+        const account = await this.systemProvider.getAccount(accountId);
 
         if (!appId || !principal || !dbmsId) {
             // @todo: figure this out in combination with TTY

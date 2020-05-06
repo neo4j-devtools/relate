@@ -5,10 +5,10 @@ const path = require('path');
 const NODE_PATH = path.join(__dirname, '../node_modules');
 
 childProcess.fork(
-   path.join(__dirname, './run.js'),
-   process.argv.slice(2),
-   {
-       stdio: 'inherit',
-       env: {NODE_PATH}
-   }
+    path.join(__dirname, '../dist/dev.js'),
+    process.argv.slice(2),
+    {
+        stdio: 'inherit',
+        env: {NODE_PATH}
+    }
 )

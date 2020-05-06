@@ -392,9 +392,13 @@ export class LocalAccount extends AccountAbstract {
 
         await Promise.all(
             _.map(fileNames, async (fileName) => {
-                const fileStats = await fse.stat(path.join(root, fileName));
-                if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
+                const fullPath = path.join(root, fileName);
+                const confPath = path.join(fullPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
+                const hasConf = await fse.pathExists(confPath);
+
+                if (hasConf && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
+                    const config = await PropertiesFile.readFile(confPath);
                     const defaultValues = {
                         description: '',
                         name: '',
@@ -404,6 +408,7 @@ export class LocalAccount extends AccountAbstract {
                         // @todo: change this in extensions PR
                         connectionUri: 'neo4j://127.0.0.1:7687',
                         id,
+                        config,
                     });
                 }
             }),

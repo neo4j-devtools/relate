@@ -22,7 +22,7 @@ export class InstallModule implements OnApplicationBootstrap {
         const {name} = args;
         const {account: accountId, credentials} = flags;
         let {version} = flags;
-        const account = this.systemProvider.getAccount(accountId);
+        const account = await this.systemProvider.getAccount(accountId);
 
         if (!name || !credentials || !version) {
             // @todo: figure this out in combination with TTY

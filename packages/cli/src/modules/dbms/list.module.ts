@@ -17,9 +17,9 @@ export class ListModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    onApplicationBootstrap(): Promise<void> {
+    async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = this.systemProvider.getAccount(flags.account);
+        const account = await this.systemProvider.getAccount(flags.account);
 
         return account.listDbmss().then((dbmss) => {
             cli.table(

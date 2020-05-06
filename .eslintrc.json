@@ -25,6 +25,18 @@
             }
         },
         {
+            "files": ["**/*.ts"],
+            "rules": {
+                "@typescript-eslint/no-use-before-define": [
+                    "error",
+                    {
+                        "classes": false,
+                        "functions": false
+                    }
+                ]
+            }
+        },
+        {
             "files": ["packages/**/graphql.schema.ts"],
             "rules": {
                 "@typescript-eslint/interface-name-prefix": "off",
@@ -168,8 +180,8 @@
         "no-use-before-define": [
             "error",
             {
-                "classes": true,
-                "functions": true
+                "classes": false,
+                "functions": false
             }
         ],
         "no-useless-call": "error",

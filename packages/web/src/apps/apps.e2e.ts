@@ -98,7 +98,7 @@ describe('AppsModule', () => {
             .expect((res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
                 const {token, path} = createAppLaunchToken;
-                const expectedPath = createAppLaunchUrl('/apps', appId, token);
+                const expectedPath = createAppLaunchUrl('/static', appId, token);
 
                 expect(token).toEqual(expect.stringMatching(JWT_REGEX));
                 expect(path).toEqual(expectedPath);

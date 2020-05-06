@@ -5,7 +5,11 @@ import {readPropertiesFile, writePropertiesFile} from '../../utils';
 import {IPropertiesFile, INeo4jConfigDefaults, NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
 
 export class PropertiesFile implements IPropertiesFile {
-    constructor(public config: Map<string, string>, public path: string, private defaults: INeo4jConfigDefaults) {}
+    constructor(
+        public config: Map<string, string>,
+        public path: string,
+        private defaults: INeo4jConfigDefaults = NEO4J_CONFIG_DEFAULTS,
+    ) {}
 
     public static async readFile(path: string) {
         const config = await readPropertiesFile(path);
