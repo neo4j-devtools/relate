@@ -17,15 +17,15 @@ export class Dbms {
 }
 
 @ArgsType()
-export class AccountArgs {
+export class EnvironmentArgs {
     @Field(() => String, {nullable: true})
-    accountId?: string;
+    environmentId?: string;
 }
 
 @ArgsType()
 export class DbmssArgs {
     @Field(() => String, {nullable: true})
-    accountId?: string;
+    environmentId?: string;
 
     @Field(() => [String])
     dbmsIds: string[];
@@ -34,7 +34,7 @@ export class DbmssArgs {
 @ArgsType()
 export class InstallDbmsArgs {
     @Field(() => String)
-    accountId: string;
+    environmentId: string;
 
     @Field(() => String)
     name: string;
@@ -49,7 +49,7 @@ export class InstallDbmsArgs {
 @ArgsType()
 export class UninstallDbmsArgs {
     @Field(() => String)
-    accountId: string;
+    environmentId: string;
 
     @Field(() => String)
     name: string;
@@ -58,7 +58,7 @@ export class UninstallDbmsArgs {
 @ArgsType()
 export class CreateAccessTokenArgs {
     @Field(() => String, {nullable: true})
-    accountId?: string;
+    environmentId?: string;
 
     @Field(() => String)
     dbmsId: string;

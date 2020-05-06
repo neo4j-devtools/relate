@@ -2,53 +2,60 @@ import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
 
 import {SystemProvider, IDbms} from '@relate/common';
-import {Dbms, AccountArgs, DbmssArgs, CreateAccessTokenArgs, InstallDbmsArgs, UninstallDbmsArgs} from './dbms.types';
+import {
+    Dbms,
+    EnvironmentArgs,
+    DbmssArgs,
+    CreateAccessTokenArgs,
+    InstallDbmsArgs,
+    UninstallDbmsArgs,
+} from './dbms.types';
 
 @Resolver(() => String)
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Mutation(() => String)
-    async installDbms(@Args() {accountId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
-        const account = await this.systemProvider.getAccount(accountId);
-        return account.installDbms(name, credentials, version);
+    async installDbms(@Args() {environmentId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.installDbms(name, credentials, version);
     }
 
     @Mutation(() => String)
-    async uninstallDbms(@Args() {accountId, name}: UninstallDbmsArgs): Promise<string> {
-        const account = await this.systemProvider.getAccount(accountId);
+    async uninstallDbms(@Args() {environmentId, name}: UninstallDbmsArgs): Promise<string> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return account.uninstallDbms(name).then(() => name);
+        return environment.uninstallDbms(name).then(() => name);
     }
 
     @Query(() => [Dbms])
-    async listDbmss(@Args() {accountId}: AccountArgs): Promise<IDbms[]> {
-        const account = await this.systemProvider.getAccount(accountId);
-        return account.listDbmss();
+    async listDbmss(@Args() {environmentId}: EnvironmentArgs): Promise<IDbms[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.listDbmss();
     }
 
     @Query(() => [String])
-    async statusDbmss(@Args() {accountId, dbmsIds}: DbmssArgs): Promise<string[]> {
-        const account = await this.systemProvider.getAccount(accountId);
-        return account.statusDbmss(dbmsIds);
+    async statusDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.statusDbmss(dbmsIds);
     }
 
     @Mutation(() => [String])
-    async startDbmss(@Args() {accountId, dbmsIds}: DbmssArgs): Promise<string[]> {
-        const account = await this.systemProvider.getAccount(accountId);
-        return account.startDbmss(dbmsIds);
+    async startDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.startDbmss(dbmsIds);
     }
 
     @Mutation(() => [String])
-    async stopDbmss(@Args() {accountId, dbmsIds}: DbmssArgs): Promise<string[]> {
-        const account = await this.systemProvider.getAccount(accountId);
-        return account.stopDbmss(dbmsIds);
+    async stopDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.stopDbmss(dbmsIds);
     }
 
     @Mutation(() => String)
-    async createAccessToken(@Args() {accountId, dbmsId, appId, authToken}: CreateAccessTokenArgs): Promise<string> {
-        const account = await this.systemProvider.getAccount(accountId);
+    async createAccessToken(@Args() {environmentId, dbmsId, appId, authToken}: CreateAccessTokenArgs): Promise<string> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return account.createAccessToken(appId, dbmsId, authToken);
+        return environment.createAccessToken(appId, dbmsId, authToken);
     }
 }

@@ -6,13 +6,13 @@ import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 
 import {FetchError, InvalidConfigError, NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion, AccountConfigModel} from '../models/account-config.model';
-import {AccountAbstract} from './account.abstract';
+import {IDbms, IDbmsVersion, EnvironmentConfigModel} from '../models/environment-config.model';
+import {EnvironmentAbstract} from './environment.abstract';
 
-export class RemoteAccount extends AccountAbstract {
+export class RemoteEnvironment extends EnvironmentAbstract {
     private client: ApolloLink;
 
-    constructor(protected config: AccountConfigModel) {
+    constructor(protected config: EnvironmentConfigModel) {
         super(config);
 
         this.client = new HttpLink({
@@ -26,7 +26,7 @@ export class RemoteAccount extends AccountAbstract {
 
     private graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
         if (!this.config.relateURL) {
-            throw new InvalidConfigError('Remote Accounts must specify a `relateURL`');
+            throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
         }
 
         try {
@@ -37,25 +37,25 @@ export class RemoteAccount extends AccountAbstract {
     }
 
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
-        throw new NotAllowedError(`${RemoteAccount.name} does not support updating DBMS configs`);
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support updating DBMS configs`);
     }
 
     listDbmsVersions(): Promise<IDbmsVersion[]> {
-        throw new NotAllowedError(`${RemoteAccount.name} does not support listing DBMS versions`);
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support listing DBMS versions`);
     }
 
     installDbms(_name: string, _credentials: string, _version: string): Promise<string> {
-        throw new NotAllowedError(`${RemoteAccount.name} does not support installing a DBMS`);
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support installing a DBMS`);
     }
 
     uninstallDbms(_name: string): Promise<void> {
-        throw new NotAllowedError(`${RemoteAccount.name} does not support uninstalling a DBMS`);
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support uninstalling a DBMS`);
     }
 
     async getDbms(nameOrId: string): Promise<IDbms> {
         const {data}: any = await this.graphql({
-            query: gql`query GetDbms ($accountId: String!, nameOrId: String!) {
-                getDbms(accountId: $accountId, nameOrId: $nameOrId) {
+            query: gql`query GetDbms ($environmentId: String!, nameOrId: String!) {
+                getDbms(environmentId: $environmentId, nameOrId: $nameOrId) {
                     id,
                     name,
                     description,
@@ -63,7 +63,7 @@ export class RemoteAccount extends AccountAbstract {
                 }
             }`,
             variables: {
-                accountId: this.config.relateAccount,
+                environmentId: this.config.relateEnvironment,
                 nameOrId,
             },
         });
@@ -74,8 +74,8 @@ export class RemoteAccount extends AccountAbstract {
     async listDbmss(): Promise<IDbms[]> {
         const {data}: any = await this.graphql({
             query: gql`
-                query ListDbmss($accountId: String!) {
-                    listDbmss(accountId: $accountId) {
+                query ListDbmss($environmentId: String!) {
+                    listDbmss(environmentId: $environmentId) {
                         id
                         name
                         description
@@ -83,7 +83,7 @@ export class RemoteAccount extends AccountAbstract {
                     }
                 }
             `,
-            variables: {accountId: this.config.relateAccount},
+            variables: {environmentId: this.config.relateEnvironment},
         });
 
         return data.listDbmss;
@@ -92,12 +92,12 @@ export class RemoteAccount extends AccountAbstract {
     async startDbmss(namesOrIds: string[]): Promise<string[]> {
         const {data}: any = await this.graphql({
             query: gql`
-                mutation StartDBMSSs($accountId: String!, $namesOrIds: [String!]!) {
-                    startDbmss(accountId: $accountId, dbmsIds: $namesOrIds)
+                mutation StartDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
+                    startDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
-                accountId: this.config.relateAccount,
+                environmentId: this.config.relateEnvironment,
                 namesOrIds,
             },
         });
@@ -108,12 +108,12 @@ export class RemoteAccount extends AccountAbstract {
     async stopDbmss(namesOrIds: string[]): Promise<string[]> {
         const {data}: any = await this.graphql({
             query: gql`
-                mutation StopDBMSSs($accountId: String!, $namesOrIds: [String!]!) {
-                    stopDbmss(accountId: $accountId, dbmsIds: $namesOrIds)
+                mutation StopDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
+                    stopDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
-                accountId: this.config.relateAccount,
+                environmentId: this.config.relateEnvironment,
                 namesOrIds,
             },
         });
@@ -124,12 +124,12 @@ export class RemoteAccount extends AccountAbstract {
     async statusDbmss(namesOrIds: string[]): Promise<string[]> {
         const {data}: any = await this.graphql({
             query: gql`
-                query StatusDBMSSs($accountId: String!, $namesOrIds: [String!]!) {
-                    statusDbmss(accountId: $accountId, dbmsIds: $namesOrIds)
+                query StatusDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
+                    statusDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
-                accountId: this.config.relateAccount,
+                environmentId: this.config.relateEnvironment,
                 namesOrIds,
             },
         });
@@ -141,16 +141,21 @@ export class RemoteAccount extends AccountAbstract {
         const {data}: any = await this.graphql({
             query: gql`
                 mutation AccessDBMS(
-                    $accountId: String!
+                    $environmentId: String!
                     $dbmsName: String!
                     $authToken: AuthTokenInput!
                     $appId: String!
                 ) {
-                    createAccessToken(accountId: $accountId, dbmsId: $dbmsName, appId: $appId, authToken: $authToken)
+                    createAccessToken(
+                        environmentId: $environmentId
+                        dbmsId: $dbmsName
+                        appId: $appId
+                        authToken: $authToken
+                    )
                 }
             `,
             variables: {
-                accountId: this.config.relateAccount,
+                environmentId: this.config.relateEnvironment,
                 appId,
                 dbmsId,
                 authToken,

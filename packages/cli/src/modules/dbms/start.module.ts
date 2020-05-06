@@ -19,12 +19,12 @@ export class StartModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                const dbmss = await account.listDbmss();
+                const dbmss = await environment.listDbmss();
 
                 const {selectedDbms} = await prompt({
                     choices: dbmss.map((dbms) => ({
@@ -42,7 +42,7 @@ export class StartModule implements OnApplicationBootstrap {
             }
         }
 
-        return account.startDbmss(dbmsIds).then((res) => {
+        return environment.startDbmss(dbmsIds).then((res) => {
             this.utils.log(...res);
         });
     }

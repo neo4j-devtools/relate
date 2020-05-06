@@ -14,14 +14,14 @@ const TEST_ACCESS_TOKEN =
 const CREATE_APP_LAUNCH_TOKEN = {
     query: `
         mutation CreateAppLaunchToken(
-            $accountId: String!,
+            $environmentId: String!,
             $dbmsId: String!,
             $appId: String!,
             $principal: String!,
             $accessToken: String!
         ) {
             createAppLaunchToken(
-                accountId: $accountId,
+                environmentId: $environmentId,
                 dbmsId: $dbmsId,
                 appId: $appId,
                 principal: $principal,
@@ -34,7 +34,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
     `,
     variables: {
         accessToken: TEST_ACCESS_TOKEN,
-        accountId: 'test',
+        environmentId: 'test',
         appId: 'baz',
         principal: 'bam',
         // dbmsId: 'bar', // added in test
@@ -45,7 +45,7 @@ const APP_LAUNCH_DATA = {
     query: `
         query appLaunchData($appId: String!, $launchToken: String!) {
             appLaunchData(appId: $appId, launchToken: $launchToken) {
-                accountId
+                environmentId
                 appId
                 dbms {
                     id
@@ -106,10 +106,10 @@ describe('AppsModule', () => {
     });
 
     test('/graphql appLaunchData', async () => {
-        const {accountId, appId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
+        const {environmentId, appId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
         const systemProvider = app.get(SystemProvider);
         const launchToken = await systemProvider.createAppLaunchToken(
-            accountId,
+            environmentId,
             appId,
             TEST_DB_ID,
             principal,
@@ -131,7 +131,7 @@ describe('AppsModule', () => {
 
                 expect(appLaunchData).toEqual({
                     accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
-                    accountId: CREATE_APP_LAUNCH_TOKEN.variables.accountId,
+                    environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
                     appId: CREATE_APP_LAUNCH_TOKEN.variables.appId,
                     dbms: {
                         id: TEST_DB_ID,

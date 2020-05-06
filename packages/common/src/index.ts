@@ -4,4 +4,4 @@ export * from './errors';
 export * from './utils';
 export * from './constants';
 export {IAuthToken} from 'tapestry';
-export {TestDbmss} from './accounts';
+export {TestDbmss} from './environments';

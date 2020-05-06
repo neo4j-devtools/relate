@@ -1,85 +1,84 @@
-`relate account`
-==================
+# `relate environment`
 
 Wrapper that defines how to interact with DBMSs.
 
-* [`relate account`](#relate-account)
-* [`relate account:add NAME PATH`](#relate-accountadd-name-path)
-* [`relate account:current`](#relate-accountcurrent)
-* [`relate account:edit-config IDENTIFIER`](#relate-accountedit-config-identifier)
-* [`relate account:list`](#relate-accountlist)
-* [`relate account:remove [IDENTIFIERS...]`](#relate-accountremove-identifiers)
-* [`relate account:use IDENTIFIER`](#relate-accountuse-identifier)
+-   [`relate environment`](#relate-environment)
+-   [`relate environment:add NAME PATH`](#relate-environmentadd-name-path)
+-   [`relate environment:current`](#relate-environmentcurrent)
+-   [`relate environment:edit-config IDENTIFIER`](#relate-environmentedit-config-identifier)
+-   [`relate environment:list`](#relate-environmentlist)
+-   [`relate environment:remove [IDENTIFIERS...]`](#relate-environmentremove-identifiers)
+-   [`relate environment:use IDENTIFIER`](#relate-environmentuse-identifier)
 
-## `relate account`
+## `relate environment`
 
 Wrapper that defines how to interact with DBMSs.
 
 ```
 USAGE
-  $ relate account
+  $ relate environment
 ```
 
-_See code: [dist/commands/account/index.ts](dist/commands/account/index.ts)_
+_See code: [dist/commands/environment/index.ts](dist/commands/environment/index.ts)_
 
-## `relate account:add NAME PATH`
+## `relate environment:add NAME PATH`
 
-Add an account called NAME for the configuration at PATH.
+Add an environment called NAME for the configuration at PATH.
 
 ```
 USAGE
-  $ relate account:add NAME PATH
+  $ relate environment:add NAME PATH
 
 ARGUMENTS
   NAME
-  PATH  Path or URL to the configuration file for the account.
+  PATH  Path or URL to the configuration file for the environment.
 
 OPTIONS
   -h, --help  show CLI help
 
 EXAMPLES
-  $ deadalus account:add LocalAccount ./path/to/account.conf
-  $ deadalus account:add SSHAccount https://myhosted.account.conf
+  $ deadalus environment:add LocalEnvironment ./path/to/environment.conf
+  $ deadalus environment:add SSHEnvironment https://myhosted.environment.conf
 ```
 
-_See code: [dist/commands/account/add.ts](dist/commands/account/add.ts)_
+_See code: [dist/commands/environment/add.ts](dist/commands/environment/add.ts)_
 
-## `relate account:current`
+## `relate environment:current`
 
-Return information about the selected account.
+Return information about the selected environment.
 
 ```
 USAGE
-  $ relate account:current
+  $ relate environment:current
 
 OPTIONS
   -f, --format=format  Specify in which format to log the information.
   -j, --json           Log the information in JSON output.
 ```
 
-_See code: [dist/commands/account/current.ts](dist/commands/account/current.ts)_
+_See code: [dist/commands/environment/current.ts](dist/commands/environment/current.ts)_
 
-## `relate account:edit-config IDENTIFIER`
+## `relate environment:edit-config IDENTIFIER`
 
-Open the configuration of the specified account in the default editor.
+Open the configuration of the specified environment in the default editor.
 
 ```
 USAGE
-  $ relate account:edit-config IDENTIFIER
+  $ relate environment:edit-config IDENTIFIER
 
 ARGUMENTS
   IDENTIFIER  Can be a name or ID.
 ```
 
-_See code: [dist/commands/account/edit-config.ts](dist/commands/account/edit-config.ts)_
+_See code: [dist/commands/environment/edit-config.ts](dist/commands/environment/edit-config.ts)_
 
-## `relate account:list`
+## `relate environment:list`
 
-List saved accounts.
+List saved environments.
 
 ```
 USAGE
-  $ relate account:list
+  $ relate environment:list
 
 OPTIONS
   -f, --format=format  Specify in which format to log the information.
@@ -90,15 +89,15 @@ ALIASES
   $ relate ls
 ```
 
-_See code: [dist/commands/account/list.ts](dist/commands/account/list.ts)_
+_See code: [dist/commands/environment/list.ts](dist/commands/environment/list.ts)_
 
-## `relate account:remove [IDENTIFIERS...]`
+## `relate environment:remove [IDENTIFIERS...]`
 
-Remove one or more accounts.
+Remove one or more environments.
 
 ```
 USAGE
-  $ relate account:remove [IDENTIFIERS...]
+  $ relate environment:remove [IDENTIFIERS...]
 
 ARGUMENTS
   IDENTIFIERS...  Identifiers can be names or IDs. If omitted they will be retrieved via STDIN
@@ -107,23 +106,23 @@ ALIASES
   $ relate rm
 
 EXAMPLES
-  relate account:remove 4e3efc84
-  relate account:list --ids | relate account:remove # remove all account
-  relate account:list | fzf | awk '{print $2}' | relate account:remove # fuzzy search by name and delete
+  relate environment:remove 4e3efc84
+  relate environment:list --ids | relate environment:remove # remove all environment
+  relate environment:list | fzf | awk '{print $2}' | relate environment:remove # fuzzy search by name and delete
 ```
 
-_See code: [dist/commands/account/remove.ts](dist/commands/account/remove.ts)_
+_See code: [dist/commands/environment/remove.ts](dist/commands/environment/remove.ts)_
 
-## `relate account:use IDENTIFIER`
+## `relate environment:use IDENTIFIER`
 
-Set the account in use for the current session.
+Set the environment in use for the current session.
 
 ```
 USAGE
-  $ relate account:use IDENTIFIER
+  $ relate environment:use IDENTIFIER
 
 ARGUMENTS
   IDENTIFIER  Can be a name or ID.
 ```
 
-_See code: [dist/commands/account/use.ts](dist/commands/account/use.ts)_
+_See code: [dist/commands/environment/use.ts](dist/commands/environment/use.ts)_

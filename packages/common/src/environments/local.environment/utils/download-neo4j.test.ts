@@ -9,7 +9,7 @@ import * as dbmsVersions from './dbms-versions';
 import * as extractNeo4j from './extract-neo4j';
 
 import {envPaths} from '../../../utils';
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_ARCHIVE_FILE_SUFFIX, NEO4J_SHA_ALGORITHM} from '../../account.constants';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_ARCHIVE_FILE_SUFFIX, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
 
 jest.mock('uuid');

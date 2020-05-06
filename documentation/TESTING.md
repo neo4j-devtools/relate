@@ -25,7 +25,7 @@ let dbmss: TestDbmss;
 let uniqueDbmsName: string;
 
 beforeAll(async () => {
-    // If you want to use a specific account you can specify it as
+    // If you want to use a specific environment you can specify it as
     // the second argument.
     dbmss = new TestDbmss(__filename);
     uniqueDbmsName = await dbmss.createDbms();

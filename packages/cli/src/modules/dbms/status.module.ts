@@ -19,8 +19,8 @@ export class StatusModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
-        const dbmss = await account.listDbmss();
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
+        const dbmss = await environment.listDbmss();
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
@@ -32,7 +32,7 @@ export class StatusModule implements OnApplicationBootstrap {
             }
         }
 
-        return account.statusDbmss(dbmsIds).then((res: string[]) => {
+        return environment.statusDbmss(dbmsIds).then((res: string[]) => {
             const table = res.map((status, index) => {
                 const dbms = dbmss.find((d) => d.id === dbmsIds[index]) || {
                     id: '',

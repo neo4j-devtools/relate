@@ -9,7 +9,7 @@ type Backup {
 type DBMS {
     # Neo4j 4.X
     id: String!
-    account: Account!
+    environment: Environment!
     dbs: [DB]!
     # metrics et al.
 }
@@ -45,14 +45,14 @@ input Config {
     # and many more...
 }
 
-type Account {
+type Environment {
     id: String!
     userId: String! # and more
     # $ relate dbms:list
-    # account.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
+    # environment.listDBMSs(filters?: Filter[]): Promise<DBMS[]>
     dbmss(filters: [Filter]): [DBMS]!
     # $ relate dbms:use <nameOrId>
-    # account.useDBMS(nameOrId: string): Promise<DBMS>
+    # environment.useDBMS(nameOrId: string): Promise<DBMS>
     dbms(nameOrId: String): DBMS! # default "default"
     projects(filters: [Filter]): [Project]!
 }
@@ -60,7 +60,7 @@ type Account {
 type Project {
     id: string!
     name: String!
-    account: Account!
+    environment: Environment!
     dbs: [DB]!
     # more to come ...
 }
@@ -72,70 +72,70 @@ type Status {
 }
 
 type Query {
-    # $ relate account:list
-    # relate.listAccounts(filters?: Filter[]): Promise<Account[]>
-    accounts(filters: [Filter]): [Account]!
-    # $ relate account:use <nameOrId>
-    # relate.useAccount(nameOrId: string): Promise<Account>
-    account(nameOrId: String): Account! # default "local"
+    # $ relate environment:list
+    # relate.listEnvironments(filters?: Filter[]): Promise<Environment[]>
+    environments(filters: [Filter]): [Environment]!
+    # $ relate environment:use <nameOrId>
+    # relate.useEnvironment(nameOrId: string): Promise<Environment>
+    environment(nameOrId: String): Environment! # default "local"
     status: Status!
 }
 
 type Mutation {
-    # $ relate account:add <name> <configPathOrURL?>
-    # relate.addAccount(name: string, config: Partial<Config>): Promise<Account>
-    addAccount(name: String!, config: Config): Account!
-    # $ relate account:edit <nameOrId> <configPathOrURL?>
-    # relate.updateAccount(nameOrId: string, config: Partial<Config>): Promise<Account>
-    editAccount(nameOrId: String!, config: Config): Account!
-    # $ relate account:remove <nameOrId>
-    # relate.removeAccount(nameOrId: string): Promise<Account>
-    removeAccount(nameOrId: String!): Account!
+    # $ relate environment:add <name> <configPathOrURL?>
+    # relate.addEnvironment(name: string, config: Partial<Config>): Promise<Environment>
+    addEnvironment(name: String!, config: Config): Environment!
+    # $ relate environment:edit <nameOrId> <configPathOrURL?>
+    # relate.updateEnvironment(nameOrId: string, config: Partial<Config>): Promise<Environment>
+    editEnvironment(nameOrId: String!, config: Config): Environment!
+    # $ relate environment:remove <nameOrId>
+    # relate.removeEnvironment(nameOrId: string): Promise<Environment>
+    removeEnvironment(nameOrId: String!): Environment!
 
     # $ relate dbms:install <dbms> [--version=<versionPathOrURL>]
-    # account.installDbms(name: string, version: string): Promise<DBMS>
-    installDbms(accountNameOrId: String!, name: String!, credentials: String!, version: String): DBMS!
+    # environment.installDbms(name: string, version: string): Promise<DBMS>
+    installDbms(environmentNameOrId: String!, name: String!, credentials: String!, version: String): DBMS!
     # $ relate dbms:start <dbms> [<dbms...>]
-    # account.startDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
-    startDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # environment.startDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    startDbmss(environmentNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:stop <dbms> [<dbms...>]
-    # account.stopDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
-    stopDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # environment.stopDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    stopDbmss(environmentNameOrId: String!, nameOrId: [String!]!): [DBMS]!
     # $ relate dbms:upgrade <dbms> [<dbms...>] [--source=<versionPathOrURL>]
-    # account.upgradeDbmss(nameOrId: [string, ...string], source?: string): Promise<DBMS[]>
-    upgradeDbmss(accountNameOrId: String!, nameOrId: [String!]!, source: String): [DBMS]!
+    # environment.upgradeDbmss(nameOrId: [string, ...string], source?: string): Promise<DBMS[]>
+    upgradeDbmss(environmentNameOrId: String!, nameOrId: [String!]!, source: String): [DBMS]!
     # $ relate dbms:delete <dbms> [<dbms...>]
-    # account.deleteDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
-    deleteDbmss(accountNameOrId: String!, nameOrId: [String!]!): [DBMS]!
+    # environment.deleteDbmss(nameOrId: [string, ...string]): Promise<DBMS[]>
+    deleteDbmss(environmentNameOrId: String!, nameOrId: [String!]!): [DBMS]!
 
     # $ relate db:create <db>
-    # account.createDb(name: string): Promise<DB>
-    createDb(accountNameOrId: String!, dbmsNameOrId: String!, name: String!): DB!
+    # environment.createDb(name: string): Promise<DB>
+    createDb(environmentNameOrId: String!, dbmsNameOrId: String!, name: String!): DB!
     # $ relate db:start <db> [<db...>]
-    # account.startDbs(nameOrId: [string, ...string]): Promise<DB[]>
-    startDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # environment.startDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    startDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:stop <db> [<db...>]
-    # account.stopDbs(nameOrId: [string, ...string]): Promise<DB[]>
-    stopDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # environment.stopDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    stopDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:truncate <db> [<db...>]
-    # account.truncateDbs(nameOrId: [string, ...string]): Promise<DB[]>
-    truncateDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # environment.truncateDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    truncateDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:clone <db> [<db...>]
-    # account.cloneDbs(nameOrId: [string, ...string]): Promise<DB[]>
-    cloneDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # environment.cloneDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    cloneDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:drop <db> [<db...>]
-    # account.dropDbs(nameOrId: [string, ...string]): Promise<DB[]>
-    dropDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
+    # environment.dropDbs(nameOrId: [string, ...string]): Promise<DB[]>
+    dropDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!): [DB]!
     # $ relate db:backup <db> [<db...>] [--target=<pathOrURL>]
-    # account.backupDbs(nameOrId: [string, ...string], target?: string): Promise<Backup[]>
-    backupDbs(accountNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!, target: String): [Backup]!
+    # environment.backupDbs(nameOrId: [string, ...string], target?: string): Promise<Backup[]>
+    backupDbs(environmentNameOrId: String!, dbmsNameOrId: String!, nameOrId: [String!]!, target: String): [Backup]!
     # $ relate db:restore <db> [<db...>] [--target=<pathOrURL>]
-    # account.restoreDbs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
-    restoreDbs(accountNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
+    # environment.restoreDbs(nameOrId: [string, ...string], sources: [string, ...string]): Promise<Backup[]>
+    restoreDbs(environmentNameOrId: String!, dbmsNameOrId: String!, sources: [String]): [Backup]!
 
-    addProject(accountNameOrId: String!, name: String!): Project!
+    addProject(environmentNameOrId: String!, name: String!): Project!
     editProject(input: ProjectInput): Project!
-    removeProjects(accountNameOrId: String!, nameOrId: [String!]!): [Project]!
+    removeProjects(environmentNameOrId: String!, nameOrId: [String!]!): [Project]!
     mountProject(input: ProjectManageInput): Project!
     addDbToProject(input: ProjectDbInput): Project!
     removeDbFromProject(input: ProjectDbInput): Project!
@@ -143,7 +143,7 @@ type Mutation {
 
 input ProjectInput {
     projectNameOrId: String!
-    accountNameOrId: String
+    environmentNameOrId: String
     name: String
 }
 
@@ -152,12 +152,12 @@ input ProjectInput {
 input ProjectDbInput {
     projectNameOrId: String!
     dbNameOrId: String!
-    projectAccountNameOrId: String
-    dbAccountNameOrId: String
+    projectEnvironmentNameOrId: String
+    dbEnvironmentNameOrId: String
     dbmsNameOrId: String
 }
 
 input ProjectManageInput {
     projectNameOrId: String!
-    accountNameOrId: String
+    environmentNameOrId: String
 }

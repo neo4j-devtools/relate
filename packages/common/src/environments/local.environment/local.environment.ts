@@ -6,8 +6,8 @@ import path from 'path';
 import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {IDbms, AccountConfigModel, IDbmsVersion} from '../../models';
-import {AccountAbstract} from '../account.abstract';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
+import {EnvironmentAbstract} from '../environment.abstract';
 import {PropertiesFile, ensureDirs} from '../../system';
 import {
     AmbiguousTargetError,
@@ -27,13 +27,13 @@ import {
     NEO4J_CONFIG_KEYS,
     NEO4J_EDITION,
     NEO4J_SUPPORTED_VERSION_RANGE,
-    ACCOUNTS_DIR_NAME,
+    ENVIRONMENTS_DIR_NAME,
     NEO4J_JWT_ADDON_NAME,
     NEO4J_JWT_ADDON_VERSION,
     NEO4J_PLUGIN_DIR,
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
-} from '../account.constants';
+} from '../environment.constants';
 import {JSON_FILE_EXTENSION} from '../../constants';
 import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath} from '../../utils';
 import {
@@ -48,7 +48,7 @@ import {
 import {discoverNeo4jDistributions} from './utils/dbms-versions';
 import {downloadNeo4j} from './utils/download-neo4j';
 
-export class LocalAccount extends AccountAbstract {
+export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
 
     private readonly dirPaths = {
@@ -229,7 +229,7 @@ export class LocalAccount extends AccountAbstract {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
-        await this.updateAccountDbmsConfig(dbmsId, {name});
+        await this.updateEnvironmentDbmsConfig(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -272,7 +272,7 @@ export class LocalAccount extends AccountAbstract {
             await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
-        return fse.remove(dbmsDir).then(() => this.deleteAccountDbmsConfig(dbmsId));
+        return fse.remove(dbmsDir).then(() => this.deleteEnvironmentDbmsConfig(dbmsId));
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
@@ -333,51 +333,51 @@ export class LocalAccount extends AccountAbstract {
         await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs'), 'neo4j.log'));
     }
 
-    private async updateAccountDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
-        const accountConfig = JSON.parse(
+    private async updateEnvironmentDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
+        const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
-        accountConfig.dbmss = {
-            ...accountConfig.dbmss,
+        environmentConfig.dbmss = {
+            ...environmentConfig.dbmss,
             [uuid]: {
                 ...update,
                 id: uuid,
             },
         };
         await fse.writeJson(
-            path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
-            accountConfig,
+            path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            environmentConfig,
         );
 
-        this.config = new AccountConfigModel({
+        this.config = new EnvironmentConfigModel({
             ...this.config,
-            dbmss: accountConfig.dbmss,
+            dbmss: environmentConfig.dbmss,
         });
 
         await this.discoverDbmss();
     }
 
-    private async deleteAccountDbmsConfig(uuid: string): Promise<void> {
-        const accountConfig = JSON.parse(
+    private async deleteEnvironmentDbmsConfig(uuid: string): Promise<void> {
+        const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
 
-        accountConfig.dbmss = _.omit(accountConfig.dbmss, uuid);
+        environmentConfig.dbmss = _.omit(environmentConfig.dbmss, uuid);
 
         await fse.writeJson(
-            path.join(this.dirPaths.config, ACCOUNTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
-            accountConfig,
+            path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            environmentConfig,
         );
 
-        this.config = new AccountConfigModel({
+        this.config = new EnvironmentConfigModel({
             ...this.config,
-            dbmss: accountConfig.dbmss,
+            dbmss: environmentConfig.dbmss,
         });
 
         await this.discoverDbmss();

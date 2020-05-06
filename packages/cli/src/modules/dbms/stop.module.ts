@@ -20,12 +20,12 @@ export class StopModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
             if (isTTY()) {
-                const dbmss = await account.listDbmss();
+                const dbmss = await environment.listDbmss();
 
                 const {selectedDbms} = await prompt({
                     choices: dbmss.map((dbms) => ({
@@ -44,6 +44,6 @@ export class StopModule implements OnApplicationBootstrap {
         }
 
         cli.action.start('Stopping Neo4j');
-        return account.stopDbmss(dbmsIds).then(() => cli.action.stop());
+        return environment.stopDbmss(dbmsIds).then(() => cli.action.stop());
     }
 }

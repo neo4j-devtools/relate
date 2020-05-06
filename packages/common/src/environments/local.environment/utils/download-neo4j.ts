@@ -7,7 +7,7 @@ import stream from 'stream';
 import {promisify} from 'util';
 import hasha from 'hasha';
 
-import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../account.constants';
+import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../environment.constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractFromArchive} from './extract-neo4j';
 import {FetchError, IntegrityError, NotFoundError} from '../../../errors';

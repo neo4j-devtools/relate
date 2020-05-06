@@ -30,7 +30,7 @@ describe('$relate app', () => {
     test.stdout()
         .skip()
         .it('logs app launch token', async (ctx) => {
-            await StartCommand.run([TEST_DB_NAME, '--account', TEST_ACCOUNT_ID]);
+            await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
 
             // arbitrary wait for Neo4j to come online
             await new Promise((resolve) => setTimeout(resolve, 25000));
@@ -39,14 +39,14 @@ describe('$relate app', () => {
                 TEST_DB_NAME,
                 '--principal=neo4j',
                 `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
-                `--account=${TEST_ACCOUNT_ID}`,
+                `--environment=${TEST_ACCOUNT_ID}`,
             ]);
 
             await LaunchCommand.run([
                 TEST_APP_ID,
                 `--dbmsId=${TEST_DB_NAME}`,
                 '--principal=neo4j',
-                `--account=${TEST_ACCOUNT_ID}`,
+                `--environment=${TEST_ACCOUNT_ID}`,
             ]);
 
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));

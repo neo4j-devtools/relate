@@ -8,14 +8,16 @@ CLI tool for interacting with the Neo4j platform.
 [![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/daedalus/blob/master/package.json)
 
 <!-- toc -->
-* [@relate/cli](#relatecli)
-* [Usage](#usage)
-* [Command Topics](#command-topics)
-<!-- tocstop -->
+
+-   [@relate/cli](#relatecli)
+-   [Usage](#usage)
+-   [Command Topics](#command-topics)
+    <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @relate/cli
 $ relate COMMAND
@@ -27,15 +29,16 @@ USAGE
   $ relate COMMAND
 ...
 ```
+
 <!-- usagestop -->
 <!-- commands -->
+
 # Command Topics
 
-* [`relate account`](./account.md) - Wrapper that defines how to interact with DBMSs.
-* [`relate autocomplete`](./autocomplete.md) - display autocomplete installation instructions
-* [`relate db`](./db.md)
-* [`relate dbms`](./dbms.md)
-* [`relate help`](./help.md) - display help for relate
-
+-   [`relate environment`](./environment.md) - Wrapper that defines how to interact with DBMSs.
+-   [`relate autocomplete`](./autocomplete.md) - display autocomplete installation instructions
+-   [`relate db`](./db.md)
+-   [`relate dbms`](./dbms.md)
+-   [`relate help`](./help.md) - display help for relate
 
 <!-- commandsstop -->

@@ -6,7 +6,7 @@ import {Dbms} from '../../dbms/dbms.types';
 @ObjectType()
 export class AppLaunchData {
     @Field(() => String)
-    accountId: string;
+    environmentId: string;
 
     @Field(() => String)
     appId: string;

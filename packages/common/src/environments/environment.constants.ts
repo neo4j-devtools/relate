@@ -1,6 +1,6 @@
-export const ACCOUNTS_DIR_NAME = 'accounts';
+export const ENVIRONMENTS_DIR_NAME = 'environments';
 
-export enum ACCOUNT_TYPES {
+export enum ENVIRONMENT_TYPES {
     LOCAL = 'LOCAL',
     REMOTE = 'REMOTE',
 }

@@ -11,10 +11,10 @@ $ npm link # makes the relate command available globally
 
 #### Required files
 
-Accounts (see [test folder](./e2e/fixtures/config/neo4j-relate/accounts) for sample):
+Environments (see [test folder](./e2e/fixtures/config/neo4j-relate/environments) for sample):
 
 ```sh
-$ relate account:init
+$ relate environment:init
 ```
 
 Until we have the ability to add DBMSs we need some files copied to user directories:

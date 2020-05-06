@@ -2,7 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {SystemModule, SystemProvider} from '@relate/common';
 
-import InitCommand from '../../commands/account/init';
+import InitCommand from '../../commands/environment/init';
 
 @Module({
     exports: [],
@@ -17,7 +17,7 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     onApplicationBootstrap(): Promise<void> {
-        cli.action.start('Creating default account');
+        cli.action.start('Creating default environment');
 
         return this.systemProvider.initInstallation().then(() => cli.action.stop());
     }

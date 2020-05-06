@@ -14,7 +14,7 @@ const HTTP_OK = 200;
 const queryBody = (query: string, variables?: {[key: string]: any}) => ({
     query,
     variables: {
-        accountId: 'test',
+        environmentId: 'test',
         dbmsNames: [TEST_DB_NAME],
         dbmsName: TEST_DB_NAME,
         ...variables,
@@ -45,8 +45,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query ListDBMSSs($accountId: String!) {
-                        listDbmss(accountId: $accountId) {
+                    `query ListDBMSSs($environmentId: String!) {
+                        listDbmss(environmentId: $environmentId) {
                             id,
                             name,
                             description
@@ -66,8 +66,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `mutation StartDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
-                        startDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    `mutation StartDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        startDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -90,8 +90,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
-                        statusDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    `query StatusDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        statusDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -111,13 +111,13 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `mutation AccessDBMS(
-                        $accountId: String!,
+                        $environmentId: String!,
                         $dbmsName: String!,
                         $authToken: AuthTokenInput!,
                         $appId: String!
                     ) {
                         createAccessToken(
-                            accountId: $accountId,
+                            environmentId: $environmentId,
                             dbmsId: $dbmsName,
                             appId: $appId,
                             authToken: $authToken
@@ -145,8 +145,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `mutation StopDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
-                        stopDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    `mutation StopDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        stopDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -168,8 +168,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSSs($accountId: String!, $dbmsNames: [String!]!) {
-                        statusDbmss(accountId: $accountId, dbmsIds: $dbmsNames)
+                    `query StatusDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        statusDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -180,13 +180,13 @@ describe('DBMSModule', () => {
             });
     });
 
-    test('/graphql statusDbmss (non existent account)', () => {
+    test('/graphql statusDbmss (non existent environment)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(
                 queryBody(
                     `query StatusDBMSs {
-                        statusDbmss(accountId: "non-existent", dbmsIds: ["test"])
+                        statusDbmss(environmentId: "non-existent", dbmsIds: ["test"])
                     }`,
                 ),
             )
@@ -194,7 +194,7 @@ describe('DBMSModule', () => {
             .expect((res: request.Response) => {
                 const {errors} = res.body;
                 expect(errors).toHaveLength(1);
-                expect(errors[0].message).toBe('Account "non-existent" not found');
+                expect(errors[0].message).toBe('Environment "non-existent" not found');
             });
     });
 
@@ -203,8 +203,8 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSs($accountId: String!) {
-                        statusDbmss(accountId: $accountId, dbmsIds: ["non-existent"])
+                    `query StatusDBMSs($environmentId: String!) {
+                        statusDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"])
                     }`,
                 ),
             )
