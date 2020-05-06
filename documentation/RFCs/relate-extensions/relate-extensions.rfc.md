@@ -5,7 +5,7 @@
 # Summary
 Allow first and third party developers to extend the `@relate` stack with additional functionality in two primary ways; `STATIC` and/or `APPLICATION` extensions.
 - `STATIC` extensions refer to adding static html bundles (i.e. "graph apps") to the web server application. 
-- `APPLICATION` extensions refer to injecting `@nestjs` modules to any of our supported application extension points:
+- `APPLICATION` extensions refer to injecting [@nestjs](https://docs.nestjs.com/) modules to any of our supported application extension points:
     - `SYSTEM`: Shared across all packages
     - `CLI`: Only for CLI app
     - `WEB`: Only for Web app
@@ -92,15 +92,15 @@ export default class ExampleModule implements OnApplicationBootstrap {
     }
 }
 ```
-From here extensions are free to do whatever they want within the NodeJS ecosystem.
+From here extensions are free to do whatever they want within the NestJS ecosystem.
 
 We chose a liberal approach to encourage adoption and minimise the learning curve for creating extensions. To ensure that extensions do not introduce breaking changes we will have two separate categories: Offical, and Custom. Official extensions will be signed by our [Code Signing CA](https://github.com/neo4j-apps/code-signing-ca) and also undergo code-reviews before being signed. Official extensions will be published to our JFrog repository and available to be installed through the core API. Custom extensions will have no enforcement and only be installable using a provided tarball. This allows developers to quickly iterate extensions and when ready apply for official status.
 
 # Drawbacks
-As with any plugin-oriented arhitecture we are exposing ourselves to a halo effect. Should an installed extensions negatively effect the core applications users could percieve this as our fault.
+As with any plugin-oriented architecture we are exposing ourselves to a halo effect. Should an installed extensions negatively effect the core applications users could percieve this as our fault.
 
 - Extensions could prove computationally expensive and slow down the application
-- The lack of enforement on our end could prove expensive if extensions are large or hard to review/test
+- The lack of enforcement on our end could prove expensive if extensions are large or hard to review/test
 - Debugging could become complicated
 - Security of the application becomes paramount as should we accidentally expose secrets they would be available throughout.
 - We will be bound to the APIs we expose to extensions, as any breaking change would require them to update.
