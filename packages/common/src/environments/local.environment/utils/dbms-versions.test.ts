@@ -11,7 +11,7 @@ const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
 describe('DBMS versions (local environment)', () => {
     test('list cached distributions', async () => {
-        const dbmssDataDir = path.join(envPaths().cache, 'neo4j');
+        const dbmssDataDir = path.join(envPaths().cache, 'dbmss');
         const versions = await discoverNeo4jDistributions(dbmssDataDir);
         expect(versions.length).toEqual(1);
         expect(versions[0].edition).toEqual(NEO4J_EDITION.ENTERPRISE);

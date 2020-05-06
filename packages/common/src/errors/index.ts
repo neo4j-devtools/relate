@@ -11,3 +11,4 @@ export {FileStructureError} from './file-structure.error';
 export {TargetExistsError} from './target-exists.error';
 export {FetchError} from './fetch.error';
 export {IntegrityError} from './integrity.error';
+export {ExtensionExistsError} from './extension-exists.error';

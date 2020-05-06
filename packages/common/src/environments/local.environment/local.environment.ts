@@ -34,8 +34,8 @@ import {
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
 } from '../environment.constants';
-import {JSON_FILE_EXTENSION} from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath} from '../../utils';
+import {DBMS_DIR_NAME, JSON_FILE_EXTENSION} from '../../constants';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractFromArchive} from '../../utils';
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -43,17 +43,20 @@ import {
     neo4jAdminCmd,
     fetchNeo4jVersions,
     generatePluginCerts,
-    extractFromArchive,
+    downloadNeo4j,
+    discoverNeo4jDistributions,
 } from './utils';
-import {discoverNeo4jDistributions} from './utils/dbms-versions';
-import {downloadNeo4j} from './utils/download-neo4j';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
 
-    private readonly dirPaths = {
+    private readonly dataPaths = {
         ...envPaths(),
-        neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
+        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
+    };
+
+    private readonly cachePaths = {
+        dbmss: path.join(envPaths().cache, DBMS_DIR_NAME),
     };
 
     public get id(): string {
@@ -61,12 +64,12 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async init(): Promise<void> {
-        await ensureDirs(this.dirPaths);
+        await ensureDirs(this.dataPaths);
         await this.discoverDbmss();
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {
-        const cached = await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution);
+        const cached = await discoverNeo4jDistributions(this.cachePaths.dbmss);
         const online = await fetchNeo4jVersions();
 
         return [...cached, ...online];
@@ -85,15 +88,15 @@ export class LocalEnvironment extends EnvironmentAbstract {
             }
 
             let requestedDistribution = _.find(
-                await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution),
+                await discoverNeo4jDistributions(this.cachePaths.dbmss),
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
             );
 
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadNeo4j(semver, this.dirPaths.neo4jDistribution);
+                await downloadNeo4j(semver, this.cachePaths.dbmss);
                 const requestedDistributionAfterDownload = _.find(
-                    await discoverNeo4jDistributions(this.dirPaths.neo4jDistribution),
+                    await discoverNeo4jDistributions(this.cachePaths.dbmss),
                     (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
                 );
                 if (!requestedDistributionAfterDownload) {
@@ -112,7 +115,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractFromArchive(version, this.dirPaths.neo4jDistribution);
+            const {extractedDistPath} = await extractFromArchive(version, this.cachePaths.dbmss);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
@@ -203,7 +206,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.config.neo4jDataPath || this.dirPaths.data, 'dbmss');
+        const dbmssDir = path.join(this.config.neo4jDataPath || this.dataPaths.data, 'dbmss');
 
         if (dbmsId) {
             return path.join(dbmssDir, `dbms-${dbmsId}`);
@@ -281,7 +284,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
         const pathToDbms = this.getDbmsRootPath(dbmsId);
-        const pluginSource = path.join(this.dirPaths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
+        const pluginSource = path.join(this.dataPaths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
         const pluginTarget = path.join(
             pathToDbms,
             NEO4J_PLUGIN_DIR,
@@ -336,7 +339,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     private async updateEnvironmentDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -348,7 +351,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             },
         };
         await fse.writeJson(
-            path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             environmentConfig,
         );
 
@@ -363,7 +366,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     private async deleteEnvironmentDbmsConfig(uuid: string): Promise<void> {
         const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -371,7 +374,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         environmentConfig.dbmss = _.omit(environmentConfig.dbmss, uuid);
 
         await fse.writeJson(
-            path.join(this.dirPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
             environmentConfig,
         );
 

@@ -3,9 +3,9 @@ import fse from 'fs-extra';
 import decompress from 'decompress';
 import path from 'path';
 
-import {FileStructureError} from '../../../errors';
-import {getDistributionInfo} from '../utils';
-import {IDbmsVersion} from '../../../models/environment-config.model';
+import {FileStructureError} from '../errors';
+import {getDistributionInfo} from '../environments/local.environment/utils';
+import {IDbmsVersion} from '../models';
 
 interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;

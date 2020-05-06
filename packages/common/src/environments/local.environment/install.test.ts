@@ -13,7 +13,7 @@ import * as dbmsVersions from './utils/dbms-versions';
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const DATA_HOME = envPaths().data;
 const INSTALL_ROOT = path.join(envPaths().data, 'dbmss');
-const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, 'neo4j');
+const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, 'dbmss');
 const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '';
 
 describe('LocalEnvironment - install', () => {

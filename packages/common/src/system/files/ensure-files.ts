@@ -1,9 +1,16 @@
 import _ from 'lodash';
 import fse from 'fs-extra';
 
-import {ILocalEnvironmentDirPaths, ISystemProviderDirPaths, ISystemProviderFilePaths} from './ensure-files.constants';
+import {
+    ICacheDirPaths,
+    ILocalEnvironmentDirPaths,
+    ISystemProviderDirPaths,
+    ISystemProviderFilePaths,
+} from './ensure-files.constants';
 
-export const ensureDirs = (paths: ILocalEnvironmentDirPaths | ISystemProviderDirPaths): Promise<void[]> => {
+export const ensureDirs = (
+    paths: ILocalEnvironmentDirPaths | ISystemProviderDirPaths | ICacheDirPaths,
+): Promise<void[]> => {
     /* eslint-disable consistent-return */
     const ensureDirPromises = _.map(paths, async (path) => {
         if (!(await fse.pathExists(path))) {
