@@ -393,10 +393,12 @@ export class LocalAccount extends AccountAbstract {
         await Promise.all(
             _.map(fileNames, async (fileName) => {
                 const fullPath = path.join(root, fileName);
-                const fileStats = await fse.stat(fullPath);
-                if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
+                const confPath = path.join(fullPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
+                const hasConf = await fse.pathExists(confPath);
+
+                if (hasConf && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
-                    const config = await PropertiesFile.readFile(path.join(fullPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
+                    const config = await PropertiesFile.readFile(confPath);
                     const defaultValues = {
                         description: '',
                         name: '',

@@ -8,6 +8,7 @@ import {
     DEFAULT_ACCOUNT_NAME,
     JSON_FILE_EXTENSION,
     JWT_INSTANCE_TOKEN_SALT,
+    DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
     TWENTY_FOUR_HOURS_SECONDS,
 } from '../constants';
@@ -22,6 +23,7 @@ export class SystemProvider implements OnModuleInit {
     protected readonly dirPaths = {
         ...envPaths(),
         accounts: path.join(envPaths().config, ACCOUNTS_DIR_NAME),
+        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
     };
 
     protected readonly filePaths = {
