@@ -1,5 +1,5 @@
 import {DynamicModule} from '@nestjs/common';
-import {filter, map} from 'lodash';
+import _ from 'lodash';
 
 import {getInstalledExtensions} from './get-installed-extensions';
 import {InvalidArgumentError} from '../errors';
@@ -12,8 +12,8 @@ export function loadExtensionsFor(targetType: EXTENSION_TYPES): Promise<DynamicM
         throw new InvalidArgumentError('STATIC extensions are not modules');
     }
 
-    return map(
-        filter(INSTALLED_EXTENSIONS, ({type}) => type === targetType),
+    return _.map(
+        _.filter(INSTALLED_EXTENSIONS, ({type}) => type === targetType),
         async ({main}) => {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const {default: module} = await require(main);

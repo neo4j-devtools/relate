@@ -1,6 +1,8 @@
+/* eslint-disable no-sync */
+
 import * as path from 'path';
-import {ensureDirSync, lstatSync, pathExistsSync, readdirSync, readJSONSync} from 'fs-extra';
-import {compact, flatMap, map, values} from 'lodash';
+import fse from 'fs-extra';
+import _ from 'lodash';
 
 import {envPaths} from './env-paths';
 import {ExtensionModel, IInstalledExtension} from '../models';
@@ -20,15 +22,15 @@ import {
 export function getInstalledExtensions(): IInstalledExtension[] {
     const installationDir = path.join(envPaths().data, EXTENSION_DIR_NAME);
 
-    return compact(
-        flatMap(values(EXTENSION_TYPES), (type) => {
+    return _.compact(
+        _.flatMap(_.values(EXTENSION_TYPES), (type) => {
             const dirPath = path.join(installationDir, type);
 
-            ensureDirSync(dirPath);
+            fse.ensureDirSync(dirPath);
 
-            const files = readdirSync(dirPath);
+            const files = fse.readdirSync(dirPath);
 
-            return map(files, (file): IInstalledExtension | null => {
+            return _.map(files, (file): IInstalledExtension | null => {
                 const fullPath = path.join(dirPath, file);
 
                 try {
@@ -46,18 +48,18 @@ function mapContentsToExtension(fullPath: string, name: string): IInstalledExten
     const manifestPath = path.join(fullPath, EXTENSION_MANIFEST);
     const packagePath = path.join(fullPath, PACKAGE_JSON);
     const indexHtmlPath = path.join(fullPath, EXTENSION_INDEX_HTML);
-    const info = lstatSync(fullPath);
+    const info = fse.lstatSync(fullPath);
 
     if (!info.isDirectory()) {
         throw new InvalidArgumentError('Installed extensions must be a directory');
     }
 
-    const hasManifest = pathExistsSync(manifestPath);
-    const hasPackageJson = pathExistsSync(packagePath);
-    const hasIndexHtml = pathExistsSync(indexHtmlPath);
+    const hasManifest = fse.pathExistsSync(manifestPath);
+    const hasPackageJson = fse.pathExistsSync(packagePath);
+    const hasIndexHtml = fse.pathExistsSync(indexHtmlPath);
 
     if (hasManifest || hasPackageJson) {
-        const contents = readJSONSync(hasManifest ? manifestPath : packagePath);
+        const contents = fse.readJSONSync(hasManifest ? manifestPath : packagePath);
         const manifest = hasManifest ? contents : contents[EXTENSION_MANIFEST_KEY];
 
         return new ExtensionModel({

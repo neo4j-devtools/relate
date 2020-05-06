@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import express from 'express';
-import * as path from 'path';
+import path from 'path';
 import {EXTENSION_DIR_NAME, EXTENSION_TYPES, envPaths} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
