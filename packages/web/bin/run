@@ -1,7 +1,14 @@
-#!/bin/sh
+#!/usr/bin/env node
+const childProcess = require('child_process');
+const path = require('path');
 
-canonical=$(cd -P -- "$(dirname -- "$0")" && printf '%s' "$(pwd -P)")
+const NODE_PATH = path.join(__dirname, '../node_modules');
 
-export NODE_PATH=${canonical}/../node_modules
-
-node ${canonical}/run.js "$@"
+childProcess.fork(
+    path.join(__dirname, '../dist/dev.js'),
+    process.argv.slice(2),
+    {
+        stdio: 'inherit',
+        env: {NODE_PATH}
+    }
+)

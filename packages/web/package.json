@@ -19,7 +19,7 @@
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "watch:all": "run-p watch",
-        "serve:dev": "NODE_PATH=./node_modules:./../../node_modules nodemon ./dist/dev.js",
+        "serve:dev": "NODE_PATH=./node_modules nodemon ./dist/dev.js",
         "serve:watch": "run-p watch:all serve:dev",
         "start": "run-s build:clean serve:watch"
     },
