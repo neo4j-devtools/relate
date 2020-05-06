@@ -48,7 +48,6 @@ Extensions are installed under:
 %appdata%\Local\Neo4j\Relate\Data\extensions\<APP_TYPE>
 ```
 Where `<APP_TYPE>` is one of:
-- `STATIC` Static HTML bundle to be served over HTTP
 - `SYSTEM` Targeting the core system API (shared across all applications)
 - `WEB` Targeting the WEB applications
 - `CLI` Targeting the CLI applications
@@ -71,7 +70,7 @@ This entire concept revolves around the `relate.manifest.json` file:
   "main": "dist/index.(js|html)"
 }
 ```
-Using the information above `@relate` can determine what to do with the code-package. `STATIC` extensions are simply exposed over http (and thus require no restart or setup), whilst application extenisons are added to the `@nestjs` module hierarchy and as such require restart.
+Using the information above `@relate` can determine what to do with the code-package. `STATIC` extensions are simply exposed over http (and thus require no restart or setup), whilst application extensions are added to the `@nestjs` module hierarchy and as such require restart.
 
 The idea here is to allow developers to use any pre-existing code without having to be aware of `@relate` specific caveats, with the only contract being a default export of a `@nestjs` module:
 ```TypeScript
@@ -97,7 +96,7 @@ From here extensions are free to do whatever they want within the NestJS ecosyst
 We chose a liberal approach to encourage adoption and minimise the learning curve for creating extensions. To ensure that extensions do not introduce breaking changes we will have two separate categories: Offical, and Custom. Official extensions will be signed by our [Code Signing CA](https://github.com/neo4j-apps/code-signing-ca) and also undergo code-reviews before being signed. Official extensions will be published to our JFrog repository and available to be installed through the core API. Custom extensions will have no enforcement and only be installable using a provided tarball. This allows developers to quickly iterate extensions and when ready apply for official status.
 
 # Drawbacks
-As with any plugin-oriented architecture we are exposing ourselves to a halo effect. Should an installed extensions negatively effect the core applications users could percieve this as our fault.
+As with any plugin-oriented architecture we are exposing ourselves to a halo effect. Should an installed extensions negatively effect the core applications users could perceive this as our fault.
 
 - Extensions could prove computationally expensive and slow down the application
 - The lack of enforcement on our end could prove expensive if extensions are large or hard to review/test
