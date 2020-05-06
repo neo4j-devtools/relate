@@ -21,6 +21,7 @@
         "generate:licenses": "node scripts/licenses/index.js"
     },
     "devDependencies": {
+        "@types/node-fetch": "2.5.7",
         "@types/supertest": "2.0.8",
         "@typescript-eslint/eslint-plugin": "2.16.0",
         "@typescript-eslint/parser": "2.16.0",
