@@ -19,9 +19,6 @@ export class InitModule implements OnApplicationBootstrap {
     onApplicationBootstrap(): Promise<void> {
         cli.action.start('Creating default account');
 
-        return this.systemProvider
-            .initInstallation()
-            .then(() => cli.action.stop())
-            .catch(this.utils.error);
+        return this.systemProvider.initInstallation().then(() => cli.action.stop());
     }
 }

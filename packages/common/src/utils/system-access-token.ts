@@ -15,3 +15,15 @@ export async function registerSystemAccessToken(
 
     return properties.flush();
 }
+
+export async function getSystemAccessToken(
+    rcPath: string,
+    accountId: string,
+    dbmsId: string,
+    dbmsUser: string,
+): Promise<string | undefined> {
+    const key = getAccessTokenRCKey(accountId, dbmsId, dbmsUser);
+    const properties = await PropertiesFile.readFile(rcPath);
+
+    return properties.get(key);
+}

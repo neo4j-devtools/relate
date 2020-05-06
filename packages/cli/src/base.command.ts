@@ -1,8 +1,13 @@
 import Command from '@oclif/command';
 import parser from '@oclif/parser';
+import {CLIError} from '@oclif/errors';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
-import {IS_DEVELOPMENT_ENV} from './constants';
+import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
+
+import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
+
+const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.CLI);
 
 export default abstract class BaseCommand extends Command {
     protected abstract commandClass: parser.Input<any>;
@@ -21,6 +26,7 @@ export default abstract class BaseCommand extends Command {
 
         return NestFactory.createApplicationContext(
             {
+                imports: [SystemModule, ...dynamicModules],
                 module: this.commandModule,
                 providers: [
                     {
@@ -34,6 +40,29 @@ export default abstract class BaseCommand extends Command {
                 ],
             },
             options,
-        );
+        ).catch((err) => {
+            // When exiting with Ctrl-C an undefined error is thrown, oclif is
+            // supposed to hide it, but it still shows for some reason.
+            if (!err) {
+                this.exit(0);
+            }
+
+            if (IS_DEVELOPMENT_ENV || IS_TEST_ENV) {
+                throw err;
+            }
+
+            // If passed an error object CLIError will show the full stack trace
+            // even when not in debug mode. If it's passed a message it will display
+            // the error message nicely to the user, and if debug mode is enabled
+            // it will display the stack trace too.
+            const cliError = new CLIError(err.message);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            cliError.name = err.name;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            cliError.stack = err.stack;
+            throw cliError;
+        });
     }
 }

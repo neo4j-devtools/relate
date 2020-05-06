@@ -3,12 +3,16 @@ import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
 import {ACCOUNT_TYPES} from '../accounts';
 import {ModelAbstract} from './model.abstract';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../accounts/account.constants';
+import {PropertiesFile} from '../system/files';
 
 export interface IDbms {
     id: string;
     name: string;
     description: string;
+    connectionUri: string;
+    config: PropertiesFile;
 }
+
 export interface IDbmsVersion {
     edition: NEO4J_EDITION;
     version: string;

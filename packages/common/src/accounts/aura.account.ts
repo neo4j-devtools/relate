@@ -2,7 +2,7 @@ import {IAuthToken} from 'tapestry';
 
 import {AccountAbstract} from './account.abstract';
 import {NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion} from '../models/account-config.model';
+import {IDbms, IDbmsVersion} from '../models';
 
 export class AuraAccount extends AccountAbstract {
     listDbmsVersions(): Promise<IDbmsVersion[]> {
@@ -21,6 +21,10 @@ export class AuraAccount extends AccountAbstract {
         throw new NotAllowedError(`${AuraAccount.name} does not support listing DBMSs`);
     }
 
+    getDbms(_nameOrId: string): Promise<IDbms> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support getting DBMS`);
+    }
+
     startDbmss(_dbmsIds: string[]): Promise<string[]> {
         throw new NotAllowedError(`${AuraAccount.name} does not support starting DBMSs`);
     }
@@ -35,5 +39,9 @@ export class AuraAccount extends AccountAbstract {
 
     createAccessToken(_appId: string, _dbmsId: string, _authToken: IAuthToken): Promise<string> {
         throw new NotAllowedError(`${AuraAccount.name} does not support creating access tokens`);
+    }
+
+    updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
+        throw new NotAllowedError(`${AuraAccount.name} does not support updating DBMSs config`);
     }
 }

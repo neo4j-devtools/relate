@@ -18,7 +18,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.0 linux-x64 node-v12.16.1
+@relate/cli/1.0.0 darwin-x64 node-v12.14.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -50,6 +50,7 @@ daedalus$ relate --help
 # Command Topics
 
 * [`relate account`](./docs/account.md)
+* [`relate app`](./docs/app.md)
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
 * [`relate dbms`](./docs/dbms.md)
 * [`relate help`](./docs/help.md) - display help for relate

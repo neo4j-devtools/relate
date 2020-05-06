@@ -16,6 +16,7 @@ import {
     NotAllowedError,
     NotSupportedError,
     NotFoundError,
+    InvalidConfigError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -54,6 +55,10 @@ export class LocalAccount extends AccountAbstract {
         ...envPaths(),
         neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
     };
+
+    public get id(): string {
+        return this.config.id;
+    }
 
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
@@ -140,10 +145,28 @@ export class LocalAccount extends AccountAbstract {
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
     }
 
+    async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<void> {
+        const dbmsId = resolveDbms(this.dbmss, nameOrId).id;
+        const neo4jConfig = await PropertiesFile.readFile(
+            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+        );
+
+        properties.forEach((value, key) => neo4jConfig.set(key, value));
+
+        await neo4jConfig.flush();
+    }
+
     async listDbmss(): Promise<IDbms[]> {
         // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
         return Object.values(this.dbmss);
+    }
+
+    async getDbms(nameOrId: string): Promise<IDbms> {
+        // Discover DBMSs again in case there have been changes in the file system.
+        await this.discoverDbmss();
+
+        return resolveDbms(this.dbmss, nameOrId);
     }
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
@@ -151,23 +174,32 @@ export class LocalAccount extends AccountAbstract {
         const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
-        const driver = new Driver<Result>({
-            connectionConfig: {
-                authToken,
-                host,
-                port,
-            },
-        });
+        try {
+            const driver = new Driver<Result>({
+                connectionConfig: {
+                    authToken,
+                    host,
+                    port,
+                },
+            });
 
-        return driver
-            .query('CALL jwt.security.requestAccess($appId)', {appId})
-            .pipe(
-                rxjs.filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
-                rxjs.first(),
-                rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
-            )
-            .toPromise()
-            .finally(() => driver.shutDown().toPromise());
+            const token = await driver
+                .query('CALL jwt.security.requestAccess($appId)', {appId})
+                .pipe(
+                    rxjs.first(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
+                    rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
+                )
+                .toPromise()
+                .finally(() => driver.shutDown().toPromise());
+
+            if (!token) {
+                throw new InvalidArgumentError('Unable to create access token');
+            }
+
+            return token;
+        } catch (e) {
+            throw new InvalidConfigError('Unable to connect to DBMS');
+        }
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
@@ -360,16 +392,23 @@ export class LocalAccount extends AccountAbstract {
 
         await Promise.all(
             _.map(fileNames, async (fileName) => {
-                const fileStats = await fse.stat(path.join(root, fileName));
-                if (fileStats.isDirectory() && fileName.startsWith('dbms-')) {
+                const fullPath = path.join(root, fileName);
+                const confPath = path.join(fullPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
+                const hasConf = await fse.pathExists(confPath);
+
+                if (hasConf && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
+                    const config = await PropertiesFile.readFile(confPath);
                     const defaultValues = {
                         description: '',
                         name: '',
                     };
 
                     this.dbmss[id] = _.merge(defaultValues, configDbmss[id], {
+                        // @todo: change this in extensions PR
+                        connectionUri: 'neo4j://127.0.0.1:7687',
                         id,
+                        config,
                     });
                 }
             }),

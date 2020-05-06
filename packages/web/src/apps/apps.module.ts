@@ -1,11 +1,13 @@
 import {HttpAdapterHost} from '@nestjs/core';
 import {Inject, Module, OnModuleInit} from '@nestjs/common';
+import {SystemModule} from '@relate/common';
 
 import {AppsService} from './services/apps.service';
+import {AppsResolver} from './apps.resolver';
 
 @Module({
-    imports: [],
-    providers: [AppsService],
+    imports: [SystemModule],
+    providers: [AppsResolver, AppsService],
 })
 export class AppsModule implements OnModuleInit {
     constructor(

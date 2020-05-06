@@ -21,6 +21,8 @@ export abstract class AccountAbstract {
 
     abstract listDbmss(): Promise<IDbms[]>;
 
+    abstract getDbms(nameOrId: string): Promise<IDbms>;
+
     abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
 
     abstract stopDbmss(dbmsIds: string[]): Promise<string[]>;
@@ -28,4 +30,6 @@ export abstract class AccountAbstract {
     abstract statusDbmss(dbmsIds: string[]): Promise<string[]>;
 
     abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
+
+    abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<void>;
 }

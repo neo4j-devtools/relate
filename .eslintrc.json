@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "node": true,
         "es6": true
@@ -21,6 +22,18 @@
             "files": ["**/*.js"],
             "rules": {
                 "@typescript-eslint/no-var-requires": "off"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "rules": {
+                "@typescript-eslint/no-use-before-define": [
+                    "error",
+                    {
+                        "classes": false,
+                        "functions": false
+                    }
+                ]
             }
         },
         {
@@ -167,8 +180,8 @@
         "no-use-before-define": [
             "error",
             {
-                "classes": true,
-                "functions": true
+                "classes": false,
+                "functions": false
             }
         ],
         "no-useless-call": "error",

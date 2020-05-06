@@ -2,6 +2,8 @@ import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import express from 'express';
+import path from 'path';
+import {EXTENSION_DIR_NAME, EXTENSION_TYPES, envPaths} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
 
@@ -15,9 +17,9 @@ export class AppsService {
         }
 
         const app = httpAdapter.getInstance();
-        const staticFileRoot = this.configService.get('staticFileRoot');
         const staticHTTPRoot = this.configService.get('staticHTTPRoot');
+        const staticExts = path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC);
 
-        app.use(staticHTTPRoot, express.static(staticFileRoot));
+        app.use(staticHTTPRoot, express.static(staticExts));
     }
 }

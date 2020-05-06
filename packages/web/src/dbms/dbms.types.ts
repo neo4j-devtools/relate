@@ -11,6 +11,9 @@ export class Dbms {
 
     @Field(() => String, {nullable: true})
     description?: string;
+
+    @Field(() => String, {nullable: true})
+    connectionUri?: string;
 }
 
 @ArgsType()

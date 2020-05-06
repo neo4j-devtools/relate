@@ -1,6 +1,14 @@
 #!/usr/bin/env node
+const childProcess = require('child_process');
+const path = require('path');
 
-require('../dist/index.js')
-    .bootstrap()
-    .then(require('@oclif/command/flush'))
-    .catch(require('@oclif/errors/handle'));
+const NODE_PATH = path.join(__dirname, '../node_modules');
+
+childProcess.fork(
+   path.join(__dirname, './run.js'),
+   process.argv.slice(2),
+   {
+       stdio: 'inherit',
+       env: {NODE_PATH}
+   }
+)

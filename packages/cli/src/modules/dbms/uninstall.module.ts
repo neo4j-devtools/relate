@@ -19,7 +19,7 @@ export class UninstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const account = this.systemProvider.getAccount(flags.account);
+        const account = await this.systemProvider.getAccount(flags.account);
         let {dbmsId} = args;
 
         if (!dbmsId) {
@@ -42,11 +42,8 @@ export class UninstallModule implements OnApplicationBootstrap {
             }
         }
 
-        return account
-            .uninstallDbms(dbmsId)
-            .then(() => {
-                this.utils.log(dbmsId);
-            })
-            .catch(this.utils.error);
+        return account.uninstallDbms(dbmsId).then(() => {
+            this.utils.log(dbmsId);
+        });
     }
 }

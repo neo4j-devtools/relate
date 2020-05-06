@@ -1,8 +1,9 @@
 import {assign} from 'lodash';
 import {validateSync} from 'class-validator';
 
-import {arrayHasItems} from '../utils';
-import {ValidationFailureError} from '../errors';
+// leave specific imports to prevent circular references
+import {arrayHasItems} from '../utils/array-has-items';
+import {ValidationFailureError} from '../errors/validation-failure.error';
 
 export abstract class ModelAbstract<T = any> {
     constructor(props: T) {
