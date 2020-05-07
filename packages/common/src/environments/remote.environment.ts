@@ -44,31 +44,52 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         throw new NotAllowedError(`${RemoteEnvironment.name} does not support listing DBMS versions`);
     }
 
-    installDbms(_name: string, _credentials: string, _version: string): Promise<string> {
-        throw new NotAllowedError(`${RemoteEnvironment.name} does not support installing a DBMS`);
-    }
-
-    uninstallDbms(_name: string): Promise<void> {
-        throw new NotAllowedError(`${RemoteEnvironment.name} does not support uninstalling a DBMS`);
-    }
-
-    async getDbms(nameOrId: string): Promise<IDbms> {
+    async installDbms(name: string, credentials: string, version: string): Promise<string> {
         const {data}: any = await this.graphql({
-            query: gql`query GetDbms ($environmentId: String!, nameOrId: String!) {
-                getDbms(environmentId: $environmentId, nameOrId: $nameOrId) {
-                    id,
-                    name,
-                    description,
-                    connectionUri
+            query: gql`
+                mutation InstallDbms(
+                    $environmentId: String!
+                    $name: String!
+                    $credentials: String!
+                    $version: String!
+                ) {
+                    installDbms(
+                        environmentId: $environmentId
+                        name: $name
+                        credentials: $credentials
+                        version: $version
+                    )
                 }
-            }`,
+            `,
             variables: {
                 environmentId: this.config.relateEnvironment,
-                nameOrId,
+                name,
+                credentials,
+                version,
             },
         });
 
-        return data.getDbms;
+        return data.installDbms;
+    }
+
+    async uninstallDbms(name: string): Promise<void> {
+        const {data}: any = await this.graphql({
+            query: gql`
+                mutation UninstallDbms($environmentId: String!, $name: String!) {
+                    uninstallDbms(environmentId: $environmentId, name: $name)
+                }
+            `,
+            variables: {
+                environmentId: this.config.relateEnvironment,
+                name,
+            },
+        });
+
+        return data.uninstallDbms;
+    }
+
+    getDbms(_nameOrId: string): Promise<IDbms> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support getting a DBMS`);
     }
 
     async listDbmss(): Promise<IDbms[]> {
