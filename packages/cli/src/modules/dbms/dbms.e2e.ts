@@ -14,7 +14,7 @@ jest.mock('fs-extra', () => {
 });
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
-const TEST_ACCOUNT_ID = 'test';
+const TEST_ENVIRONMENT_ID = 'test';
 let TEST_DB_NAME: string;
 
 describe('$relate dbms', () => {
@@ -29,7 +29,7 @@ describe('$relate dbms', () => {
     afterAll(() => dbmss.teardown());
 
     test.stdout().it('logs start message', async (ctx) => {
-        await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
+        await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         if (process.platform === 'win32') {
             expect(ctx.stdout).toContain('Neo4j service started');
         } else {
@@ -40,12 +40,12 @@ describe('$relate dbms', () => {
     });
 
     test.stdout().it('lists DBMSs', async (ctx) => {
-        await ListCommand.run(['--environment', TEST_ACCOUNT_ID]);
+        await ListCommand.run(['--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain(TEST_DB_NAME);
     });
 
     test.stdout().it('logs running status', async (ctx) => {
-        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
+        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Neo4j is running');
     });
 
@@ -58,7 +58,7 @@ describe('$relate dbms', () => {
                 '--principal=neo4j',
                 '--credentials=password',
                 '--environment',
-                TEST_ACCOUNT_ID,
+                TEST_ENVIRONMENT_ID,
             ]);
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
@@ -66,18 +66,18 @@ describe('$relate dbms', () => {
     test.stdout()
         .stderr()
         .it('logs stop message', async (ctx) => {
-            await StopCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
+            await StopCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
             expect(ctx.stdout).toBe('');
             expect(ctx.stderr).toContain('done');
         });
 
     test.stdout().it('logs stopped status', async (ctx) => {
-        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
+        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Neo4j is not running');
     });
 
     test.it('errors when trying to access a non existing dbms', async () => {
-        const command = StatusCommand.run(['non-existent', '--environment', TEST_ACCOUNT_ID]);
+        const command = StatusCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
         const expectedError = new Error('DBMS "non-existent" not found');
         await expect(command).rejects.toThrow(expectedError);
     });

@@ -5,7 +5,7 @@ export const IS_TEST_ENV = process.env.NODE_ENV === 'test';
 
 export const DBMS_FLAGS = {
     environment: flags.string({
-        char: 'e',
+        char: 'E',
         description: 'Environment to run the command against',
     }),
 };

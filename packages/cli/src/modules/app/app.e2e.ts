@@ -12,7 +12,7 @@ jest.mock('cli-ux', () => {
 });
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
-const TEST_ACCOUNT_ID = 'test';
+const TEST_ENVIRONMENT_ID = 'test';
 const TEST_APP_ID = 'foo';
 let TEST_DB_NAME: string;
 
@@ -30,7 +30,7 @@ describe('$relate app', () => {
     test.stdout()
         .skip()
         .it('logs app launch token', async (ctx) => {
-            await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ACCOUNT_ID]);
+            await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
 
             // arbitrary wait for Neo4j to come online
             await new Promise((resolve) => setTimeout(resolve, 25000));
@@ -39,14 +39,14 @@ describe('$relate app', () => {
                 TEST_DB_NAME,
                 '--principal=neo4j',
                 `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
-                `--environment=${TEST_ACCOUNT_ID}`,
+                `--environment=${TEST_ENVIRONMENT_ID}`,
             ]);
 
             await LaunchCommand.run([
                 TEST_APP_ID,
                 `--dbmsId=${TEST_DB_NAME}`,
                 '--principal=neo4j',
-                `--environment=${TEST_ACCOUNT_ID}`,
+                `--environment=${TEST_ENVIRONMENT_ID}`,
             ]);
 
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
