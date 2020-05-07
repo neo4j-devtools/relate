@@ -69,7 +69,7 @@
     },
     "scripts": {
         "dev-cli": "cross-env NODE_PATH=./node_modules oclif-dev",
-        "prepare": "npm run build:clean",
+        "prepare": "npm run build",
         "postpack": "rimraf oclif.manifest.json",
         "prepack": "run-s build:clean build:manifest build:readme",
         "build": "npm run prepack",

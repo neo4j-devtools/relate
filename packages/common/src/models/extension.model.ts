@@ -5,6 +5,7 @@ import {EXTENSION_TYPES} from '../constants';
 
 export interface IInstalledExtension {
     name: string;
+    version: string;
     type: EXTENSION_TYPES;
     main: string;
     root: string;
@@ -16,6 +17,9 @@ export class ExtensionModel extends ModelAbstract<IInstalledExtension> implement
 
     @IsEnum(EXTENSION_TYPES)
     type!: EXTENSION_TYPES;
+
+    @IsString()
+    version!: string;
 
     @IsString()
     main!: string;

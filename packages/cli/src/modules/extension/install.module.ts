@@ -3,7 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 
-import InstallCommand from '../../commands/dbms/install';
+import InstallCommand from '../../commands/extension/install';
 
 @Module({
     exports: [],

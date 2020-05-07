@@ -38,8 +38,8 @@ import {
     isValidPath,
     extractFromArchive,
 } from '../utils';
-import {ensureDirs, ensureFiles} from '../system';
-import {discoverExtension, discoverExtensionDistributions, IExtensionVersion} from '../utils/extension-versions';
+import {ensureDirs, ensureFiles} from './files';
+import {discoverExtension, discoverExtensionDistributions, IExtensionMeta} from '../utils/extension-versions';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -228,7 +228,7 @@ export class SystemProvider implements OnModuleInit {
         });
     }
 
-    async installExtension(name: string, version = '*') {
+    async installExtension(name: string, version = '*'): Promise<IExtensionMeta> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -238,7 +238,7 @@ export class SystemProvider implements OnModuleInit {
 
         // version as a URL.
         if (isValidUrl(version)) {
-            throw new NotSupportedError(`fetch and install ${version}`);
+            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
         const coercedVersion = version === '*' || (coerce(version) && coerce(version)!.version);
@@ -280,14 +280,14 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async installRelateExtension(
-        extension: IExtensionVersion,
+        extension: IExtensionMeta,
         extensionsDir: string,
         extractedDistPath: string,
-    ): Promise<IExtensionVersion> {
+    ): Promise<IExtensionMeta> {
         const target = path.join(extensionsDir, extension.type, extension.name);
 
         if (!(await fse.pathExists(extractedDistPath))) {
-            throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
+            throw new AmbiguousTargetError(`Path to extension does not exist "${extractedDistPath}"`);
         }
 
         if (await fse.pathExists(target)) {
@@ -297,5 +297,20 @@ export class SystemProvider implements OnModuleInit {
         await fse.copy(extractedDistPath, target);
 
         return extension;
+    }
+
+    async uninstallExtension(name: string, type: string, version?: string) {
+        const extensionRootPath = path.join(this.dataPaths.extensions, type, name);
+        const extensionMeta = await discoverExtension(extensionRootPath);
+
+        if (version && extensionMeta.version !== version) {
+            throw new InvalidArgumentError(
+                `Version ${version} is not installed, current version is ${extensionMeta.version}`,
+            );
+        }
+
+        await fse.remove(extensionRootPath);
+
+        return extensionMeta.name;
     }
 }
