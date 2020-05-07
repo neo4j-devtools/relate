@@ -19,8 +19,8 @@ export class LaunchModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
         const {appId} = args;
-        const {account: accountId, principal, dbmsId, host} = flags;
-        const account = await this.systemProvider.getAccount(accountId);
+        const {environment: environmentId, principal, dbmsId, host} = flags;
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
         if (!appId || !principal || !dbmsId) {
             // @todo: figure this out in combination with TTY
@@ -28,9 +28,9 @@ export class LaunchModule implements OnApplicationBootstrap {
         }
 
         return this.systemProvider
-            .getAccessToken(account.id, dbmsId, principal)
+            .getAccessToken(environment.id, dbmsId, principal)
             .then((accessToken) =>
-                this.systemProvider.createAppLaunchToken(account.id, appId, dbmsId, principal, accessToken),
+                this.systemProvider.createAppLaunchToken(environment.id, appId, dbmsId, principal, accessToken),
             )
             .then((launchToken) =>
                 Promise.all([

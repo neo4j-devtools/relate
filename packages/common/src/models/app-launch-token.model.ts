@@ -3,7 +3,7 @@ import {IsString, Matches} from 'class-validator';
 import {ModelAbstract} from './model.abstract';
 
 export interface IAppLaunchToken {
-    accountId: string;
+    environmentId: string;
     dbmsId: string;
     principal: string;
     appId: string;
@@ -14,7 +14,7 @@ const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 
 export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implements IAppLaunchToken {
     @IsString()
-    accountId!: string;
+    environmentId!: string;
 
     @IsString()
     dbmsId!: string;

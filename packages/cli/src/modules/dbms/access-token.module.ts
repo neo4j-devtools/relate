@@ -22,7 +22,7 @@ export class AccessTokenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
         const authToken = new AuthTokenModel({
             credentials: trim(flags.credentials),
             principal: trim(flags.principal),
@@ -33,7 +33,7 @@ export class AccessTokenModule implements OnApplicationBootstrap {
 
         if (!dbmsId) {
             if (isTTY()) {
-                const dbmss = await account.listDbmss();
+                const dbmss = await environment.listDbmss();
 
                 const {selectedDbms} = await prompt({
                     choices: dbmss.map((dbms) => ({
@@ -51,12 +51,12 @@ export class AccessTokenModule implements OnApplicationBootstrap {
             }
         }
 
-        const dbms = await account.getDbms(dbmsId);
+        const dbms = await environment.getDbms(dbmsId);
 
-        return account
+        return environment
             .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbms.id, authToken)
             .then((accessToken) =>
-                this.systemProvider.registerAccessToken(account.id, dbms.id, authToken.principal, accessToken),
+                this.systemProvider.registerAccessToken(environment.id, dbms.id, authToken.principal, accessToken),
             )
             .then(this.utils.log);
     }

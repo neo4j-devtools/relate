@@ -5,7 +5,7 @@ import path from 'path';
 
 import {FileStructureError} from '../../../errors';
 import {getDistributionInfo} from '../utils';
-import {IDbmsVersion} from '../../../models/account-config.model';
+import {IDbmsVersion} from '../../../models/environment-config.model';
 
 interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;

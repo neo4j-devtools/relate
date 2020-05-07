@@ -3,11 +3,11 @@ import {PropertiesFile} from '../system/files';
 
 export async function getSystemAccessToken(
     knownConnectionsPath: string,
-    accountId: string,
+    environmentId: string,
     dbmsId: string,
     dbmsUser: string,
 ): Promise<string | undefined> {
-    const key = getAccessTokenRCKey(accountId, dbmsId, dbmsUser);
+    const key = getAccessTokenRCKey(environmentId, dbmsId, dbmsUser);
     const properties = await PropertiesFile.readFile(knownConnectionsPath);
 
     return properties.get(key);

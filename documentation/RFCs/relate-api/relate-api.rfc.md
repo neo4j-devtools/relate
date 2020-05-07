@@ -5,7 +5,7 @@
 # Summary
 
 In this RFC, we propose a unified API surface for interacting with the Neo4j platform.
-In this context, "platform" is defined as the collection of Accounts (Local, Aura), Services (IDaaS, User Data Storage, Graph Apps), and Tools (Apps, Drivers, Plugins).
+In this context, "platform" is defined as the collection of Environments (Local, Aura), Services (IDaaS, User Data Storage, Graph Apps), and Tools (Apps, Drivers, Plugins).
 The outcome of which is dubbed "Desktop 2.X", and enables interaction through 4 entry-points:
 
 -   _As a WEB server_, allowing HTTP clients access to a typed GraphQL schema as well as static resources (apps)
@@ -25,7 +25,7 @@ For now we will use the project name `@relate` until we have found a real name f
 
 ```GraphQL
 query GetDbNames {
-    account(nameOrId: "local") {
+    environment(nameOrId: "local") {
         dbmss {
             id,
             dbs {
@@ -39,7 +39,7 @@ query GetDbNames {
 ## CLI
 
 ```sh
-$ relate account:use "local" # set current Account to "local"
+$ relate environment:use "local" # set current Environment to "local"
 $ relate dbms:use "neo4j" # set current DBMS to "neo4j"
 $ relate db:list | awk '{print $2}' # list db names (eg. col 2)
 ```
@@ -49,8 +49,8 @@ $ relate db:list | awk '{print $2}' # list db names (eg. col 2)
 ```TypeScript
 import Relate, {Database} from '@relate/core';
 
-const dbs: Promise<Database[]> = Relate.useAccount('local')
-    .then((account) => account.useDBMS('neo4j'))
+const dbs: Promise<Database[]> = Relate.useEnvironment('local')
+    .then((environment) => environment.useDBMS('neo4j'))
     .then((dbms) => dbms.listDBs())
 ```
 
@@ -69,6 +69,7 @@ In addition, we will leverage the power of established frameworks and patterns i
 # Detailed design
 
 ## End-user Deliverables (in order of priority)
+
 1. An improved Neo4j Desktop 2.0
     - Feature parity with Neo4j Desktop 1.x
     - Easier to maintain by decomposing into a core library, web server, and web UI packaged into an electron app
@@ -77,7 +78,7 @@ In addition, we will leverage the power of established frameworks and patterns i
     - File-system-like behaviors (open with... for dbs and well-known files like cypher, guides, csv, gram)
     - Project definition to enable examples, bootstrapping, collaboration
 2. User workflows to/from Aura & sandbox
-    - Requires a "Neo4j Account" and probably token-based auth
+    - Requires a "Neo4j Environment" and probably token-based auth
 3. A web-server with the same capabilities as Desktop
     - A common request for Bloom and even Browser
     - Should participate in web-auth flows
@@ -92,17 +93,17 @@ This enables us to ship modular, extensible, and scalable code that is easy for 
 
 Some specific details we'd like to highlight:
 
--   Inside `@relate` all entity (Account, App, Project, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
+-   Inside `@relate` all entity (Environment, App, Project, DBMS, DB, Graph) instances have a unique ID, as well as a unique name (by namespace), this to facilitate both user and programmatic access.
 -   The API should be semantically the same regardless of if you are using the Programmatic, HTTP, or CLI APIs
--   The concept of Accounts make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
+-   The concept of Environments make it easy to protect sensitive information such credentials, and provide a clear chain of trust.
 -   Dependency Injection and typed language reduce the possibility of a host of bugs and exceptions, as well as providing an established pragma for extending applications.
 
 ## A Note on Nomenclature
 
--   `Account` here refers to a top level trusted authority containing certificates, keys, credentials, et. al. A container of all things, and the root of our chain of trust:
-    -   `App` here refers to a web application that allows you to interact with Neo4j using a GUI, whose access is managed by it's `Account`.
-    -   `Project` here refers to where users organize their `DB`'s (and with other relevant content), whose access is managed by it's `Account`.
-    -   `DBMS` here refers to a Neo4j DBMS instance, whose access is managed by it's `Account`
+-   `Environment` here refers to a top level trusted authority containing certificates, keys, credentials, et. al. A container of all things, and the root of our chain of trust:
+    -   `App` here refers to a web application that allows you to interact with Neo4j using a GUI, whose access is managed by it's `Environment`.
+    -   `Project` here refers to where users organize their `DB`'s (and with other relevant content), whose access is managed by it's `Environment`.
+    -   `DBMS` here refers to a Neo4j DBMS instance, whose access is managed by it's `Environment`
         -   `DB` here refers to a Neo4j Database instance, whose access is managed by it's `DBMS`
             -   `Graph` here refers to Neo4j Graph instance, whose access is managed by it's `DB`
 -   `Services` here refers to local and remote resources that we choose to officially integrate with
@@ -110,7 +111,7 @@ Some specific details we'd like to highlight:
 
 ## Engineering Goals
 
--   The toolkit should enable users to safely create and store Account configurations, use a given Account to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
+-   The toolkit should enable users to safely create and store Environment configurations, use a given Environment to create, interact, and remove DBMS instances, and for each DBMS create, interact, and drop Databases.
 -   The toolkit should be environment agnostic, aka function just as well on the CLI, over the wire (HTTP), and in native environments (OS/Electron). Should certain features not be available, this should be clear but not have an impact on functionality/stability
 -   The toolkit should be easy to extend using the established dependency injection patterns of [NestJS](https://nestjs.com/). Main advantage being the ability to swap out components as features come and go.
 -   The toolkit should leverage existing technology and documentation so that consumers are able to use preexisting knowledge and ramp up quickly. This includes (but is not limited to): DI using `@nestjs`, CLI using `@oclif`, and HTTP using `GraphQL`.
@@ -132,7 +133,9 @@ Desktop 1.X is an aging codebase that has seen a lot of development and changes 
 We could scour the community for tools and projects that address these areas. The risk here is trying to shoehorn implementations to fit our needs, as well as the possibility of hidden issues and tech debt.
 
 # Adoption strategy
+
 > Our business goal is to increase the adoption of Neo4j, and improve developer productivity
+
 -   Work closely with Dev-Rel to raise awareness in the community
 -   Work closely with Aura to encourage adoption and migration
 -   A CLI to integrate with developers existing tooling and workflows

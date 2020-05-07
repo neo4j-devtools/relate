@@ -1,6 +1,6 @@
 export const JSON_FILE_EXTENSION = '.json';
 
-export const DEFAULT_ACCOUNT_NAME = 'default';
+export const DEFAULT_ENVIRONMENT_NAME = 'default';
 
 export const RELATE_KNOWN_CONNECTIONS_FILE = 'known_connections';
 export const DBMS_DIR_NAME = 'dbmss';

@@ -1,26 +1,30 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 
-import {AccountConfigModel, IDbms} from '../models';
-import {ACCOUNT_TYPES} from './account.constants';
+import {EnvironmentConfigModel, IDbms} from '../models';
+import {ENVIRONMENT_TYPES} from './environment.constants';
 import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
 
-import {AccountAbstract} from './account.abstract';
-import {LocalAccount} from './local.account';
+import {EnvironmentAbstract} from './environment.abstract';
+import {LocalEnvironment} from './local.environment';
 import {envPaths} from '../utils';
+import {RemoteEnvironment} from './remote.environment';
 
-export async function createAccountInstance(config: AccountConfigModel): Promise<AccountAbstract> {
-    let account: AccountAbstract;
+export async function createEnvironmentInstance(config: EnvironmentConfigModel): Promise<EnvironmentAbstract> {
+    let environment: EnvironmentAbstract;
     switch (config.type) {
-        case ACCOUNT_TYPES.LOCAL:
-            account = new LocalAccount(config);
+        case ENVIRONMENT_TYPES.LOCAL:
+            environment = new LocalEnvironment(config);
+            break;
+        case ENVIRONMENT_TYPES.REMOTE:
+            environment = new RemoteEnvironment(config);
             break;
         default:
-            throw new InvalidConfigError(`Account type ${config.type} not supported`);
+            throw new InvalidConfigError(`Environment type ${config.type} not supported`);
     }
 
-    await account.init();
-    return account;
+    await environment.init();
+    return environment;
 }
 
 export class TestDbmss {
@@ -28,22 +32,22 @@ export class TestDbmss {
 
     dbmsNames: string[] = [];
 
-    account: AccountAbstract;
+    environment: EnvironmentAbstract;
 
-    constructor(private filename: string, account?: AccountAbstract) {
+    constructor(private filename: string, environment?: EnvironmentAbstract) {
         if (process.env.NODE_ENV !== 'test') {
             throw new NotSupportedError('Cannot use TestDbmss outside of testing environment');
         }
 
-        const config = new AccountConfigModel({
+        const config = new EnvironmentConfigModel({
             dbmss: {},
             id: 'test',
             neo4jDataPath: envPaths().data,
-            type: ACCOUNT_TYPES.LOCAL,
+            type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
         });
 
-        this.account = account || new LocalAccount(config);
+        this.environment = environment || new LocalEnvironment(config);
     }
 
     createName(): string {
@@ -58,7 +62,7 @@ export class TestDbmss {
         const version = process.env.TEST_NEO4J_VERSION || '4.0.4';
         const name = this.createName();
 
-        await this.account.installDbms(name, TestDbmss.DBMS_CREDENTIALS, version);
+        await this.environment.installDbms(name, TestDbmss.DBMS_CREDENTIALS, version);
 
         const shortUUID = uuid().slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
@@ -76,16 +80,16 @@ export class TestDbmss {
         properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
         properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
-        await this.account.updateDbmsConfig(name, properties);
+        await this.environment.updateDbmsConfig(name, properties);
 
-        return this.account.getDbms(name);
+        return this.environment.getDbms(name);
     }
 
     async teardown(): Promise<void> {
         const uninstallAll = this.dbmsNames.map(async (name) => {
             try {
-                await this.account.stopDbmss([name]);
-                await this.account.uninstallDbms(name);
+                await this.environment.stopDbmss([name]);
+                await this.environment.uninstallDbms(name);
             } catch (e) {
                 if (e instanceof NotFoundError) {
                     return;

@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import {envPaths} from '../../utils/';
 import {ensureDirs, ensureFiles} from './ensure-files';
-import {ILocalAccountDirPaths, ISystemProviderDirPaths, ISystemProviderFilePaths} from './ensure-files.constants';
+import {ILocalEnvironmentDirPaths, ISystemProviderDirPaths, ISystemProviderFilePaths} from './ensure-files.constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'ensure-files');
 
@@ -24,7 +24,7 @@ describe('ensure-files', () => {
 
     test('ensureDirs: ensure directories are created correctly', async () => {
         const expectedFileNames = [...defaultFileNames, 'neo4jDist'];
-        const dirPaths: ILocalAccountDirPaths = {
+        const dirPaths: ILocalEnvironmentDirPaths = {
             ...defaultPaths,
             neo4jDistribution: path.join(TMP_HOME, 'neo4jDist'),
         };
@@ -39,10 +39,10 @@ describe('ensure-files', () => {
     });
 
     test('ensureDirs and ensureFiles: ensure directories and files are created correctly', async () => {
-        const expectedFileNames = [...defaultFileNames, 'accounts', 'known_connections'];
+        const expectedFileNames = [...defaultFileNames, 'environments', 'known_connections'];
         const dirPaths: ISystemProviderDirPaths = {
             ...defaultPaths,
-            accounts: path.join(TMP_HOME, 'accounts'),
+            environments: path.join(TMP_HOME, 'environments'),
         };
         const filePaths: ISystemProviderFilePaths = {
             knownConnections: path.join(TMP_HOME, 'known_connections'),

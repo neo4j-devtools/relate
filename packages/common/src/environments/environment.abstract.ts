@@ -1,13 +1,13 @@
 import {IAuthToken} from 'tapestry';
 
-import {AccountConfigModel, IDbms, IDbmsVersion} from '../models';
+import {EnvironmentConfigModel, IDbms, IDbmsVersion} from '../models';
 
-export abstract class AccountAbstract {
+export abstract class EnvironmentAbstract {
     get id(): string {
         return this.config.id;
     }
 
-    constructor(protected config: AccountConfigModel) {}
+    constructor(protected config: EnvironmentConfigModel) {}
 
     init(): Promise<void> {
         return Promise.resolve();

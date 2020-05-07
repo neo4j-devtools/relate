@@ -10,7 +10,7 @@ import {
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_EDITION,
     NEO4J_ORIGIN,
-} from '../../account.constants';
+} from '../../environment.constants';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 import {IDbmsVersion} from '../../../models';
 

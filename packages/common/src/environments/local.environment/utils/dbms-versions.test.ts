@@ -5,11 +5,11 @@ import path from 'path';
 import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
 
 import {envPaths} from '../../../utils';
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../account.constants';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environment.constants';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
-describe('DBMS versions (local account)', () => {
+describe('DBMS versions (local environment)', () => {
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, 'neo4j');
         const versions = await discoverNeo4jDistributions(dbmssDataDir);

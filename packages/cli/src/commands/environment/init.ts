@@ -1,4 +1,4 @@
-import {InitModule} from '../../modules/account/init.module';
+import {InitModule} from '../../modules/environment/init.module';
 import BaseCommand from '../../base.command';
 
 export default class InitCommand extends BaseCommand {

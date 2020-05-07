@@ -20,9 +20,9 @@ export class InstallModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const {name} = args;
-        const {account: accountId, credentials} = flags;
+        const {environment: environmentId, credentials} = flags;
         let {version} = flags;
-        const account = await this.systemProvider.getAccount(accountId);
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
         if (!name || !credentials || !version) {
             // @todo: figure this out in combination with TTY
@@ -34,7 +34,7 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        return account.installDbms(name, credentials, version).then((res) => {
+        return environment.installDbms(name, credentials, version).then((res) => {
             this.utils.log(res);
         });
     }

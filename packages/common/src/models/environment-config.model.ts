@@ -1,8 +1,8 @@
 import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
 
-import {ACCOUNT_TYPES} from '../accounts';
+import {ENVIRONMENT_TYPES} from '../environments';
 import {ModelAbstract} from './model.abstract';
-import {NEO4J_EDITION, NEO4J_ORIGIN} from '../accounts/account.constants';
+import {NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
 import {PropertiesFile} from '../system/files';
 
 export interface IDbms {
@@ -20,15 +20,15 @@ export interface IDbmsVersion {
     origin: NEO4J_ORIGIN;
 }
 
-export interface IAccountConfig {
+export interface IEnvironmentConfig {
     id: string;
     user: any;
     neo4jDataPath?: string;
-    type: ACCOUNT_TYPES;
+    type: ENVIRONMENT_TYPES;
     dbmss?: {[key: string]: IDbms};
 }
 
-export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements IAccountConfig {
+export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
     // @todo: should be uuid
     @IsString()
     public id!: string;
@@ -37,13 +37,23 @@ export class AccountConfigModel extends ModelAbstract<IAccountConfig> implements
     @IsNotEmpty()
     public user: any;
 
-    @IsEnum(ACCOUNT_TYPES)
-    public type!: ACCOUNT_TYPES;
+    @IsEnum(ENVIRONMENT_TYPES)
+    public type!: ENVIRONMENT_TYPES;
 
-    // @todo: this is optional and LocalAccount specific
+    // @todo: this is LocalEnvironment specific
     @IsString()
     @IsOptional()
     public neo4jDataPath?: string;
+
+    // @todo: this is RemoteEnvironment specific
+    @IsString()
+    @IsOptional()
+    public relateURL?: string;
+
+    // @todo: this is RemoteEnvironment specific
+    @IsString()
+    @IsOptional()
+    public relateEnvironment?: string;
 
     @IsOptional()
     public dbmss?: {[key: string]: IDbms};

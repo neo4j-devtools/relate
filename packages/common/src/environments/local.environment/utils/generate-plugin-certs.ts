@@ -1,6 +1,10 @@
 import {pki} from 'node-forge';
 
-import {NEO4J_JWT_CERT_ATTRS, NEO4J_JWT_CERT_BIT_LENGTH, NEO4J_JWT_CERT_VALIDITY_YEARS} from '../../account.constants';
+import {
+    NEO4J_JWT_CERT_ATTRS,
+    NEO4J_JWT_CERT_BIT_LENGTH,
+    NEO4J_JWT_CERT_VALIDITY_YEARS,
+} from '../../environment.constants';
 
 export function generatePluginCerts(passphrase: string): {publicKey: string; privateKey: string} {
     // generate a keypair or use one you have already

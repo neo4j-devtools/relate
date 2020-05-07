@@ -1,13 +1,13 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-import {ACCOUNT_TYPES} from '../account.constants';
-import {AccountConfigModel} from '../../models';
+import {ENVIRONMENT_TYPES} from '../environment.constants';
+import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
-import {LocalAccount} from './local.account';
+import {LocalEnvironment} from './local.environment';
 import {PropertiesFile} from '../../system/files';
 
-const TMP_HOME = path.join(envPaths().tmp, 'local-account.list');
+const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, 'dbmss');
 
 jest.mock('../../utils/read-properties-file', () => ({
@@ -20,13 +20,13 @@ function generateDummyConf(dbms: string): PropertiesFile {
     return new PropertiesFile(new Map(), configPath);
 }
 
-describe('LocalAccount - list', () => {
-    let account: LocalAccount;
+describe('LocalEnvironment - list', () => {
+    let environment: LocalEnvironment;
 
     beforeAll(async () => {
         await fse.ensureDir(INSTALLATION_ROOT);
 
-        const config = new AccountConfigModel({
+        const config = new EnvironmentConfigModel({
             dbmss: {
                 '6bb553ba': {
                     connectionUri: 'neo4j://127.0.0.1:7687',
@@ -45,17 +45,17 @@ describe('LocalAccount - list', () => {
             },
             id: 'test',
             neo4jDataPath: TMP_HOME,
-            type: ACCOUNT_TYPES.LOCAL,
+            type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
         });
 
-        account = new LocalAccount(config);
+        environment = new LocalEnvironment(config);
     });
 
     afterAll(() => fse.remove(TMP_HOME));
 
     test('list no dbmss installed', async () => {
-        const dbmss = await account.listDbmss();
+        const dbmss = await environment.listDbmss();
         expect(dbmss).toEqual([]);
     });
 
@@ -82,7 +82,7 @@ describe('LocalAccount - list', () => {
         const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(INSTALLATION_ROOT, dbms)));
         await Promise.all(createDirs);
 
-        const actual = await account.listDbmss();
+        const actual = await environment.listDbmss();
         const sortedActual = actual.sort((a, b) => {
             if (a.name > b.name) {
                 return -1;
@@ -109,7 +109,7 @@ describe('LocalAccount - list', () => {
             },
         ];
 
-        const actual = await account.listDbmss();
+        const actual = await environment.listDbmss();
         expect(actual).toEqual(expected);
     });
 });

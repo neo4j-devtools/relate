@@ -19,9 +19,9 @@ export class ListModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
 
-        return account.listDbmss().then((dbmss) => {
+        return environment.listDbmss().then((dbmss) => {
             cli.table(
                 dbmss,
                 {

@@ -19,12 +19,12 @@ export class AppsResolver {
         @Args('appId') appId: string,
         @Args('launchToken') launchToken: string,
     ): Promise<AppLaunchData> {
-        const {accountId, dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appId, launchToken);
-        const account = await this.systemProvider.getAccount(accountId);
-        const dbms = await account.getDbms(dbmsId);
+        const {environmentId, dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appId, launchToken);
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const dbms = await environment.getDbms(dbmsId);
 
         return {
-            accountId: account.id,
+            environmentId: environment.id,
             dbms,
             ...rest,
         };
@@ -32,13 +32,19 @@ export class AppsResolver {
 
     @Mutation(() => AppLaunchToken)
     async createAppLaunchToken(
-        @Args('accountId') accountId: string,
+        @Args('environmentId') environmentId: string,
         @Args('appId') appId: string,
         @Args('dbmsId') dbmsId: string,
         @Args('principal') principal: string,
         @Args('accessToken') accessToken: string,
     ): Promise<AppLaunchToken> {
-        const token = await this.systemProvider.createAppLaunchToken(accountId, appId, dbmsId, principal, accessToken);
+        const token = await this.systemProvider.createAppLaunchToken(
+            environmentId,
+            appId,
+            dbmsId,
+            principal,
+            accessToken,
+        );
 
         return {
             path: createAppLaunchUrl(this.configService.get('staticHTTPRoot'), appId, token),

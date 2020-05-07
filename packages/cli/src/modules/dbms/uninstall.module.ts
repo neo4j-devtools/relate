@@ -19,12 +19,12 @@ export class UninstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const account = await this.systemProvider.getAccount(flags.account);
+        const environment = await this.systemProvider.getEnvironment(flags.environment);
         let {dbmsId} = args;
 
         if (!dbmsId) {
             if (isTTY()) {
-                const dbmss = await account.listDbmss();
+                const dbmss = await environment.listDbmss();
 
                 const {selectedDbms} = await prompt({
                     choices: dbmss.map((dbms) => ({
@@ -42,7 +42,7 @@ export class UninstallModule implements OnApplicationBootstrap {
             }
         }
 
-        return account.uninstallDbms(dbmsId).then(() => {
+        return environment.uninstallDbms(dbmsId).then(() => {
             this.utils.log(dbmsId);
         });
     }
