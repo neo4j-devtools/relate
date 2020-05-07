@@ -11,7 +11,7 @@ interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;
 }
 
-export const extractFromArchive = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
+export const extractNeo4j = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
     const outputFiles = await decompress(archivePath, outputDir);
     // determine output dir filename from the shortest directory string path
     const outputTopLevelDir = _.reduce(

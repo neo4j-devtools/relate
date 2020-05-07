@@ -10,7 +10,7 @@ import hasha from 'hasha';
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../environment.constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {FetchError, IntegrityError, NotFoundError} from '../../../errors';
-import {extractFromArchive} from '../../../utils';
+import {envPaths, extractNeo4j} from '../../../utils';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
@@ -66,7 +66,7 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     // just so its obvious that its currently in progress.
     const tmpName = uuidv4();
     // output to tmp dir initially instead of neo4jDistribution dir?
-    const tmpPath = path.join(neo4jDistributionPath, tmpName);
+    const tmpPath = path.join(envPaths().tmp, tmpName);
 
     // download and pipe to tmpPath
     await pipeline(requestedDistributionUrl, tmpPath);
@@ -74,7 +74,7 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     await verifyHash(shaSum, tmpPath);
 
     // extract to cache dir first
-    const {edition: neo4jEdition, version: neo4jVersion} = await extractFromArchive(tmpPath, neo4jDistributionPath);
+    const {edition: neo4jEdition, version: neo4jVersion} = await extractNeo4j(tmpPath, neo4jDistributionPath);
     const archiveName = `neo4j-${neo4jEdition}-${neo4jVersion}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
     const archivePath = path.join(neo4jDistributionPath, archiveName);
     // rename the tmp output

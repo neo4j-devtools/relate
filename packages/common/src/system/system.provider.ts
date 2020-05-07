@@ -36,7 +36,7 @@ import {
     registerSystemAccessToken,
     isValidUrl,
     isValidPath,
-    extractFromArchive,
+    extractExtension,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
 import {discoverExtension, discoverExtensionDistributions, IExtensionMeta} from '../utils/extension-versions';
@@ -270,10 +270,9 @@ export class SystemProvider implements OnModuleInit {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractFromArchive(version, extensionDistributions);
-            const discovered = await discoverExtension(extractedDistPath);
+            const discovered = await extractExtension(version, extensionDistributions);
 
-            return this.installRelateExtension(discovered, extensionTarget, extractedDistPath);
+            return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
@@ -291,7 +290,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         if (await fse.pathExists(target)) {
-            throw new ExtensionExistsError(`${extension.name} is already installed exists`);
+            throw new ExtensionExistsError(`${extension.name} is already installed`);
         }
 
         await fse.copy(extractedDistPath, target);

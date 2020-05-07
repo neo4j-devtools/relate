@@ -41,7 +41,7 @@ import {
     JSON_FILE_EXTENSION,
     LOCALHOST_IP_ADDRESS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractFromArchive} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j} from '../../utils';
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -121,7 +121,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractFromArchive(version, this.cachePaths.dbmss);
+            const {extractedDistPath} = await extractNeo4j(version, this.cachePaths.dbmss);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
