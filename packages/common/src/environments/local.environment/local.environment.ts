@@ -34,7 +34,13 @@ import {
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
 } from '../environment.constants';
-import {DBMS_DIR_NAME, JSON_FILE_EXTENSION} from '../../constants';
+import {
+    BOLT_DEFAULT_PORT,
+    DBMS_DIR_NAME,
+    DBMS_TLS_LEVEL,
+    JSON_FILE_EXTENSION,
+    LOCALHOST_IP_ADDRESS,
+} from '../../constants';
 import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractFromArchive} from '../../utils';
 import {
     resolveDbms,
@@ -402,16 +408,20 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 if (hasConf && fileName.startsWith('dbms-')) {
                     const id = fileName.replace('dbms-', '');
                     const config = await PropertiesFile.readFile(confPath);
+                    // @todo: verify these settings with driver team
+                    const tlsLevel = config.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
+                    const protocol = tlsLevel !== DBMS_TLS_LEVEL.DISABLED ? 'neo4j+s://' : 'neo4j://';
+                    const host = config.get('dbms.default_listen_address') || LOCALHOST_IP_ADDRESS;
+                    const port = config.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
                     const defaultValues = {
                         description: '',
                         name: '',
                     };
 
                     this.dbmss[id] = _.merge(defaultValues, configDbmss[id], {
-                        // @todo: change this in extensions PR
-                        connectionUri: 'neo4j://127.0.0.1:7687',
-                        id,
                         config,
+                        connectionUri: `${protocol}${host}${port}`,
+                        id,
                     });
                 }
             }),
