@@ -48,8 +48,8 @@ import {ensureDirs, ensureFiles} from './files';
 export class SystemProvider implements OnModuleInit {
     protected readonly dataPaths = {
         ...envPaths(),
-        environments: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
+        environments: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         extensions: path.join(envPaths().data, EXTENSION_DIR_NAME),
     };
 
@@ -121,14 +121,14 @@ export class SystemProvider implements OnModuleInit {
         }
 
         const config = {
+            dbmss: {},
             id: DEFAULT_ENVIRONMENT_NAME,
             neo4jDataPath: this.dataPaths.data,
             type: ENVIRONMENT_TYPES.LOCAL,
-            user: undefined,
-            dbmss: {},
+            user: 'local',
         };
         const configModel = new EnvironmentConfigModel(config);
-        const defaultEnvironment = await createEnvironmentInstance(configModel);
+        const defaultEnvironment = await createEnvironmentInstance(configModel, defaultEnvironmentPath);
 
         await fse.writeJSON(defaultEnvironmentPath, config, {spaces: 2});
         this.allEnvironments.set(DEFAULT_ENVIRONMENT_NAME, defaultEnvironment);
@@ -142,23 +142,22 @@ export class SystemProvider implements OnModuleInit {
             availableFiles,
             (environment) => path.extname(environment).toLocaleLowerCase() === JSON_FILE_EXTENSION,
         );
-        const environmentConfigs: string[] = await Promise.all(
-            _.map(availableEnvironments, (environment) =>
-                fse.readFile(path.join(environmentsDir, environment), 'utf8'),
-            ),
+
+        await Promise.all(
+            _.map(availableEnvironments, async (environment) => {
+                const configPath = path.join(environmentsDir, environment);
+                const config = await fse.readJSON(configPath);
+                const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
+                    ...config,
+                    neo4jDataPath: config.neo4jDataPath || this.dataPaths.data,
+                });
+
+                this.allEnvironments.set(
+                    `${environmentConfig.id}`,
+                    await createEnvironmentInstance(environmentConfig, configPath),
+                );
+            }),
         );
-
-        const createEnvironmentPromises = _.map(environmentConfigs, async (environmentConfigBuffer) => {
-            const config = JSON.parse(environmentConfigBuffer);
-            const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
-                ...config,
-                neo4jDataPath: config.neo4jDataPath || this.dataPaths.data,
-            });
-
-            this.allEnvironments.set(`${environmentConfig.id}`, await createEnvironmentInstance(environmentConfig));
-        });
-
-        await Promise.all(createEnvironmentPromises);
     }
 
     createAppLaunchToken(
@@ -212,9 +211,9 @@ export class SystemProvider implements OnModuleInit {
                     resolve(
                         new AppLaunchTokenModel({
                             accessToken: decoded.accessToken,
-                            environmentId: decoded.environmentId,
                             appId: decoded.appId,
                             dbmsId: decoded.dbmsId,
+                            environmentId: decoded.environmentId,
                             principal: decoded.principal,
                         }),
                     );

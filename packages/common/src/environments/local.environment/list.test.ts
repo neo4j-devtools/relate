@@ -34,6 +34,7 @@ describe('LocalEnvironment - list', () => {
                     description: 'DBMS with metadata',
                     id: '6bb553ba',
                     name: 'Name',
+                    rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
                 },
                 e0aef2ad: {
                     connectionUri: 'neo4j://127.0.0.1:7687',
@@ -41,6 +42,7 @@ describe('LocalEnvironment - list', () => {
                     description: 'DBMS present in the config but not in the DBMS dir.',
                     id: 'e0aef2ad',
                     name: "Shouldn't be listed",
+                    rootPath: path.join(INSTALLATION_ROOT, 'dbms-e0aef2ad'),
                 },
             },
             id: 'test',
@@ -49,7 +51,7 @@ describe('LocalEnvironment - list', () => {
             user: 'test',
         });
 
-        environment = new LocalEnvironment(config);
+        environment = new LocalEnvironment(config, 'nowhere');
     });
 
     afterAll(() => fse.remove(TMP_HOME));
@@ -68,6 +70,7 @@ describe('LocalEnvironment - list', () => {
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
+                rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
             },
             {
                 config: generateDummyConf('998f936e'),
@@ -75,17 +78,20 @@ describe('LocalEnvironment - list', () => {
                 description: '',
                 id: '998f936e',
                 name: '',
+                rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
             },
         ];
 
         const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
 
-        jest.spyOn(fse, 'pathExists').mockImplementation(async (p: string) => {
-            return !p.includes('not-a-dbms');
+        jest.spyOn(fse, 'pathExists').mockImplementation((p: string) => {
+            return Promise.resolve(!p.includes('not-a-dbms'));
         });
 
-        jest.spyOn(PropertiesFile, 'readFile').mockImplementation(async (p: string) => {
-            return p.includes('6bb553ba') ? generateDummyConf('6bb553ba') : generateDummyConf('998f936e');
+        jest.spyOn(PropertiesFile, 'readFile').mockImplementation((p: string) => {
+            return Promise.resolve(
+                p.includes('6bb553ba') ? generateDummyConf('6bb553ba') : generateDummyConf('998f936e'),
+            );
         });
 
         const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(INSTALLATION_ROOT, dbms)));
@@ -115,6 +121,7 @@ describe('LocalEnvironment - list', () => {
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
+                rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
             },
         ];
 

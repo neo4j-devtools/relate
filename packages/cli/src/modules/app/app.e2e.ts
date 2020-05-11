@@ -1,8 +1,10 @@
 import {test} from '@oclif/test';
-import {TestDbmss} from '@relate/common';
+import {envPaths, EXTENSION_DIR_NAME, EXTENSION_TYPES, TestDbmss} from '@relate/common';
+import path from 'path';
+import fse from 'fs-extra';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
-import LaunchCommand from '../../commands/app/launch';
+import OpenCommand from '../../commands/app/open';
 import StartCommand from '../../commands/dbms/start';
 
 jest.mock('cli-ux', () => {
@@ -14,6 +16,7 @@ jest.mock('cli-ux', () => {
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ENVIRONMENT_ID = 'test';
 const TEST_APP_ID = 'foo';
+const TEST_APP_FILE = path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, TEST_APP_ID, 'index.html');
 let TEST_DB_NAME: string;
 
 describe('$relate app', () => {
@@ -22,10 +25,16 @@ describe('$relate app', () => {
     beforeAll(async () => {
         const {name} = await dbmss.createDbms();
 
+        await fse.ensureFile(TEST_APP_FILE);
+
         TEST_DB_NAME = name;
     });
 
-    afterAll(() => dbmss.teardown());
+    afterAll(async () => {
+        await fse.unlink(TEST_APP_FILE);
+
+        return dbmss.teardown();
+    });
 
     test.stdout().it('logs app launch token', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
@@ -40,7 +49,7 @@ describe('$relate app', () => {
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
 
-        await LaunchCommand.run([
+        await OpenCommand.run([
             TEST_APP_ID,
             `--dbmsId=${TEST_DB_NAME}`,
             '--principal=neo4j',

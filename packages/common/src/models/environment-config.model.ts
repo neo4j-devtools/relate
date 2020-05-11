@@ -9,6 +9,7 @@ export interface IDbms {
     id: string;
     name: string;
     description: string;
+    rootPath?: string;
     connectionUri: string;
     config: PropertiesFile;
 }

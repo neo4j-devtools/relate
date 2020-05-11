@@ -33,15 +33,25 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
+    DEFAULT_WEB_HOST,
 } from '../environment.constants';
 import {
     BOLT_DEFAULT_PORT,
     DBMS_DIR_NAME,
     DBMS_TLS_LEVEL,
+    EXTENSION_DIR_NAME,
+    EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
     LOCALHOST_IP_ADDRESS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j} from '../../utils';
+import {
+    envPaths,
+    parseNeo4jConfigPort,
+    isValidUrl,
+    isValidPath,
+    extractNeo4j,
+    discoverExtensionDistributions,
+} from '../../utils';
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -209,6 +219,19 @@ export class LocalEnvironment extends EnvironmentAbstract {
         } catch (e) {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }
+    }
+
+    public async getAppUrl(appName: string): Promise<string> {
+        const installedApps = await discoverExtensionDistributions(
+            path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
+        );
+
+        if (!_.some(installedApps, (app) => app.name === appName)) {
+            throw new NotFoundError(`App ${appName} not installed`);
+        }
+
+        // @todo: use Bonjour to detect server base url
+        return `${DEFAULT_WEB_HOST}/${EXTENSION_TYPES.STATIC}/${appName}`;
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
@@ -422,6 +445,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                         config,
                         connectionUri: `${protocol}${host}${port}`,
                         id,
+                        rootPath: fullPath,
                     });
                 }
             }),

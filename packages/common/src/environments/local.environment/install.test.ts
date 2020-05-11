@@ -30,7 +30,7 @@ describe('LocalEnvironment - install', () => {
 
         await localUtils.downloadNeo4j(TEST_NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));
 
-        environment = new LocalEnvironment(config);
+        environment = new LocalEnvironment(config, 'nowhere');
         dbmss = new TestDbmss(__filename, environment);
     });
 

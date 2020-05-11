@@ -9,4 +9,3 @@ export const DBMS_FLAGS = {
         description: 'Environment to run the command against',
     }),
 };
-export const DEFAULT_WEB_HOST = 'http://localhost:3000';
