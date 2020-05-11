@@ -1,6 +1,6 @@
 import {IAuthToken} from 'tapestry';
 
-import {EnvironmentConfigModel, IDbms, IDbmsVersion} from '../models';
+import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
@@ -16,6 +16,8 @@ export abstract class EnvironmentAbstract {
     init(): Promise<void> {
         return Promise.resolve();
     }
+
+    abstract login(): Promise<IEnvironmentAuth>;
 
     abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
 

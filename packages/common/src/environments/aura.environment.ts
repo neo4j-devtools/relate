@@ -2,9 +2,13 @@ import {IAuthToken} from 'tapestry';
 
 import {EnvironmentAbstract} from './environment.abstract';
 import {NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion} from '../models';
+import {IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 
 export class AuraEnvironment extends EnvironmentAbstract {
+    login(): Promise<IEnvironmentAuth> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support login`);
+    }
+
     listDbmsVersions(): Promise<IDbmsVersion[]> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support listing DBMS versions`);
     }

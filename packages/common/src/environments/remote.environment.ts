@@ -1,16 +1,31 @@
-import {IAuthToken} from 'tapestry';
-import {execute, makePromise, ApolloLink, FetchResult, GraphQLRequest} from 'apollo-link';
+import {ApolloLink, execute, FetchResult, GraphQLRequest, makePromise} from 'apollo-link';
 import {HttpLink} from 'apollo-link-http';
-
+import {google} from 'googleapis';
+import {IAuthToken} from 'tapestry';
 import fetch from 'node-fetch';
 import gql from 'graphql-tag';
+import path from 'path';
+import fse from 'fs-extra';
 
 import {FetchError, InvalidConfigError, NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion, EnvironmentConfigModel} from '../models/environment-config.model';
+import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
+import {oAuthRedirectServer} from './oauth-utils';
+import {JSON_FILE_EXTENSION} from '../constants';
+import {envPaths} from '../utils';
+import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
+import {ensureDirs} from '../system';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     private client: ApolloLink;
+
+    private readonly dirPaths = {
+        environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
+    };
+
+    async init(): Promise<void> {
+        await ensureDirs(this.dirPaths);
+    }
 
     constructor(config: EnvironmentConfigModel, configPath: string) {
         super(config, configPath);
@@ -21,10 +36,17 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             fetch: fetch as any,
+            headers: {
+                Authorization: this.config.accessToken,
+            },
         });
     }
 
     private graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
+        if (!this.config.accessToken) {
+            throw new NotAllowedError('Unauthorized: must login to perform this operation');
+        }
+
         if (!this.config.relateURL) {
             throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
         }
@@ -34,6 +56,65 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         } catch {
             throw new FetchError(`Failed to connect to ${this.config.relateURL}`);
         }
+    }
+
+    async login(): Promise<IEnvironmentAuth> {
+        const CLIENT_ID = process.env.CLIENT_ID || '';
+        // According to this client_secret is not used as a secret in our case,
+        // so it should be fine for it to be here.
+        // https://developers.google.com/identity/protocols/oauth2#installed
+        const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
+        const host = '127.0.0.1';
+        const port = '5555';
+
+        const oauth2Client = new google.auth.OAuth2({
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            redirectUri: `http://${host}:${port}`,
+        });
+
+        const authUrl = oauth2Client.generateAuthUrl({
+            // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+            access_type: 'offline',
+            scope: 'email',
+        });
+
+        return {
+            authUrl,
+            getToken: async () => {
+                const code = await oAuthRedirectServer({
+                    host,
+                    port,
+                });
+
+                const {tokens} = await oauth2Client.getToken({code});
+
+                if (!tokens.id_token) {
+                    return null;
+                }
+
+                const data = await oauth2Client.verifyIdToken({
+                    audience: CLIENT_ID,
+                    idToken: tokens.id_token,
+                });
+
+                // TODO: store refresh token too
+                const environmentConfigPath = path.join(
+                    this.dirPaths.environmentsConfig,
+                    this.id + JSON_FILE_EXTENSION,
+                );
+                const configStr = await fse.readFile(environmentConfigPath, 'utf-8');
+                const config = configStr && JSON.parse(configStr);
+
+                config.accessToken = tokens.id_token;
+                await fse.writeFile(environmentConfigPath, JSON.stringify(config));
+
+                return {
+                    token: tokens.id_token,
+                    payload: await data.getPayload(),
+                };
+            },
+        };
     }
 
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
