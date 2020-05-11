@@ -23,10 +23,6 @@ _See code: [dist/commands/extension/install.ts](https://github.com/neo-technolog
 ```
 USAGE
   $ relate extension:uninstall [NAME]
-
-OPTIONS
-  -T, --type=type        Extension type
-  -V, --version=version  Version to uninstall
 ```
 
 _See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/extension/uninstall.ts)_

@@ -13,6 +13,7 @@ import {
     RELATE_KNOWN_CONNECTIONS_FILE,
     TWENTY_FOUR_HOURS_SECONDS,
     EXTENSION_DIR_NAME,
+    EXTENSION_TYPES,
 } from '../constants';
 import {
     ENVIRONMENT_TYPES,
@@ -37,9 +38,11 @@ import {
     isValidUrl,
     isValidPath,
     extractExtension,
+    arrayHasItems,
+    discoverExtensionDistributions,
+    IExtensionMeta,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
-import {discoverExtension, discoverExtensionDistributions, IExtensionMeta} from '../utils/extension-versions';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -228,6 +231,16 @@ export class SystemProvider implements OnModuleInit {
         });
     }
 
+    async listInstalledExtensions(): Promise<IExtensionMeta[]> {
+        const all = await Promise.all(
+            _.flatMap(_.values(EXTENSION_TYPES), (type) =>
+                discoverExtensionDistributions(path.join(this.dataPaths.data, EXTENSION_DIR_NAME, type)),
+            ),
+        );
+
+        return _.flatten(all);
+    }
+
     async installExtension(name: string, version = '*'): Promise<IExtensionMeta> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
@@ -298,18 +311,20 @@ export class SystemProvider implements OnModuleInit {
         return extension;
     }
 
-    async uninstallExtension(name: string, type: string, version?: string) {
-        const extensionRootPath = path.join(this.dataPaths.extensions, type, name);
-        const extensionMeta = await discoverExtension(extensionRootPath);
+    async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
+        const installedExtensions = await this.listInstalledExtensions();
+        const targets = _.filter(installedExtensions, (ext) => ext.name === name);
 
-        if (version && extensionMeta.version !== version) {
-            throw new InvalidArgumentError(
-                `Version ${version} is not installed, current version is ${extensionMeta.version}`,
-            );
+        if (!arrayHasItems(targets)) {
+            throw new InvalidArgumentError(`Extension ${name} is not installed`);
         }
 
-        await fse.remove(extensionRootPath);
+        return Promise.all(
+            _.map(targets, async (ext) => {
+                await fse.remove(ext.dist);
 
-        return extensionMeta.name;
+                return ext;
+            }),
+        );
     }
 }

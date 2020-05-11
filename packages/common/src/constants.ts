@@ -28,6 +28,11 @@ export enum EXTENSION_TYPES {
     STATIC = 'STATIC',
 }
 
+export enum EXTENSION_ORIGIN {
+    CACHED = 'cached',
+    ONLINE = 'online',
+}
+
 export enum DBMS_TLS_LEVEL {
     DISABLED = 'DISABLED',
     OPTIONAL = 'OPTIONAL',

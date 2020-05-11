@@ -4,14 +4,15 @@ import _ from 'lodash';
 import path from 'path';
 import semver from 'semver';
 
-import {EXTENSION_MANIFEST, EXTENSION_MANIFEST_KEY, EXTENSION_TYPES, PACKAGE_JSON} from '../constants';
+import {
+    EXTENSION_MANIFEST,
+    EXTENSION_MANIFEST_KEY,
+    EXTENSION_ORIGIN,
+    EXTENSION_TYPES,
+    PACKAGE_JSON,
+} from '../constants';
 import {NotFoundError} from '../errors';
 import {ExtensionModel, IInstalledExtension} from '../models';
-
-export enum EXTENSION_ORIGIN {
-    CACHED = 'cached',
-    ONLINE = 'online',
-}
 
 export interface IExtensionMeta {
     type: EXTENSION_TYPES;

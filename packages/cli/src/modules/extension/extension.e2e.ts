@@ -5,7 +5,6 @@ import {envPaths, EXTENSION_DIR_NAME, NotFoundError} from '@relate/common';
 import InstallCommand from '../../commands/extension/install';
 import UninstallCommand from '../../commands/extension/uninstall';
 
-const TEST_EXTENSION_TYPE = 'STATIC';
 const TEST_EXTENSION_NAME = 'neo4j-insight';
 const TEST_MISSING_EXTENSION = 'neo4j-desktop';
 
@@ -25,9 +24,9 @@ describe('$relate extension', () => {
     });
 
     test.stdout().it('uninstalls extension', async (ctx) => {
-        await UninstallCommand.run([TEST_EXTENSION_NAME, '--type', TEST_EXTENSION_TYPE]);
+        await UninstallCommand.run([TEST_EXTENSION_NAME]);
 
-        expect(ctx.stdout).toEqual(expect.stringContaining(TEST_EXTENSION_NAME));
+        expect(ctx.stdout).toEqual(expect.stringContaining(`Uninstalled ${TEST_EXTENSION_NAME}@`));
     });
 
     test.stdout().it('installs extension from file', async (ctx) => {
@@ -38,8 +37,8 @@ describe('$relate extension', () => {
     });
 
     test.stdout().it('uninstalls extension', async (ctx) => {
-        await UninstallCommand.run([TEST_EXTENSION_NAME, '--type', TEST_EXTENSION_TYPE]);
+        await UninstallCommand.run([TEST_EXTENSION_NAME]);
 
-        expect(ctx.stdout).toEqual(expect.stringContaining(TEST_EXTENSION_NAME));
+        expect(ctx.stdout).toEqual(expect.stringContaining(`Uninstalled ${TEST_EXTENSION_NAME}@`));
     });
 });

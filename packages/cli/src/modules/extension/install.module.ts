@@ -28,6 +28,7 @@ export class InstallModule implements OnApplicationBootstrap {
         }
 
         const pathVersion = version && path.resolve(version);
+
         if (pathVersion && (await fse.pathExists(pathVersion))) {
             version = pathVersion;
         }
