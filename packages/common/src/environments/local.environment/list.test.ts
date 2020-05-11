@@ -110,7 +110,6 @@ describe('LocalEnvironment - list', () => {
         expect(sortedActual).toEqual(expected);
     });
 
-    // @todo: broken as we now check for conf existing
     test('do not list removed dbmss', async () => {
         const dbmsId = '998f936e';
         await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbmsId}`));

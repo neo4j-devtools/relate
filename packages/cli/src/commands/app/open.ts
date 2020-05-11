@@ -21,7 +21,7 @@ export default class OpenCommand extends BaseCommand {
         principal: flags.string({
             char: 'P',
             description: 'The DBMS user to automatically connect with, assuming an access token exists',
-            required: true,
+            required: false,
         }),
     };
 }
