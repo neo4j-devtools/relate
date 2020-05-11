@@ -36,7 +36,7 @@ describe('Download Neo4j (to local cache)', () => {
 
     afterEach(() => jest.restoreAllMocks());
 
-    // afterAll(() => fse.remove(TMP_NEO4J_DIST_PATH));
+    afterAll(() => fse.remove(TMP_NEO4J_DIST_PATH));
 
     test('downloadNeo4j: successfully download and extract neo4j', async () => {
         // setup spies

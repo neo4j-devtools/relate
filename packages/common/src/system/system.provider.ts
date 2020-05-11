@@ -273,7 +273,7 @@ export class SystemProvider implements OnModuleInit {
                 },
             );
 
-            // if cached version of neo4j doesn't exist, attempt to download
+            // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
                 throw new NotSupportedError(`fetch and install ${name}@${version}`);
             }
