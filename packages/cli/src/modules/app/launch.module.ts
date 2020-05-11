@@ -35,7 +35,7 @@ export class LaunchModule implements OnApplicationBootstrap {
             .then((launchToken) =>
                 Promise.all([
                     // @todo: cleanup
-                    cli.open(`${host}/apps/${appId}?_appLaunchToken=${launchToken}`),
+                    cli.open(`${host}/static/${appId}?_appLaunchToken=${launchToken}`),
                     this.utils.log(`Launching app "${appId}" with token ${launchToken}`),
                 ]),
             );

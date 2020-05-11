@@ -60,18 +60,18 @@ describe('LocalEnvironment - list', () => {
     });
 
     // @todo: broken as we now check for conf existing
-    test.skip('list dbmss installed', async () => {
+    test('list dbmss installed', async () => {
         const expected = [
             {
-                connectionUri: 'neo4j://127.0.0.1:7687',
                 config: generateDummyConf('6bb553ba'),
+                connectionUri: 'neo4j://127.0.0.1:7687',
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',
             },
             {
-                connectionUri: 'neo4j://127.0.0.1:7687',
                 config: generateDummyConf('998f936e'),
+                connectionUri: 'neo4j://127.0.0.1:7687',
                 description: '',
                 id: '998f936e',
                 name: '',
@@ -79,6 +79,15 @@ describe('LocalEnvironment - list', () => {
         ];
 
         const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
+
+        jest.spyOn(fse, 'pathExists').mockImplementation(async (p: string) => {
+            return !p.includes('not-a-dbms');
+        });
+
+        jest.spyOn(PropertiesFile, 'readFile').mockImplementation(async (p: string) => {
+            return p.includes('6bb553ba') ? generateDummyConf('6bb553ba') : generateDummyConf('998f936e');
+        });
+
         const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(INSTALLATION_ROOT, dbms)));
         await Promise.all(createDirs);
 
@@ -96,13 +105,13 @@ describe('LocalEnvironment - list', () => {
     });
 
     // @todo: broken as we now check for conf existing
-    test.skip('do not list removed dbmss', async () => {
+    test('do not list removed dbmss', async () => {
         const dbmsId = '998f936e';
         await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbmsId}`));
         const expected = [
             {
-                connectionUri: 'neo4j://127.0.0.1:7687',
                 config: generateDummyConf('6bb553ba'),
+                connectionUri: 'neo4j://127.0.0.1:7687',
                 description: 'DBMS with metadata',
                 id: '6bb553ba',
                 name: 'Name',

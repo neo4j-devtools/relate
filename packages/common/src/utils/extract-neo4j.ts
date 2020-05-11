@@ -3,15 +3,15 @@ import fse from 'fs-extra';
 import decompress from 'decompress';
 import path from 'path';
 
-import {FileStructureError} from '../../../errors';
-import {getDistributionInfo} from '../utils';
-import {IDbmsVersion} from '../../../models/environment-config.model';
+import {FileStructureError} from '../errors';
+import {getDistributionInfo} from '../environments/local.environment/utils';
+import {IDbmsVersion} from '../models';
 
 interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;
 }
 
-export const extractFromArchive = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
+export const extractNeo4j = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
     const outputFiles = await decompress(archivePath, outputDir);
     // determine output dir filename from the shortest directory string path
     const outputTopLevelDir = _.reduce(

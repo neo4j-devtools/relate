@@ -104,7 +104,7 @@ describe('DBMSModule', () => {
 
     test('/graphql accessDbms (started DBMS)', async () => {
         // arbitrary wait for Neo4j to come online
-        await new Promise((resolve) => setTimeout(resolve, 20000));
+        await new Promise((resolve) => setTimeout(resolve, 30000));
 
         return request(app.getHttpServer())
             .post('/graphql')

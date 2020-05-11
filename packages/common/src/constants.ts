@@ -16,6 +16,9 @@ export const EXTENSION_MANIFEST = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_INDEX_HTML = 'index.html';
 
+export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
+export const BOLT_DEFAULT_PORT = ':7687';
+
 export enum EXTENSION_TYPES {
     SYSTEM = 'SYSTEM',
     CLI = 'CLI',
@@ -23,4 +26,15 @@ export enum EXTENSION_TYPES {
     ELECTRON = 'ELECTRON',
     // TASK = 'TASK',
     STATIC = 'STATIC',
+}
+
+export enum EXTENSION_ORIGIN {
+    CACHED = 'cached',
+    ONLINE = 'online',
+}
+
+export enum DBMS_TLS_LEVEL {
+    DISABLED = 'DISABLED',
+    OPTIONAL = 'OPTIONAL',
+    ENABLED = 'ENABLED',
 }

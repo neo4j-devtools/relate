@@ -74,6 +74,7 @@ function mapContentsToExtension(fullPath: string, name: string): IInstalledExten
             main: path.join(fullPath, EXTENSION_INDEX_HTML),
             name,
             root: fullPath,
+            version: '*',
             type: EXTENSION_TYPES.STATIC,
         });
     }

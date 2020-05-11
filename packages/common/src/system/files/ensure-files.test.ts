@@ -23,14 +23,14 @@ describe('ensure-files', () => {
     afterEach(() => fse.remove(TMP_HOME));
 
     test('ensureDirs: ensure directories are created correctly', async () => {
-        const expectedFileNames = [...defaultFileNames, 'neo4jDist'];
-        const dirPaths: ILocalEnvironmentDirPaths = {
+        const expectedFileNames = [...defaultFileNames, 'dbmss'];
+        const dataPaths: ILocalEnvironmentDirPaths = {
             ...defaultPaths,
-            neo4jDistribution: path.join(TMP_HOME, 'neo4jDist'),
+            dbmss: path.join(TMP_HOME, 'dbmss'),
         };
-        await ensureDirs(dirPaths);
+        await ensureDirs(dataPaths);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
-        expect(dirFiles.length).toBe(Object.keys(dirPaths).length);
+        expect(dirFiles.length).toBe(Object.keys(dataPaths).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());
 

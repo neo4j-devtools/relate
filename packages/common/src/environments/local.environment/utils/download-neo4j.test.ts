@@ -6,17 +6,16 @@ import * as uuid from 'uuid';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
-import * as extractNeo4j from './extract-neo4j';
+import * as systemUtils from '../../../utils';
 
-import {envPaths} from '../../../utils';
 import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_ARCHIVE_FILE_SUFFIX, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
 
 jest.mock('uuid');
 
-const TEST_VERSION = '4.0.4';
+const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
-const TMP_NEO4J_DIST_PATH = path.join(envPaths().tmp, 'neo4j_dist');
+const TMP_NEO4J_DIST_PATH = path.join(systemUtils.envPaths().tmp);
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';
 const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, TMP_UUID);
@@ -39,21 +38,19 @@ describe('Download Neo4j (to local cache)', () => {
 
     afterAll(() => fse.remove(TMP_NEO4J_DIST_PATH));
 
-    test('downloadNeo4j: successfuly download and extract neo4j', async () => {
+    test('downloadNeo4j: successfully download and extract neo4j', async () => {
         // setup spies
         const getCheckSumSpy = jest
             .spyOn(downloadNeo4j, 'getCheckSum')
             .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
 
-        const pipelineSpy = jest
-            .spyOn(downloadNeo4j, 'pipeline')
-            .mockImplementation(() => Promise.resolve(fse.ensureFile(TMP_PATH)));
+        const pipelineSpy = jest.spyOn(downloadNeo4j, 'pipeline').mockImplementation(() => fse.ensureFile(TMP_PATH));
 
         const verifyHashSpy = jest
             .spyOn(downloadNeo4j, 'verifyHash')
             .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
 
-        const extractFromArchiveSpy = jest.spyOn(extractNeo4j, 'extractFromArchive').mockImplementation(() =>
+        const extractFromArchiveSpy = jest.spyOn(systemUtils, 'extractNeo4j').mockImplementation(() =>
             Promise.resolve({
                 ...DBMS_VERSION,
                 extractedDistPath: path.join(TMP_NEO4J_DIST_PATH, `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}`),
