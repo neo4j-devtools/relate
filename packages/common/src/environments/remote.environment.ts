@@ -12,8 +12,8 @@ import {EnvironmentAbstract} from './environment.abstract';
 export class RemoteEnvironment extends EnvironmentAbstract {
     private client: ApolloLink;
 
-    constructor(protected config: EnvironmentConfigModel) {
-        super(config);
+    constructor(config: EnvironmentConfigModel, configPath: string) {
+        super(config, configPath);
 
         this.client = new HttpLink({
             uri: this.config.relateURL,
@@ -176,13 +176,17 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                 }
             `,
             variables: {
-                environmentId: this.config.relateEnvironment,
                 appId,
-                dbmsId,
                 authToken,
+                dbmsId,
+                environmentId: this.config.relateEnvironment,
             },
         });
 
         return data.createAccessToken;
+    }
+
+    getAppUrl(_appName: string): Promise<string> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support getting app URLs`);
     }
 }

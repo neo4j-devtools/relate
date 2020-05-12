@@ -6,6 +6,7 @@
 * [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
 * [`relate dbms:install [NAME]`](#relate-dbmsinstall-name)
 * [`relate dbms:list`](#relate-dbmslist)
+* [`relate dbms:open [NAMEORID]`](#relate-dbmsopen-nameorid)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
 * [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
@@ -56,6 +57,19 @@ OPTIONS
 ```
 
 _See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/list.ts)_
+
+## `relate dbms:open [NAMEORID]`
+
+```
+USAGE
+  $ relate dbms:open [NAMEORID]
+
+OPTIONS
+  -E, --environment=environment  Environment to run the command against
+  -L, --log                      If set, log the path instead
+```
+
+_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/open.ts)_
 
 ## `relate dbms:start [DBMSIDS]`
 
