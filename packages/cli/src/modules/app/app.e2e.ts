@@ -54,6 +54,7 @@ describe('$relate app', () => {
             `--dbmsId=${TEST_DB_NAME}`,
             '--principal=neo4j',
             `--environment=${TEST_ENVIRONMENT_ID}`,
+            '-L',
         ]);
 
         expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));

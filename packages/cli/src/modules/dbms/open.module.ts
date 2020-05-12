@@ -1,8 +1,10 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
+import {prompt} from 'enquirer';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/dbms/open';
+import {isTTY, readStdinArray} from '../../stdin';
 
 @Module({
     exports: [],
@@ -18,13 +20,28 @@ export class OpenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
-        const {nameOrId} = args;
-        const {environment: environmentId} = flags;
+        let {nameOrId = ''} = args;
+        const {environment: environmentId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        if (!nameOrId) {
-            // @todo: figure this out in combination with TTY
-            throw new Error(`Dbms must be specified`);
+        if (!nameOrId.length) {
+            if (isTTY()) {
+                const dbmss = await environment.listDbmss();
+
+                const {selectedDbms} = await prompt({
+                    choices: dbmss.map((dbms) => ({
+                        message: `[${dbms.id}] ${dbms.name}`,
+                        name: dbms.id,
+                    })),
+                    message: 'Select a DBMS',
+                    name: 'selectedDbms',
+                    type: 'select',
+                });
+
+                nameOrId = selectedDbms;
+            } else {
+                nameOrId = await readStdinArray();
+            }
         }
 
         const dbms = await environment.getDbms(nameOrId);
@@ -33,6 +50,6 @@ export class OpenModule implements OnApplicationBootstrap {
             throw new Error(`DBMS ${nameOrId} could not be opened`);
         }
 
-        return Promise.all([cli.open(dbms.rootPath), this.utils.log(`Opening dbms "${dbms.name}"`)]);
+        return log ? this.utils.log(dbms.rootPath) : cli.open(dbms.rootPath);
     }
 }

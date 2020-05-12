@@ -18,6 +18,11 @@ export default class OpenCommand extends BaseCommand {
             description: 'The DBMS to automatically connect to',
             required: false,
         }),
+        log: flags.boolean({
+            char: 'L',
+            description: 'If set, log the path instead',
+            required: false,
+        }),
         principal: flags.string({
             char: 'P',
             description: 'The DBMS user to automatically connect with, assuming an access token exists',

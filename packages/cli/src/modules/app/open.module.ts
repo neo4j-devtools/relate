@@ -19,7 +19,7 @@ export class OpenModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
         const {appName} = args;
-        const {environment: environmentId, principal, dbmsId} = flags;
+        const {environment: environmentId, principal, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const appUrl = await environment.getAppUrl(appName);
 
@@ -29,7 +29,7 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         if (!principal || !dbmsId) {
-            return Promise.all([cli.open(appUrl), this.utils.log(`Opening app "${appName}"`)]);
+            return log ? this.utils.log(appUrl) : cli.open(appUrl);
         }
 
         const dbms = await environment.getDbms(dbmsId);
@@ -39,11 +39,10 @@ export class OpenModule implements OnApplicationBootstrap {
             .then((accessToken) =>
                 this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id, principal, accessToken),
             )
-            .then((launchToken) =>
-                Promise.all([
-                    cli.open(`${appUrl}?_appLaunchToken=${launchToken}`),
-                    this.utils.log(`Opening app "${appName}" for dbms ${dbms.name}`),
-                ]),
-            );
+            .then((launchToken) => {
+                const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
+
+                return log ? this.utils.log(tokenUrl) : cli.open(tokenUrl);
+            });
     }
 }

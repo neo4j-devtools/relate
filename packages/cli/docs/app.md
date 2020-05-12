@@ -14,6 +14,7 @@ USAGE
 OPTIONS
   -D, --dbmsId=dbmsId            The DBMS to automatically connect to
   -E, --environment=environment  Environment to run the command against
+  -L, --log                      If set, log the path instead
   -P, --principal=principal      The DBMS user to automatically connect with, assuming an access token exists
 ```
 
