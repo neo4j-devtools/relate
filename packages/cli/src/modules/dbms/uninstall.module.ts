@@ -1,9 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {prompt} from 'enquirer';
 import {SystemModule, SystemProvider} from '@relate/common';
 
-import {readStdinArray, isTTY} from '../../stdin';
+import {readStdinArray, isInteractive} from '../../stdin';
 import UninstallCommand from '../../commands/dbms/uninstall';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -23,19 +23,9 @@ export class UninstallModule implements OnApplicationBootstrap {
         let {dbmsId} = args;
 
         if (!dbmsId) {
-            if (isTTY()) {
+            if (isInteractive()) {
                 const dbmss = await environment.listDbmss();
-
-                const {selectedDbms} = await prompt({
-                    choices: dbmss.map((dbms) => ({
-                        message: `[${dbms.id}] ${dbms.name}`,
-                        name: dbms.id,
-                    })),
-                    message: 'Select a DBMS',
-                    name: 'selectedDbms',
-                    type: 'select',
-                });
-
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to uninstall', dbmss);
                 dbmsId = selectedDbms;
             } else {
                 dbmsId = (await readStdinArray()).join('');

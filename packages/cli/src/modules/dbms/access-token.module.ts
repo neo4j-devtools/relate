@@ -1,10 +1,10 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {AuthTokenModel, SystemModule, SystemProvider} from '@relate/common';
 import {trim} from 'lodash';
-import {prompt} from 'enquirer';
 
-import {isTTY, readStdin} from '../../stdin';
+import {isInteractive, readStdin} from '../../stdin';
 import AccessTokenCommand from '../../commands/dbms/access-token';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -32,19 +32,9 @@ export class AccessTokenModule implements OnApplicationBootstrap {
         let {dbmsId} = args;
 
         if (!dbmsId) {
-            if (isTTY()) {
+            if (isInteractive()) {
                 const dbmss = await environment.listDbmss();
-
-                const {selectedDbms} = await prompt({
-                    choices: dbmss.map((dbms) => ({
-                        message: `[${dbms.id}] ${dbms.name}`,
-                        name: dbms.id,
-                    })),
-                    message: 'Select a DBMS',
-                    name: 'selectedDbms',
-                    type: 'select',
-                });
-
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to create an access token for', dbmss);
                 dbmsId = selectedDbms;
             } else {
                 dbmsId = await readStdin().then(trim);

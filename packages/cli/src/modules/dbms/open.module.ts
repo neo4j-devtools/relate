@@ -1,10 +1,10 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import {prompt} from 'enquirer';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/dbms/open';
-import {isTTY, readStdinArray} from '../../stdin';
+import {isInteractive, readStdinArray} from '../../stdin';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -25,19 +25,9 @@ export class OpenModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         if (!nameOrId.length) {
-            if (isTTY()) {
+            if (isInteractive()) {
                 const dbmss = await environment.listDbmss();
-
-                const {selectedDbms} = await prompt({
-                    choices: dbmss.map((dbms) => ({
-                        message: `[${dbms.id}] ${dbms.name}`,
-                        name: dbms.id,
-                    })),
-                    message: 'Select a DBMS',
-                    name: 'selectedDbms',
-                    type: 'select',
-                });
-
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to open', dbmss);
                 nameOrId = selectedDbms;
             } else {
                 nameOrId = await readStdinArray();
