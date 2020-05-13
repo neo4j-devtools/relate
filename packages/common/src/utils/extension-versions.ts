@@ -88,17 +88,18 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     }
 
     const {name, main = '.', version} = packageJson;
+    const extensionName = name.split(path.sep)[1] || name;
 
     return {
         dist: extensionRootDir,
         manifest: new ExtensionModel({
             main: path.join(extensionRootDir, main),
-            name,
+            name: extensionName,
             root: extensionRootDir,
             type: EXTENSION_TYPES.STATIC,
             version,
         }),
-        name,
+        name: extensionName,
         // @todo: whut?
         origin: EXTENSION_ORIGIN.CACHED,
         type: EXTENSION_TYPES.STATIC,

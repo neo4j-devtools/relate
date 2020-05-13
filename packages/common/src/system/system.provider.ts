@@ -257,7 +257,7 @@ export class SystemProvider implements OnModuleInit {
         return extension;
     }
 
-    async installExtension(name: string, version = '*'): Promise<IExtensionMeta> {
+    async installExtension(name: string, version: string): Promise<IExtensionMeta> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -265,43 +265,26 @@ export class SystemProvider implements OnModuleInit {
         const extensionDistributions = path.join(this.dataPaths.cache, EXTENSION_DIR_NAME);
         const extensionTarget = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
 
-        // version as a URL.
+        // @todo: version as a URL.
         if (isValidUrl(version)) {
             throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
-        const coercedVersion = version === '*' || (coerce(version) && coerce(version)!.version);
+        const coercedVersion = coerce(version) && coerce(version)!.version;
 
         if (coercedVersion && !isValidPath(version)) {
-            const {version: semver} = coerce(version) || {};
-            let requestedDistribution = _.find(await discoverExtensionDistributions(extensionDistributions), (dist) => {
-                if (dist.name !== name) {
-                    return false;
-                }
-
-                if (version === '*') {
-                    return dist.version === '*';
-                }
-
-                return dist.version === semver;
-            });
+            const {version: semver} = coerce(version)!;
+            let requestedDistribution = _.find(
+                await discoverExtensionDistributions(extensionDistributions),
+                (dist) => dist.name === name && dist.version === semver,
+            );
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadExtension(name, version, extensionDistributions);
+                await downloadExtension(name, semver, extensionDistributions);
                 const requestedDistributionAfterDownload = _.find(
                     await discoverExtensionDistributions(extensionDistributions),
-                    (dist) => {
-                        if (dist.name !== name) {
-                            return false;
-                        }
-
-                        if (version === '*') {
-                            return dist.version === '*';
-                        }
-
-                        return dist.version === semver;
-                    },
+                    (dist) => dist.name === name && dist.version === semver,
                 );
                 if (!requestedDistributionAfterDownload) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
@@ -314,7 +297,23 @@ export class SystemProvider implements OnModuleInit {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const discovered = await extractExtension(version, extensionDistributions);
+            // const discovered = await extractExtension(version, extensionDistributions);
+            // extract extension to cache dir first
+            const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
+                version,
+                extensionDistributions,
+            );
+            // rename the extracted dir
+            fse.rename(dist, path.join(extensionDistributions, `${extensionName}@${extensionVersion}`));
+
+            const discovered = _.find(
+                await discoverExtensionDistributions(extensionDistributions),
+                // eslint-disable-next-line no-shadow
+                (dist) => dist.name === name && dist.version === extensionVersion,
+            );
+            if (!discovered) {
+                throw new NotFoundError(`Unable to find the requested version: ${version}`);
+            }
 
             return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
         }

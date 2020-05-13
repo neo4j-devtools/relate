@@ -1,19 +1,17 @@
-/* eslint-disable */ 
+/* eslint-disable */
+
 import fse from 'fs-extra';
 import got from 'got';
 import {v4 as uuidv4} from 'uuid';
 import path from 'path';
 import stream from 'stream';
 import {promisify} from 'util';
-import {coerce} from 'semver';
 import hasha from 'hasha';
 
 import {FetchError, NotFoundError, IntegrityError} from '../errors';
 import {envPaths} from './env-paths';
 import {extractExtension} from './extract-extension';
-
-const NEO4J_SHA_ALGORITHM = 'sha1';
-const EXTENSION_URL_PATH = 'https://neo.jfrog.io/artifactory/api/npm/npm-local-private/@relate-ext/';
+import {EXTENSION_URL_PATH, EXTENSION_FILE_SUFFIX, EXTENSION_SHA_ALGORITHM} from '../constants';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -32,13 +30,16 @@ export interface IExtensionRegistryManifest {
     };
 }
 
-export const fetchExtensionInfo = async (
-    extensionName: string,
-    version: string,
-): Promise<{name: string; tarball: string; shasum: string}> => {
+export interface IFetchExtensionInfo {
+    tarball: string;
+    shasum: string;
+}
+
+export const fetchExtensionInfo = async (extensionName: string, version: string): Promise<IFetchExtensionInfo> => {
     let res: IExtensionRegistryManifest;
     try {
         res = await got(`${EXTENSION_URL_PATH}${extensionName}`, {
+            // @todo: need to figure out env vars next
             username: '',
             password: '',
         }).json();
@@ -46,18 +47,15 @@ export const fetchExtensionInfo = async (
         throw new FetchError(`Invalid response from "${EXTENSION_URL_PATH}${extensionName}"`);
     }
 
-    const requestedVersion = version === '*' ? res['dist-tags'].latest : coerce(version) && coerce(version)!.version;
-    if (!requestedVersion || !res.versions[requestedVersion]) {
+    if (!res.versions[version]) {
         throw new NotFoundError(`Unable to find the requested version: ${version} online`);
     }
 
     const {
-        name,
         dist: {tarball, shasum},
-    } = res.versions[requestedVersion];
+    } = res.versions[version];
+
     return {
-        name: name.split('/').length > 1 ? name.split('/')[1] : name,
-        // extensionVersion,
         tarball,
         shasum,
     };
@@ -84,7 +82,7 @@ export const pipeline = async (url: string, outputPath: string): Promise<void> =
 export const verifyHash = async (
     expectedShasumHash: string,
     pathToFile: string,
-    algorithm = NEO4J_SHA_ALGORITHM,
+    algorithm = EXTENSION_SHA_ALGORITHM,
 ): Promise<string> => {
     const hash = await hasha.fromFile(pathToFile, {algorithm});
     if (hash !== expectedShasumHash) {
@@ -109,14 +107,17 @@ export const downloadExtension = async (
     await verifyHash(shasum, tmpPath);
 
     // extract extension to cache dir first
-    await extractExtension(tmpPath, extensionDistributionsPath);
+    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
+        tmpPath,
+        extensionDistributionsPath,
+    );
+    // rename the extracted dir
+    fse.rename(dist, path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`));
 
-    // @todo: get the archive name from parsing the tarball url. Not sure if this can be constructed instead similar to downloadNeo4j but unsure how consitent the naming format is across extensions.
-    const {name: archiveName, ext} = path.parse(tarball);
-    const extensionArchiveName = `${archiveName}${ext}`;
+    const extensionArchiveName = `${extensionName}${EXTENSION_FILE_SUFFIX}`;
     const archivePath = path.join(extensionDistributionsPath, extensionArchiveName);
-    // rename the tmp output
+    // rename the tmp archive and move to cache
     await fse.rename(tmpPath, archivePath);
-    // remove tmp output
+    // remove tmp file
     return fse.remove(tmpPath);
 };

@@ -1,4 +1,5 @@
-/* eslint-disable */ 
+/* eslint-disable */
+
 import _ from 'lodash';
 import fse from 'fs-extra';
 import decompress from 'decompress';
@@ -12,7 +13,7 @@ export const extractExtension = async (archivePath: string, outputDir: string): 
 
     let uniqueTopLevelNames: string[];
     // determine output dir filename from the shortest directory string path if possible
-    // @todo: this wasn't as reliable as I hoped, didn't seem to detect any 'directories' when extracting an extension. Need a rethink...
+    // @todo: this wasn't as reliable as I hoped, didn't detect any 'directories' when extracting an example extension. Need a rethink..
     const outputTopLevelDir = _.reduce(
         _.filter(outputFiles, (file) => file.type === 'directory'),
         (a, b) => (a.path.length <= b.path.length ? a : b),
@@ -23,6 +24,7 @@ export const extractExtension = async (archivePath: string, outputDir: string): 
         uniqueTopLevelNames = [...new Set(_.map(outputFiles, (file) => file.path.split(path.sep)[0]))];
 
         if (!uniqueTopLevelNames.length || uniqueTopLevelNames.length > 1) {
+            // @todo: this may not remove all the files for the same reason - outputFiles .path property may not contain a reference to directories so only deleting files within. Will be the case in this file and download-neo4j.
             await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
             throw new FileStructureError(`Unexpected file structure after unpacking`);
         }
