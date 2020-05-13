@@ -42,6 +42,7 @@ import {
     discoverExtensionDistributions,
     IExtensionMeta,
     downloadExtension,
+    discoverExtension,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
 
@@ -240,6 +241,20 @@ export class SystemProvider implements OnModuleInit {
         );
 
         return _.flatten(all);
+    }
+
+    async linkExtension(filePath: string): Promise<IExtensionMeta> {
+        const extension = await discoverExtension(filePath);
+        const extensionsDir = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
+        const target = path.join(extensionsDir, extension.type, extension.name);
+
+        if (await fse.pathExists(target)) {
+            throw new ExtensionExistsError(`${extension.name} is already installed`);
+        }
+
+        await fse.symlink(filePath, target);
+
+        return extension;
     }
 
     async installExtension(name: string, version = '*'): Promise<IExtensionMeta> {

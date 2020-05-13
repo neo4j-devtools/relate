@@ -48,7 +48,7 @@ function mapContentsToExtension(fullPath: string, name: string): IInstalledExten
     const manifestPath = path.join(fullPath, EXTENSION_MANIFEST);
     const packagePath = path.join(fullPath, PACKAGE_JSON);
     const indexHtmlPath = path.join(fullPath, EXTENSION_INDEX_HTML);
-    const info = fse.lstatSync(fullPath);
+    const info = fse.statSync(fullPath);
 
     if (!info.isDirectory()) {
         throw new InvalidArgumentError('Installed extensions must be a directory');
