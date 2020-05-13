@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import path from 'path';
 import fse from 'fs-extra';
 
-import {FetchError, InvalidConfigError, NotAllowedError} from '../errors';
+import {AuthenticationError, FetchError, InvalidConfigError, NotAllowedError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
@@ -37,7 +37,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             // few more options than the node version.
             fetch: fetch as any,
             headers: {
-                Authorization: this.config.accessToken,
+                Authorization: `Bearer ${this.config.accessToken}`,
             },
         });
     }
@@ -51,19 +51,22 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
         }
 
-        try {
-            return makePromise(execute(this.client, operation));
-        } catch {
+        return makePromise(execute(this.client, operation)).catch((err) => {
+            if (err.statusCode === 401 || err.statusCode === 403) {
+                throw new NotAllowedError('Unauthorized: must login to perform this operation');
+            }
+
             throw new FetchError(`Failed to connect to ${this.config.relateURL}`);
-        }
+        });
     }
 
     async login(): Promise<IEnvironmentAuth> {
-        const CLIENT_ID = process.env.CLIENT_ID || '';
+        const CLIENT_ID = '287762628639-t40b4jbvff0qecvb3iv7bep8fosfpbal.apps.googleusercontent.com';
         // According to this client_secret is not used as a secret in our case,
         // so it should be fine for it to be here.
         // https://developers.google.com/identity/protocols/oauth2#installed
-        const CLIENT_SECRET = process.env.CLIENT_SECRET || '';
+        // https://tools.ietf.org/html/rfc8252#page-12
+        const CLIENT_SECRET = '_rlHhLaiymDRVvjRwfumyN70';
         const host = '127.0.0.1';
         const port = '5555';
 
