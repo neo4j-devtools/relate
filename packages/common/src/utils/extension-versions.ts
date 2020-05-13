@@ -45,7 +45,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST);
     const hasManifest = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
-    const hasPackageJson = await fse.pathExists(extensionManifest);
+    const hasPackageJson = await fse.pathExists(extensionPackageJson);
 
     if (hasManifest) {
         const manifest = await fse.readJSON(extensionManifest);
