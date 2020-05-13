@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import _ from 'lodash';
 import fse from 'fs-extra';
 import decompress from 'decompress';
@@ -9,18 +10,25 @@ import {discoverExtension, IExtensionMeta} from './extension-versions';
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {
     const outputFiles = await decompress(archivePath, outputDir);
 
-    // determine output dir filename from the shortest directory string path
+    let uniqueTopLevelNames: string[];
+    // determine output dir filename from the shortest directory string path if possible
+    // @todo: this wasn't as reliable as I hoped, didn't seem to detect any 'directories' when extracting an extension. Need a rethink...
     const outputTopLevelDir = _.reduce(
         _.filter(outputFiles, (file) => file.type === 'directory'),
         (a, b) => (a.path.length <= b.path.length ? a : b),
     );
 
     if (!outputTopLevelDir) {
-        await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
-        throw new FileStructureError(`Unexpected file structure after unpacking`);
-    }
+        // @todo: determine output from spitting the filename to the get the top level dir (should be consistent). Not the best but works for now...
+        uniqueTopLevelNames = [...new Set(_.map(outputFiles, (file) => file.path.split(path.sep)[0]))];
 
-    const extractedDistPath = path.join(outputDir, outputTopLevelDir.path);
+        if (!uniqueTopLevelNames.length || uniqueTopLevelNames.length > 1) {
+            await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
+            throw new FileStructureError(`Unexpected file structure after unpacking`);
+        }
+    }
+    const outputTopLevel = outputTopLevelDir ? outputTopLevelDir.path : uniqueTopLevelNames![0];
+    const extractedDistPath = path.join(outputDir, outputTopLevel);
 
     // check if this is an extension...
     try {

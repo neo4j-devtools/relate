@@ -41,6 +41,7 @@ import {
     arrayHasItems,
     discoverExtensionDistributions,
     IExtensionMeta,
+    downloadExtension,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
 
@@ -258,27 +259,42 @@ export class SystemProvider implements OnModuleInit {
 
         if (coercedVersion && !isValidPath(version)) {
             const {version: semver} = coerce(version) || {};
-            const requestedDistribution = _.find(
-                await discoverExtensionDistributions(extensionDistributions),
-                (dist) => {
-                    if (dist.name !== name) {
-                        return false;
-                    }
+            let requestedDistribution = _.find(await discoverExtensionDistributions(extensionDistributions), (dist) => {
+                if (dist.name !== name) {
+                    return false;
+                }
 
-                    if (version === '*') {
-                        return dist.version === '*';
-                    }
+                if (version === '*') {
+                    return dist.version === '*';
+                }
 
-                    return dist.version === semver;
-                },
-            );
+                return dist.version === semver;
+            });
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
-                throw new NotSupportedError(`fetch and install ${name}@${version}`);
+                await downloadExtension(name, version, extensionDistributions);
+                const requestedDistributionAfterDownload = _.find(
+                    await discoverExtensionDistributions(extensionDistributions),
+                    (dist) => {
+                        if (dist.name !== name) {
+                            return false;
+                        }
+
+                        if (version === '*') {
+                            return dist.version === '*';
+                        }
+
+                        return dist.version === semver;
+                    },
+                );
+                if (!requestedDistributionAfterDownload) {
+                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                }
+                requestedDistribution = requestedDistributionAfterDownload;
             }
 
-            return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
+            return this.installRelateExtension(requestedDistribution!, extensionTarget, requestedDistribution!.dist);
         }
 
         // version as a file path.
