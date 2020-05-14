@@ -4,6 +4,7 @@ import path from 'path';
 import fse from 'fs-extra';
 
 import InstallCommand from '../../commands/dbms/install';
+import {selectPrompt, inputPrompt, passwordPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -19,20 +20,28 @@ export class InstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {name} = args;
-        const {environment: environmentId, credentials} = flags;
-        let {version} = flags;
+        const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        if (!name || !credentials || !version) {
-            // @todo: figure this out in combination with TTY
-            throw new Error(`Not yet implemented`);
-        }
+        const name = args.name || (await inputPrompt('Enter the DBMS name'));
 
+        let {version} = flags;
+        if (!version) {
+            const versions = await environment.listDbmsVersions();
+            version = await selectPrompt(
+                'Select a version to install',
+                versions.map((v) => ({
+                    message: `[${v.origin.toLowerCase()}] ${v.version} ${v.edition}`,
+                    name: v.version,
+                })),
+            );
+        }
         const pathVersion = path.resolve(version);
         if (await fse.pathExists(pathVersion)) {
             version = pathVersion;
         }
+
+        const credentials = await passwordPrompt('Enter new passphrase');
 
         return environment.installDbms(name, credentials, version).then((res) => {
             this.utils.log(res);

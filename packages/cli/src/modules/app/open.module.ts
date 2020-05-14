@@ -24,7 +24,7 @@ export class OpenModule implements OnApplicationBootstrap {
         const appUrl = await environment.getAppUrl(appName);
 
         if (!appName) {
-            // @todo: figure this out in combination with TTY
+            // @todo: add select prompt once we can list apps
             throw new Error(`App must be specified`);
         }
 

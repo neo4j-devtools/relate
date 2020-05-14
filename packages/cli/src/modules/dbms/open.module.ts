@@ -3,7 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/dbms/open';
-import {isInteractive, readStdinArray} from '../../stdin';
+import {isInteractive, readStdin} from '../../stdin';
 import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
@@ -26,11 +26,10 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!nameOrId.length) {
             if (isInteractive()) {
-                const dbmss = await environment.listDbmss();
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to open', dbmss);
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to open', environment);
                 nameOrId = selectedDbms;
             } else {
-                nameOrId = await readStdinArray();
+                nameOrId = await readStdin();
             }
         }
 

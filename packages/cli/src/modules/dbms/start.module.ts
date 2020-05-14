@@ -24,8 +24,7 @@ export class StartModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isInteractive()) {
-                const dbmss = await environment.listDbmss();
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to start', dbmss);
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to start', environment);
                 dbmsIds = [selectedDbms];
             } else {
                 dbmsIds = await readStdinArray();

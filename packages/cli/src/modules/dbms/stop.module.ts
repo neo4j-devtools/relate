@@ -25,8 +25,7 @@ export class StopModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isInteractive()) {
-                const dbmss = await environment.listDbmss();
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', dbmss);
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', environment);
                 dbmsIds = [selectedDbms];
             } else {
                 dbmsIds = await readStdinArray();

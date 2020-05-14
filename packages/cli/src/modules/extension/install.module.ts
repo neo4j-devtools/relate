@@ -22,11 +22,6 @@ export class InstallModule implements OnApplicationBootstrap {
         const {name} = args;
         let {version} = flags;
 
-        if (!name) {
-            // @todo: figure this out in combination with TTY
-            throw new Error(`Not yet implemented`);
-        }
-
         const pathVersion = version && path.resolve(version);
 
         if (pathVersion && (await fse.pathExists(pathVersion))) {

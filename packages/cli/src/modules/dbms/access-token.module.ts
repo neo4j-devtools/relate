@@ -1,10 +1,8 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {AuthTokenModel, SystemModule, SystemProvider} from '@relate/common';
-import {trim} from 'lodash';
 
-import {isInteractive, readStdin} from '../../stdin';
 import AccessTokenCommand from '../../commands/dbms/access-token';
-import {selectDbmsPrompt} from '../../prompts';
+import {selectDbmsPrompt, passwordPrompt, inputPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -23,25 +21,18 @@ export class AccessTokenModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        const authToken = new AuthTokenModel({
-            credentials: trim(flags.credentials),
-            principal: trim(flags.principal),
-            scheme: 'basic',
-        });
-        // @todo: figure this out in combination with TTY
-        let {dbmsId} = args;
 
-        if (!dbmsId) {
-            if (isInteractive()) {
-                const dbmss = await environment.listDbmss();
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to create an access token for', dbmss);
-                dbmsId = selectedDbms;
-            } else {
-                dbmsId = await readStdin().then(trim);
-            }
-        }
+        const dbmsId =
+            args.dbmsId || (await selectDbmsPrompt('Select a DBMS to create an access token for', environment));
+        const principal = flags.principal || (await inputPrompt('Enter a principal name'));
+        const credentials = await passwordPrompt('Enter passphrase');
 
         const dbms = await environment.getDbms(dbmsId);
+        const authToken = new AuthTokenModel({
+            credentials,
+            principal,
+            scheme: 'basic',
+        });
 
         return environment
             .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbms.id, authToken)

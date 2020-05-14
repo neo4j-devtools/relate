@@ -3,15 +3,15 @@
 
 
 
-* [`relate extension:install [NAME]`](#relate-extensioninstall-name)
+* [`relate extension:install NAME`](#relate-extensioninstall-name)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
 * [`relate extension:uninstall [NAME]`](#relate-extensionuninstall-name)
 
-## `relate extension:install [NAME]`
+## `relate extension:install NAME`
 
 ```
 USAGE
-  $ relate extension:install [NAME]
+  $ relate extension:install NAME
 
 OPTIONS
   -V, --version=version  (required) Version to install
