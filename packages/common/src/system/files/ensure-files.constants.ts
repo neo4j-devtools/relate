@@ -2,6 +2,8 @@ import {EnvPaths} from '../../utils/env-paths';
 
 export interface ILocalEnvironmentDirPaths extends EnvPaths {
     dbmss: string;
+    environmentsConfig: string;
+    neo4jDistribution: string;
 }
 
 export interface ICacheDirPaths {
@@ -11,6 +13,10 @@ export interface ICacheDirPaths {
 
 export interface ISystemProviderDirPaths extends EnvPaths {
     environments: string;
+}
+
+export interface IRemoteEnvironmentDirPaths {
+    environmentsConfig: string;
 }
 
 export interface ISystemProviderFilePaths {

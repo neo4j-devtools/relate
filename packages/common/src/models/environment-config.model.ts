@@ -5,6 +5,14 @@ import {ModelAbstract} from './model.abstract';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
 import {PropertiesFile} from '../system/files';
 
+export interface IEnvironmentAuth {
+    authUrl: string;
+    getToken: () => Promise<{
+        token: string;
+        payload: any | undefined;
+    } | null>;
+}
+
 export interface IDbms {
     id: string;
     name: string;
@@ -26,6 +34,9 @@ export interface IEnvironmentConfig {
     user: any;
     neo4jDataPath?: string;
     type: ENVIRONMENT_TYPES;
+    relateURL?: string;
+    relateEnvironment?: string;
+    accessToken?: string;
     dbmss?: {[key: string]: IDbms};
 }
 
@@ -56,6 +67,12 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public relateEnvironment?: string;
 
+    // @todo: move this to data
+    @IsString()
+    @IsOptional()
+    public accessToken?: string;
+
+    // @todo: move this to data
     @IsOptional()
     public dbmss?: {[key: string]: IDbms};
 }
