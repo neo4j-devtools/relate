@@ -11,7 +11,7 @@ import {
     EXTENSION_TYPES,
     PACKAGE_JSON,
 } from '../constants';
-import {NotFoundError} from '../errors';
+import {InvalidArgumentError, NotFoundError} from '../errors';
 import {ExtensionModel, IInstalledExtension} from '../models';
 
 export interface IExtensionMeta {
@@ -45,48 +45,64 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST);
     const hasManifest = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
-    const hasPackageJson = await fse.pathExists(extensionManifest);
+    const hasPackageJson = await fse.pathExists(extensionPackageJson);
 
     if (hasManifest) {
         const manifest = await fse.readJSON(extensionManifest);
 
         return {
             dist: extensionRootDir,
-            manifest: new ExtensionModel(manifest),
+            manifest: new ExtensionModel({
+                root: extensionRootDir,
+                ...manifest,
+            }),
             name: manifest.name,
+            // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
             version: manifest.version,
         };
     }
 
-    if (hasPackageJson) {
-        const packageJson = await fse.readJSON(extensionPackageJson);
-        const manifest = new ExtensionModel(packageJson[EXTENSION_MANIFEST_KEY]);
+    if (!hasPackageJson) {
+        throw new InvalidArgumentError(`${dirName} contains no valid manifest`);
+    }
+
+    const packageJson = await fse.readJSON(extensionPackageJson);
+
+    if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {
+        const manifest = new ExtensionModel({
+            root: extensionRootDir,
+            ...packageJson[EXTENSION_MANIFEST_KEY],
+        });
 
         return {
             dist: extensionRootDir,
             manifest,
             name: manifest.name,
+            // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
             version: manifest.version,
         };
     }
 
-    // @todo: whut?
+    const {name, main = '.', version} = packageJson;
+    const extensionName = name.split(path.sep)[1] || name;
+
     return {
         dist: extensionRootDir,
         manifest: new ExtensionModel({
-            main: extensionRootDir,
-            name: dirName,
+            main: path.join(extensionRootDir, main),
+            name: extensionName,
             root: extensionRootDir,
             type: EXTENSION_TYPES.STATIC,
-            version: '*',
+            version,
         }),
-        name: dirName,
+        name: extensionName,
+        // @todo: whut?
         origin: EXTENSION_ORIGIN.CACHED,
         type: EXTENSION_TYPES.STATIC,
-        version: '*',
+        version,
     };
 }

@@ -102,7 +102,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        if (coerce(version) && coerce(version)!.version && !isValidUrl(version) && !isValidPath(version)) {
+        const coercedVersion = coerce(version) && coerce(version)!.version;
+
+        if (coercedVersion && !isValidUrl(version) && !isValidPath(version)) {
             const {version: semver} = coerce(version)!;
 
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
@@ -130,7 +132,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
         }
 
-        // version as a URL.
+        // @todo: version as a URL.
         if (isValidUrl(version)) {
             throw new NotSupportedError(`fetch and install ${version}`);
         }
