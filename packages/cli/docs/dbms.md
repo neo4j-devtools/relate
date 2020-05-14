@@ -19,9 +19,8 @@ USAGE
   $ relate dbms:access-token [DBMSID]
 
 OPTIONS
-  -C, --credentials=credentials  (required)
   -E, --environment=environment  Environment to run the command against
-  -P, --principal=principal      (required)
+  -P, --principal=principal
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
@@ -33,7 +32,6 @@ USAGE
   $ relate dbms:install [NAME]
 
 OPTIONS
-  -C, --credentials=credentials  Initial password to set
   -E, --environment=environment  Environment to run the command against
   -V, --version=version          Version to install
 ```

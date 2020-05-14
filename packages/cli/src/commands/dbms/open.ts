@@ -16,7 +16,6 @@ export default class OpenCommand extends BaseCommand {
         log: flags.boolean({
             char: 'L',
             description: 'If set, log the path instead',
-            required: false,
         }),
     };
 }

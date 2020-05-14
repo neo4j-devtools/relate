@@ -2,7 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {SystemModule, SystemProvider} from '@relate/common';
 
-import {readStdinArray, isTTY} from '../../stdin';
+import {readStdinArray, isInteractive} from '../../stdin';
 import StatusCommand from '../../commands/dbms/status';
 
 @Module({
@@ -24,7 +24,7 @@ export class StatusModule implements OnApplicationBootstrap {
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
-            if (isTTY()) {
+            if (isInteractive()) {
                 dbmsIds = dbmss.map((dbms) => dbms.id);
             } else {
                 const stdinDbmss = await readStdinArray();

@@ -1,6 +1,6 @@
 import {map, filter} from 'lodash';
 
-export function isTTY(): boolean {
+export function isInteractive(): boolean {
     return process.stdin.isTTY || false;
 }
 

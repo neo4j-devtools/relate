@@ -21,7 +21,7 @@ export class UninstallModule implements OnApplicationBootstrap {
         const {name} = args;
 
         if (!name) {
-            // @todo: figure this out in combination with TTY
+            // @todo: add select prompt once we can list installed extensions
             throw new Error(`Not yet implemented`);
         }
 

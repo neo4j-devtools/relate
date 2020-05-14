@@ -8,7 +8,12 @@ export default class InstallCommand extends BaseCommand {
 
     commandModule = InstallModule;
 
-    static args = [{name: 'name'}];
+    static args = [
+        {
+            name: 'name',
+            required: true,
+        },
+    ];
 
     static flags = {
         version: flags.string({

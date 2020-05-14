@@ -1,10 +1,10 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {prompt} from 'enquirer';
 import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider} from '@relate/common';
-import {readStdinArray, isTTY} from '../../stdin';
+import {readStdinArray, isInteractive} from '../../stdin';
 import StopCommand from '../../commands/dbms/stop';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -24,19 +24,8 @@ export class StopModule implements OnApplicationBootstrap {
         let dbmsIds = this.parsed.argv;
 
         if (!dbmsIds.length) {
-            if (isTTY()) {
-                const dbmss = await environment.listDbmss();
-
-                const {selectedDbms} = await prompt({
-                    choices: dbmss.map((dbms) => ({
-                        message: `[${dbms.id}] ${dbms.name}`,
-                        name: dbms.id,
-                    })),
-                    message: 'Select a DBMS',
-                    name: 'selectedDbms',
-                    type: 'select',
-                });
-
+            if (isInteractive()) {
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', environment);
                 dbmsIds = [selectedDbms];
             } else {
                 dbmsIds = await readStdinArray();
