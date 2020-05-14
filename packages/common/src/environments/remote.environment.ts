@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import path from 'path';
 import fse from 'fs-extra';
 
-import {AuthenticationError, FetchError, InvalidConfigError, NotAllowedError} from '../errors';
+import {FetchError, InvalidConfigError, NotAllowedError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
