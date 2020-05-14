@@ -7,6 +7,7 @@ import path from 'path';
 
 import {FileStructureError} from '../errors';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
+import {arrayHasItems} from './array-has-items';
 
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {
     const outputFiles = await decompress(archivePath, outputDir);
@@ -23,7 +24,7 @@ export const extractExtension = async (archivePath: string, outputDir: string): 
         // @todo: determine output from spitting the filename to the get the top level dir (should be consistent). Not the best but works for now...
         uniqueTopLevelNames = [...new Set(_.map(outputFiles, (file) => file.path.split(path.sep)[0]))];
 
-        if (!uniqueTopLevelNames.length || uniqueTopLevelNames.length > 1) {
+        if (!arrayHasItems(uniqueTopLevelNames) || uniqueTopLevelNames.length > 1) {
             // @todo: this may not remove all the files for the same reason - outputFiles .path property may not contain a reference to directories so only deleting files within. Will be the case in this file and download-neo4j.
             await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
             throw new FileStructureError(`Unexpected file structure after unpacking`);

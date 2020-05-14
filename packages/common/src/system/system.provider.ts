@@ -341,6 +341,7 @@ export class SystemProvider implements OnModuleInit {
 
     async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
         const installedExtensions = await this.listInstalledExtensions();
+        // @todo: if more than one version installed, would need to filter version too
         const targets = _.filter(installedExtensions, (ext) => ext.name === name);
 
         if (!arrayHasItems(targets)) {

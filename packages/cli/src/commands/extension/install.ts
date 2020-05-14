@@ -14,7 +14,7 @@ export default class InstallCommand extends BaseCommand {
         version: flags.string({
             char: 'V',
             description: 'Version to install',
-            required: false,
+            required: true,
         }),
     };
 }
