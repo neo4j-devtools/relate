@@ -16,7 +16,7 @@ describe('DBMS versions (local environment)', () => {
     beforeAll(() => localUtils.downloadNeo4j(TEST_NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME)));
 
     test('list cached distributions', async () => {
-        const dbmssDataDir = path.join(envPaths().cache, 'dbmss');
+        const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
         const versions = await discoverNeo4jDistributions(dbmssDataDir);
         expect(versions.length).toEqual(1);
         expect(versions[0].edition).toEqual(NEO4J_EDITION.ENTERPRISE);
@@ -25,7 +25,7 @@ describe('DBMS versions (local environment)', () => {
     });
 
     test('list no cached distributions', async () => {
-        const dbmssTmpDir = path.join(envPaths().tmp, 'dbmss');
+        const dbmssTmpDir = path.join(envPaths().tmp, DBMS_DIR_NAME);
         await fse.ensureDir(dbmssTmpDir);
         const versions = await discoverNeo4jDistributions(dbmssTmpDir);
         await fse.remove(dbmssTmpDir);

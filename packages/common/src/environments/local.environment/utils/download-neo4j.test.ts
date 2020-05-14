@@ -8,22 +8,19 @@ import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
 import * as systemUtils from '../../../utils';
 
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_ARCHIVE_FILE_SUFFIX, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
+import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../../constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
 
 jest.mock('uuid');
 
 const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
-const TMP_NEO4J_DIST_PATH = systemUtils.envPaths().tmp;
+const TMP_NEO4J_DIST_PATH = path.join(systemUtils.envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';
-const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, TMP_UUID);
+const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, `${TMP_UUID}${DOWNLOADING_FILE_EXTENSION}`);
 const EXPECTED_HASH_VALUE = 'test_hash1234';
-const ARCHIVE_PATH = path.join(
-    TMP_NEO4J_DIST_PATH,
-    `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}${NEO4J_ARCHIVE_FILE_SUFFIX}`,
-);
 const DBMS_VERSION = {
     dist: TEST_DIST,
     edition: NEO4J_EDITION.ENTERPRISE,
@@ -55,7 +52,6 @@ describe('Download Neo4j (to local cache)', () => {
             }),
         );
 
-        const renameSpy = jest.spyOn(fse, 'rename');
         const removeSpy = jest.spyOn(fse, 'remove');
 
         jest.spyOn(uuid, 'v4').mockImplementation(() => TMP_UUID);
@@ -67,9 +63,8 @@ describe('Download Neo4j (to local cache)', () => {
         // tests
         expect(getCheckSumSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`);
         expect(pipelineSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}`, TMP_PATH);
-        expect(verifyHashSpy).toHaveBeenCalledWith(EXPECTED_HASH_VALUE, path.join(TMP_NEO4J_DIST_PATH, TMP_UUID));
+        expect(verifyHashSpy).toHaveBeenCalledWith(EXPECTED_HASH_VALUE, TMP_PATH);
         expect(extractFromArchiveSpy).toHaveBeenCalledWith(TMP_PATH, TMP_NEO4J_DIST_PATH);
-        expect(renameSpy).toHaveBeenCalledWith(TMP_PATH, ARCHIVE_PATH);
         expect(removeSpy).toHaveBeenCalledTimes(1);
         expect(removeSpy).toHaveBeenCalledWith(TMP_PATH);
     });

@@ -6,9 +6,10 @@ import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
 import {LocalEnvironment} from './local.environment';
 import {PropertiesFile} from '../../system/files';
+import {DBMS_DIR_NAME} from '../../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
-const INSTALLATION_ROOT = path.join(TMP_HOME, 'dbmss');
+const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
 jest.mock('../../utils/read-properties-file', () => ({
     readPropertiesFile: () => new Map(),

@@ -1,4 +1,5 @@
 export const JSON_FILE_EXTENSION = '.json';
+export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 
 export const DEFAULT_ENVIRONMENT_NAME = 'default';
 
@@ -17,8 +18,6 @@ export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_INDEX_HTML = 'index.html';
 export const EXTENSION_SHA_ALGORITHM = 'sha1';
 export const EXTENSION_URL_PATH = 'https://neo.jfrog.io/artifactory/api/npm/npm-local-private/@relate-ext/';
-// would it always be a .tgz? need enum containing .tar and .tar.gz as well?
-export const EXTENSION_FILE_SUFFIX = '.tgz';
 
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const BOLT_DEFAULT_PORT = ':7687';

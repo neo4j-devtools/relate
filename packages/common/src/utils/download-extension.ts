@@ -9,9 +9,8 @@ import {promisify} from 'util';
 import hasha from 'hasha';
 
 import {FetchError, NotFoundError, IntegrityError} from '../errors';
-import {envPaths} from './env-paths';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_FILE_SUFFIX, EXTENSION_SHA_ALGORITHM} from '../constants';
+import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../constants';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -100,24 +99,23 @@ export const downloadExtension = async (
 ): Promise<void> => {
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
-    const tmpName = uuidv4();
-    const tmpPath = path.join(envPaths().tmp, tmpName);
+    // Download straight to the distribution path with a temporary name that
+    // makes it obvious that the file is not finished downloading.
+    const downloadingName = `${uuidv4()}${DOWNLOADING_FILE_EXTENSION}`;
+    const downloadingPath = path.join(extensionDistributionsPath, downloadingName);
 
-    await pipeline(tarball, tmpPath);
-    await verifyHash(shasum, tmpPath);
+    await pipeline(tarball, downloadingPath);
+    await verifyHash(shasum, downloadingPath);
 
     // extract extension to cache dir first
     const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-        tmpPath,
+        downloadingPath,
         extensionDistributionsPath,
     );
-    // rename the extracted dir
-    fse.rename(dist, path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`));
 
-    const extensionArchiveName = `${extensionName}${EXTENSION_FILE_SUFFIX}`;
-    const archivePath = path.join(extensionDistributionsPath, extensionArchiveName);
-    // rename the tmp archive and move to cache
-    await fse.rename(tmpPath, archivePath);
-    // remove tmp file
-    return fse.remove(tmpPath);
+    const destinationPath = path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`);
+
+    // move the extracted dir and remove the downloaded archive
+    await fse.move(dist, destinationPath, {overwrite: true});
+    await fse.remove(downloadingPath);
 };

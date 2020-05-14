@@ -301,8 +301,10 @@ export class SystemProvider implements OnModuleInit {
                 version,
                 extensionDistributions,
             );
-            // rename the extracted dir
-            fse.rename(dist, path.join(extensionDistributions, `${extensionName}@${extensionVersion}`));
+            // move the extracted dir
+            fse.move(dist, path.join(extensionDistributions, `${extensionName}@${extensionVersion}`), {
+                overwrite: true,
+            });
 
             const discovered = _.find(
                 await discoverExtensionDistributions(extensionDistributions),
