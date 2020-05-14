@@ -297,7 +297,6 @@ export class SystemProvider implements OnModuleInit {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            // const discovered = await extractExtension(version, extensionDistributions);
             // extract extension to cache dir first
             const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
                 version,

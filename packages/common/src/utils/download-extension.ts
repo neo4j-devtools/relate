@@ -39,9 +39,9 @@ export const fetchExtensionInfo = async (extensionName: string, version: string)
     let res: IExtensionRegistryManifest;
     try {
         res = await got(`${EXTENSION_URL_PATH}${extensionName}`, {
-            // @todo: need to figure out env vars next
-            username: '',
-            password: '',
+            // @todo: handle env vars
+            username: 'devtools-reader',
+            password: 'zaFwod-rypvyh-3mohka',
         }).json();
     } catch (error) {
         throw new FetchError(`Invalid response from "${EXTENSION_URL_PATH}${extensionName}"`);
