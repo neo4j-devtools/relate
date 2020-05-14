@@ -7,10 +7,11 @@ import stream from 'stream';
 import {promisify} from 'util';
 import hasha from 'hasha';
 
-import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM, NEO4J_ARCHIVE_FILE_SUFFIX} from '../../environment.constants';
+import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
+import {DOWNLOADING_FILE_EXTENSION} from '../../../constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {FetchError, IntegrityError, NotFoundError} from '../../../errors';
-import {envPaths, extractNeo4j} from '../../../utils';
+import {extractNeo4j} from '../../../utils';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
@@ -63,24 +64,15 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     const requestedDistributionUrl = requestedDistribution.dist;
     const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
 
-    // just so its obvious that its currently in progress.
-    const tmpName = uuidv4();
-    // output to tmp dir initially instead of neo4jDistribution dir?
-    const tmpPath = path.join(envPaths().tmp, tmpName);
+    // Download straight to the distribution path with a temporary name that
+    // makes it obvious that the file is not finished downloading.
+    const downloadingName = `${uuidv4()}${DOWNLOADING_FILE_EXTENSION}`;
+    const downloadingPath = path.join(neo4jDistributionPath, downloadingName);
 
-    await fse.ensureFile(tmpPath);
+    await fse.ensureFile(downloadingPath);
+    await pipeline(requestedDistributionUrl, downloadingPath);
+    await verifyHash(shaSum, downloadingPath);
 
-    // download and pipe to tmpPath
-    await pipeline(requestedDistributionUrl, tmpPath);
-    // verify the hash
-    await verifyHash(shaSum, tmpPath);
-
-    // extract to cache dir first
-    const {edition: neo4jEdition, version: neo4jVersion} = await extractNeo4j(tmpPath, neo4jDistributionPath);
-    const archiveName = `neo4j-${neo4jEdition}-${neo4jVersion}${NEO4J_ARCHIVE_FILE_SUFFIX}`;
-    const archivePath = path.join(neo4jDistributionPath, archiveName);
-    // rename the tmp output
-    await fse.rename(tmpPath, archivePath);
-    // remove tmp output
-    return fse.remove(tmpPath);
+    await extractNeo4j(downloadingPath, neo4jDistributionPath);
+    await fse.remove(downloadingPath);
 };

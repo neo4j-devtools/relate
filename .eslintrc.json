@@ -161,7 +161,19 @@
         ],
         "no-proto": "error",
         "no-restricted-globals": "error",
-        "no-restricted-properties": "error",
+        "no-restricted-properties": [
+            "error",
+            {
+                "object": "fse",
+                "property": "rename",
+                "message": "Use fse.move instead"
+            },
+            {
+                "object": "fs",
+                "property": "rename",
+                "message": "Use fse.move instead"
+            }
+        ],
         "no-return-assign": "error",
         "no-return-await": "error",
         "no-self-compare": "error",

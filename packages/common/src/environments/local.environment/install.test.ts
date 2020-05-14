@@ -11,8 +11,8 @@ import {DBMS_DIR_NAME} from '../../constants';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const DATA_HOME = envPaths().data;
-const INSTALL_ROOT = path.join(envPaths().data, 'dbmss');
-const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, 'dbmss');
+const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
+const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, DBMS_DIR_NAME);
 const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
 
 describe('LocalEnvironment - install', () => {
@@ -105,7 +105,11 @@ describe('LocalEnvironment - install', () => {
             .mockImplementationOnce(() => Promise.resolve([]));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        const dbmsId = await environment.installDbms(dbmss.createName(), 'password', TEST_NEO4J_VERSION);
+        const dbmsId = await environment.installDbms(
+            dbmss.createName(),
+            TestDbmss.DBMS_CREDENTIALS,
+            TEST_NEO4J_VERSION,
+        );
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
 
@@ -121,9 +125,9 @@ describe('LocalEnvironment - install', () => {
         jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve([]));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        await expect(environment.installDbms(dbmss.createName(), 'password', TEST_NEO4J_VERSION)).rejects.toThrow(
-            new NotFoundError(message),
-        );
+        await expect(
+            environment.installDbms(dbmss.createName(), TestDbmss.DBMS_CREDENTIALS, TEST_NEO4J_VERSION),
+        ).rejects.toThrow(new NotFoundError(message));
     });
 
     test('with valid version (semver)', async () => {

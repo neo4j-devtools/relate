@@ -68,13 +68,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     private readonly dirPaths = {
         ...envPaths(),
-        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
+        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
-    };
-
-    private readonly cachePaths = {
-        dbmss: path.join(envPaths().cache, DBMS_DIR_NAME),
     };
 
     public get id(): string {
@@ -91,7 +86,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {
-        const cached = await discoverNeo4jDistributions(this.cachePaths.dbmss);
+        const cached = await discoverNeo4jDistributions(this.dirPaths.dbmssCache);
         const online = await fetchNeo4jVersions();
 
         return [...cached, ...online];
@@ -112,15 +107,15 @@ export class LocalEnvironment extends EnvironmentAbstract {
             }
 
             let requestedDistribution = _.find(
-                await discoverNeo4jDistributions(this.cachePaths.dbmss),
+                await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
             );
 
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadNeo4j(semver, this.cachePaths.dbmss);
+                await downloadNeo4j(semver, this.dirPaths.dbmssCache);
                 const requestedDistributionAfterDownload = _.find(
-                    await discoverNeo4jDistributions(this.cachePaths.dbmss),
+                    await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
                     (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
                 );
                 if (!requestedDistributionAfterDownload) {
@@ -139,7 +134,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractNeo4j(version, this.cachePaths.dbmss);
+            const {extractedDistPath} = await extractNeo4j(version, this.dirPaths.dbmssCache);
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
@@ -243,7 +238,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.config.neo4jDataPath || this.dirPaths.data, 'dbmss');
+        const dbmssDir = path.join(this.config.neo4jDataPath || this.dirPaths.data, DBMS_DIR_NAME);
 
         if (dbmsId) {
             return path.join(dbmssDir, `dbms-${dbmsId}`);

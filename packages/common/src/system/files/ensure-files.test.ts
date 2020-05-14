@@ -23,12 +23,11 @@ describe('ensure-files', () => {
     afterEach(() => fse.remove(TMP_HOME));
 
     test('ensureDirs: ensure directories are created correctly', async () => {
-        const expectedFileNames = [...defaultFileNames, 'dbmss', 'environmentsConfig', 'neo4jDist'];
+        const expectedFileNames = [...defaultFileNames, 'dbmssCache', 'environmentsConfig'];
         const dirPaths: ILocalEnvironmentDirPaths = {
             ...defaultPaths,
-            dbmss: path.join(TMP_HOME, 'dbmss'),
+            dbmssCache: path.join(TMP_HOME, 'dbmssCache'),
             environmentsConfig: path.join(TMP_HOME, 'environmentsConfig'),
-            neo4jDistribution: path.join(TMP_HOME, 'neo4jDist'),
         };
         await ensureDirs(dirPaths);
         const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
