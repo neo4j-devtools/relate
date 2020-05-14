@@ -6,7 +6,7 @@ import path from 'path';
 import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
 
-import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion, IEnvironmentAuth} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
 import {PropertiesFile, ensureDirs} from '../../system';
 import {
@@ -33,15 +33,25 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
+    DEFAULT_WEB_HOST,
 } from '../environment.constants';
 import {
     BOLT_DEFAULT_PORT,
     DBMS_DIR_NAME,
     DBMS_TLS_LEVEL,
+    EXTENSION_DIR_NAME,
+    EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
     LOCALHOST_IP_ADDRESS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j} from '../../utils';
+import {
+    envPaths,
+    parseNeo4jConfigPort,
+    isValidUrl,
+    isValidPath,
+    extractNeo4j,
+    discoverExtensionDistributions,
+} from '../../utils';
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -56,9 +66,11 @@ import {
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
 
-    private readonly dataPaths = {
+    private readonly dirPaths = {
         ...envPaths(),
         dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
+        environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
+        neo4jDistribution: path.join(envPaths().cache, 'neo4j'),
     };
 
     private readonly cachePaths = {
@@ -70,8 +82,12 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async init(): Promise<void> {
-        await ensureDirs(this.dataPaths);
+        await ensureDirs(this.dirPaths);
         await this.discoverDbmss();
+    }
+
+    login(): Promise<IEnvironmentAuth> {
+        throw new NotAllowedError(`${LocalEnvironment.name} does not support login`);
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {
@@ -213,8 +229,21 @@ export class LocalEnvironment extends EnvironmentAbstract {
         }
     }
 
+    public async getAppUrl(appName: string): Promise<string> {
+        const installedApps = await discoverExtensionDistributions(
+            path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
+        );
+
+        if (!_.some(installedApps, (app) => app.name === appName)) {
+            throw new NotFoundError(`App ${appName} not installed`);
+        }
+
+        // @todo: use Bonjour to detect server base url
+        return `${DEFAULT_WEB_HOST}/${EXTENSION_TYPES.STATIC}/${appName}`;
+    }
+
     private getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.config.neo4jDataPath || this.dataPaths.data, 'dbmss');
+        const dbmssDir = path.join(this.config.neo4jDataPath || this.dirPaths.data, 'dbmss');
 
         if (dbmsId) {
             return path.join(dbmssDir, `dbms-${dbmsId}`);
@@ -292,7 +321,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
         const pathToDbms = this.getDbmsRootPath(dbmsId);
-        const pluginSource = path.join(this.dataPaths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
+        const pluginSource = path.join(this.dirPaths.cache, `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`);
         const pluginTarget = path.join(
             pathToDbms,
             NEO4J_PLUGIN_DIR,
@@ -347,7 +376,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     private async updateEnvironmentDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
         const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -359,7 +388,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             },
         };
         await fse.writeJson(
-            path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
             environmentConfig,
         );
 
@@ -374,7 +403,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     private async deleteEnvironmentDbmsConfig(uuid: string): Promise<void> {
         const environmentConfig = JSON.parse(
             await fse.readFile(
-                path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+                path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
@@ -382,7 +411,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         environmentConfig.dbmss = _.omit(environmentConfig.dbmss, uuid);
 
         await fse.writeJson(
-            path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME, `${this.config.id}${JSON_FILE_EXTENSION}`),
+            path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
             environmentConfig,
         );
 
@@ -424,6 +453,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                         config,
                         connectionUri: `${protocol}${host}${port}`,
                         id,
+                        rootPath: fullPath,
                     });
                 }
             }),

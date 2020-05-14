@@ -1,17 +1,23 @@
 import {IAuthToken} from 'tapestry';
 
-import {EnvironmentConfigModel, IDbms, IDbmsVersion} from '../models';
+import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
         return this.config.id;
     }
 
-    constructor(protected config: EnvironmentConfigModel) {}
+    get configPath(): string {
+        return this.configFilePath;
+    }
+
+    constructor(protected config: EnvironmentConfigModel, protected readonly configFilePath: string) {}
 
     init(): Promise<void> {
         return Promise.resolve();
     }
+
+    abstract login(): Promise<IEnvironmentAuth>;
 
     abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
 
@@ -32,4 +38,6 @@ export abstract class EnvironmentAbstract {
     abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
     abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<void>;
+
+    abstract getAppUrl(_appName: string): Promise<string>;
 }

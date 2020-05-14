@@ -3,19 +3,19 @@
 
 
 
-* [`relate app:launch [APPID]`](#relate-applaunch-appid)
+* [`relate app:open [APPNAME]`](#relate-appopen-appname)
 
-## `relate app:launch [APPID]`
+## `relate app:open [APPNAME]`
 
 ```
 USAGE
-  $ relate app:launch [APPID]
+  $ relate app:open [APPNAME]
 
 OPTIONS
-  -D, --dbmsId=dbmsId            (required)
+  -D, --dbmsId=dbmsId            The DBMS to automatically connect to
   -E, --environment=environment  Environment to run the command against
-  -H, --host=host                [default: http://localhost:3000]
-  -P, --principal=principal      (required)
+  -L, --log                      If set, log the path instead
+  -P, --principal=principal      The DBMS user to automatically connect with, assuming an access token exists
 ```
 
-_See code: [dist/commands/app/launch.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/app/launch.ts)_
+_See code: [dist/commands/app/open.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/app/open.ts)_

@@ -2,9 +2,13 @@ import {IAuthToken} from 'tapestry';
 
 import {EnvironmentAbstract} from './environment.abstract';
 import {NotAllowedError} from '../errors';
-import {IDbms, IDbmsVersion} from '../models';
+import {IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 
 export class AuraEnvironment extends EnvironmentAbstract {
+    login(): Promise<IEnvironmentAuth> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support login`);
+    }
+
     listDbmsVersions(): Promise<IDbmsVersion[]> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support listing DBMS versions`);
     }
@@ -43,5 +47,9 @@ export class AuraEnvironment extends EnvironmentAbstract {
 
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support updating DBMSs config`);
+    }
+
+    getAppUrl(_appName: string): Promise<string> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support getting app URLs`);
     }
 }

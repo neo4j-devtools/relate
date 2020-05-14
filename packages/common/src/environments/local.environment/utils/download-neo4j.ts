@@ -68,6 +68,8 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     // output to tmp dir initially instead of neo4jDistribution dir?
     const tmpPath = path.join(envPaths().tmp, tmpName);
 
+    await fse.ensureFile(tmpPath);
+
     // download and pipe to tmpPath
     await pipeline(requestedDistributionUrl, tmpPath);
     // verify the hash

@@ -15,7 +15,7 @@ jest.mock('uuid');
 
 const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
-const TMP_NEO4J_DIST_PATH = path.join(systemUtils.envPaths().tmp);
+const TMP_NEO4J_DIST_PATH = systemUtils.envPaths().tmp;
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';
 const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, TMP_UUID);
@@ -25,9 +25,9 @@ const ARCHIVE_PATH = path.join(
     `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}${NEO4J_ARCHIVE_FILE_SUFFIX}`,
 );
 const DBMS_VERSION = {
+    dist: TEST_DIST,
     edition: NEO4J_EDITION.ENTERPRISE,
     version: TEST_VERSION,
-    dist: TEST_DIST,
     origin: NEO4J_ORIGIN.ONLINE,
 };
 
@@ -35,8 +35,6 @@ describe('Download Neo4j (to local cache)', () => {
     beforeEach(() => fse.ensureDir(TMP_NEO4J_DIST_PATH));
 
     afterEach(() => jest.restoreAllMocks());
-
-    afterAll(() => fse.remove(TMP_NEO4J_DIST_PATH));
 
     test('downloadNeo4j: successfully download and extract neo4j', async () => {
         // setup spies
