@@ -61,6 +61,9 @@
     ],
     "oclif": {
         "commands": "./dist/commands",
+        "hooks": {
+            "command_not_found": "./dist/hooks/command-not-found"
+        },
         "bin": "relate",
         "plugins": [
             "@oclif/plugin-help",
