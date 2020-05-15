@@ -41,3 +41,10 @@ export enum DBMS_TLS_LEVEL {
     OPTIONAL = 'OPTIONAL',
     ENABLED = 'ENABLED',
 }
+
+export type Listener<T = any> = (eventData: T) => T | void;
+
+export enum HOOK_EVENTS {
+    ELECTRON_WINDOW_OPTIONS = 'ELECTRON_WINDOW_OPTIONS',
+    ELECTRON_WINDOW_CREATED = 'ELECTRON_WINDOW_CREATED',
+}

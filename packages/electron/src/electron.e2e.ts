@@ -1,7 +1,9 @@
 import {INestApplication} from '@nestjs/common';
-import {SystemProvider} from '@relate/common';
+import {ConfigModule} from '@nestjs/config';
 import {Test, TestingModule} from '@nestjs/testing';
+import {SystemProvider} from '@relate/common';
 
+import configuration from './configs/dev.config';
 import {ElectronModule} from './electron.module';
 
 describe('ElectronModule', () => {
@@ -9,7 +11,13 @@ describe('ElectronModule', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [ElectronModule],
+            imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [configuration],
+                }),
+                ElectronModule,
+            ],
         }).compile();
 
         app = module.createNestApplication();

@@ -49,7 +49,7 @@ export class AuraEnvironment extends EnvironmentAbstract {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support updating DBMSs config`);
     }
 
-    getAppUrl(_appName: string): Promise<string> {
+    getAppPath(_appName: string): Promise<string> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support getting app URLs`);
     }
 }

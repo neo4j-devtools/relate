@@ -21,7 +21,7 @@ export class OpenModule implements OnApplicationBootstrap {
         const {appName} = args;
         const {environment: environmentId, principal, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const appUrl = await environment.getAppUrl(appName);
+        const appUrl = await environment.getAppPath(appName);
 
         if (!appName) {
             // @todo: add select prompt once we can list apps

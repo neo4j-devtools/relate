@@ -270,7 +270,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.createAccessToken;
     }
 
-    getAppUrl(_appName: string): Promise<string> {
+    getAppPath(_appName: string): Promise<string> {
         throw new NotAllowedError(`${RemoteEnvironment.name} does not support getting app URLs`);
     }
 }

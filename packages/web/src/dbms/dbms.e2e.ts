@@ -1,8 +1,10 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
+import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import {TestDbmss, IDbms} from '@relate/common';
 
+import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
 
 let TEST_DB_NAME: string;
@@ -31,7 +33,13 @@ describe('DBMSModule', () => {
         TEST_DB_NAME = name;
 
         const module = await Test.createTestingModule({
-            imports: [WebModule],
+            imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [configuration],
+                }),
+                WebModule,
+            ],
         }).compile();
 
         app = module.createNestApplication();
