@@ -89,9 +89,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const coercedVersion = coerce(version) && coerce(version)!.version;
-
-        if (coercedVersion && !isValidUrl(version) && !isValidPath(version)) {
+        if (coerce(version)?.version && !isValidUrl(version) && !isValidPath(version)) {
             const {version: semver} = coerce(version)!;
 
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {

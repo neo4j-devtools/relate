@@ -174,8 +174,8 @@ export class SystemProvider implements OnModuleInit {
             JSON.stringify(
                 new AppLaunchTokenModel({
                     accessToken,
-                    environmentId,
                     appId,
+                    environmentId,
                     dbmsId,
                     principal,
                 }),
@@ -269,9 +269,7 @@ export class SystemProvider implements OnModuleInit {
             throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
-        const coercedVersion = coerce(version) && coerce(version)!.version;
-
-        if (coercedVersion && !isValidPath(version)) {
+        if (coerce(version)?.version && !isValidPath(version)) {
             const {version: semver} = coerce(version)!;
             let requestedDistribution = _.find(
                 await discoverExtensionDistributions(extensionDistributions),
@@ -291,7 +289,7 @@ export class SystemProvider implements OnModuleInit {
                 requestedDistribution = requestedDistributionAfterDownload;
             }
 
-            return this.installRelateExtension(requestedDistribution!, extensionTarget, requestedDistribution!.dist);
+            return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
         }
 
         // version as a file path.

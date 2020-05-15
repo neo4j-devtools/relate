@@ -39,8 +39,8 @@ const CREATE_APP_LAUNCH_TOKEN = {
     `,
     variables: {
         accessToken: TEST_ACCESS_TOKEN,
-        environmentId: 'test',
         appId: TEST_APP_ID,
+        environmentId: 'test',
         principal: 'bam',
         // dbmsId: 'bar', // added in test
     },
@@ -149,8 +149,8 @@ describe('AppsModule', () => {
 
                 expect(appLaunchData).toEqual({
                     accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
-                    environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
                     appId: CREATE_APP_LAUNCH_TOKEN.variables.appId,
+                    environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
                     dbms: {
                         id: TEST_DB_ID,
                     },

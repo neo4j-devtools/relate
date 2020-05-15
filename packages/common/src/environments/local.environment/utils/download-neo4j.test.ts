@@ -24,8 +24,8 @@ const EXPECTED_HASH_VALUE = 'test_hash1234';
 const DBMS_VERSION = {
     dist: TEST_DIST,
     edition: NEO4J_EDITION.ENTERPRISE,
-    version: TEST_VERSION,
     origin: NEO4J_ORIGIN.ONLINE,
+    version: TEST_VERSION,
 };
 
 describe('Download Neo4j (to local cache)', () => {

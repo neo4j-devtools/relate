@@ -2,8 +2,8 @@ import {prompt} from 'enquirer';
 
 export const inputPrompt = async (message: string, initial?: string): Promise<string> => {
     const {selection} = await prompt({
-        message,
         initial,
+        message,
         name: 'selection',
         type: 'input',
     });

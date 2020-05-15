@@ -13,12 +13,12 @@ const TEST_APP_ID = 'foo';
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const HTTP_OK = 200;
 
-const queryBody = (query: string, variables?: {[key: string]: any}) => ({
+const queryBody = (query: string, variables?: {[key: string]: any}): {[key: string]: any} => ({
     query,
     variables: {
         environmentId: 'test',
-        dbmsNames: [TEST_DB_NAME],
         dbmsName: TEST_DB_NAME,
+        dbmsNames: [TEST_DB_NAME],
         ...variables,
     },
 });

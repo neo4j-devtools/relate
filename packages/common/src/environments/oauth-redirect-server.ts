@@ -7,7 +7,7 @@ if (isMainThread) {
     throw new NotSupportedError('OAuth redirect server must run in a worker thread');
 }
 
-const requestListener = (req: http.IncomingMessage, res: http.ServerResponse) => {
+const requestListener = (req: http.IncomingMessage, res: http.ServerResponse): http.RequestListener => {
     const queryObject = url.parse(req.url || '', true).query;
 
     if (queryObject.error) {

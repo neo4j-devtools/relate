@@ -25,8 +25,8 @@ export class AppsResolver {
         const dbms = await environment.getDbms(dbmsId);
 
         return {
-            environmentId: environment.id,
             dbms,
+            environmentId: environment.id,
             ...rest,
         };
     }

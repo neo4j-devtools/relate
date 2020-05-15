@@ -4,7 +4,7 @@ import {writePropertiesFile} from './write-properties-file';
 
 jest.mock('fs-extra', () => {
     return {
-        writeFile: (_path: string, data: string) => Promise.resolve(data),
+        writeFile: (_path: string, data: string): Promise<string> => Promise.resolve(data),
     };
 });
 

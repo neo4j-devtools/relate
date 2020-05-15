@@ -103,7 +103,6 @@
         "max-params": ["warn", 4],
         "max-statements": "warn",
         "max-statements-per-line": "error",
-        "multiline-comment-style": "warn",
         "new-parens": "error",
         "newline-per-chained-call": "error",
         "no-alert": "error",

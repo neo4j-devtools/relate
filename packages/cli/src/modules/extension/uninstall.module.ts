@@ -16,7 +16,7 @@ export class UninstallModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    onApplicationBootstrap(): Promise<void> {
+    async onApplicationBootstrap(): Promise<void> {
         const {args} = this.parsed;
         const {name} = args;
 

@@ -31,11 +31,11 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         super(config, configPath);
 
         this.client = new HttpLink({
-            uri: this.config.relateURL,
             // HttpLink wants a fetch implementation to make requests to a
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             fetch: fetch as any,
+            uri: this.config.relateURL,
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
@@ -84,7 +84,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
         return {
             authUrl,
-            getToken: async () => {
+            getToken: async (): Promise<{token: string; payload: any} | null> => {
                 const code = await oAuthRedirectServer({
                     host,
                     port,
@@ -113,8 +113,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                 await fse.writeFile(environmentConfigPath, JSON.stringify(config));
 
                 return {
-                    token: tokens.id_token,
                     payload: await data.getPayload(),
+                    token: tokens.id_token,
                 };
             },
         };
@@ -147,8 +147,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             `,
             variables: {
                 environmentId: this.config.relateEnvironment,
-                name,
                 credentials,
+                name,
                 version,
             },
         });
