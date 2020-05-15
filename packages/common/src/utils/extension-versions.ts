@@ -24,8 +24,15 @@ export interface IExtensionMeta {
 }
 
 export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<IExtensionMeta[]> => {
-    const files = await fs.readdir(distributionsRoot, {withFileTypes: true});
-    const dirs = _.filter(files, (file) => file.isDirectory());
+    const dirFiles = await fs.readdir(distributionsRoot, {withFileTypes: true});
+    const files = await Promise.all(
+        _.map(dirFiles, async (dir) => {
+            const stats = await fse.stat(path.join(distributionsRoot, dir.name));
+
+            return stats.isDirectory() ? dir : null;
+        }),
+    );
+    const dirs = _.compact(files);
     const distPromises: Promise<IExtensionMeta | null>[] = _.map(dirs, (dir) =>
         discoverExtension(path.join(distributionsRoot, dir.name)).catch(() => null),
     );
@@ -93,7 +100,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     return {
         dist: extensionRootDir,
         manifest: new ExtensionModel({
-            main: path.join(extensionRootDir, main),
+            main,
             name: extensionName,
             root: extensionRootDir,
             type: EXTENSION_TYPES.STATIC,

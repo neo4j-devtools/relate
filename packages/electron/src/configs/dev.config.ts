@@ -3,7 +3,7 @@ import {IElectronModuleConfig} from '../electron.module';
 const DEFAULT_PORT = 3001;
 const DEFAULT_HOST = '127.0.0.1';
 const DEFAULT_STATIC_HTTP_ROOT = '/static';
-const DEFAULT_APP = 'neo4j-browser';
+const DEFAULT_APP = 'workspaces';
 
 export default (): IElectronModuleConfig => ({
     defaultApp: process.env.DEFAULT_APP || DEFAULT_APP,

@@ -33,7 +33,6 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
-    DEFAULT_WEB_HOST,
 } from '../environment.constants';
 import {
     BOLT_DEFAULT_PORT,
@@ -44,14 +43,7 @@ import {
     JSON_FILE_EXTENSION,
     LOCALHOST_IP_ADDRESS,
 } from '../../constants';
-import {
-    envPaths,
-    parseNeo4jConfigPort,
-    isValidUrl,
-    isValidPath,
-    extractNeo4j,
-    discoverExtensionDistributions,
-} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j, discoverExtension} from '../../utils';
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -224,17 +216,17 @@ export class LocalEnvironment extends EnvironmentAbstract {
         }
     }
 
-    public async getAppUrl(appName: string): Promise<string> {
-        const installedApps = await discoverExtensionDistributions(
-            path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
+    public async getAppPath(appName: string): Promise<string> {
+        const {manifest} = await discoverExtension(
+            path.join(this.dirPaths.data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, appName),
         );
 
-        if (!_.some(installedApps, (app) => app.name === appName)) {
-            throw new NotFoundError(`App ${appName} not installed`);
-        }
+        let saneMain = _.startsWith(manifest.main, '.') ? manifest.main.substr(1) : manifest.main;
+        saneMain = _.startsWith(saneMain, '/') ? saneMain.substr(1) : saneMain;
 
         // @todo: use Bonjour to detect server base url
-        return `${DEFAULT_WEB_HOST}/${EXTENSION_TYPES.STATIC}/${appName}`;
+        // @todo: figure out how to pass static path from config
+        return `/${EXTENSION_TYPES.STATIC}/${appName}/${saneMain}`;
     }
 
     private getDbmsRootPath(dbmsId?: string): string {

@@ -39,5 +39,5 @@ export abstract class EnvironmentAbstract {
 
     abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<void>;
 
-    abstract getAppUrl(_appName: string): Promise<string>;
+    abstract getAppPath(_appName: string): Promise<string>;
 }

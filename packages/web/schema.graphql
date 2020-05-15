@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AppData {
+  name: String!
+  version: String!
+  type: String!
+  url: String!
+}
+
 type AppLaunchData {
   environmentId: String!
   appId: String!
@@ -29,7 +36,7 @@ type Dbms {
 }
 
 type Mutation {
-  createAppLaunchToken(accessToken: String!, principal: String!, dbmsId: String!, appId: String!, environmentId: String!): AppLaunchToken!
+  createAppLaunchToken(accessToken: String!, principal: String!, dbmsId: String!, appName: String!, environmentId: String!): AppLaunchToken!
   installDbms(environmentId: String!, name: String!, credentials: String!, version: String!): String!
   uninstallDbms(environmentId: String!, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
@@ -38,7 +45,8 @@ type Mutation {
 }
 
 type Query {
-  appLaunchData(launchToken: String!, appId: String!): AppLaunchData!
+  appLaunchData(launchToken: String!, appName: String!): AppLaunchData!
+  installedApps(environmentId: String!): [AppData!]!
   listDbmss(environmentId: String): [Dbms!]!
   statusDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
 }

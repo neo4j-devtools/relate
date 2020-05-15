@@ -1,10 +1,12 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
+import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import path from 'path';
 import fse from 'fs-extra';
 import {envPaths, EXTENSION_DIR_NAME, EXTENSION_TYPES, SystemProvider, TestDbmss} from '@relate/common';
 
+import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
 import {createAppLaunchUrl} from './apps.utils';
 
@@ -78,7 +80,13 @@ describe('AppsModule', () => {
         TEST_DB_ID = id;
 
         const module = await Test.createTestingModule({
-            imports: [WebModule],
+            imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [configuration],
+                }),
+                WebModule,
+            ],
         }).compile();
 
         app = module.createNestApplication();
@@ -108,7 +116,7 @@ describe('AppsModule', () => {
             .expect((res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
                 const {token, path: tokenPath} = createAppLaunchToken;
-                const expectedPath = createAppLaunchUrl('/static', appId, token);
+                const expectedPath = createAppLaunchUrl(`/static/${appId}`, token);
 
                 expect(token).toEqual(expect.stringMatching(JWT_REGEX));
                 expect(tokenPath).toEqual(expectedPath);

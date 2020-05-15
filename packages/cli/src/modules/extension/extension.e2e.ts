@@ -5,25 +5,24 @@ import {envPaths, EXTENSION_DIR_NAME, NotFoundError} from '@relate/common';
 import InstallCommand from '../../commands/extension/install';
 import UninstallCommand from '../../commands/extension/uninstall';
 
-const TEST_EXTENSION_NAME = 'neo4j-browser';
+const TEST_EXTENSION_NAME = 'neo4j-insight';
+const TEST_EXTENSION_VERSION = '1.0.0';
 const TEST_MISSING_EXTENSION = 'neo4j-desktop';
 
 describe('$relate extension', () => {
     test.stdout().it('installs extension from cache', async (ctx) => {
-        await InstallCommand.run([TEST_EXTENSION_NAME, '--version=1.0.0']);
+        await InstallCommand.run([TEST_EXTENSION_NAME, '-V', TEST_EXTENSION_VERSION]);
 
         expect(ctx.stdout).toContain(TEST_EXTENSION_NAME);
     });
 
-    // @todo - needs to be updated, we try to download the extension now
-    // instead of throwing here
     test.skip()
         .stderr()
         .it('throws when extension not in cache', async () => {
             try {
-                await InstallCommand.run([TEST_MISSING_EXTENSION, '--version=1.0.0']);
+                await InstallCommand.run([TEST_MISSING_EXTENSION, '-V', TEST_EXTENSION_VERSION]);
             } catch (e) {
-                expect(e).toEqual(new NotFoundError('fetch and install neo4j-desktop@*'));
+                expect(e).toEqual(new NotFoundError('fetch and install neo4j-desktop@1.0.0'));
             }
         });
 
