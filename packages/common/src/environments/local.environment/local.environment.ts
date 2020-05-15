@@ -90,6 +90,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         }
 
         if (coerce(version)?.version && !isValidUrl(version) && !isValidPath(version)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const {version: semver} = coerce(version)!;
 
             if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {

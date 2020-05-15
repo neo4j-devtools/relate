@@ -175,8 +175,8 @@ export class SystemProvider implements OnModuleInit {
                 new AppLaunchTokenModel({
                     accessToken,
                     appId,
-                    environmentId,
                     dbmsId,
+                    environmentId,
                     principal,
                 }),
             ),
@@ -270,6 +270,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         if (coerce(version)?.version && !isValidPath(version)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const {version: semver} = coerce(version)!;
             let requestedDistribution = _.find(
                 await discoverExtensionDistributions(extensionDistributions),

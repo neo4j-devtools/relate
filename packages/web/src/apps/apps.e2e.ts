@@ -150,10 +150,10 @@ describe('AppsModule', () => {
                 expect(appLaunchData).toEqual({
                     accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
                     appId: CREATE_APP_LAUNCH_TOKEN.variables.appId,
-                    environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
                     dbms: {
                         id: TEST_DB_ID,
                     },
+                    environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
                     principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
                 });
             });

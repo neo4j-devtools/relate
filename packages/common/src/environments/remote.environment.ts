@@ -35,10 +35,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             fetch: fetch as any,
-            uri: this.config.relateURL,
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
+            uri: this.config.relateURL,
         });
     }
 
@@ -146,8 +146,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                 }
             `,
             variables: {
-                environmentId: this.config.relateEnvironment,
                 credentials,
+                environmentId: this.config.relateEnvironment,
                 name,
                 version,
             },

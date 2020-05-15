@@ -41,22 +41,22 @@ describe('DBMS versions (local environment)', () => {
                 versions: {
                     '3.5.17': {
                         dist: {
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
                             linux: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
                             win: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-windows.zip',
                         },
                     },
                     '4.0.0': {
                         dist: {
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-unix.tar.gz',
                             linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-unix.tar.gz',
                             win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-windows.zip',
                         },
                     },
                     '4.0.1': {
                         dist: {
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-unix.tar.gz',
                             linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-unix.tar.gz',
                             win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-windows.zip',
                         },
                     },

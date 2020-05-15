@@ -111,6 +111,7 @@ describe('Download Neo4j (to local cache)', () => {
 
         test('hash match', async () => {
             const hash = await hasha.fromFile(TMP_PATH, {algorithm: NEO4J_SHA_ALGORITHM});
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             expect(await downloadNeo4j.verifyHash(hash!, TMP_PATH)).toBe(hash);
         });
 

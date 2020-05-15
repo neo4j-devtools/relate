@@ -16,9 +16,9 @@ const HTTP_OK = 200;
 const queryBody = (query: string, variables?: {[key: string]: any}): {[key: string]: any} => ({
     query,
     variables: {
-        environmentId: 'test',
         dbmsName: TEST_DB_NAME,
         dbmsNames: [TEST_DB_NAME],
+        environmentId: 'test',
         ...variables,
     },
 });
