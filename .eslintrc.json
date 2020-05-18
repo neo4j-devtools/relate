@@ -39,8 +39,7 @@
         {
             "files": ["packages/**/graphql.schema.ts"],
             "rules": {
-                "@typescript-eslint/interface-name-prefix": "off",
-                "multiline-comment-style": "off"
+                "@typescript-eslint/interface-name-prefix": "off"
             }
         },
         {
@@ -53,6 +52,12 @@
             "files": ["packages/web/**/*.e2e.ts", "packages/electron/**/*.e2e.ts"],
             "rules": {
                 "jest/expect-expect": ["off"]
+            }
+        },
+        {
+            "files": ["packages/cli/src/modules/**/*.ts", "packages/cli/src/prompts/**/*.ts"],
+            "rules": {
+                "sort-keys": ["off"]
             }
         }
     ],

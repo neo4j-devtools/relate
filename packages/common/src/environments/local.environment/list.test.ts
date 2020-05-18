@@ -12,7 +12,7 @@ const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
 jest.mock('../../utils/read-properties-file', () => ({
-    readPropertiesFile: (): Map<any, any> => new Map(),
+    readPropertiesFile: (): Map<string, string> => new Map(),
 }));
 
 function generateDummyConf(dbms: string): PropertiesFile {

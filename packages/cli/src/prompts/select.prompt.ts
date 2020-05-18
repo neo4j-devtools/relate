@@ -11,8 +11,8 @@ interface IChoice {
 
 export const selectPrompt = async (message: string, choices: string[] | IChoice[]): Promise<string> => {
     const {selection} = await prompt({
-        choices,
         message,
+        choices,
         name: 'selection',
         type: 'select',
     });
@@ -26,8 +26,8 @@ export const selectDbmsPrompt = async (message: string, environment: Environment
     return selectPrompt(
         message,
         dbmss.map((dbms) => ({
-            message: `[${dbms.id.slice(0, 8)}] ${dbms.name}`,
             name: dbms.id,
+            message: `[${dbms.id.slice(0, 8)}] ${dbms.name}`,
         })),
     );
 };

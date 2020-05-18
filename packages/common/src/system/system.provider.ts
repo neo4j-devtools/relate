@@ -269,20 +269,19 @@ export class SystemProvider implements OnModuleInit {
             throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
-        if (coerce(version)?.version && !isValidPath(version)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const {version: semver} = coerce(version)!;
+        const coercedVersion = coerce(version)?.version;
+        if (coercedVersion && !isValidPath(version)) {
             let requestedDistribution = _.find(
                 await discoverExtensionDistributions(extensionDistributions),
-                (dist) => dist.name === name && dist.version === semver,
+                (dist) => dist.name === name && dist.version === coercedVersion,
             );
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadExtension(name, semver, extensionDistributions);
+                await downloadExtension(name, coercedVersion, extensionDistributions);
                 const requestedDistributionAfterDownload = _.find(
                     await discoverExtensionDistributions(extensionDistributions),
-                    (dist) => dist.name === name && dist.version === semver,
+                    (dist) => dist.name === name && dist.version === coercedVersion,
                 );
                 if (!requestedDistributionAfterDownload) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);

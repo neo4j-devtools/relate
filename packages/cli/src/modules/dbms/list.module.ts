@@ -25,9 +25,9 @@ export class ListModule implements OnApplicationBootstrap {
             cli.table(
                 dbmss,
                 {
-                    description: {},
                     id: {},
                     name: {},
+                    description: {},
                 },
                 {
                     printLine: this.utils.log,
