@@ -3,8 +3,8 @@ import fse from 'fs-extra';
 import decompress from 'decompress';
 import path from 'path';
 
-import {FileStructureError} from '../errors';
-import {getDistributionInfo} from '../environments/local.environment/utils';
+import {FileStructureError, DependencyError} from '../errors';
+import {getDistributionInfo} from '../environments/local.environment/utils/dbms-versions';
 import {IDbmsVersion} from '../models';
 
 interface IExtractedArchive extends IDbmsVersion {
@@ -35,6 +35,10 @@ export const extractNeo4j = async (archivePath: string, outputDir: string): Prom
             extractedDistPath,
         };
     } catch (e) {
+        if (e.name === DependencyError.name) {
+            throw e;
+        }
+
         await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
         throw e;
     }

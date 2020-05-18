@@ -1,69 +1,67 @@
-import fs from 'fs-extra';
+import {exec} from 'child_process';
+import fse from 'fs-extra';
 import path from 'path';
-import {exec, spawn} from 'child_process';
 
-import {NotAllowedError, NotFoundError} from '../../../errors';
+import {NotAllowedError, NotFoundError, DependencyError} from '../../../errors';
 import {NEO4J_BIN_DIR, NEO4J_BIN_FILE} from '../../environment.constants';
+import {resolveRelateJavaHome} from './resolve-java';
+import {spawnPromise} from './spawn-promise';
 
-export function neo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
+export async function neo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
     const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
+    const relateJavaHome = await resolveRelateJavaHome();
 
-    return new Promise((resolve, reject) => {
-        fs.access(neo4jBinPath, fs.constants.X_OK, (err: NodeJS.ErrnoException | null) => {
-            if (err) {
-                reject(new NotFoundError(`No DBMS found at "${dbmsRootPath}"`));
-                return;
-            }
-            const data: string[] = [];
-            const collect = (chunk: Buffer): void => {
-                data.push(chunk.toString());
-            };
-
-            const neo4jCommand = spawn(neo4jBinPath, [command]);
-            neo4jCommand.stderr.on('data', collect);
-            neo4jCommand.stderr.on('error', reject);
-            neo4jCommand.stderr.on('close', () => resolve(data.join('')));
-            neo4jCommand.stderr.on('end', () => resolve(data.join('')));
-
-            neo4jCommand.stdout.on('data', collect);
-            neo4jCommand.stdout.on('error', reject);
-            neo4jCommand.stdout.on('close', () => resolve(data.join('')));
-            neo4jCommand.stdout.on('end', () => resolve(data.join('')));
-        });
+    await fse.access(neo4jBinPath, fse.constants.X_OK).catch(() => {
+        throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
     });
+
+    const output = await spawnPromise(neo4jBinPath, [command], {
+        env: {
+            ...process.env,
+            JAVA_HOME: relateJavaHome || process.env.JAVA_HOME,
+            // relateJavaHome is prepended to the PATH in order to take
+            // precedence over any user installed JAVA executable.
+            PATH: `${relateJavaHome || ''}${path.delimiter}${process.env.PATH}`,
+        },
+    });
+
+    if (output.includes('ERROR: Unable to find Java executable.')) {
+        throw new DependencyError('Unable to find Java executable');
+    }
+
+    return output;
 }
 
-export function elevatedNeo4jWindowsCmd(dbmsRootPath: string, command: string): Promise<string> {
+export async function elevatedNeo4jWindowsCmd(dbmsRootPath: string, command: string): Promise<string> {
     const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
 
     if (process.platform !== 'win32') {
         throw new NotAllowedError('Elevated commands only allowed in windows environments');
     }
 
+    await fse.access(neo4jBinPath, fse.constants.X_OK).catch(() => {
+        throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
+    });
+
     return new Promise((resolve, reject) => {
-        fs.access(neo4jBinPath, fs.constants.X_OK, (err: NodeJS.ErrnoException | null) => {
-            if (err) {
-                reject(new NotFoundError(`No DBMS found at "${dbmsRootPath}"`));
+        // eslint-disable-next-line max-len
+        const elevatedCmd = `Start-Process PowerShell -Verb RunAs "-Command \`"cd '$pwd'; & '${neo4jBinPath}' ${command};\`"" -PassThru -Wait`;
+        // The JAVA_HOME env is not set here because this method should be
+        // used only for windows services, not for running the DBMS.
+        const execOptions = {shell: 'powershell'};
+
+        exec(elevatedCmd, execOptions, (err2, stdout, stderr) => {
+            if (err2) {
+                reject(err2.message);
                 return;
             }
 
-            // eslint-disable-next-line max-len
-            const elevatedCmd = `Start-Process PowerShell -Verb RunAs "-Command \`"cd '$pwd'; & '${neo4jBinPath}' ${command};\`"" -PassThru -Wait`;
-            const execOptions = {shell: 'powershell'};
+            if (stderr) {
+                reject(stderr);
+                return;
+            }
 
-            exec(elevatedCmd, execOptions, (err2, stdout, stderr) => {
-                if (err2) {
-                    reject(err2.message);
-                    return;
-                }
-
-                if (stderr) {
-                    reject(stderr);
-                    return;
-                }
-
-                resolve(stdout);
-            });
+            resolve(stdout);
         });
     });
 }

@@ -13,6 +13,7 @@ import {
 } from '../../environment.constants';
 import {neo4jAdminCmd} from './neo4j-admin-cmd';
 import {IDbmsVersion} from '../../../models';
+import {DependencyError} from '../../../errors';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
@@ -32,7 +33,11 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
             origin: NEO4J_ORIGIN.CACHED,
             version: version.version,
         };
-    } catch {
+    } catch (e) {
+        if (e.name === DependencyError.name) {
+            throw e;
+        }
+
         return null;
     }
 };
