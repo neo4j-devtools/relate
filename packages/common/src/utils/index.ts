@@ -9,6 +9,8 @@ export {getAccessTokenRCKey} from './get-access-token-rc-key';
 export {getInstalledExtensions} from './get-installed-extensions';
 export {envPaths} from './env-paths';
 export {loadExtensionsFor} from './load-extensions-for';
+export {download} from './download';
+export {extract} from './extract';
 export * from './extract-neo4j';
 export * from './extract-extension';
 export * from './extension-versions';

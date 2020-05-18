@@ -2,6 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
+import cli from 'cli-ux';
 
 import InstallCommand from '../../commands/dbms/install';
 import {selectPrompt, inputPrompt, passwordPrompt} from '../../prompts';
@@ -43,7 +44,9 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
+        cli.action.start('Installing DBMS');
         return environment.installDbms(name, credentials, version).then((res) => {
+            cli.action.stop();
             this.utils.log(res);
         });
     }

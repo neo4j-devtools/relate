@@ -1,4 +1,5 @@
 export const ENVIRONMENTS_DIR_NAME = 'environments';
+export const RUNTIME_DIR_NAME = 'runtime';
 
 export enum ENVIRONMENT_TYPES {
     LOCAL = 'LOCAL',
@@ -19,6 +20,9 @@ export enum NEO4J_ORIGIN {
     CACHED = 'cached',
     ONLINE = 'online',
 }
+
+export const ZULU_JAVA_VERSION = '11.35.13-ca-jdk11.0.5';
+export const ZULU_JAVA_DOWNLOAD_URL = 'https://cdn.azul.com/zulu/bin/';
 
 export const NEO4J_BIN_DIR = 'bin';
 export const NEO4J_BIN_FILE = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
