@@ -171,6 +171,16 @@
                 "object": "fs",
                 "property": "rename",
                 "message": "Use fse.move instead"
+            },
+            {
+                "object": "flags",
+                "property": "credentials",
+                "message": "Use passwordPrompt instead"
+            },
+            {
+                "object": "flags",
+                "property": "password",
+                "message": "Use passwordPrompt instead"
             }
         ],
         "no-return-assign": "error",

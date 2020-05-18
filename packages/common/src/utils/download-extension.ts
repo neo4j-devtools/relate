@@ -57,8 +57,8 @@ export const fetchExtensionInfo = async (extensionName: string, version: string)
     } = res.versions[version];
 
     return {
-        tarball,
         shasum,
+        tarball,
     };
 };
 
