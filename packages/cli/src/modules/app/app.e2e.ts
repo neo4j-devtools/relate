@@ -9,7 +9,7 @@ import UninstallCommand from '../../commands/extension/uninstall';
 
 jest.mock('cli-ux', () => {
     return {
-        open: () => Promise.resolve(),
+        open: (): Promise<void> => Promise.resolve(),
     };
 });
 

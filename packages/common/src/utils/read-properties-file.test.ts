@@ -2,14 +2,14 @@ import {readPropertiesFile} from './read-properties-file';
 
 jest.mock('fs-extra', () => {
     const MOCKS = {
-        plain: `
-            bar.bam=baz
-            bom.boz=true
-        `,
         comments: `
             # hurr
             bar.bam=baz
             # durr
+            bom.boz=true
+        `,
+        plain: `
+            bar.bam=baz
             bom.boz=true
         `,
         whitespace: `
@@ -23,7 +23,7 @@ jest.mock('fs-extra', () => {
     };
 
     return {
-        readFile: (path: 'plain' | 'comments' | 'whitespace') => Promise.resolve(MOCKS[path]),
+        readFile: (path: 'plain' | 'comments' | 'whitespace'): Promise<string> => Promise.resolve(MOCKS[path]),
     };
 });
 

@@ -11,12 +11,12 @@ export class PropertiesFile implements IPropertiesFile {
         private defaults: INeo4jConfigDefaults = NEO4J_CONFIG_DEFAULTS,
     ) {}
 
-    public static async readFile(path: string) {
+    public static async readFile(path: string): Promise<PropertiesFile> {
         const config = await readPropertiesFile(path);
         return new PropertiesFile(config, path, NEO4J_CONFIG_DEFAULTS);
     }
 
-    public set(key: string, value: string | boolean) {
+    public set(key: string, value: string | boolean): void {
         let configEntries = this.getEntries(this.config);
         configEntries = this.setEntry(configEntries, key, value);
         this.config = new Map(configEntries);

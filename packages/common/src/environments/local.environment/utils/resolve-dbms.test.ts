@@ -5,22 +5,22 @@ describe('resolveDbms', () => {
     const dummyConf = new PropertiesFile(new Map(), 'nowhere');
     const dbmss = {
         c9992c2f: {
-            connectionUri: 'neo4j://127.0.0.1:7687',
             config: dummyConf,
+            connectionUri: 'neo4j://127.0.0.1:7687',
             description: '',
             id: 'c9992c2f',
             name: 'Unique Name',
         },
         e45a7499: {
-            connectionUri: 'neo4j://127.0.0.1:7687',
             config: dummyConf,
+            connectionUri: 'neo4j://127.0.0.1:7687',
             description: '',
             id: 'e45a7499',
             name: 'Ambiguous Name',
         },
         f2bdb05c: {
-            connectionUri: 'neo4j://127.0.0.1:7687',
             config: dummyConf,
+            connectionUri: 'neo4j://127.0.0.1:7687',
             description: '',
             id: 'f2bdb05c',
             name: 'Ambiguous Name',

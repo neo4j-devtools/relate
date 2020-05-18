@@ -39,8 +39,7 @@
         {
             "files": ["packages/**/graphql.schema.ts"],
             "rules": {
-                "@typescript-eslint/interface-name-prefix": "off",
-                "multiline-comment-style": "off"
+                "@typescript-eslint/interface-name-prefix": "off"
             }
         },
         {
@@ -53,6 +52,12 @@
             "files": ["packages/web/**/*.e2e.ts", "packages/electron/**/*.e2e.ts"],
             "rules": {
                 "jest/expect-expect": ["off"]
+            }
+        },
+        {
+            "files": ["packages/cli/src/modules/**/*.ts", "packages/cli/src/prompts/**/*.ts"],
+            "rules": {
+                "sort-keys": ["off"]
             }
         }
     ],
@@ -103,7 +108,6 @@
         "max-params": ["warn", 4],
         "max-statements": "warn",
         "max-statements-per-line": "error",
-        "multiline-comment-style": "warn",
         "new-parens": "error",
         "newline-per-chained-call": "error",
         "no-alert": "error",
@@ -172,6 +176,16 @@
                 "object": "fs",
                 "property": "rename",
                 "message": "Use fse.move instead"
+            },
+            {
+                "object": "flags",
+                "property": "credentials",
+                "message": "Use passwordPrompt instead"
+            },
+            {
+                "object": "flags",
+                "property": "password",
+                "message": "Use passwordPrompt instead"
             }
         ],
         "no-return-assign": "error",

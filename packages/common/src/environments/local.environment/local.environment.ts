@@ -89,26 +89,23 @@ export class LocalEnvironment extends EnvironmentAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const coercedVersion = coerce(version) && coerce(version)!.version;
-
+        const coercedVersion = coerce(version)?.version;
         if (coercedVersion && !isValidUrl(version) && !isValidPath(version)) {
-            const {version: semver} = coerce(version)!;
-
-            if (!satisfies(semver, NEO4J_SUPPORTED_VERSION_RANGE)) {
+            if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
             let requestedDistribution = _.find(
                 await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
-                (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
+                (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
             );
 
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadNeo4j(semver, this.dirPaths.dbmssCache);
+                await downloadNeo4j(coercedVersion, this.dirPaths.dbmssCache);
                 const requestedDistributionAfterDownload = _.find(
                     await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
-                    (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === semver,
+                    (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
                 );
                 if (!requestedDistributionAfterDownload) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);

@@ -12,7 +12,7 @@ const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
 jest.mock('../../utils/read-properties-file', () => ({
-    readPropertiesFile: () => new Map(),
+    readPropertiesFile: (): Map<string, string> => new Map(),
 }));
 
 function generateDummyConf(dbms: string): PropertiesFile {
@@ -30,16 +30,16 @@ describe('LocalEnvironment - list', () => {
         const config = new EnvironmentConfigModel({
             dbmss: {
                 '6bb553ba': {
-                    connectionUri: 'neo4j://127.0.0.1:7687',
                     config: generateDummyConf('6bb553ba'),
+                    connectionUri: 'neo4j://127.0.0.1:7687',
                     description: 'DBMS with metadata',
                     id: '6bb553ba',
                     name: 'Name',
                     rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
                 },
                 e0aef2ad: {
-                    connectionUri: 'neo4j://127.0.0.1:7687',
                     config: generateDummyConf('e0aef2ad'),
+                    connectionUri: 'neo4j://127.0.0.1:7687',
                     description: 'DBMS present in the config but not in the DBMS dir.',
                     id: 'e0aef2ad',
                     name: "Shouldn't be listed",

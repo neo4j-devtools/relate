@@ -1,5 +1,5 @@
 import {LAUNCH_TOKEN_PARAMETER} from './apps.constants';
 
-export function createAppLaunchUrl(appUrl: string, launchToken?: string) {
-    return launchToken ? `${appUrl}?${LAUNCH_TOKEN_PARAMETER}=${launchToken}` : appUrl;
+export function createAppLaunchUrl(staticRoot: string, appId: string, launchToken?: string): string {
+    return launchToken ? `${staticRoot}/${appId}?${LAUNCH_TOKEN_PARAMETER}=${launchToken}` : `${staticRoot}/${appId}`;
 }

@@ -174,9 +174,9 @@ export class SystemProvider implements OnModuleInit {
             JSON.stringify(
                 new AppLaunchTokenModel({
                     accessToken,
-                    environmentId,
                     appId,
                     dbmsId,
+                    environmentId,
                     principal,
                 }),
             ),
@@ -269,21 +269,19 @@ export class SystemProvider implements OnModuleInit {
             throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
-        const coercedVersion = coerce(version) && coerce(version)!.version;
-
+        const coercedVersion = coerce(version)?.version;
         if (coercedVersion && !isValidPath(version)) {
-            const {version: semver} = coerce(version)!;
             let requestedDistribution = _.find(
                 await discoverExtensionDistributions(extensionDistributions),
-                (dist) => dist.name === name && dist.version === semver,
+                (dist) => dist.name === name && dist.version === coercedVersion,
             );
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadExtension(name, semver, extensionDistributions);
+                await downloadExtension(name, coercedVersion, extensionDistributions);
                 const requestedDistributionAfterDownload = _.find(
                     await discoverExtensionDistributions(extensionDistributions),
-                    (dist) => dist.name === name && dist.version === semver,
+                    (dist) => dist.name === name && dist.version === coercedVersion,
                 );
                 if (!requestedDistributionAfterDownload) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
@@ -291,7 +289,7 @@ export class SystemProvider implements OnModuleInit {
                 requestedDistribution = requestedDistributionAfterDownload;
             }
 
-            return this.installRelateExtension(requestedDistribution!, extensionTarget, requestedDistribution!.dist);
+            return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
         }
 
         // version as a file path.
