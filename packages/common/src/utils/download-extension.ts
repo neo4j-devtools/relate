@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import fse from 'fs-extra';
 import got from 'got';
 import {v4 as uuidv4} from 'uuid';
@@ -11,6 +9,10 @@ import hasha from 'hasha';
 import {FetchError, NotFoundError, IntegrityError} from '../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../constants';
+
+// @todo: needs to be removed and handled by env vars
+const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
+const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -39,8 +41,8 @@ export const fetchExtensionInfo = async (extensionName: string, version: string)
     try {
         res = await got(`${EXTENSION_URL_PATH}${extensionName}`, {
             // @todo: handle env vars
-            username: 'devtools-reader',
-            password: 'zaFwod-rypvyh-3mohka',
+            password: JFROG_PRIVATE_REGISTRY_PASSWORD,
+            username: JFROG_PRIVATE_REGISTRY_USERNAME,
         }).json();
     } catch (error) {
         throw new FetchError(`Invalid response from "${EXTENSION_URL_PATH}${extensionName}"`);
@@ -66,8 +68,8 @@ export const pipeline = async (url: string, outputPath: string): Promise<void> =
     try {
         await streamPipeline(
             got.stream(url, {
-                username: 'devtools-reader',
-                password: 'zaFwod-rypvyh-3mohka',
+                password: JFROG_PRIVATE_REGISTRY_PASSWORD,
+                username: JFROG_PRIVATE_REGISTRY_USERNAME,
             }),
             fse.createWriteStream(outputPath),
         );
