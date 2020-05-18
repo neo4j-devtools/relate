@@ -4,7 +4,7 @@ import decompress from 'decompress';
 import path from 'path';
 
 import {FileStructureError, DependencyError} from '../errors';
-import {getDistributionInfo} from '../environments/local.environment/utils';
+import {getDistributionInfo} from '../environments/local.environment/utils/dbms-versions';
 import {IDbmsVersion} from '../models';
 
 interface IExtractedArchive extends IDbmsVersion {
