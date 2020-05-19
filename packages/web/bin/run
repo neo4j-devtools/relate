@@ -8,10 +8,10 @@ const args = process.argv.slice(2);
 if (args[0] === 'info') {
     childProcess.fork(
         path.join(__dirname, '../dist/info.js'),
-        process.argv.slice(2),
+        args.slice(1),
         {
             stdio: 'inherit',
-            env: {NODE_PATH}
+            env: {...process.env, NODE_PATH}
         }
     )
     return;
@@ -23,7 +23,7 @@ if (args[0] !== 'start') {
 
 childProcess.fork(
     path.join(__dirname, '../dist/server.js'),
-    process.argv.slice(2),
+    args.slice(1),
     {
         stdio: 'inherit',
         env: {...process.env, NODE_PATH}

@@ -3,8 +3,8 @@
 
 
 
-* [`relate dbms:access-token [DBMSID]`](#relate-dbmsaccess-token-dbmsid)
-* [`relate dbms:install [NAME]`](#relate-dbmsinstall-name)
+* [`relate dbms:access-token DBMSID`](#relate-dbmsaccess-token-dbmsid)
+* [`relate dbms:install NAME`](#relate-dbmsinstall-name)
 * [`relate dbms:list`](#relate-dbmslist)
 * [`relate dbms:open [NAMEORID]`](#relate-dbmsopen-nameorid)
 * [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
@@ -12,28 +12,28 @@
 * [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
 * [`relate dbms:uninstall [DBMSID]`](#relate-dbmsuninstall-dbmsid)
 
-## `relate dbms:access-token [DBMSID]`
+## `relate dbms:access-token DBMSID`
 
 ```
 USAGE
-  $ relate dbms:access-token [DBMSID]
+  $ relate dbms:access-token DBMSID
 
 OPTIONS
   -E, --environment=environment  Environment to run the command against
-  -P, --principal=principal
+  -P, --principal=principal      (required)
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
 
-## `relate dbms:install [NAME]`
+## `relate dbms:install NAME`
 
 ```
 USAGE
-  $ relate dbms:install [NAME]
+  $ relate dbms:install NAME
 
 OPTIONS
   -E, --environment=environment  Environment to run the command against
-  -V, --version=version          Version to install
+  -V, --version=version          (required) Version to install
 ```
 
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_

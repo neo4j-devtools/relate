@@ -5,6 +5,8 @@ import {exec} from 'child_process';
 import _ from 'lodash';
 
 import OpenCommand from '../../commands/app/open';
+import {isInteractive, readStdinArray} from '../../stdin';
+import {selectAppPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -20,17 +22,22 @@ export class OpenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
-        const {appName} = args;
+        let {appName} = args;
         const {environment: environmentId, principal, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedExtensions = await this.systemProvider.listInstalledExtensions();
-        const extensionIsInstalled = _.some(
-            installedExtensions,
-            ({type, name}) => type === EXTENSION_TYPES.STATIC && appName === name,
-        );
+        const installedApps = _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC);
 
-        if (!extensionIsInstalled) {
-            // @todo: figure this out in combination with TTY
+        if (!appName) {
+            if (isInteractive()) {
+                appName = await selectAppPrompt('Select a DBMS to start', installedApps);
+            } else {
+                appName = await readStdinArray();
+            }
+        }
+        const appIsInstalled = _.some(installedApps, ({name}) => appName === name);
+
+        if (!appIsInstalled) {
             throw new Error(`App ${appName} is not installed`);
         }
 

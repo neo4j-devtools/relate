@@ -1,5 +1,5 @@
 import {prompt} from 'enquirer';
-import {Environment} from '@relate/common';
+import {Environment, IExtensionMeta} from '@relate/common';
 
 interface IChoice {
     name: string;
@@ -28,6 +28,16 @@ export const selectDbmsPrompt = async (message: string, environment: Environment
         dbmss.map((dbms) => ({
             name: dbms.id,
             message: `[${dbms.id.slice(0, 8)}] ${dbms.name}`,
+        })),
+    );
+};
+
+export const selectAppPrompt = async (message: string, installedApps: IExtensionMeta[]): Promise<string> => {
+    return selectPrompt(
+        message,
+        installedApps.map((app) => ({
+            name: app.name,
+            message: app.name,
         })),
     );
 };
