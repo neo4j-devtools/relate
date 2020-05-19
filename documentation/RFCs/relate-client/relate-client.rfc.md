@@ -3,7 +3,6 @@
 - @relate Issue: (leave this empty)
 
 # Summary
-
 Enable frontend applications to seamlessly interact with `@relate` backend using a client library that exposes information such as DBMS connection parameters and more.
 
 # Basic example
@@ -80,6 +79,28 @@ Variables
 ```
 where `path` points to the hosted version of the provided app, eg. `/static/neo4j-browser?_appLaunchToken=<token>`
 
+Parsing a launch token
+```GraphQL
+query parseLaunchToken($appId: String!, $launchToken: String!) {
+    appLaunchData(appId: $appId, launchToken: $launchToken) {
+        accessToken
+        dbms {
+            id
+            name
+            connectionUri
+        }
+        principal
+    }
+}
+```
+Variables
+```JSON
+{
+  "appId": "foo",
+  "launchToken": "<app-launch-token>"
+}
+```
+
 
 ### @relate/client
 Consume App Launch Token provided in URL `/static/neo4j-browser?_appLaunchToken=<token>`
@@ -108,7 +129,6 @@ import {RelateClient} from '@relate/client';
 
 ```
 
-
 # Motivation
 The primary reason for doing this is to allow frontend applications to interact smoothly with the `@relate` backend. To this end we want to provide a simple, secure way of passing DBMS connection information as well as other meta to apps without incurring significant overhead to the developer.
 
@@ -117,7 +137,6 @@ The main use-case today is to allow apps such as Neo4j Browser to open and autom
 A secondary use-case is to allow graph apps to launch each other. One can imagine a situation where Neo4j Browser uses it's own DBMS access token to generate an App Launch Token for Neo4j Insight (Bloom). This would allow browser to deeplink a user to bloom without them having to sign in to the DBMS again.
 
 # Detailed design
-
 Underpinning this functionality is the use of JWT tokens inside a Neo4j DBMSs. To this end we have for the moment created an enterprise edition plugin that generates JWT tokens for a provided credential pair.
 
 Once an access token is created, app launch tokens can be generated via the CLI or GraphQL APIs.
@@ -139,7 +158,6 @@ interface IAppLaunchToken {
 ```
 
 # Drawbacks
-
 Overall there is no major reason not to pursue this path. However there are security implications that need to be considered.
 
 - We are passing some form of credentials to the client, should we fail to ensure that only JWT access tokens are provided we could leak passwords.
@@ -147,11 +165,9 @@ Overall there is no major reason not to pursue this path. However there are secu
 - It could be difficult to provide good error messages when this process fails, as depending on the error sensitive data might be involved.
 
 # Alternatives
-
 N/A
 
 # Adoption strategy
-
 In order to encourage adoption we would most likely need to create some thin, application framework specific, libaries build on the `@relate/client` package.
 
 Without researching it further the following frameworks stand out:
