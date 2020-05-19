@@ -35,6 +35,7 @@ export class HealthService {
             res.json({
                 appRoot: this.configService.get('appRoot'),
                 host: this.configService.get('host'),
+                pid: process.pid,
                 port: this.configService.get('port'),
                 protocol: this.configService.get('protocol'),
             }),
