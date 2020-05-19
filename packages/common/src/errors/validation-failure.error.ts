@@ -1,7 +1,9 @@
 import {join, map, values} from 'lodash';
 import {ValidationError} from 'class-validator';
 
-export class ValidationFailureError extends Error {
+import {ErrorAbstract} from './error.abstract';
+
+export class ValidationFailureError extends ErrorAbstract {
     constructor(message: string, errors: ValidationError[] = []) {
         super(
             `${message}:\n\n${join(

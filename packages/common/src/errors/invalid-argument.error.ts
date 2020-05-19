@@ -1,1 +1,3 @@
-export class InvalidArgumentError extends Error {}
+import {ErrorAbstract} from './error.abstract';
+
+export class InvalidArgumentError extends ErrorAbstract {}

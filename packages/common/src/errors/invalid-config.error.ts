@@ -1,1 +1,3 @@
-export class InvalidConfigError extends Error {}
+import {ErrorAbstract} from './error.abstract';
+
+export class InvalidConfigError extends ErrorAbstract {}
