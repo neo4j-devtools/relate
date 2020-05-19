@@ -4,7 +4,8 @@
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "bin": {
-        "relate": "./packages/cli/bin/run"
+        "relate": "./packages/cli/bin/run",
+        "relate-web": "./packages/web/bin/run"
     },
     "repository": {
         "type": "git",

@@ -4,11 +4,14 @@ import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
 
 import {AppsModule} from './apps';
 import {DBMSModule} from './dbms';
+import {HealthModule} from './health';
 
 export interface IWebModuleConfig {
+    protocol: string;
     host: string;
     port: number;
-    staticHTTPRoot: string;
+    appRoot: string;
+    healthCheckEndpoint: string;
 }
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
@@ -18,6 +21,7 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         SystemModule,
         DBMSModule,
         AppsModule,
+        HealthModule,
         ...dynamicModules,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.graphql',

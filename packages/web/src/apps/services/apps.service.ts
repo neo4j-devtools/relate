@@ -17,9 +17,9 @@ export class AppsService {
         }
 
         const app = httpAdapter.getInstance();
-        const staticHTTPRoot = this.configService.get('staticHTTPRoot');
-        const staticExts = path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC);
+        const appRoot = this.configService.get('appRoot');
+        const installedApps = path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC);
 
-        app.use(staticHTTPRoot, express.static(staticExts));
+        app.use(appRoot, express.static(installedApps));
     }
 }

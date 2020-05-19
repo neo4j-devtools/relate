@@ -38,6 +38,4 @@ export abstract class EnvironmentAbstract {
     abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
     abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<void>;
-
-    abstract getAppPath(_appName: string): Promise<string>;
 }

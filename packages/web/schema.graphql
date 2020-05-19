@@ -46,7 +46,7 @@ type Mutation {
 
 type Query {
   appLaunchData(launchToken: String!, appName: String!): AppLaunchData!
-  installedApps(environmentId: String!): [AppData!]!
+  installedApps: [AppData!]!
   listDbmss(environmentId: String): [Dbms!]!
   statusDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
 }
