@@ -5,4 +5,6 @@ export default class InitCommand extends BaseCommand {
     commandClass = InitCommand;
 
     commandModule = InitModule;
+
+    static aliases = ['env:init'];
 }

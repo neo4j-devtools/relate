@@ -9,6 +9,8 @@ export default class OpenCommand extends BaseCommand {
 
     commandModule = OpenModule;
 
+    static aliases = ['env:open'];
+
     static flags = {
         ...DBMS_FLAGS,
         log: flags.boolean({

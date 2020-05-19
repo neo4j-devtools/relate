@@ -48,16 +48,13 @@ import {ensureDirs, ensureFiles} from './files';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
-    protected readonly dataPaths = {
+    protected readonly dirPaths = {
         ...envPaths(),
-        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
-        environments: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        extensions: path.join(envPaths().data, EXTENSION_DIR_NAME),
-    };
-
-    protected readonly cachePaths = {
-        dbmss: path.join(envPaths().cache, DBMS_DIR_NAME),
-        extensions: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
+        dbmssData: path.join(envPaths().data, DBMS_DIR_NAME),
+        environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
+        extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        extensionsData: path.join(envPaths().data, EXTENSION_DIR_NAME),
     };
 
     protected readonly filePaths = {
@@ -67,8 +64,7 @@ export class SystemProvider implements OnModuleInit {
     protected readonly allEnvironments: Map<string, EnvironmentAbstract> = new Map<string, EnvironmentAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await ensureDirs(this.dataPaths);
-        await ensureDirs(this.cachePaths);
+        await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
         await this.discoverEnvironments();
     }
@@ -109,11 +105,10 @@ export class SystemProvider implements OnModuleInit {
     }
 
     async initInstallation(): Promise<void> {
-        await ensureDirs(this.dataPaths);
+        await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
         const defaultEnvironmentPath = path.join(
-            this.dataPaths.config,
-            ENVIRONMENTS_DIR_NAME,
+            this.dirPaths.environmentsConfig,
             DEFAULT_ENVIRONMENT_NAME + JSON_FILE_EXTENSION,
         );
 
@@ -125,7 +120,7 @@ export class SystemProvider implements OnModuleInit {
         const config = {
             dbmss: {},
             id: DEFAULT_ENVIRONMENT_NAME,
-            neo4jDataPath: this.dataPaths.data,
+            neo4jDataPath: this.dirPaths.data,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'local',
         };
@@ -138,7 +133,7 @@ export class SystemProvider implements OnModuleInit {
 
     private async discoverEnvironments(): Promise<void> {
         this.allEnvironments.clear();
-        const environmentsDir = path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME);
+        const environmentsDir = this.dirPaths.environmentsConfig;
         const availableFiles = await fse.readdir(environmentsDir);
         const availableEnvironments = _.filter(
             availableFiles,
@@ -151,7 +146,7 @@ export class SystemProvider implements OnModuleInit {
                 const config = await fse.readJSON(configPath);
                 const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
                     ...config,
-                    neo4jDataPath: config.neo4jDataPath || this.dataPaths.data,
+                    neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
                 });
 
                 this.allEnvironments.set(
@@ -235,7 +230,7 @@ export class SystemProvider implements OnModuleInit {
     async listInstalledExtensions(): Promise<IExtensionMeta[]> {
         const all = await Promise.all(
             _.flatMap(_.values(EXTENSION_TYPES), (type) =>
-                discoverExtensionDistributions(path.join(this.dataPaths.data, EXTENSION_DIR_NAME, type)),
+                discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)),
             ),
         );
 
@@ -244,8 +239,7 @@ export class SystemProvider implements OnModuleInit {
 
     async linkExtension(filePath: string): Promise<IExtensionMeta> {
         const extension = await discoverExtension(filePath);
-        const extensionsDir = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
-        const target = path.join(extensionsDir, extension.type, extension.name);
+        const target = path.join(this.dirPaths.extensionsData, extension.type, extension.name);
 
         if (await fse.pathExists(target)) {
             throw new ExtensionExistsError(`${extension.name} is already installed`);
@@ -261,8 +255,7 @@ export class SystemProvider implements OnModuleInit {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const extensionDistributions = path.join(this.dataPaths.cache, EXTENSION_DIR_NAME);
-        const extensionTarget = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
+        const {extensionsCache, extensionsData} = this.dirPaths;
 
         // @todo: version as a URL.
         if (isValidUrl(version)) {
@@ -273,7 +266,7 @@ export class SystemProvider implements OnModuleInit {
 
         if (coercedVersion && !isValidPath(version)) {
             let requestedDistribution = _.find(
-                await discoverExtensionDistributions(extensionDistributions),
+                await discoverExtensionDistributions(extensionsCache),
                 (dist) => dist.name === name && dist.version === coercedVersion,
             );
 
@@ -286,7 +279,7 @@ export class SystemProvider implements OnModuleInit {
                 }
             }
 
-            return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
+            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
         }
 
         // version as a file path.
@@ -294,7 +287,7 @@ export class SystemProvider implements OnModuleInit {
             // extract extension to cache dir first
             const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
                 version,
-                extensionDistributions,
+                extensionsCache,
             );
 
             // move the extracted dir
