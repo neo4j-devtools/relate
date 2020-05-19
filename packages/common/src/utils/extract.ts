@@ -7,15 +7,21 @@ import {FileStructureError} from '../errors';
 export const extract = async (archivePath: string, outputDir: string): Promise<string> => {
     const outputFiles = await decompress(archivePath, outputDir);
 
-    // determine output dir filename from the shortest directory string path
+    const outputDirectories = _.filter(outputFiles, (file) => file.type === 'directory')
+    const outputFilePaths = outputDirectories.length ? _.map(outputDirectories, file => file.path) : _.map(outputFiles, file => _.split(file.path, path.sep)[0])
+
     const outputTopLevelDir = _.reduce(
-        _.filter(outputFiles, (file) => file.type === 'directory'),
-        (a, b) => (a.path.length <= b.path.length ? a : b),
+        outputFilePaths,
+        (a, b) => (a.length <= b.length ? a : b),
     );
+
     if (!outputTopLevelDir) {
-        await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
+        await Promise.all([
+            ..._.map(outputFilePaths, filePath => fse.remove(path.join(outputDir, filePath))),
+            fse.remove(archivePath)
+        ]);
         throw new FileStructureError(`Unexpected file structure after unpacking`);
     }
 
-    return path.join(outputDir, outputTopLevelDir.path);
+    return path.join(outputDir, outputTopLevelDir);
 };

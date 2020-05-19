@@ -13,21 +13,33 @@ interface IExtractedArchive extends IDbmsVersion {
 
 export const extractNeo4j = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
     const outputFiles = await decompress(archivePath, outputDir);
-    // determine output dir filename from the shortest directory string path
+
+    const outputDirectories = _.filter(outputFiles, (file) => file.type === 'directory')
+    const outputFilePaths = outputDirectories.length ? _.map(outputDirectories, file => file.path) : _.map(outputFiles, file => _.split(file.path, path.sep)[0])
+
     const outputTopLevelDir = _.reduce(
-        _.filter(outputFiles, (file) => file.type === 'directory'),
-        (a, b) => (a.path.length <= b.path.length ? a : b),
+        outputFilePaths,
+        (a, b) => (a.length <= b.length ? a : b),
     );
+
     if (!outputTopLevelDir) {
-        await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
+        await Promise.all([
+            ..._.map(outputFilePaths, filePath => fse.remove(path.join(outputDir, filePath))),
+            fse.remove(archivePath)
+        ]);
         throw new FileStructureError(`Unexpected file structure after unpacking`);
     }
-    const extractedDistPath = path.join(outputDir, outputTopLevelDir.path);
+
+    const extractedDistPath = path.join(outputDir, outputTopLevelDir);
 
     // check if this is neo4j...
     try {
         const info = await getDistributionInfo(extractedDistPath);
         if (!info) {
+            await Promise.all([
+                ..._.map(outputFilePaths, filePath => fse.remove(path.join(outputDir, filePath))),
+                fse.remove(archivePath)
+            ]);
             throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
         }
         return {
@@ -39,7 +51,10 @@ export const extractNeo4j = async (archivePath: string, outputDir: string): Prom
             throw e;
         }
 
-        await Promise.all(_.map(outputFiles, (file) => fse.remove(path.join(outputDir, file.path))));
+        await Promise.all([
+            ..._.map(outputFilePaths, filePath => fse.remove(path.join(outputDir, filePath))),
+            fse.remove(archivePath)
+        ]);
         throw e;
     }
 };
