@@ -18,7 +18,7 @@ if (args[0] === 'info') {
 }
 
 if (args[0] !== 'start') {
-    return;
+    throw new Error('Allowed commands are "info" or "start"');
 }
 
 childProcess.fork(
