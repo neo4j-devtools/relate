@@ -3,17 +3,23 @@
 - @relate Issue: (leave this empty)
 
 # Summary
-Allow first and third party developers to extend the `@relate` stack with additional functionality in two primary ways; `STATIC` and/or `APPLICATION` extensions.
-- `STATIC` extensions refer to adding static html bundles (i.e. "graph apps") to the web server application. 
-- `APPLICATION` extensions refer to injecting [@nestjs](https://docs.nestjs.com/) modules to any of our supported application extension points:
+Allow first and third party developers to extend the `@relate` stack with additional functionality in two primary ways; `STATIC` and `APPLICATION` extensions, as well as through "event hooks" emitted in various parts of the application.
+
+## Extensions
+Adds new functionality to one of more packages by:
+- `STATIC` extensions: Adding static html bundles (i.e. "graph apps") to the web server application. 
+- `APPLICATION` extensions: Injecting [@nestjs](https://docs.nestjs.com/) modules to any of our supported application extension points:
     - `SYSTEM`: Shared across all packages
     - `CLI`: Only for CLI app
     - `WEB`: Only for Web app
     - `ELECTRON`: Only for Electron app
+    
+## Event Hooks
+Allows reacting to events within the application and modify values being processed.
 
 # Basic example
 ## STATIC extensions
-Static extensions simply need to be a directory containing at least an `index.html` file.
+Static extensions simply need to be a directory containing at least an `index.html` file as well as a `package.json file` containing `name`, `version`, and `main` properties.
 
 Static extensions are installed under:
 ```sh
@@ -24,10 +30,19 @@ Static extensions are installed under:
 # Win32
 %appdata%\Local\Neo4j\Relate\Data\extensions\STATIC
 ```
+A sample `package.json`
+```JSON
+{
+  "name": "<name>",
+  "version": "<semver>",
+  "type": "<type>",
+  "main": "dist"
+}
+```
 
 ## Application extensions
 Application extensions simply need to be a directory containing at least an `index.js` file.
-The entrypoint of application extensions are defined in their `relate.manifest.json` file:
+The entry point of application extensions are defined in their `relate.manifest.json` file:
 ```JSON
 {
   "name": "<name>",
@@ -53,6 +68,18 @@ Where `<APP_TYPE>` is one of:
 - `CLI` Targeting the CLI applications
 - `ELECTRON` Targeting the Electron applications
 
+## Event Hooks
+Hooks are used to register listeners to events that potentially return a modified value.
+```TypeScript
+import { HOOK_EVENTS, Listener } from '@relate/common';
+
+// exported by the @relate/common package
+export declare function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: T): Promise<T>;
+export declare function registerHookListener(eventName: HOOK_EVENTS, listener: Listener): void;
+export declare function deregisterHookListener(eventName: HOOK_EVENTS, listener: Listener): void;
+```
+The list of available events is continuously being extended and not covered as part of this RFC.
+
 # Motivation
 There are two primary reasons for adding this functionality. 
 
@@ -61,6 +88,7 @@ First of all we want separation of concerns. We want a clear distinction between
 Secondly we want to offer ourselves and third parties the flexibility to enhance the `@relate` with whatever functionality their specific use-case requires. We want to minimise the cognitive overhead required to do so and empower developers to quickly take advantage of our core functionality.
 
 # Detailed design
+## Extensions
 This entire concept revolves around the `relate.manifest.json` file:
 ```JSON
 {
@@ -95,17 +123,38 @@ From here extensions are free to do whatever they want within the NestJS ecosyst
 
 We chose a liberal approach to encourage adoption and minimise the learning curve for creating extensions. To ensure that extensions do not introduce breaking changes we will have two separate categories: Offical, and Custom. Official extensions will be signed by our [Code Signing CA](https://github.com/neo4j-apps/code-signing-ca) and also undergo code-reviews before being signed. Official extensions will be published to our JFrog repository and available to be installed through the core API. Custom extensions will have no enforcement and only be installable using a provided tarball. This allows developers to quickly iterate extensions and when ready apply for official status.
 
-# Drawbacks
-As with any plugin-oriented architecture we are exposing ourselves to a halo effect. Should an installed extensions negatively effect the core applications users could perceive this as our fault.
+## Event Hooks.
+This concept revolves around the pub/sub pattern, based losely on the DOM `addEventListener()` API:
+To give an example we can look to the `HOOK_EVENTS.ELECTRON_WINDOW_OPTIONS`:
+````typescript
+import {emitHookEvent, HOOK_EVENTS, registerHookListener} from '@relate/common';
 
-- Extensions could prove computationally expensive and slow down the application
-- The lack of enforcement on our end could prove expensive if extensions are large or hard to review/test
-- Debugging could become complicated
-- Security of the application becomes paramount as should we accidentally expose secrets they would be available throughout.
-- We will be bound to the APIs we expose to extensions, as any breaking change would require them to update.
+// options to be passed to the electron BrowserWindow constructor when creating a window.
+const windowOptions = await emitHookEvent(HOOK_EVENTS.ELECTRON_WINDOW_OPTIONS, {
+    height: 600,
+    width: 800,
+});
+// new BrowserWindow(windowOptions);
+
+// somewhere else you can listen for and respond to the event
+registerHookListener(HOOK_EVENTS.ELECTRON_WINDOW_OPTIONS, (options) => ({
+    ...options,
+    width: 400
+}));
+````
+
+# Drawbacks
+As with any plugin-oriented architecture we are exposing ourselves to a halo effect. Should an installed extension negatively effect the core applications users could perceive this as our fault.
+Along similar lines, introducing hooks exposes us to unintentional side effects such as mutations or blocking scripts.
+- Extensions could prove computationally expensive and slow down the application.
+- The lack of enforcement on our end could prove expensive if extensions are large or hard to review/test.
+- Hooks are liberal by nature, and as place a lot of responsibility on the developer to know what they are doing.
+- Debugging could become complicated if an extension or hooks does something strange.
+- Security of the application becomes paramount as if we accidentally expose secrets they would be available to anyone with access to the parameters passed.
+- We will be bound to the APIs we expose to extensions, as any breaking change would require clients to update.
 
 # Alternatives
-The alternative to this path is to only allow core functionality, and force third-party developers to raise PR's directly against the `@relate` repo. This process would be slow and labour intensive, taking our focus away from new features and functionality.
+The alternative to this path is to only allow core functionality, and force third-party developers to raise PR's directly against the `@relate` repo. This process would be slow and labor intensive, taking our focus away from new features and functionality.
 
 # Adoption strategy
 We are creating several extensions as part of our `alpha-1` release and will share the source code with developers.
