@@ -35,7 +35,6 @@ A sample `package.json`
 {
   "name": "<name>",
   "version": "<semver>",
-  "type": "<type>",
   "main": "dist"
 }
 ```
