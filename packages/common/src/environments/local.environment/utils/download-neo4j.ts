@@ -52,7 +52,7 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, {version});
+    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
 
     const onlineVersions = await fetchNeo4jVersions();
     const requestedDistribution = _.find(
