@@ -7,6 +7,7 @@ import semver from 'semver';
 import {
     EXTENSION_MANIFEST,
     EXTENSION_MANIFEST_KEY,
+    EXTENSION_NPM_PREFIX,
     EXTENSION_ORIGIN,
     EXTENSION_TYPES,
     PACKAGE_JSON,
@@ -63,7 +64,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
                 root: extensionRootDir,
                 ...manifest,
             }),
-            name: manifest.name,
+            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
             // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
@@ -86,7 +87,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
         return {
             dist: extensionRootDir,
             manifest,
-            name: manifest.name,
+            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
             // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
@@ -106,7 +107,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
             type: EXTENSION_TYPES.STATIC,
             version,
         }),
-        name: extensionName,
+        name: _.replace(extensionName, EXTENSION_NPM_PREFIX, ''),
         // @todo: whut?
         origin: EXTENSION_ORIGIN.CACHED,
         type: EXTENSION_TYPES.STATIC,

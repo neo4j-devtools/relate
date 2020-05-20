@@ -16,3 +16,4 @@ export * from './extract-extension';
 export * from './extension-versions';
 export * from './download-extension';
 export * from './event-hooks';
+export * from './get-app-base-path';

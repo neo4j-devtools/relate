@@ -1,5 +1,12 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {EXTENSION_TYPES, NotFoundError, NotSupportedError, SystemModule, SystemProvider} from '@relate/common';
+import {
+    EXTENSION_TYPES,
+    getAppBasePath,
+    NotFoundError,
+    NotSupportedError,
+    SystemModule,
+    SystemProvider,
+} from '@relate/common';
 import cli from 'cli-ux';
 import {exec} from 'child_process';
 import _ from 'lodash';
@@ -43,11 +50,18 @@ export class OpenModule implements OnApplicationBootstrap {
 
         const appUrl = await this.getAppUrl(appName);
 
-        if (!principal || !dbmsId) {
+        if (!dbmsId) {
             return log ? this.utils.log(appUrl) : cli.open(appUrl);
         }
 
         const dbms = await environment.getDbms(dbmsId);
+
+        if (!principal) {
+            const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);
+            const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
+
+            return log ? this.utils.log(tokenUrl) : cli.open(tokenUrl);
+        }
 
         return this.systemProvider
             .getAccessToken(environment.id, dbms.id, principal)
@@ -61,7 +75,7 @@ export class OpenModule implements OnApplicationBootstrap {
             });
     }
 
-    private async getAppUrl(appName: string, bail = false): Promise<string> {
+    private async getAppUrl(appName: string): Promise<string> {
         try {
             const healthInfo: any = await new Promise((resolve, reject) => {
                 exec(
@@ -80,9 +94,12 @@ export class OpenModule implements OnApplicationBootstrap {
                 );
             });
 
-            return `${healthInfo.protocol}${healthInfo.host}:${healthInfo.port}${healthInfo.appRoot}/${appName}`;
+            const appRoot = `${healthInfo.protocol}${healthInfo.host}:${healthInfo.port}${healthInfo.appRoot}`;
+            const appBasePath = await getAppBasePath(appName);
+
+            return `${appRoot}${appBasePath}`;
         } catch (e) {
-            if (!bail && _.includes(e, 'ECONNREFUSED')) {
+            if (_.includes(e, 'ECONNREFUSED')) {
                 throw new NotFoundError(`The @relate/web server is not running`, [
                     'Run "relate-web start" and try again.',
                 ]);

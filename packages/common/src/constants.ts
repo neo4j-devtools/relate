@@ -17,7 +17,8 @@ export const EXTENSION_MANIFEST = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_INDEX_HTML = 'index.html';
 export const EXTENSION_SHA_ALGORITHM = 'sha1';
-export const EXTENSION_URL_PATH = 'https://neo.jfrog.io/artifactory/api/npm/npm-local-private/@relate-ext/';
+export const EXTENSION_NPM_PREFIX = '@relate-ext/';
+export const EXTENSION_URL_PATH = `https://neo.jfrog.io/artifactory/api/npm/npm-local-private/${EXTENSION_NPM_PREFIX}`;
 
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const BOLT_DEFAULT_PORT = ':7687';

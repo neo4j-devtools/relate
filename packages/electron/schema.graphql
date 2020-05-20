@@ -13,8 +13,8 @@ type AppLaunchData {
   environmentId: String!
   appId: String!
   dbms: Dbms!
-  principal: String!
-  accessToken: String!
+  principal: String
+  accessToken: String
 }
 
 type AppLaunchToken {
@@ -36,7 +36,7 @@ type Dbms {
 }
 
 type Mutation {
-  createAppLaunchToken(accessToken: String!, principal: String!, dbmsId: String!, appName: String!, environmentId: String!): AppLaunchToken!
+  createAppLaunchToken(accessToken: String, principal: String, dbmsId: String!, appName: String!, environmentId: String!): AppLaunchToken!
   installDbms(environmentId: String!, name: String!, credentials: String!, version: String!): String!
   uninstallDbms(environmentId: String!, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
