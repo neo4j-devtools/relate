@@ -12,7 +12,7 @@ export interface IAppLaunchData {
 }
 
 export interface IRelateClientConfig {
-    appId: string;
+    appName: string;
     remote: string;
 }
 
@@ -27,7 +27,7 @@ export class RelateClient {
     }
 
     getAppLaunchData(launchToken: string): Promise<IAppLaunchData> {
-        const payload = getParseLaunchTokenPayload(this.config.appId, launchToken);
+        const payload = getParseLaunchTokenPayload(this.config.appName, launchToken);
 
         return fetch(this.config.remote, {
             body: JSON.stringify(payload),
