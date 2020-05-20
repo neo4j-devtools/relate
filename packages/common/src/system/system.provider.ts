@@ -15,12 +15,7 @@ import {
     EXTENSION_DIR_NAME,
     EXTENSION_TYPES,
 } from '../constants';
-import {
-    ENVIRONMENT_TYPES,
-    EnvironmentAbstract,
-    ENVIRONMENTS_DIR_NAME,
-    createEnvironmentInstance,
-} from '../environments';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, createEnvironmentInstance} from '../environments';
 import {
     NotFoundError,
     ValidationFailureError,
@@ -45,19 +40,17 @@ import {
     discoverExtension,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
+import {IEnvironmentConfig} from '../models/environment-config.model';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
-    protected readonly dataPaths = {
+    protected readonly dirPaths = {
         ...envPaths(),
-        dbmss: path.join(envPaths().data, DBMS_DIR_NAME),
-        environments: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        extensions: path.join(envPaths().data, EXTENSION_DIR_NAME),
-    };
-
-    protected readonly cachePaths = {
-        dbmss: path.join(envPaths().cache, DBMS_DIR_NAME),
-        extensions: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
+        dbmssData: path.join(envPaths().data, DBMS_DIR_NAME),
+        environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
+        extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        extensionsData: path.join(envPaths().data, EXTENSION_DIR_NAME),
     };
 
     protected readonly filePaths = {
@@ -67,8 +60,7 @@ export class SystemProvider implements OnModuleInit {
     protected readonly allEnvironments: Map<string, EnvironmentAbstract> = new Map<string, EnvironmentAbstract>();
 
     async onModuleInit(): Promise<void> {
-        await ensureDirs(this.dataPaths);
-        await ensureDirs(this.cachePaths);
+        await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
         await this.discoverEnvironments();
     }
@@ -108,37 +100,27 @@ export class SystemProvider implements OnModuleInit {
         return token;
     }
 
-    async initInstallation(): Promise<void> {
-        await ensureDirs(this.dataPaths);
-        await ensureFiles(this.filePaths);
-        const defaultEnvironmentPath = path.join(
-            this.dataPaths.config,
-            ENVIRONMENTS_DIR_NAME,
-            DEFAULT_ENVIRONMENT_NAME + JSON_FILE_EXTENSION,
-        );
+    async createEnvironment(config: IEnvironmentConfig): Promise<EnvironmentAbstract> {
+        const fileName = `${config.id}${JSON_FILE_EXTENSION}`;
+        const filePath = path.join(this.dirPaths.environmentsConfig, fileName);
 
-        const defaultEnvironmentExists = await fse.pathExists(defaultEnvironmentPath);
-        if (this.allEnvironments.get(DEFAULT_ENVIRONMENT_NAME) || defaultEnvironmentExists) {
+        const environmentExists = await fse.pathExists(filePath);
+        if (environmentExists || this.allEnvironments.get(config.id)) {
             throw new TargetExistsError(`Environment "${DEFAULT_ENVIRONMENT_NAME}" exists, will not overwrite`);
         }
 
-        const config = {
-            dbmss: {},
-            id: DEFAULT_ENVIRONMENT_NAME,
-            neo4jDataPath: this.dataPaths.data,
-            type: ENVIRONMENT_TYPES.LOCAL,
-            user: 'local',
-        };
         const configModel = new EnvironmentConfigModel(config);
-        const defaultEnvironment = await createEnvironmentInstance(configModel, defaultEnvironmentPath);
+        const environment = await createEnvironmentInstance(configModel, filePath);
 
-        await fse.writeJSON(defaultEnvironmentPath, config, {spaces: 2});
-        this.allEnvironments.set(DEFAULT_ENVIRONMENT_NAME, defaultEnvironment);
+        await fse.writeJSON(filePath, config, {spaces: 2});
+        this.allEnvironments.set(environment.id, environment);
+
+        return environment;
     }
 
     private async discoverEnvironments(): Promise<void> {
         this.allEnvironments.clear();
-        const environmentsDir = path.join(this.dataPaths.config, ENVIRONMENTS_DIR_NAME);
+        const environmentsDir = this.dirPaths.environmentsConfig;
         const availableFiles = await fse.readdir(environmentsDir);
         const availableEnvironments = _.filter(
             availableFiles,
@@ -146,12 +128,13 @@ export class SystemProvider implements OnModuleInit {
         );
 
         await Promise.all(
-            _.map(availableEnvironments, async (environment) => {
-                const configPath = path.join(environmentsDir, environment);
+            _.map(availableEnvironments, async (envFilename) => {
+                const configPath = path.join(environmentsDir, envFilename);
                 const config = await fse.readJSON(configPath);
                 const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
                     ...config,
-                    neo4jDataPath: config.neo4jDataPath || this.dataPaths.data,
+                    id: path.basename(envFilename, JSON_FILE_EXTENSION),
+                    neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
                 });
 
                 this.allEnvironments.set(
@@ -235,7 +218,7 @@ export class SystemProvider implements OnModuleInit {
     async listInstalledExtensions(): Promise<IExtensionMeta[]> {
         const all = await Promise.all(
             _.flatMap(_.values(EXTENSION_TYPES), (type) =>
-                discoverExtensionDistributions(path.join(this.dataPaths.data, EXTENSION_DIR_NAME, type)),
+                discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)),
             ),
         );
 
@@ -244,8 +227,7 @@ export class SystemProvider implements OnModuleInit {
 
     async linkExtension(filePath: string): Promise<IExtensionMeta> {
         const extension = await discoverExtension(filePath);
-        const extensionsDir = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
-        const target = path.join(extensionsDir, extension.type, extension.name);
+        const target = path.join(this.dirPaths.extensionsData, extension.type, extension.name);
 
         if (await fse.pathExists(target)) {
             throw new ExtensionExistsError(`${extension.name} is already installed`);
@@ -261,8 +243,7 @@ export class SystemProvider implements OnModuleInit {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const extensionDistributions = path.join(this.dataPaths.cache, EXTENSION_DIR_NAME);
-        const extensionTarget = path.join(this.dataPaths.data, EXTENSION_DIR_NAME);
+        const {extensionsCache, extensionsData} = this.dirPaths;
 
         // @todo: version as a URL.
         if (isValidUrl(version)) {
@@ -273,20 +254,20 @@ export class SystemProvider implements OnModuleInit {
 
         if (coercedVersion && !isValidPath(version)) {
             let requestedDistribution = _.find(
-                await discoverExtensionDistributions(extensionDistributions),
+                await discoverExtensionDistributions(extensionsCache),
                 (dist) => dist.name === name && dist.version === coercedVersion,
             );
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
                 try {
-                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionDistributions);
+                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
                 } catch (e) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
             }
 
-            return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
+            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
         }
 
         // version as a file path.
@@ -294,11 +275,11 @@ export class SystemProvider implements OnModuleInit {
             // extract extension to cache dir first
             const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
                 version,
-                extensionDistributions,
+                extensionsCache,
             );
 
             // move the extracted dir
-            const destination = path.join(extensionDistributions, `${extensionName}@${extensionVersion}`);
+            const destination = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
 
             await fse.move(dist, destination, {
                 overwrite: true,
@@ -307,7 +288,7 @@ export class SystemProvider implements OnModuleInit {
             try {
                 const discovered = await discoverExtension(destination);
 
-                return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
+                return this.installRelateExtension(discovered, extensionsData, discovered.dist);
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }

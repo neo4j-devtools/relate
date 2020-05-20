@@ -1,5 +1,5 @@
 import {prompt} from 'enquirer';
-import {Environment, IExtensionMeta} from '@relate/common';
+import {Environment, IExtensionMeta, NotFoundError} from '@relate/common';
 
 interface IChoice {
     name: string;
@@ -22,6 +22,10 @@ export const selectPrompt = async (message: string, choices: string[] | IChoice[
 
 export const selectDbmsPrompt = async (message: string, environment: Environment): Promise<string> => {
     const dbmss = await environment.listDbmss();
+
+    if (!dbmss.length) {
+        throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
+    }
 
     return selectPrompt(
         message,

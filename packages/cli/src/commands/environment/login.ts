@@ -7,6 +7,8 @@ export default class LoginCommand extends BaseCommand {
 
     commandModule = LoginModule;
 
+    static aliases = ['env:login'];
+
     static flags = {
         ...DBMS_FLAGS,
     };
