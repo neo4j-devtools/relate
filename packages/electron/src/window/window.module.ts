@@ -24,7 +24,7 @@ export class WindowModule implements OnApplicationBootstrap {
             width: 800,
         });
         const mainWindow = await emitHookEvent(HOOK_EVENTS.ELECTRON_WINDOW_CREATED, new BrowserWindow(windowOptions));
-        const defaultApp = DEFAULT_APP;
+        const defaultApp = this.configService.get('defaultApp');
         const protocol = this.configService.get('protocol');
         const host = this.configService.get('host');
         const port = this.configService.get('port');
