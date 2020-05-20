@@ -8,10 +8,10 @@ import {promisify} from 'util';
 import hasha from 'hasha';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
-import {DOWNLOADING_FILE_EXTENSION} from '../../../constants';
+import {DOWNLOADING_FILE_EXTENSION, HOOK_EVENTS} from '../../../constants';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {FetchError, IntegrityError, NotFoundError} from '../../../errors';
-import {extractNeo4j} from '../../../utils';
+import {extractNeo4j, emitHookEvent} from '../../../utils';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
@@ -52,6 +52,8 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
+    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
+
     const onlineVersions = await fetchNeo4jVersions();
     const requestedDistribution = _.find(
         onlineVersions,
@@ -75,4 +77,5 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
 
     await extractNeo4j(downloadingPath, neo4jDistributionPath);
     await fse.remove(downloadingPath);
+    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
 };

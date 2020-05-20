@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import path from 'path';
 import fse from 'fs-extra';
 
-import {FetchError, InvalidConfigError, NotAllowedError} from '../errors';
+import {InvalidConfigError, NotAllowedError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
@@ -42,7 +42,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
     }
 
-    private graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
+    private async graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
         if (!this.config.accessToken) {
             throw new NotAllowedError('Unauthorized: must login to perform this operation');
         }
@@ -51,13 +51,22 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
         }
 
-        return makePromise(execute(this.client, operation)).catch((err) => {
+        try {
+            const res = await makePromise(execute(this.client, operation));
+
+            if (res.errors) {
+                // @todo figure out handling when GraphQL returns multiple errors
+                throw new Error(res.errors[0].message);
+            }
+
+            return res;
+        } catch (err) {
             if (err.statusCode === 401 || err.statusCode === 403) {
                 throw new NotAllowedError('Unauthorized: must login to perform this operation');
             }
 
-            throw new FetchError(`Failed to connect to ${this.config.relateURL}`);
-        });
+            throw err;
+        }
     }
 
     async login(): Promise<IEnvironmentAuth> {
@@ -172,8 +181,25 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.uninstallDbms;
     }
 
-    getDbms(_nameOrId: string): Promise<IDbms> {
-        throw new NotAllowedError(`${RemoteEnvironment.name} does not support getting a DBMS`);
+    async getDbms(nameOrId: string): Promise<IDbms> {
+        const {data}: any = await this.graphql({
+            query: gql`
+                query GetDbms($environmentId: String!, $nameOrId: String!) {
+                    getDbms(environmentId: $environmentId, dbmsId: $nameOrId) {
+                        id
+                        name
+                        description
+                        connectionUri
+                    }
+                }
+            `,
+            variables: {
+                environmentId: this.config.relateEnvironment,
+                nameOrId,
+            },
+        });
+
+        return data.getDbms;
     }
 
     async listDbmss(): Promise<IDbms[]> {

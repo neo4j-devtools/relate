@@ -23,6 +23,15 @@ export class EnvironmentArgs {
 }
 
 @ArgsType()
+export class DbmsArgs {
+    @Field(() => String, {nullable: true})
+    environmentId?: string;
+
+    @Field(() => String)
+    dbmsId: string;
+}
+
+@ArgsType()
 export class DbmssArgs {
     @Field(() => String, {nullable: true})
     environmentId?: string;
