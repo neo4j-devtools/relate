@@ -4,6 +4,7 @@ import fse from 'fs-extra';
 import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import {coerce} from 'semver';
+import {exec} from 'child_process';
 
 import {
     DEFAULT_ENVIRONMENT_NAME,
@@ -332,6 +333,24 @@ export class SystemProvider implements OnModuleInit {
         }
 
         await fse.copy(extractedDistPath, target);
+
+        try {
+            await new Promise((resolve, reject) => {
+                exec(
+                    'npm install --production',
+                    {
+                        cwd: target,
+                    },
+                    (err, stdout, _stderr) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(stdout);
+                    },
+                );
+            });
+        } catch (_) {}
 
         return extension;
     }
