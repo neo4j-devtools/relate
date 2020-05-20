@@ -261,7 +261,7 @@ export class SystemProvider implements OnModuleInit {
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
                 try {
-                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionDistributions);
+                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
                 } catch (e) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
@@ -279,7 +279,7 @@ export class SystemProvider implements OnModuleInit {
             );
 
             // move the extracted dir
-            const destination = path.join(extensionDistributions, `${extensionName}@${extensionVersion}`);
+            const destination = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
 
             await fse.move(dist, destination, {
                 overwrite: true,
@@ -288,7 +288,7 @@ export class SystemProvider implements OnModuleInit {
             try {
                 const discovered = await discoverExtension(destination);
 
-                return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
+                return this.installRelateExtension(discovered, extensionsData, discovered.dist);
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
