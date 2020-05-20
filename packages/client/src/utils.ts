@@ -12,8 +12,8 @@ export function getParseLaunchTokenPayload(appName: string, launchToken: string)
     return {
         operationName,
         query: `
-          query ${operationName}(appName: String!, $launchToken: String!) {
-            ${APP_LAUNCH_DATA_RESOLVER}(appName: appName, launchToken: $launchToken) {
+          query ${operationName}($appName: String!, $launchToken: String!) {
+            ${APP_LAUNCH_DATA_RESOLVER}(appName: $appName, launchToken: $launchToken) {
               accessToken
               dbms {
                 id
