@@ -9,6 +9,7 @@ import {
     CreateAccessTokenArgs,
     InstallDbmsArgs,
     UninstallDbmsArgs,
+    DbmsArgs,
 } from './dbms.types';
 
 @Resolver(() => String)
@@ -26,6 +27,12 @@ export class DBMSResolver {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         return environment.uninstallDbms(name).then(() => name);
+    }
+
+    @Query(() => Dbms)
+    async getDbms(@Args() {environmentId, dbmsId}: DbmsArgs): Promise<IDbms> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return environment.getDbms(dbmsId);
     }
 
     @Query(() => [Dbms])

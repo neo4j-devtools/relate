@@ -181,8 +181,25 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.uninstallDbms;
     }
 
-    getDbms(_nameOrId: string): Promise<IDbms> {
-        throw new NotAllowedError(`${RemoteEnvironment.name} does not support getting a DBMS`);
+    async getDbms(nameOrId: string): Promise<IDbms> {
+        const {data}: any = await this.graphql({
+            query: gql`
+                query GetDbms($environmentId: String!, $nameOrId: String!) {
+                    getDbms(environmentId: $environmentId, dbmsId: $nameOrId) {
+                        id
+                        name
+                        description
+                        connectionUri
+                    }
+                }
+            `,
+            variables: {
+                environmentId: this.config.relateEnvironment,
+                nameOrId,
+            },
+        });
+
+        return data.getDbms;
     }
 
     async listDbmss(): Promise<IDbms[]> {
