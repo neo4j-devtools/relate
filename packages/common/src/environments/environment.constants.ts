@@ -63,5 +63,3 @@ export const NEO4J_JWT_CERT_ATTRS = [
         value: 'JWT Auth',
     },
 ];
-
-export const DEFAULT_WEB_HOST = 'http://localhost:3000';

@@ -1,8 +1,12 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {EXTENSION_TYPES, NotFoundError, NotSupportedError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
+import {exec} from 'child_process';
+import _ from 'lodash';
 
 import OpenCommand from '../../commands/app/open';
+import {isInteractive, readStdinArray} from '../../stdin';
+import {selectAppPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -18,15 +22,26 @@ export class OpenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
-        const {appName} = args;
+        let {appName} = args;
         const {environment: environmentId, principal, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const appUrl = await environment.getAppPath(appName);
+        const installedExtensions = await this.systemProvider.listInstalledExtensions();
+        const installedApps = _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC);
 
         if (!appName) {
-            // @todo: add select prompt once we can list apps
-            throw new Error(`App must be specified`);
+            if (isInteractive()) {
+                appName = await selectAppPrompt('Select a DBMS to start', installedApps);
+            } else {
+                appName = await readStdinArray();
+            }
         }
+        const appIsInstalled = _.some(installedApps, ({name}) => appName === name);
+
+        if (!appIsInstalled) {
+            throw new Error(`App ${appName} is not installed`);
+        }
+
+        const appUrl = await this.getAppUrl(appName);
 
         if (!principal || !dbmsId) {
             return log ? this.utils.log(appUrl) : cli.open(appUrl);
@@ -44,5 +59,38 @@ export class OpenModule implements OnApplicationBootstrap {
 
                 return log ? this.utils.log(tokenUrl) : cli.open(tokenUrl);
             });
+    }
+
+    private async getAppUrl(appName: string, bail = false): Promise<string> {
+        try {
+            const healthInfo: any = await new Promise((resolve, reject) => {
+                exec(
+                    'relate-web info',
+                    {
+                        encoding: 'utf8',
+                    },
+                    (err, stdout, stderr) => {
+                        if (err || stderr) {
+                            reject(err || stderr);
+                            return;
+                        }
+
+                        resolve(JSON.parse(stdout));
+                    },
+                );
+            });
+
+            return `${healthInfo.protocol}${healthInfo.host}:${healthInfo.port}${healthInfo.appRoot}/${appName}`;
+        } catch (e) {
+            if (!bail && _.includes(e, 'ECONNREFUSED')) {
+                throw new NotFoundError(`The @relate/web server is not running`, [
+                    'Run "relate-web start" and try again.',
+                ]);
+            }
+
+            throw new NotSupportedError(`Unable to find the @relate/web server package`, [
+                'Install the "@relate/web" package and try again.',
+            ]);
+        }
     }
 }

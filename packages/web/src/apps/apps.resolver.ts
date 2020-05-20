@@ -32,26 +32,23 @@ export class AppsResolver {
     }
 
     @Query(() => [AppData])
-    async installedApps(@Args('environmentId') environmentId: string): Promise<AppData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+    async installedApps(): Promise<AppData[]> {
         const installedExtensions = await this.systemProvider.listInstalledExtensions();
+        const protocol = this.configService.get('protocol');
         const host = this.configService.get('host');
         const port = this.configService.get('port');
+        const appRoot = this.configService.get('appRoot');
 
-        return Promise.all(
-            _.map(
-                _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC),
-                async (app) => {
-                    const appPath = await environment.getAppPath(app.name);
-                    // @todo: protocol
-                    const url = `http://${host}:${port}${appPath}`;
+        return _.map(
+            _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC),
+            (app) => {
+                const url = `${protocol}${host}:${port}${appRoot}/${app.name}`;
 
-                    return {
-                        ...app,
-                        url,
-                    };
-                },
-            ),
+                return {
+                    ...app,
+                    url,
+                };
+            },
         );
     }
 
@@ -63,7 +60,6 @@ export class AppsResolver {
         @Args('principal') principal: string,
         @Args('accessToken') accessToken: string,
     ): Promise<AppLaunchToken> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
         const token = await this.systemProvider.createAppLaunchToken(
             environmentId,
             appName,
@@ -71,11 +67,11 @@ export class AppsResolver {
             principal,
             accessToken,
         );
+        const protocol = this.configService.get('protocol');
         const host = this.configService.get('host');
         const port = this.configService.get('port');
-        const appPath = await environment.getAppPath(appName);
-        // @todo: protocol
-        const url = `http://${host}:${port}${appPath}`;
+        const appRoot = this.configService.get('appRoot');
+        const url = `${protocol}${host}:${port}${appRoot}/${appName}`;
 
         return {
             path: createAppLaunchUrl(url, token),

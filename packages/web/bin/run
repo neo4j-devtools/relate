@@ -3,8 +3,29 @@ const childProcess = require('child_process');
 const path = require('path');
 
 const NODE_PATH = path.join(__dirname, '../node_modules');
+const args = process.argv.slice(2);
 
-childProcess.fork(path.join(__dirname, '../dist/dev.js'), process.argv.slice(2), {
-    stdio: 'inherit',
-    env: {...process.env, NODE_PATH},
-});
+if (args[0] === 'info') {
+    childProcess.fork(
+        path.join(__dirname, '../dist/info.js'),
+        args.slice(1),
+        {
+            stdio: 'inherit',
+            env: {...process.env, NODE_PATH}
+        }
+    )
+    return;
+}
+
+if (args[0] !== 'start') {
+    throw new Error('Allowed commands are "info" or "start"');
+}
+
+childProcess.fork(
+    path.join(__dirname, '../dist/server.js'),
+    args.slice(1),
+    {
+        stdio: 'inherit',
+        env: {...process.env, NODE_PATH}
+    }
+)

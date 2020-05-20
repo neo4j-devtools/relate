@@ -38,12 +38,11 @@ import {
     BOLT_DEFAULT_PORT,
     DBMS_DIR_NAME,
     DBMS_TLS_LEVEL,
-    EXTENSION_DIR_NAME,
-    EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
     LOCALHOST_IP_ADDRESS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j, discoverExtension} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j} from '../../utils';
+
 import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
@@ -211,19 +210,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
         } catch (e) {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }
-    }
-
-    public async getAppPath(appName: string): Promise<string> {
-        const {manifest} = await discoverExtension(
-            path.join(this.dirPaths.data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, appName),
-        );
-
-        let saneMain = _.startsWith(manifest.main, '.') ? manifest.main.substr(1) : manifest.main;
-        saneMain = _.startsWith(saneMain, '/') ? saneMain.substr(1) : saneMain;
-
-        // @todo: use Bonjour to detect server base url
-        // @todo: figure out how to pass static path from config
-        return `/${EXTENSION_TYPES.STATIC}/${appName}/${saneMain}`;
     }
 
     private getDbmsRootPath(dbmsId?: string): string {

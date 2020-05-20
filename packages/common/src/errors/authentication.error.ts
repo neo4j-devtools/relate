@@ -1,1 +1,3 @@
-export class AuthenticationError extends Error {}
+import {ErrorAbstract} from './error.abstract';
+
+export class AuthenticationError extends ErrorAbstract {}

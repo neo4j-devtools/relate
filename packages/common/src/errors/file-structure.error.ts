@@ -1,1 +1,3 @@
-export class FileStructureError extends Error {}
+import {ErrorAbstract} from './error.abstract';
+
+export class FileStructureError extends ErrorAbstract {}

@@ -1,1 +1,3 @@
-export class DbmsExistsError extends Error {}
+import {ErrorAbstract} from './error.abstract';
+
+export class DbmsExistsError extends ErrorAbstract {}
