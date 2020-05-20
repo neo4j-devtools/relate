@@ -315,6 +315,8 @@ export class SystemProvider implements OnModuleInit {
 
         await fse.copy(extractedDistPath, target);
 
+        // @todo: need to look at our use of exec (and maybe child processes) in general
+        // this does not account for all scenarios at the moment so needs more thought
         try {
             await new Promise((resolve, reject) => {
                 exec(
