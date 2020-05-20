@@ -6,14 +6,14 @@ type GraphQLQuery = {
     query: string;
 };
 
-export function getParseLaunchTokenPayload(appId: string, launchToken: string): GraphQLQuery {
+export function getParseLaunchTokenPayload(appName: string, launchToken: string): GraphQLQuery {
     const operationName = 'launchData';
 
     return {
         operationName,
         query: `
-          query ${operationName}($appId: String!, $launchToken: String!) {
-            ${APP_LAUNCH_DATA_RESOLVER}(appId: $appId, launchToken: $launchToken) {
+          query ${operationName}($appName: String!, $launchToken: String!) {
+            ${APP_LAUNCH_DATA_RESOLVER}(appName: $appName, launchToken: $launchToken) {
               accessToken
               dbms {
                 id
@@ -25,7 +25,7 @@ export function getParseLaunchTokenPayload(appId: string, launchToken: string): 
           }
         `,
         variables: {
-            appId,
+            appName,
             launchToken,
         },
     };

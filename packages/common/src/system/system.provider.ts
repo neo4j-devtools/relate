@@ -166,8 +166,8 @@ export class SystemProvider implements OnModuleInit {
         environmentId: string,
         appId: string,
         dbmsId: string,
-        principal: string,
-        accessToken: string,
+        principal?: string,
+        accessToken?: string,
     ): Promise<string> {
         const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
         const validated = JSON.parse(
@@ -270,6 +270,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         const coercedVersion = coerce(version)?.version;
+
         if (coercedVersion && !isValidPath(version)) {
             let requestedDistribution = _.find(
                 await discoverExtensionDistributions(extensionDistributions),
@@ -278,15 +279,11 @@ export class SystemProvider implements OnModuleInit {
 
             // if cached version of extension doesn't exist, attempt to download
             if (!requestedDistribution) {
-                await downloadExtension(name, coercedVersion, extensionDistributions);
-                const requestedDistributionAfterDownload = _.find(
-                    await discoverExtensionDistributions(extensionDistributions),
-                    (dist) => dist.name === name && dist.version === coercedVersion,
-                );
-                if (!requestedDistributionAfterDownload) {
+                try {
+                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionDistributions);
+                } catch (e) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
-                requestedDistribution = requestedDistributionAfterDownload;
             }
 
             return this.installRelateExtension(requestedDistribution, extensionTarget, requestedDistribution.dist);
@@ -299,21 +296,21 @@ export class SystemProvider implements OnModuleInit {
                 version,
                 extensionDistributions,
             );
+
             // move the extracted dir
-            fse.move(dist, path.join(extensionDistributions, `${extensionName}@${extensionVersion}`), {
+            const destination = path.join(extensionDistributions, `${extensionName}@${extensionVersion}`);
+
+            await fse.move(dist, destination, {
                 overwrite: true,
             });
 
-            const discovered = _.find(
-                await discoverExtensionDistributions(extensionDistributions),
-                // eslint-disable-next-line no-shadow
-                (dist) => dist.name === name && dist.version === extensionVersion,
-            );
-            if (!discovered) {
+            try {
+                const discovered = await discoverExtension(destination);
+
+                return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
+            } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
-
-            return this.installRelateExtension(discovered, extensionTarget, discovered.dist);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');

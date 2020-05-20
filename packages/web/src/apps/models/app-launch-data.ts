@@ -14,9 +14,9 @@ export class AppLaunchData {
     @Field(() => Dbms)
     dbms: IDbms;
 
-    @Field(() => String)
-    principal: string;
+    @Field(() => String, {nullable: true})
+    principal?: string;
 
-    @Field(() => String)
-    accessToken: string;
+    @Field(() => String, {nullable: true})
+    accessToken?: string;
 }

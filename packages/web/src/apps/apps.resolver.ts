@@ -1,6 +1,6 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
-import {EXTENSION_TYPES, SystemProvider} from '@relate/common';
+import {EXTENSION_TYPES, getAppBasePath, SystemProvider} from '@relate/common';
 import {ConfigService} from '@nestjs/config';
 import _ from 'lodash';
 
@@ -57,8 +57,8 @@ export class AppsResolver {
         @Args('environmentId') environmentId: string,
         @Args('appName') appName: string,
         @Args('dbmsId') dbmsId: string,
-        @Args('principal') principal: string,
-        @Args('accessToken') accessToken: string,
+        @Args('principal', {nullable: true}) principal?: string,
+        @Args('accessToken', {nullable: true}) accessToken?: string,
     ): Promise<AppLaunchToken> {
         const token = await this.systemProvider.createAppLaunchToken(
             environmentId,
@@ -71,10 +71,11 @@ export class AppsResolver {
         const host = this.configService.get('host');
         const port = this.configService.get('port');
         const appRoot = this.configService.get('appRoot');
-        const url = `${protocol}${host}:${port}${appRoot}/${appName}`;
+        const appBaseUrl = `${protocol}${host}:${port}${appRoot}`;
+        const appBasePath = await getAppBasePath(appName);
 
         return {
-            path: createAppLaunchUrl(url, token),
+            path: createAppLaunchUrl(`${appBaseUrl}${appBasePath}`, token),
             token,
         };
     }

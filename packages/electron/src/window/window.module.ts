@@ -1,7 +1,7 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {BrowserWindow} from 'electron';
-import {emitHookEvent, HOOK_EVENTS} from '@relate/common';
+import {emitHookEvent, getAppBasePath, HOOK_EVENTS} from '@relate/common';
 
 import {IElectronModuleConfig} from '../electron.module';
 
@@ -29,10 +29,11 @@ export class WindowModule implements OnApplicationBootstrap {
         const host = this.configService.get('host');
         const port = this.configService.get('port');
         const appRoot = this.configService.get('appRoot');
+        const appBasePath = await getAppBasePath(defaultApp);
 
         setTimeout(() => {
             // and load the index.html of the app.
-            mainWindow.loadURL(`${protocol}${host}:${port}${appRoot}/${defaultApp}`);
+            mainWindow.loadURL(`${protocol}${host}:${port}${appRoot}${appBasePath}`);
         }, 1000);
     }
 }

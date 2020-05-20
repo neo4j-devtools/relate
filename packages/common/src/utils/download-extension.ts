@@ -9,6 +9,7 @@ import hasha from 'hasha';
 import {FetchError, NotFoundError, IntegrityError} from '../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../constants';
+import {discoverExtension, IExtensionMeta} from './extension-versions';
 
 // @todo: needs to be removed and handled by env vars
 const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
@@ -98,7 +99,7 @@ export const downloadExtension = async (
     name: string,
     version: string,
     extensionDistributionsPath: string,
-): Promise<void> => {
+): Promise<IExtensionMeta> => {
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
     // Download straight to the distribution path with a temporary name that
@@ -110,14 +111,14 @@ export const downloadExtension = async (
     await verifyHash(shasum, downloadingPath);
 
     // extract extension to cache dir first
-    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-        downloadingPath,
-        extensionDistributionsPath,
-    );
-
+    const extractPath = path.join(extensionDistributionsPath, `${name}@${version}.tmp`);
+    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(downloadingPath, extractPath);
     const destinationPath = path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`);
 
     // move the extracted dir and remove the downloaded archive
     await fse.move(dist, destinationPath, {overwrite: true});
+    await fse.remove(extractPath);
     await fse.remove(downloadingPath);
+
+    return discoverExtension(destinationPath);
 };
