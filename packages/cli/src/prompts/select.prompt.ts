@@ -24,7 +24,7 @@ export const selectDbmsPrompt = async (message: string, environment: Environment
     const dbmss = await environment.listDbmss();
 
     if (!dbmss.length) {
-        throw new NotFoundError('There are no DBMSs installed');
+        throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
     }
 
     return selectPrompt(

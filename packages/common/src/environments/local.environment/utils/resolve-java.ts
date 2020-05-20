@@ -2,8 +2,9 @@ import fse from 'fs-extra';
 import path from 'path';
 
 import {NotSupportedError} from '../../../errors';
-import {download, envPaths, extract} from '../../../utils';
+import {download, envPaths, extract, emitHookEvent} from '../../../utils';
 import {RUNTIME_DIR_NAME, ZULU_JAVA_DOWNLOAD_URL, ZULU_JAVA_VERSION} from '../../environment.constants';
+import {HOOK_EVENTS} from '../../../constants';
 
 interface IJavaName {
     dirname: string;
@@ -45,6 +46,7 @@ const resolveJavaName = (): IJavaName => {
 };
 
 export const downloadJava = async (): Promise<void> => {
+    await emitHookEvent(HOOK_EVENTS.JAVA_DOWNLOAD_START, null);
     const runtimeDir = path.join(envPaths().cache, RUNTIME_DIR_NAME);
     const localArchivePath = path.join(runtimeDir, resolveJavaName().archive);
     const downloadUrl = new URL(resolveJavaName().archive, ZULU_JAVA_DOWNLOAD_URL).toString();
@@ -52,6 +54,7 @@ export const downloadJava = async (): Promise<void> => {
     await download(downloadUrl, localArchivePath);
     await extract(localArchivePath, runtimeDir);
     await fse.remove(localArchivePath);
+    await emitHookEvent(HOOK_EVENTS.JAVA_DOWNLOAD_STOP, null);
 };
 
 export const resolveRelateJavaHome = async (): Promise<string | null> => {

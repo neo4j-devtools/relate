@@ -13,6 +13,12 @@
 USAGE
   $ relate environment:init
 
+OPTIONS
+  --name=name            Name of the environment. Will be used in most commands.
+  --remoteEnv=remoteEnv  Name of the hosted environment
+  --remoteUrl=remoteUrl  URL of the remote instance of relate
+  --type=(LOCAL|REMOTE)
+
 ALIASES
   $ relate env:init
 ```

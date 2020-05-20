@@ -15,12 +15,7 @@ import {
     EXTENSION_DIR_NAME,
     EXTENSION_TYPES,
 } from '../constants';
-import {
-    ENVIRONMENT_TYPES,
-    EnvironmentAbstract,
-    ENVIRONMENTS_DIR_NAME,
-    createEnvironmentInstance,
-} from '../environments';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, createEnvironmentInstance} from '../environments';
 import {
     NotFoundError,
     ValidationFailureError,
@@ -45,6 +40,7 @@ import {
     discoverExtension,
 } from '../utils';
 import {ensureDirs, ensureFiles} from './files';
+import {IEnvironmentConfig} from '../models/environment-config.model';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -104,31 +100,22 @@ export class SystemProvider implements OnModuleInit {
         return token;
     }
 
-    async initInstallation(): Promise<void> {
-        await ensureDirs(this.dirPaths);
-        await ensureFiles(this.filePaths);
-        const defaultEnvironmentPath = path.join(
-            this.dirPaths.environmentsConfig,
-            DEFAULT_ENVIRONMENT_NAME + JSON_FILE_EXTENSION,
-        );
+    async createEnvironment(config: IEnvironmentConfig): Promise<EnvironmentAbstract> {
+        const fileName = `${config.id}${JSON_FILE_EXTENSION}`;
+        const filePath = path.join(this.dirPaths.environmentsConfig, fileName);
 
-        const defaultEnvironmentExists = await fse.pathExists(defaultEnvironmentPath);
-        if (this.allEnvironments.get(DEFAULT_ENVIRONMENT_NAME) || defaultEnvironmentExists) {
+        const environmentExists = await fse.pathExists(filePath);
+        if (environmentExists || this.allEnvironments.get(config.id)) {
             throw new TargetExistsError(`Environment "${DEFAULT_ENVIRONMENT_NAME}" exists, will not overwrite`);
         }
 
-        const config = {
-            dbmss: {},
-            id: DEFAULT_ENVIRONMENT_NAME,
-            neo4jDataPath: this.dirPaths.data,
-            type: ENVIRONMENT_TYPES.LOCAL,
-            user: 'local',
-        };
         const configModel = new EnvironmentConfigModel(config);
-        const defaultEnvironment = await createEnvironmentInstance(configModel, defaultEnvironmentPath);
+        const environment = await createEnvironmentInstance(configModel, filePath);
 
-        await fse.writeJSON(defaultEnvironmentPath, config, {spaces: 2});
-        this.allEnvironments.set(DEFAULT_ENVIRONMENT_NAME, defaultEnvironment);
+        await fse.writeJSON(filePath, config, {spaces: 2});
+        this.allEnvironments.set(environment.id, environment);
+
+        return environment;
     }
 
     private async discoverEnvironments(): Promise<void> {
@@ -141,11 +128,12 @@ export class SystemProvider implements OnModuleInit {
         );
 
         await Promise.all(
-            _.map(availableEnvironments, async (environment) => {
-                const configPath = path.join(environmentsDir, environment);
+            _.map(availableEnvironments, async (envFilename) => {
+                const configPath = path.join(environmentsDir, envFilename);
                 const config = await fse.readJSON(configPath);
                 const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
                     ...config,
+                    id: path.basename(envFilename, JSON_FILE_EXTENSION),
                     neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
                 });
 

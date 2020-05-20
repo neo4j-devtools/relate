@@ -5,7 +5,7 @@
 
 * [`relate extension:install NAME`](#relate-extensioninstall-name)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
-* [`relate extension:uninstall NAME`](#relate-extensionuninstall-name)
+* [`relate extension:uninstall [NAME]`](#relate-extensionuninstall-name)
 
 ## `relate extension:install NAME`
 
@@ -28,11 +28,11 @@ USAGE
 
 _See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/extension/link.ts)_
 
-## `relate extension:uninstall NAME`
+## `relate extension:uninstall [NAME]`
 
 ```
 USAGE
-  $ relate extension:uninstall NAME
+  $ relate extension:uninstall [NAME]
 ```
 
 _See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/extension/uninstall.ts)_
