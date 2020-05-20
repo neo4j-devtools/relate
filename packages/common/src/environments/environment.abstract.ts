@@ -1,4 +1,4 @@
-import {IAuthToken} from 'tapestry';
+import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 

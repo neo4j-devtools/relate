@@ -1,7 +1,7 @@
 import {ApolloLink, execute, FetchResult, GraphQLRequest, makePromise} from 'apollo-link';
 import {HttpLink} from 'apollo-link-http';
 import {google} from 'googleapis';
-import {IAuthToken} from 'tapestry';
+import {IAuthToken} from '@huboneo/tapestry';
 import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
