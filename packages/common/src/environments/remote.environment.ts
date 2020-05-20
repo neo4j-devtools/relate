@@ -199,7 +199,20 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             },
         });
 
-        return data.getDbms;
+        const dbms = data.getDbms;
+
+        if (!this.config.relateURL) {
+            throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
+        }
+
+        // @todo this is not 100% reliable as the DBMS might be hosted on a
+        // different domain.
+        const relateUrl = new URL(this.config.relateURL);
+        const connectionUri = new URL(dbms.connectionUri);
+        connectionUri.hostname = relateUrl.hostname;
+        dbms.connectionUri = connectionUri.toString();
+
+        return dbms;
     }
 
     async listDbmss(): Promise<IDbms[]> {
@@ -268,18 +281,18 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.statusDbmss;
     }
 
-    async createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string> {
+    async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const {data}: any = await this.graphql({
             query: gql`
                 mutation AccessDBMS(
                     $environmentId: String!
-                    $dbmsName: String!
+                    $dbmsNameOrId: String!
                     $authToken: AuthTokenInput!
                     $appId: String!
                 ) {
                     createAccessToken(
                         environmentId: $environmentId
-                        dbmsId: $dbmsName
+                        dbmsId: $dbmsNameOrId
                         appId: $appId
                         authToken: $authToken
                     )
@@ -288,7 +301,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             variables: {
                 appId,
                 authToken,
-                dbmsId,
+                dbmsNameOrId,
                 environmentId: this.config.relateEnvironment,
             },
         });
