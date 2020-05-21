@@ -1,11 +1,14 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {
+    ENVIRONMENT_TYPES,
+    IEnvironmentConfig,
+    SystemModule,
+    SystemProvider,
+} from '@relate/common';
 
 import InitCommand from '../../commands/environment/init';
 import {inputPrompt, selectPrompt} from '../../prompts';
-import {ENVIRONMENT_TYPES} from '@relate/common/dist/environments';
-import {IEnvironmentConfig} from '@relate/common/dist/models/environment-config.model';
 
 @Module({
     exports: [],
@@ -20,7 +23,7 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        let {type, name, remoteUrl, remoteEnv} = this.parsed.flags;
+        let {type, name, httpOrigin, remoteEnv} = this.parsed.flags;
 
         const envChoices = Object.values(ENVIRONMENT_TYPES).map((name) => ({
             name,
@@ -30,14 +33,14 @@ export class InitModule implements OnApplicationBootstrap {
         type = type || (await selectPrompt('Choose environment type', envChoices));
         name = name || (await inputPrompt('Enter environment name'));
         if (type === ENVIRONMENT_TYPES.REMOTE) {
-            remoteUrl = remoteUrl || (await inputPrompt('Enter remote URL'));
+            httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
             remoteEnv = remoteEnv || 'default';
         }
 
         const config: IEnvironmentConfig = {
             type: type as ENVIRONMENT_TYPES,
             id: name,
-            relateURL: remoteUrl,
+            httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             relateEnvironment: remoteEnv,
             user: 'foo',
         };

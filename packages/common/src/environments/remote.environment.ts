@@ -6,14 +6,15 @@ import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
 import fse from 'fs-extra';
+import _ from 'lodash';
 
-import {InvalidConfigError, NotAllowedError} from '../errors';
+import {InvalidConfigError, NotAllowedError, NotFoundError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
-import {JSON_FILE_EXTENSION} from '../constants';
+import {EXTENSION_TYPES, JSON_FILE_EXTENSION} from '../constants';
 import {envPaths} from '../utils';
-import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
+import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
@@ -38,7 +39,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             headers: {
                 Authorization: `Bearer ${this.config.accessToken}`,
             },
-            uri: this.config.relateURL,
+            uri: `${this.httpOrigin}/graphql`,
         });
     }
 
@@ -47,8 +48,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             throw new NotAllowedError('Unauthorized: must login to perform this operation');
         }
 
-        if (!this.config.relateURL) {
-            throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
+        if (!this.config.httpOrigin) {
+            throw new InvalidConfigError('Environments must specify a `httpOrigin`');
         }
 
         try {
@@ -76,7 +77,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         // https://developers.google.com/identity/protocols/oauth2#installed
         // https://tools.ietf.org/html/rfc8252#page-12
         const CLIENT_SECRET = '_rlHhLaiymDRVvjRwfumyN70';
-        const host = '127.0.0.1';
+        const host = LOCALHOST_IP_ADDRESS;
         const port = '5555';
 
         const oauth2Client = new google.auth.OAuth2({
@@ -201,13 +202,13 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
         const dbms = data.getDbms;
 
-        if (!this.config.relateURL) {
+        if (!this.config.httpOrigin) {
             throw new InvalidConfigError('Remote Environments must specify a `relateURL`');
         }
 
         // @todo this is not 100% reliable as the DBMS might be hosted on a
         // different domain.
-        const relateUrl = new URL(this.config.relateURL);
+        const relateUrl = new URL(this.config.httpOrigin);
         const connectionUri = new URL(dbms.connectionUri);
         connectionUri.hostname = relateUrl.hostname;
         dbms.connectionUri = connectionUri.toString();
@@ -307,5 +308,31 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         return data.createAccessToken;
+    }
+
+    async getAppPath(appName: string): Promise<string> {
+        const {data}: any = await this.graphql({
+            query: gql`
+                query InstalledApps {
+                    installedApps {
+                        name
+                        type
+                        path
+                    }
+                }
+            `,
+            variables: {},
+        });
+
+        const app = _.find(
+            _.get(data, 'installedApps'),
+            ({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName,
+        );
+
+        if (!app) {
+            throw new NotFoundError(`App ${appName} not found`);
+        }
+
+        return app.path;
     }
 }

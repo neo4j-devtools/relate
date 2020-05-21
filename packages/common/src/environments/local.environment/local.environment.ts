@@ -20,7 +20,7 @@ import {
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
-    DEFAULT_NEO4J_HOST,
+    LOCALHOST_IP_ADDRESS,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
     NEO4J_CONF_FILE_BACKUP,
@@ -34,14 +34,8 @@ import {
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
 } from '../environment.constants';
-import {
-    BOLT_DEFAULT_PORT,
-    DBMS_DIR_NAME,
-    DBMS_TLS_LEVEL,
-    JSON_FILE_EXTENSION,
-    LOCALHOST_IP_ADDRESS,
-} from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j} from '../../utils';
+import {BOLT_DEFAULT_PORT, DBMS_DIR_NAME, DBMS_TLS_LEVEL, JSON_FILE_EXTENSION} from '../../constants';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j, getAppBasePath} from '../../utils';
 
 import {
     resolveDbms,
@@ -182,7 +176,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
         const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
-        const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || DEFAULT_NEO4J_HOST;
+        const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || LOCALHOST_IP_ADDRESS;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
         try {
             const driver = new Driver<Result>({
@@ -428,5 +422,11 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 }
             }),
         );
+    }
+
+    async getAppPath(appName: string, appRoot = ''): Promise<string> {
+        const appBase = await getAppBasePath(appName);
+
+        return `${appRoot}${appBase}`;
     }
 }

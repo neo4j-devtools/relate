@@ -48,6 +48,7 @@ export class TestDbmss {
             neo4jDataPath: envPaths().data,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
+            httpOrigin: 'http://127.0.0.1:3000',
         });
 
         this.environment = environment || new LocalEnvironment(config, 'nowhere');

@@ -33,7 +33,8 @@ export const NEO4J_PLUGIN_DIR = 'plugins';
 export const NEO4J_CERT_DIR = 'certificates';
 export const NEO4J_CONF_FILE = 'neo4j.conf';
 export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
-export const DEFAULT_NEO4J_HOST = '127.0.0.1';
+export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
+export const DEFAULT_ENVIRONMENT_HTTP_ORIGIN = `http://${LOCALHOST_IP_ADDRESS}:3000`;
 export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;

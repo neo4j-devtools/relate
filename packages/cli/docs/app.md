@@ -3,13 +3,13 @@
 
 
 
-* [`relate app:open [APPNAME]`](#relate-appopen-appname)
+* [`relate app:open APPNAME`](#relate-appopen-appname)
 
-## `relate app:open [APPNAME]`
+## `relate app:open APPNAME`
 
 ```
 USAGE
-  $ relate app:open [APPNAME]
+  $ relate app:open APPNAME
 
 OPTIONS
   -D, --dbmsId=dbmsId            The DBMS to automatically connect to
