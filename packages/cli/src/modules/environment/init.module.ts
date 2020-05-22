@@ -26,7 +26,7 @@ export class InitModule implements OnApplicationBootstrap {
         }));
 
         type = type || (await selectPrompt('Choose environment type', envChoices));
-        name = name || (await inputPrompt('Enter environment name'));
+        name = name || (await inputPrompt('Enter environment name (required)', {required: true}));
         if (type === ENVIRONMENT_TYPES.REMOTE) {
             httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
             remoteEnv = remoteEnv || 'default';
