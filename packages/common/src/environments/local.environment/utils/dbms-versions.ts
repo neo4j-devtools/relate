@@ -11,13 +11,12 @@ import {
     NEO4J_EDITION,
     NEO4J_ORIGIN,
 } from '../../environment.constants';
-import {neo4jAdminCmd} from './neo4j-admin-cmd';
 import {IDbmsVersion} from '../../../models';
-import {DependencyError} from '../../../errors';
+import {DependencyError, InvalidArgumentError} from '../../../errors';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
-        const version = await neo4jAdminCmd(dbmsRootDir, '--version').then((v) => semver.coerce(v));
+        const version = await getDistributionVersion(dbmsRootDir);
 
         if (!version) {
             return null;
@@ -31,7 +30,7 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
             dist: dbmsRootDir,
             edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             origin: NEO4J_ORIGIN.CACHED,
-            version: version.version,
+            version,
         };
     } catch (e) {
         if (e.name === DependencyError.name) {
@@ -110,3 +109,22 @@ export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
         };
     });
 };
+
+export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
+    const SEMVER_REGEX = /[0-9]+\.[0-9]+\.[0-9]+/;
+    const NEO4j_JAR_REGEX = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+    const libs = await fse.readdir(path.join(dbmsRoot, 'lib'));
+    const neo4jJar = _.find(libs, (name) => NEO4j_JAR_REGEX.test(name));
+
+    if (!neo4jJar) {
+        throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
+    }
+
+    const version = semver.valid(_.head(neo4jJar.match(SEMVER_REGEX)));
+
+    if (!version) {
+        throw new InvalidArgumentError(`Could not parse version`);
+    }
+
+    return version;
+}
