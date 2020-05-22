@@ -6,8 +6,8 @@ import {Request, Response} from 'express';
 import {IWebModuleConfig} from '../../web.module';
 
 export interface IHealthInfo {
-    host: string;
-    port: number;
+    appRoot: string;
+    pid: number;
 }
 
 @Injectable()
@@ -34,10 +34,7 @@ export class HealthService {
         app.get(healthCheckEndpoint, (_: Request, res: Response) =>
             res.json({
                 appRoot: this.configService.get('appRoot'),
-                host: this.configService.get('host'),
                 pid: process.pid,
-                port: this.configService.get('port'),
-                protocol: this.configService.get('protocol'),
             }),
         );
     }
