@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import * as rxjs from 'rxjs/operators';
-import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from 'tapestry';
+import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
 
 import {IDbms, EnvironmentConfigModel, IDbmsVersion, IEnvironmentAuth} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';

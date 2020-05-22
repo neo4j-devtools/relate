@@ -1,5 +1,5 @@
 import {Equals, IsString} from 'class-validator';
-import {IAuthToken} from 'tapestry';
+import {IAuthToken} from '@huboneo/tapestry';
 
 import {ModelAbstract} from './model.abstract';
 

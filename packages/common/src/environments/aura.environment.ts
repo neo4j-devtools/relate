@@ -1,4 +1,4 @@
-import {IAuthToken} from 'tapestry';
+import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentAbstract} from './environment.abstract';
 import {NotAllowedError} from '../errors';
