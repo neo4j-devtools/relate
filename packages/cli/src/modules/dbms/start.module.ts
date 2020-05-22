@@ -21,18 +21,22 @@ export class StartModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        let dbmsIds = this.parsed.argv;
+        let dbmss = this.parsed.argv;
 
-        if (!dbmsIds.length) {
+        if (!dbmss.length) {
             if (isInteractive()) {
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to start', environment, DBMS_STATUS_FILTERS.START);
-                dbmsIds = [selectedDbms];
+                const selectedDbms = await selectDbmsPrompt(
+                    'Select a DBMS to start',
+                    environment,
+                    DBMS_STATUS_FILTERS.START,
+                );
+                dbmss = [selectedDbms];
             } else {
-                dbmsIds = await readStdinArray();
+                dbmss = await readStdinArray();
             }
         }
 
-        return environment.startDbmss(dbmsIds).then((res) => {
+        return environment.startDbmss(dbmss).then((res) => {
             this.utils.log(...res);
         });
     }

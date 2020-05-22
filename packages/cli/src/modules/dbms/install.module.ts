@@ -25,9 +25,9 @@ export class InstallModule implements OnApplicationBootstrap {
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        const name = args.name || (await inputPrompt('Enter the DBMS name'));
+        const name = flags.name || (await inputPrompt('Enter the DBMS name'));
 
-        let {version} = flags;
+        let {version = ''} = args;
         if (!version) {
             let versions = await environment.listDbmsVersions();
             versions = _.compact(_.map(versions, (version) => {

@@ -1,15 +1,15 @@
 import {UninstallModule} from '../../modules/dbms/uninstall.module';
 import BaseCommand from '../../base.command';
-import {DBMS_FLAGS} from '../../constants';
+import {ARGS, FLAGS} from '../../constants';
 
 export default class UninstallCommand extends BaseCommand {
     commandClass = UninstallCommand;
 
     commandModule = UninstallModule;
 
-    static args = [{name: 'dbmsId'}];
+    static args = [ARGS.DBMS];
 
     static flags = {
-        ...DBMS_FLAGS,
+        ...FLAGS.ENVIRONMENT,
     };
 }

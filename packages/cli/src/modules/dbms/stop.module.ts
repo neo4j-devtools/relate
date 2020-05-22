@@ -22,18 +22,22 @@ export class StopModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        let dbmsIds = this.parsed.argv;
+        let dbmss = this.parsed.argv;
 
-        if (!dbmsIds.length) {
+        if (!dbmss.length) {
             if (isInteractive()) {
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', environment, DBMS_STATUS_FILTERS.STOP);
-                dbmsIds = [selectedDbms];
+                const selectedDbms = await selectDbmsPrompt(
+                    'Select a DBMS to stop',
+                    environment,
+                    DBMS_STATUS_FILTERS.STOP,
+                );
+                dbmss = [selectedDbms];
             } else {
-                dbmsIds = await readStdinArray();
+                dbmss = await readStdinArray();
             }
         }
 
         cli.action.start('Stopping Neo4j');
-        return environment.stopDbmss(dbmsIds).then(() => cli.action.stop());
+        return environment.stopDbmss(dbmss).then(() => cli.action.stop());
     }
 }

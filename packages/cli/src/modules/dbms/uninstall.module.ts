@@ -20,19 +20,19 @@ export class UninstallModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        let {dbmsId} = args;
+        let {dbms} = args;
 
-        if (!dbmsId) {
+        if (!dbms) {
             if (isInteractive()) {
                 const selectedDbms = await selectDbmsPrompt('Select a DBMS to uninstall', environment);
-                dbmsId = selectedDbms;
+                dbms = selectedDbms;
             } else {
-                dbmsId = await readStdin();
+                dbms = await readStdin();
             }
         }
 
-        return environment.uninstallDbms(dbmsId).then(() => {
-            this.utils.log(dbmsId);
+        return environment.uninstallDbms(dbms).then(() => {
+            this.utils.log(dbms);
         });
     }
 }

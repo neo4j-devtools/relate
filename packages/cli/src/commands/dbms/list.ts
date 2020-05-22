@@ -2,7 +2,7 @@ import cli from 'cli-ux';
 
 import {ListModule} from '../../modules/dbms/list.module';
 import BaseCommand from '../../base.command';
-import {DBMS_FLAGS} from '../../constants';
+import {FLAGS} from '../../constants';
 
 export default class ListCommand extends BaseCommand {
     commandClass = ListCommand;
@@ -10,7 +10,7 @@ export default class ListCommand extends BaseCommand {
     commandModule = ListModule;
 
     static flags = {
+        ...FLAGS.ENVIRONMENT,
         ...cli.table.flags({except: ['extended', 'csv']}),
-        ...DBMS_FLAGS,
     };
 }
