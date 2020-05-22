@@ -14,10 +14,10 @@ USAGE
   $ relate environment:init
 
 OPTIONS
-  --httpOrigin=httpOrigin  (required) URL of the remote instance of relate
-  --name=name              (required) Name of the environment. Will be used in most commands.
-  --remoteEnv=remoteEnv    Name of the hosted environment
-  --type=(LOCAL|REMOTE)    (required)
+  --httpOrigin=httpOrigin     URL of the hosted instance of relate (only applies to --type=REMOTE)
+  --name=name                 Name of the environment to initialize
+  --remoteEnv=remoteEnv       Name of the hosted environment (in case of --type=REMOTE)
+  --type=(LOCAL|REMOTE|DEMO)  Type of environment
 
 ALIASES
   $ relate env:init
@@ -32,7 +32,7 @@ USAGE
   $ relate environment:login
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 
 ALIASES
   $ relate env:login
@@ -47,8 +47,8 @@ USAGE
   $ relate environment:open
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
   -L, --log                      If set, log the path instead
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 
 ALIASES
   $ relate env:open

@@ -3,37 +3,43 @@
 
 
 
-* [`relate dbms:access-token DBMSID`](#relate-dbmsaccess-token-dbmsid)
-* [`relate dbms:install NAME`](#relate-dbmsinstall-name)
+* [`relate dbms:access-token [DBMS]`](#relate-dbmsaccess-token-dbms)
+* [`relate dbms:install [VERSION]`](#relate-dbmsinstall-version)
 * [`relate dbms:list`](#relate-dbmslist)
-* [`relate dbms:open [NAMEORID]`](#relate-dbmsopen-nameorid)
-* [`relate dbms:start [DBMSIDS]`](#relate-dbmsstart-dbmsids)
-* [`relate dbms:status [DBMSIDS]`](#relate-dbmsstatus-dbmsids)
-* [`relate dbms:stop [DBMSIDS]`](#relate-dbmsstop-dbmsids)
-* [`relate dbms:uninstall [DBMSID]`](#relate-dbmsuninstall-dbmsid)
+* [`relate dbms:open [DBMS]`](#relate-dbmsopen-dbms)
+* [`relate dbms:start [DBMSS]`](#relate-dbmsstart-dbmss)
+* [`relate dbms:status [DBMSS]`](#relate-dbmsstatus-dbmss)
+* [`relate dbms:stop [DBMSS]`](#relate-dbmsstop-dbmss)
+* [`relate dbms:uninstall [DBMS]`](#relate-dbmsuninstall-dbms)
 
-## `relate dbms:access-token DBMSID`
+## `relate dbms:access-token [DBMS]`
 
 ```
 USAGE
-  $ relate dbms:access-token DBMSID
+  $ relate dbms:access-token [DBMS]
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
-  -P, --principal=principal      (required)
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/access-token.ts)_
 
-## `relate dbms:install NAME`
+## `relate dbms:install [VERSION]`
 
 ```
 USAGE
-  $ relate dbms:install NAME
+  $ relate dbms:install [VERSION]
+
+ARGUMENTS
+  VERSION  Version to install (semver, url, or path)
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
-  -V, --version=version          (required) Version to install
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -n, --name=name                Name to give the newly installed DBMS
 ```
 
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
@@ -45,7 +51,7 @@ USAGE
   $ relate dbms:list
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
   --columns=columns              only show provided columns (comma-separated)
   --filter=filter                filter property by partial string matching, ex: name=foo
   --no-header                    hide table header from output
@@ -56,39 +62,48 @@ OPTIONS
 
 _See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/list.ts)_
 
-## `relate dbms:open [NAMEORID]`
+## `relate dbms:open [DBMS]`
 
 ```
 USAGE
-  $ relate dbms:open [NAMEORID]
+  $ relate dbms:open [DBMS]
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
   -L, --log                      If set, log the path instead
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/open.ts)_
 
-## `relate dbms:start [DBMSIDS]`
+## `relate dbms:start [DBMSS]`
 
 ```
 USAGE
-  $ relate dbms:start [DBMSIDS]
+  $ relate dbms:start [DBMSS]
+
+ARGUMENTS
+  DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/start.ts)_
 
-## `relate dbms:status [DBMSIDS]`
+## `relate dbms:status [DBMSS]`
 
 ```
 USAGE
-  $ relate dbms:status [DBMSIDS]
+  $ relate dbms:status [DBMSS]
+
+ARGUMENTS
+  DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
   --columns=columns              only show provided columns (comma-separated)
   --filter=filter                filter property by partial string matching, ex: name=foo
   --no-header                    hide table header from output
@@ -99,26 +114,32 @@ OPTIONS
 
 _See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/status.ts)_
 
-## `relate dbms:stop [DBMSIDS]`
+## `relate dbms:stop [DBMSS]`
 
 ```
 USAGE
-  $ relate dbms:stop [DBMSIDS]
+  $ relate dbms:stop [DBMSS]
+
+ARGUMENTS
+  DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
 
-## `relate dbms:uninstall [DBMSID]`
+## `relate dbms:uninstall [DBMS]`
 
 ```
 USAGE
-  $ relate dbms:uninstall [DBMSID]
+  $ relate dbms:uninstall [DBMS]
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -E, --environment=environment  Environment to run the command against
+  -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/uninstall.ts)_

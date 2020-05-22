@@ -1,18 +1,18 @@
-import _ from 'lodash';
-import fse from 'fs-extra';
 import {promises as fs} from 'fs';
+import fse from 'fs-extra';
 import got from 'got';
+import _ from 'lodash';
 import path from 'path';
 import semver from 'semver';
 
+import {DependencyError, InvalidArgumentError} from '../../../errors';
+import {IDbmsVersion} from '../../../models';
 import {
     NEO4J_DIST_VERSIONS_URL,
-    NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_EDITION,
     NEO4J_ORIGIN,
+    NEO4J_SUPPORTED_VERSION_RANGE,
 } from '../../environment.constants';
-import {IDbmsVersion} from '../../../models';
-import {DependencyError, InvalidArgumentError} from '../../../errors';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
@@ -112,9 +112,9 @@ export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const SEMVER_REGEX = /[0-9]+\.[0-9]+\.[0-9]+/;
-    const NEO4j_JAR_REGEX = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+    const NEO4J_JAR_REGEX = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
     const libs = await fse.readdir(path.join(dbmsRoot, 'lib'));
-    const neo4jJar = _.find(libs, (name) => NEO4j_JAR_REGEX.test(name));
+    const neo4jJar = _.find(libs, (name) => NEO4J_JAR_REGEX.test(name));
 
     if (!neo4jJar) {
         throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
