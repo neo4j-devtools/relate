@@ -22,11 +22,13 @@ export class InstallModule implements OnApplicationBootstrap {
         let {version} = this.parsed.args;
 
         const pathVersion = version && path.resolve(version);
+        const environment = await this.systemProvider.getEnvironment();
+
         if (pathVersion && (await fse.pathExists(pathVersion))) {
             version = pathVersion;
         }
 
-        return this.systemProvider.installExtension(name, version).then((res) => {
+        return environment.installExtension(name, version).then((res) => {
             this.utils.log(res.name);
         });
     }

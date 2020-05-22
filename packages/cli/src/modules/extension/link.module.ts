@@ -25,9 +25,10 @@ export class LinkModule implements OnApplicationBootstrap {
             throw new Error(`File path must be specified`);
         }
 
+        const environment = await this.systemProvider.getEnvironment();
         const resolvedPath = path.resolve(filePath);
 
-        return this.systemProvider.linkExtension(resolvedPath).then((res) => {
+        return environment.linkExtension(resolvedPath).then((res) => {
             this.utils.log(res.name);
         });
     }

@@ -25,7 +25,9 @@ export class UninstallModule implements OnApplicationBootstrap {
             throw new Error(`Not yet implemented`);
         }
 
-        return this.systemProvider.uninstallExtension(extension).then((exts) => {
+        const environment = await this.systemProvider.getEnvironment();
+
+        return environment.uninstallExtension(name).then((exts) => {
             // @todo: will we have more than 1 version installed? If so, will
             // need to pass in / select version to uninstall
             const extFormatter = (ext: IExtensionMeta): string => `${ext.name}@${ext.version}`;

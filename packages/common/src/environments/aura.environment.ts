@@ -3,6 +3,7 @@ import {IAuthToken} from '@huboneo/tapestry';
 import {EnvironmentAbstract} from './environment.abstract';
 import {NotAllowedError} from '../errors';
 import {IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
+import {IExtensionMeta} from '../utils';
 
 export class AuraEnvironment extends EnvironmentAbstract {
     login(): Promise<IEnvironmentAuth> {
@@ -51,5 +52,21 @@ export class AuraEnvironment extends EnvironmentAbstract {
 
     getAppPath(_appName: string): Promise<string> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support getting app paths`);
+    }
+
+    listInstalledApps(): Promise<IExtensionMeta[]> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support listing installed extensions`);
+    }
+
+    linkExtension(_filePath: string): Promise<IExtensionMeta> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support linking extensions`);
+    }
+
+    installExtension(_name: string, _version: string): Promise<IExtensionMeta> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support installing extensions`);
+    }
+
+    uninstallExtension(_name: string): Promise<IExtensionMeta[]> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support uninstalling extensions`);
     }
 }

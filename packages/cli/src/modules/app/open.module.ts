@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {Environment, NotFoundError, EXTENSION_TYPES, SystemModule, SystemProvider} from '@relate/common';
+import {Environment, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 import _ from 'lodash';
 import fetch from 'node-fetch';
@@ -25,8 +25,7 @@ export class OpenModule implements OnApplicationBootstrap {
         let {appName} = args;
         const {environment: environmentId, user, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedExtensions = await this.systemProvider.listInstalledExtensions();
-        const installedApps = _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC);
+        const installedApps = await environment.listInstalledApps();
 
         if (!appName) {
             if (isInteractive()) {

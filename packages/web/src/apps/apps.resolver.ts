@@ -1,7 +1,7 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {EXTENSION_TYPES, SystemProvider} from '@relate/common';
+import {SystemProvider} from '@relate/common';
 import _ from 'lodash';
 
 import {IWebModuleConfig} from '../web.module';
@@ -34,21 +34,18 @@ export class AppsResolver {
 
     @Query(() => [AppData])
     async installedApps(@Args('environmentId', {nullable: true}) environmentId?: string): Promise<AppData[]> {
-        const installedExtensions = await this.systemProvider.listInstalledExtensions();
         const environment = await this.systemProvider.getEnvironment(environmentId);
+        const installedApps = await environment.listInstalledApps();
 
         return Promise.all(
-            _.map(
-                _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC),
-                async (app) => {
-                    const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
+            _.map(installedApps, async (app) => {
+                const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
 
-                    return {
-                        ...app,
-                        path: appPath,
-                    };
-                },
-            ),
+                return {
+                    ...app,
+                    path: appPath,
+                };
+            }),
         );
     }
 
