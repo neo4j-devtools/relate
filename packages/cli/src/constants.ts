@@ -12,7 +12,7 @@ export const DBMS_FLAGS = {
     }),
 };
 
-export enum DBMS_FILTERS {
+export enum DBMS_STATUS_FILTERS {
     START = 'Neo4j is not running',
     STOP = 'Neo4j is running',
 }

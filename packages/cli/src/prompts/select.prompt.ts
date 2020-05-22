@@ -2,7 +2,7 @@ import _ from 'lodash';
 import {prompt} from 'enquirer';
 import {Environment, IExtensionMeta, NotFoundError} from '@relate/common';
 
-import {DBMS_FILTERS} from '../constants';
+import {DBMS_STATUS_FILTERS} from '../constants';
 
 interface IChoice {
     name: string;
@@ -26,7 +26,7 @@ export const selectPrompt = async (message: string, choices: string[] | IChoice[
 export const selectDbmsPrompt = async (
     message: string,
     environment: Environment,
-    filter?: DBMS_FILTERS,
+    filter?: DBMS_STATUS_FILTERS,
 ): Promise<string> => {
     let dbmss = await environment.listDbmss();
     if (filter) {
@@ -44,7 +44,7 @@ export const selectDbmsPrompt = async (
         if (!filter) {
             throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
         }
-        throw new NotFoundError(`All DBMSs are currently ${filter === DBMS_FILTERS.START ? 'running' : 'stopped'}`);
+        throw new NotFoundError(`All DBMSs are currently ${filter === DBMS_STATUS_FILTERS.START ? 'running' : 'stopped'}`);
     }
 
     return selectPrompt(

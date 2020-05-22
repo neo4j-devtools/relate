@@ -5,7 +5,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import {readStdinArray, isInteractive} from '../../stdin';
 import StopCommand from '../../commands/dbms/stop';
 import {selectDbmsPrompt} from '../../prompts';
-import {DBMS_FILTERS} from '../../constants';
+import {DBMS_STATUS_FILTERS} from '../../constants';
 
 @Module({
     exports: [],
@@ -26,7 +26,7 @@ export class StopModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isInteractive()) {
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', environment, DBMS_FILTERS.STOP);
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to stop', environment, DBMS_STATUS_FILTERS.STOP);
                 dbmsIds = [selectedDbms];
             } else {
                 dbmsIds = await readStdinArray();
