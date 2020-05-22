@@ -11,3 +11,8 @@ export const DBMS_FLAGS = {
         description: 'Environment to run the command against',
     }),
 };
+
+export enum DBMS_FILTERS {
+    START = 'Neo4j is not running',
+    STOP = 'Neo4j is running',
+}

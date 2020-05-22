@@ -4,6 +4,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import {readStdinArray, isInteractive} from '../../stdin';
 import StartCommand from '../../commands/dbms/start';
 import {selectDbmsPrompt} from '../../prompts';
+import {DBMS_FILTERS} from '../../constants';
 
 @Module({
     exports: [],
@@ -24,7 +25,7 @@ export class StartModule implements OnApplicationBootstrap {
 
         if (!dbmsIds.length) {
             if (isInteractive()) {
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to start', environment);
+                const selectedDbms = await selectDbmsPrompt('Select a DBMS to start', environment, DBMS_FILTERS.START);
                 dbmsIds = [selectedDbms];
             } else {
                 dbmsIds = await readStdinArray();
