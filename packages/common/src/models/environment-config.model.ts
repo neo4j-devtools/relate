@@ -8,9 +8,10 @@ import {PropertiesFile} from '../system/files';
 export interface IEnvironmentAuth {
     authUrl: string;
     getToken: () => Promise<{
-        token: string;
-        payload: any | undefined;
-    } | null>;
+        authToken: string;
+        payload?: any;
+        redirectTo?: string;
+    }>;
 }
 
 export interface IDbms {
@@ -43,7 +44,7 @@ export interface IEnvironmentConfig {
     type: ENVIRONMENT_TYPES;
     httpOrigin?: string;
     relateEnvironment?: string;
-    accessToken?: string;
+    authToken?: string;
     dbmss?: {[key: string]: IDbms};
 }
 
@@ -77,7 +78,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     // @todo: move this to data
     @IsString()
     @IsOptional()
-    public accessToken?: string;
+    public authToken?: string;
 
     // @todo: move this to data
     @IsOptional()
