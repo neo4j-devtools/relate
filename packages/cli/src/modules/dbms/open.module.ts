@@ -3,7 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/dbms/open';
-import {isInteractive, readStdin} from '../../stdin';
+import {isInteractive} from '../../stdin';
 import {selectDbmsPrompt} from '../../prompts';
 
 @Module({

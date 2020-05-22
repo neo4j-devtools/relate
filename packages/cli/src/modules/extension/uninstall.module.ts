@@ -18,14 +18,14 @@ export class UninstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args} = this.parsed;
-        const {name} = args;
+        const {extension} = args;
 
-        if (!name) {
+        if (!extension) {
             // @todo: add select prompt once we can list installed extensions
             throw new Error(`Not yet implemented`);
         }
 
-        return this.systemProvider.uninstallExtension(name).then((exts) => {
+        return this.systemProvider.uninstallExtension(extension).then((exts) => {
             // @todo: will we have more than 1 version installed? If so, will
             // need to pass in / select version to uninstall
             const extFormatter = (ext: IExtensionMeta): string => `${ext.name}@${ext.version}`;

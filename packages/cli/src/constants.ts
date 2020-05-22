@@ -30,22 +30,6 @@ export const FLAGS = {
             default: 'default',
         }),
     },
-
-    DBMS: {
-        dbms: flags.string({
-            // Don't use `d` as it's usually for --debug
-            char: 'D',
-            description: 'Name or ID of a Neo4j instance',
-        }),
-    },
-
-    USER: {
-        user: flags.string({
-            char: 'u',
-            description: 'Neo4j DBMS user',
-            default: 'neo4j',
-        }),
-    },
 };
 
 // @todo - it might be best to move this to common
