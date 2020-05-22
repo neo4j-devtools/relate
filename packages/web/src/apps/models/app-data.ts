@@ -13,5 +13,5 @@ export class AppData {
     type!: EXTENSION_TYPES;
 
     @Field(() => String)
-    url!: string;
+    path!: string;
 }

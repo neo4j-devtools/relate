@@ -1,15 +1,8 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {
-    EXTENSION_TYPES,
-    getAppBasePath,
-    NotFoundError,
-    NotSupportedError,
-    SystemModule,
-    SystemProvider,
-} from '@relate/common';
+import {Environment, NotFoundError, EXTENSION_TYPES, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
-import {exec} from 'child_process';
 import _ from 'lodash';
+import fetch from 'node-fetch';
 
 import OpenCommand from '../../commands/app/open';
 import {isInteractive, readStdinArray} from '../../stdin';
@@ -48,7 +41,9 @@ export class OpenModule implements OnApplicationBootstrap {
             throw new Error(`App ${appName} is not installed`);
         }
 
-        const appUrl = await this.getAppUrl(appName);
+        const appRoot = await this.getServerAppRoot(environment);
+        const appPath = await environment.getAppPath(appName, appRoot);
+        const appUrl = `${environment.httpOrigin}${appPath}`;
 
         if (!dbmsId) {
             return log ? this.utils.log(appUrl) : cli.open(appUrl);
@@ -75,39 +70,18 @@ export class OpenModule implements OnApplicationBootstrap {
             });
     }
 
-    private async getAppUrl(appName: string): Promise<string> {
-        try {
-            const healthInfo: any = await new Promise((resolve, reject) => {
-                exec(
-                    'relate-web info',
-                    {
-                        encoding: 'utf8',
-                    },
-                    (err, stdout, stderr) => {
-                        if (err || stderr) {
-                            reject(err || stderr);
-                            return;
-                        }
+    private async getServerAppRoot(environment: Environment): Promise<string> {
+        const res = await fetch(`${environment.httpOrigin}/health`);
 
-                        resolve(JSON.parse(stdout));
-                    },
-                );
-            });
-
-            const appRoot = `${healthInfo.protocol}${healthInfo.host}:${healthInfo.port}${healthInfo.appRoot}`;
-            const appBasePath = await getAppBasePath(appName);
-
-            return `${appRoot}${appBasePath}`;
-        } catch (e) {
-            if (_.includes(e, 'ECONNREFUSED')) {
-                throw new NotFoundError(`The @relate/web server is not running`, [
-                    'Run "relate-web start" and try again.',
-                ]);
-            }
-
-            throw new NotSupportedError(`Unable to find the @relate/web server package`, [
-                'Install the "@relate/web" package and try again.',
+        if (!res.ok) {
+            throw new NotFoundError(`Could not connect to the @relate/web server`, [
+                'If you are connecting locally, run "relate-web start" and try again.',
+                'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
             ]);
         }
+
+        const {appRoot} = await res.json();
+
+        return appRoot;
     }
 }

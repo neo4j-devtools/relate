@@ -1,20 +1,34 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {BrowserWindow} from 'electron';
-import {emitHookEvent, getAppBasePath, HOOK_EVENTS} from '@relate/common';
+import {
+    Environment,
+    ENVIRONMENT_TYPES,
+    emitHookEvent,
+    HOOK_EVENTS,
+    NotFoundError,
+    SystemModule,
+    SystemProvider,
+} from '@relate/common';
+import fetch from 'node-fetch';
 
 import {IElectronModuleConfig} from '../electron.module';
-
 import {ELECTRON_IS_READY} from '../constants';
 
 @Module({
-    imports: [],
+    imports: [SystemModule],
 })
 export class WindowModule implements OnApplicationBootstrap {
-    constructor(@Inject(ConfigService) private readonly configService: ConfigService<IElectronModuleConfig>) {}
+    constructor(
+        @Inject(ConfigService) private readonly configService: ConfigService<IElectronModuleConfig>,
+        @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
+    ) {}
 
     onApplicationBootstrap(): Promise<void> {
-        return ELECTRON_IS_READY.then(() => this.createAppWindow());
+        return ELECTRON_IS_READY.then(() => {
+            // @todo: better wait for http server
+            setTimeout(() => this.createAppWindow(), 1000);
+        });
     }
 
     async createAppWindow(): Promise<void> {
@@ -25,15 +39,42 @@ export class WindowModule implements OnApplicationBootstrap {
         });
         const mainWindow = await emitHookEvent(HOOK_EVENTS.ELECTRON_WINDOW_CREATED, new BrowserWindow(windowOptions));
         const defaultApp = this.configService.get('defaultApp');
-        const protocol = this.configService.get('protocol');
-        const host = this.configService.get('host');
-        const port = this.configService.get('port');
-        const appRoot = this.configService.get('appRoot');
-        const appBasePath = await getAppBasePath(defaultApp);
+        const environment = await this.systemProvider.getEnvironment();
+        const httpOrigin = this.getHttpOrigin(environment);
+        const appRoot = await this.getAppRoot(httpOrigin);
+        const appPath = await environment.getAppPath(defaultApp, appRoot);
 
-        setTimeout(() => {
-            // and load the index.html of the app.
-            mainWindow.loadURL(`${protocol}${host}:${port}${appRoot}${appBasePath}`);
-        }, 1000);
+        // and load the index.html of the app.
+        mainWindow.loadURL(`${httpOrigin}${appPath}`);
+    }
+
+    private async getAppRoot(httpOrigin: string): Promise<string> {
+        const res = await fetch(`${httpOrigin}/health`);
+
+        if (!res.ok) {
+            throw new NotFoundError(`Could not connect to the @relate/web server`, [
+                'If you are connecting locally, try restarting the application.',
+                'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
+            ]);
+        }
+
+        const {appRoot} = await res.json();
+
+        return appRoot;
+    }
+
+    private getHttpOrigin(environment: Environment): string {
+        switch (environment.type) {
+            case ENVIRONMENT_TYPES.LOCAL: {
+                const protocol = this.configService.get('protocol');
+                const host = this.configService.get('host');
+                const port = this.configService.get('port');
+
+                return `${protocol}${host}:${port}`;
+            }
+
+            default:
+                return environment.httpOrigin;
+        }
     }
 }

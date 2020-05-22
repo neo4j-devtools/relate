@@ -1,10 +1,19 @@
 import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
+import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
         return this.config.id;
+    }
+
+    get type(): ENVIRONMENT_TYPES {
+        return this.config.type;
+    }
+
+    get httpOrigin(): string {
+        return this.config.httpOrigin || DEFAULT_ENVIRONMENT_HTTP_ORIGIN;
     }
 
     get configPath(): string {
@@ -38,4 +47,6 @@ export abstract class EnvironmentAbstract {
     abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
     abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<void>;
+
+    abstract getAppPath(appName: string, appRoot?: string): Promise<string>;
 }

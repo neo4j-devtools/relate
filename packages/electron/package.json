@@ -27,6 +27,7 @@
         "@types/fs-extra": "8.0.1",
         "@types/jest": "24.9.0",
         "@types/node": "13.1.7",
+        "@types/node-fetch": "2.5.7",
         "electron": "7.1.10",
         "fs-extra": "8.1.0",
         "jest": "24.9.0",
@@ -48,6 +49,7 @@
         "class-validator": "0.12.1",
         "graphql": "14.6.0",
         "graphql-tools": "5.0.0",
+        "node-fetch": "2.6.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5"
     }

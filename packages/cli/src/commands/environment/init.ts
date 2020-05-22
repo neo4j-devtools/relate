@@ -20,7 +20,7 @@ export default class InitCommand extends BaseCommand {
             description: 'Name of the environment. Will be used in most commands.',
             required: REQUIRED_FOR_SCRIPTS,
         }),
-        remoteUrl: flags.string({
+        httpOrigin: flags.string({
             description: 'URL of the remote instance of relate',
             required: REQUIRED_FOR_SCRIPTS,
         }),

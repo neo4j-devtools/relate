@@ -1,4 +1,4 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
+import {IsEnum, IsNotEmpty, IsString, IsOptional, IsUrl} from 'class-validator';
 
 import {ENVIRONMENT_TYPES} from '../environments';
 import {ModelAbstract} from './model.abstract';
@@ -34,7 +34,7 @@ export interface IEnvironmentConfig {
     user: any;
     neo4jDataPath?: string;
     type: ENVIRONMENT_TYPES;
-    relateURL?: string;
+    httpOrigin?: string;
     relateEnvironment?: string;
     accessToken?: string;
     dbmss?: {[key: string]: IDbms};
@@ -57,10 +57,10 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public neo4jDataPath?: string;
 
-    // @todo: this is RemoteEnvironment specific
     @IsString()
+    @IsUrl()
     @IsOptional()
-    public relateURL?: string;
+    public httpOrigin?: string;
 
     // @todo: this is RemoteEnvironment specific
     @IsString()
