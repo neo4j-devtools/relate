@@ -1,17 +1,18 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
-import {EXTENSION_TYPES, getAppBasePath, SystemProvider} from '@relate/common';
 import {ConfigService} from '@nestjs/config';
+import {EXTENSION_TYPES, SystemProvider} from '@relate/common';
 import _ from 'lodash';
 
-import {AppData, AppLaunchData, AppLaunchToken} from './models';
 import {IWebModuleConfig} from '../web.module';
+
+import {AppData, AppLaunchData, AppLaunchToken} from './models';
 import {createAppLaunchUrl} from './apps.utils';
 
 @Resolver(() => String)
 export class AppsResolver {
     constructor(
-        @Inject(ConfigService) private readonly configService: ConfigService<IWebModuleConfig>,
+        @Inject(ConfigService) protected readonly configService: ConfigService<IWebModuleConfig>,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
@@ -32,50 +33,45 @@ export class AppsResolver {
     }
 
     @Query(() => [AppData])
-    async installedApps(): Promise<AppData[]> {
+    async installedApps(@Args('environmentId', {nullable: true}) environmentId?: string): Promise<AppData[]> {
         const installedExtensions = await this.systemProvider.listInstalledExtensions();
-        const protocol = this.configService.get('protocol');
-        const host = this.configService.get('host');
-        const port = this.configService.get('port');
-        const appRoot = this.configService.get('appRoot');
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return _.map(
-            _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC),
-            (app) => {
-                const url = `${protocol}${host}:${port}${appRoot}/${app.name}`;
+        return Promise.all(
+            _.map(
+                _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC),
+                async (app) => {
+                    const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
 
-                return {
-                    ...app,
-                    url,
-                };
-            },
+                    return {
+                        ...app,
+                        path: appPath,
+                    };
+                },
+            ),
         );
     }
 
     @Mutation(() => AppLaunchToken)
     async createAppLaunchToken(
-        @Args('environmentId') environmentId: string,
         @Args('appName') appName: string,
         @Args('dbmsId') dbmsId: string,
         @Args('principal', {nullable: true}) principal?: string,
         @Args('accessToken', {nullable: true}) accessToken?: string,
+        @Args('environmentId', {nullable: true}) environmentId?: string,
     ): Promise<AppLaunchToken> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
         const token = await this.systemProvider.createAppLaunchToken(
-            environmentId,
+            environment.id,
             appName,
             dbmsId,
             principal,
             accessToken,
         );
-        const protocol = this.configService.get('protocol');
-        const host = this.configService.get('host');
-        const port = this.configService.get('port');
-        const appRoot = this.configService.get('appRoot');
-        const appBaseUrl = `${protocol}${host}:${port}${appRoot}`;
-        const appBasePath = await getAppBasePath(appName);
+        const appBasePath = await environment.getAppPath(appName);
 
         return {
-            path: createAppLaunchUrl(`${appBaseUrl}${appBasePath}`, token),
+            path: createAppLaunchUrl(appBasePath, token),
             token,
         };
     }

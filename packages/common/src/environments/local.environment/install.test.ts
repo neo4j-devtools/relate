@@ -26,6 +26,7 @@ describe('LocalEnvironment - install', () => {
             neo4jDataPath: DATA_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
+            httpOrigin: 'http://foo',
         });
 
         await localUtils.downloadNeo4j(TEST_NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));

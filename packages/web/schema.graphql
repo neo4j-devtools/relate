@@ -6,7 +6,7 @@ type AppData {
   name: String!
   version: String!
   type: String!
-  url: String!
+  path: String!
 }
 
 type AppLaunchData {
@@ -36,7 +36,7 @@ type Dbms {
 }
 
 type Mutation {
-  createAppLaunchToken(accessToken: String, principal: String, dbmsId: String!, appName: String!, environmentId: String!): AppLaunchToken!
+  createAppLaunchToken(environmentId: String, accessToken: String, principal: String, dbmsId: String!, appName: String!): AppLaunchToken!
   installDbms(environmentId: String!, name: String!, credentials: String!, version: String!): String!
   uninstallDbms(environmentId: String!, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
@@ -46,7 +46,7 @@ type Mutation {
 
 type Query {
   appLaunchData(launchToken: String!, appName: String!): AppLaunchData!
-  installedApps: [AppData!]!
+  installedApps(environmentId: String): [AppData!]!
   getDbms(environmentId: String, dbmsId: String!): Dbms!
   listDbmss(environmentId: String): [Dbms!]!
   statusDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!

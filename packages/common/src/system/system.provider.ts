@@ -317,23 +317,21 @@ export class SystemProvider implements OnModuleInit {
 
         // @todo: need to look at our use of exec (and maybe child processes) in general
         // this does not account for all scenarios at the moment so needs more thought
-        try {
-            await new Promise((resolve, reject) => {
-                exec(
-                    'npm install --production',
-                    {
-                        cwd: target,
-                    },
-                    (err, stdout, _stderr) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        resolve(stdout);
-                    },
-                );
-            });
-        } catch (_) {}
+        await new Promise((resolve, reject) => {
+            exec(
+                'npm install --production',
+                {
+                    cwd: target,
+                },
+                (err, stdout, _stderr) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(stdout);
+                },
+            );
+        });
 
         return extension;
     }

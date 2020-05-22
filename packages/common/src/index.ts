@@ -4,4 +4,4 @@ export * from './errors';
 export * from './utils';
 export * from './constants';
 export {IAuthToken} from '@huboneo/tapestry';
-export {EnvironmentAbstract as Environment, TestDbmss} from './environments';
+export {EnvironmentAbstract as Environment, TestDbmss, ENVIRONMENT_TYPES} from './environments';

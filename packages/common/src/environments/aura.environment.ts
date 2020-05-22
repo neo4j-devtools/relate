@@ -48,4 +48,8 @@ export class AuraEnvironment extends EnvironmentAbstract {
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support updating DBMSs config`);
     }
+
+    getAppPath(_appName: string): Promise<string> {
+        throw new NotAllowedError(`${AuraEnvironment.name} does not support getting app paths`);
+    }
 }
