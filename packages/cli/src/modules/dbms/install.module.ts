@@ -30,15 +30,21 @@ export class InstallModule implements OnApplicationBootstrap {
         let {version = ''} = args;
         if (!version) {
             let versions = await environment.listDbmsVersions();
-            versions = _.compact(_.map(versions, (version) => {
-                if (version.origin === 'cached') {
-                    return version
-                }
-                const cachedVersionExists = _.find(versions, (ver) => ver.origin === 'cached' && ver.version === version.version && ver.edition === version.edition);
-                if (!cachedVersionExists) {
-                    return version
-                }
-            }));
+            versions = _.compact(
+                _.map(versions, (v) => {
+                    if (v.origin === 'cached') {
+                        return v;
+                    }
+                    const cachedVersionExists = _.find(
+                        versions,
+                        (ver) => ver.origin === 'cached' && ver.version === v.version && ver.edition === v.edition,
+                    );
+                    if (!cachedVersionExists) {
+                        return version;
+                    }
+                    return null;
+                }),
+            );
             version = await selectPrompt(
                 'Select a version to install',
                 versions.map((v) => ({

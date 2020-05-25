@@ -29,6 +29,10 @@ export const selectDbmsPrompt = async (
     filter?: DBMS_STATUS_FILTERS,
 ): Promise<string> => {
     let dbmss = await environment.listDbmss();
+    if (!dbmss.length) {
+        throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
+    }
+
     if (filter) {
         const statusDbmss = await environment.statusDbmss(_.map(dbmss, (dbms) => dbms.id));
         dbmss = _.compact(
@@ -36,15 +40,15 @@ export const selectDbmsPrompt = async (
                 if (_.includes(statusDbmss[index], filter)) {
                     return dbms;
                 }
+                return null;
             }),
         );
     }
 
     if (!dbmss.length) {
-        if (!filter) {
-            throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
-        }
-        throw new NotFoundError(`All DBMSs are currently ${filter === DBMS_STATUS_FILTERS.START ? 'running' : 'stopped'}`);
+        throw new NotFoundError(
+            `All DBMSs are currently ${filter === DBMS_STATUS_FILTERS.START ? 'running' : 'stopped'}`,
+        );
     }
 
     return selectPrompt(
