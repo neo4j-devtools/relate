@@ -108,6 +108,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
             throw new InvalidArgumentError('Version must be specified');
         }
 
+        let dbmsExists;
+        try {
+            await this.getDbms(name);
+            dbmsExists = true;
+        } catch {
+            dbmsExists = false;
+        }
+
+        if (dbmsExists) {
+            throw new DbmsExistsError(`DBMS with name "${name}" already exists`);
+        }
+
         const coercedVersion = coerce(version)?.version;
         if (coercedVersion && !isValidUrl(version) && !isValidPath(version)) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {

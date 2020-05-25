@@ -19,7 +19,7 @@ export class UninstallModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const {name} = args;
-        let {environment: environmentId} = flags;
+        const {environment: environmentId} = flags;
 
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
