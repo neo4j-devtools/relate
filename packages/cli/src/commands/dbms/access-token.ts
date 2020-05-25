@@ -1,13 +1,15 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {AccessTokenModule} from '../../modules/dbms/access-token.module';
 import {ARGS, FLAGS} from '../../constants';
+import {AccessTokenModule} from '../../modules/dbms/access-token.module';
 
 export default class AccessTokenCommand extends BaseCommand {
     commandClass = AccessTokenCommand;
 
     commandModule = AccessTokenModule;
+
+    static description = 'Generate access token for a Neo4j DBMS';
 
     static args = [ARGS.DBMS];
 

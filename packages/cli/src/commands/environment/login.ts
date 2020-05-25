@@ -7,6 +7,8 @@ export default class LoginCommand extends BaseCommand {
 
     commandModule = LoginModule;
 
+    static description = 'Login into an environment';
+
     static aliases = ['env:login'];
 
     static flags = {

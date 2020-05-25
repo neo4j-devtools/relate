@@ -1,13 +1,15 @@
 `relate extension`
 ==================
 
-
+Manage Relate extensions
 
 * [`relate extension:install NAME VERSION`](#relate-extensioninstall-name-version)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
 * [`relate extension:uninstall [EXTENSION]`](#relate-extensionuninstall-extension)
 
 ## `relate extension:install NAME VERSION`
+
+Install an extension
 
 ```
 USAGE
@@ -22,6 +24,8 @@ _See code: [dist/commands/extension/install.ts](https://github.com/neo-technolog
 
 ## `relate extension:link [FILEPATH]`
 
+Link an extension (useful for development)
+
 ```
 USAGE
   $ relate extension:link [FILEPATH]
@@ -30,6 +34,8 @@ USAGE
 _See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/extension/link.ts)_
 
 ## `relate extension:uninstall [EXTENSION]`
+
+Uninstall an extension
 
 ```
 USAGE

@@ -1,7 +1,7 @@
 `relate dbms`
 =============
 
-
+Manage Neo4j DBMSs
 
 * [`relate dbms:access-token [DBMS]`](#relate-dbmsaccess-token-dbms)
 * [`relate dbms:install [VERSION]`](#relate-dbmsinstall-version)
@@ -13,6 +13,8 @@
 * [`relate dbms:uninstall [DBMS]`](#relate-dbmsuninstall-dbms)
 
 ## `relate dbms:access-token [DBMS]`
+
+Generate access token for a Neo4j DBMS
 
 ```
 USAGE
@@ -30,6 +32,8 @@ _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technolog
 
 ## `relate dbms:install [VERSION]`
 
+Install a Neo4j DBMS in the selected environment
+
 ```
 USAGE
   $ relate dbms:install [VERSION]
@@ -45,6 +49,8 @@ OPTIONS
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
 
 ## `relate dbms:list`
+
+List available Neo4j DBMSs in the selected environment
 
 ```
 USAGE
@@ -64,6 +70,8 @@ _See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedal
 
 ## `relate dbms:open [DBMS]`
 
+Open a Neo4j DBMS's directory
+
 ```
 USAGE
   $ relate dbms:open [DBMS]
@@ -80,6 +88,8 @@ _See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/daedal
 
 ## `relate dbms:start [DBMSS]`
 
+Start one or more Neo4j DBMSs
+
 ```
 USAGE
   $ relate dbms:start [DBMSS]
@@ -94,6 +104,8 @@ OPTIONS
 _See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/start.ts)_
 
 ## `relate dbms:status [DBMSS]`
+
+Show the status of one or more Neo4j DBMSs
 
 ```
 USAGE
@@ -116,6 +128,8 @@ _See code: [dist/commands/dbms/status.ts](https://github.com/neo-technology/daed
 
 ## `relate dbms:stop [DBMSS]`
 
+Stop one or more Neo4j DBMSs
+
 ```
 USAGE
   $ relate dbms:stop [DBMSS]
@@ -130,6 +144,8 @@ OPTIONS
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
 
 ## `relate dbms:uninstall [DBMS]`
+
+Uninstall a Neo4j DBMS from the selected environment
 
 ```
 USAGE

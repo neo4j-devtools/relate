@@ -1,11 +1,13 @@
-import {UninstallModule} from '../../modules/extension/uninstall.module';
 import BaseCommand from '../../base.command';
 import {REQUIRED_FOR_SCRIPTS} from '../../constants';
+import {UninstallModule} from '../../modules/extension/uninstall.module';
 
 export default class UninstallCommand extends BaseCommand {
     commandClass = UninstallCommand;
 
     commandModule = UninstallModule;
+
+    static description = 'Uninstall an extension';
 
     static args = [
         {

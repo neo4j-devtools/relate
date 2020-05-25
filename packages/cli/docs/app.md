@@ -1,11 +1,13 @@
 `relate app`
 ============
 
-
+Manage Graph Apps
 
 * [`relate app:open [APPNAME]`](#relate-appopen-appname)
 
 ## `relate app:open [APPNAME]`
+
+Open Graph App
 
 ```
 USAGE

@@ -1,13 +1,15 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {OpenModule} from '../../modules/app/open.module';
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
+import {OpenModule} from '../../modules/app/open.module';
 
 export default class OpenCommand extends BaseCommand {
     commandClass = OpenCommand;
 
     commandModule = OpenModule;
+
+    static description = 'Open Graph App';
 
     static args = [
         {

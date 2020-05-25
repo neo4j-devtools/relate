@@ -49,11 +49,11 @@ daedalus$ relate --help
 <!-- commands -->
 # Command Topics
 
-* [`relate app`](./docs/app.md)
+* [`relate app`](./docs/app.md) - Manage Graph Apps
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
-* [`relate dbms`](./docs/dbms.md)
-* [`relate environment`](./docs/environment.md)
-* [`relate extension`](./docs/extension.md)
+* [`relate dbms`](./docs/dbms.md) - Manage Neo4j DBMSs
+* [`relate environment`](./docs/environment.md) - Manage Relate environments
+* [`relate extension`](./docs/extension.md) - Manage Relate extensions
 * [`relate help`](./docs/help.md) - display help for relate
 
 <!-- commandsstop -->

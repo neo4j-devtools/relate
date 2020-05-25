@@ -1,7 +1,7 @@
 `relate environment`
 ====================
 
-
+Manage Relate environments
 
 * [`relate environment:init`](#relate-environmentinit)
 * [`relate environment:login`](#relate-environmentlogin)
@@ -9,15 +9,17 @@
 
 ## `relate environment:init`
 
+Create a new environment
+
 ```
 USAGE
   $ relate environment:init
 
 OPTIONS
-  --httpOrigin=httpOrigin     URL of the hosted instance of relate (only applies to --type=REMOTE)
-  --name=name                 Name of the environment to initialize
-  --remoteEnv=remoteEnv       Name of the hosted environment (in case of --type=REMOTE)
-  --type=(LOCAL|REMOTE|DEMO)  Type of environment
+  --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
+  --name=name              Name of the environment to initialize
+  --remoteEnv=remoteEnv    Name of the hosted environment (in case of --type=REMOTE)
+  --type=(LOCAL|REMOTE)    Type of environment
 
 ALIASES
   $ relate env:init
@@ -26,6 +28,8 @@ ALIASES
 _See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/environment/init.ts)_
 
 ## `relate environment:login`
+
+Login into an environment
 
 ```
 USAGE
@@ -41,6 +45,8 @@ ALIASES
 _See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/environment/login.ts)_
 
 ## `relate environment:open`
+
+Open an environment's configuration with the default editor
 
 ```
 USAGE

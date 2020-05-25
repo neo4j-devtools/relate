@@ -1,13 +1,15 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {OpenModule} from '../../modules/environment/open.module';
 import {FLAGS} from '../../constants';
+import {OpenModule} from '../../modules/environment/open.module';
 
 export default class OpenCommand extends BaseCommand {
     commandClass = OpenCommand;
 
     commandModule = OpenModule;
+
+    static description = "Open an environment's configuration with the default editor";
 
     static aliases = ['env:open'];
 
