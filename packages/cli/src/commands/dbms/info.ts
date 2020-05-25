@@ -2,12 +2,12 @@ import {cli} from 'cli-ux';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
-import {StatusModule} from '../../modules/dbms/status.module';
+import {InfoModule} from '../../modules/dbms/info.module';
 
-export default class StatusCommand extends BaseCommand {
-    commandClass = StatusCommand;
+export default class InfoCommand extends BaseCommand {
+    commandClass = InfoCommand;
 
-    commandModule = StatusModule;
+    commandModule = InfoModule;
 
     static description = 'Show the status of one or more Neo4j DBMSs';
 
@@ -17,6 +17,6 @@ export default class StatusCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...cli.table.flags({except: ['extended', 'csv']}),
+        ...cli.table.flags({except: ['csv']}),
     };
 }

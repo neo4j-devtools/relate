@@ -9,7 +9,13 @@ import fse from 'fs-extra';
 import _ from 'lodash';
 
 import {InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
-import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
+import {
+    EnvironmentConfigModel,
+    IDbms,
+    IDbmsInfo,
+    IDbmsVersion,
+    IEnvironmentAuth,
+} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
 import {JSON_FILE_EXTENSION} from '../constants';
@@ -266,11 +272,11 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.stopDbmss;
     }
 
-    async statusDbmss(namesOrIds: string[]): Promise<string[]> {
+    async infoDbmss(namesOrIds: string[]): Promise<IDbmsInfo[]> {
         const {data}: any = await this.graphql({
             query: gql`
-                query StatusDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    statusDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
+                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
@@ -279,7 +285,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             },
         });
 
-        return data.statusDbmss;
+        return data.infoDbmss;
     }
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {

@@ -1,6 +1,7 @@
 import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
+import {IDbmsInfo} from '../models/environment-config.model';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 import {IExtensionMeta} from '../utils';
 
@@ -43,7 +44,7 @@ export abstract class EnvironmentAbstract {
 
     abstract stopDbmss(dbmsIds: string[]): Promise<string[]>;
 
-    abstract statusDbmss(dbmsIds: string[]): Promise<string[]>;
+    abstract infoDbmss(dbmsIds: string[]): Promise<IDbmsInfo[]>;
 
     abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 

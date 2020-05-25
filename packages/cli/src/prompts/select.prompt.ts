@@ -34,10 +34,10 @@ export const selectDbmsPrompt = async (
     }
 
     if (filter) {
-        const statusDbmss = await environment.statusDbmss(_.map(dbmss, (dbms) => dbms.id));
+        const infoDbmss = await environment.infoDbmss(_.map(dbmss, (dbms) => dbms.id));
         dbmss = _.compact(
             _.map(dbmss, (dbms, index) => {
-                if (_.includes(statusDbmss[index], filter)) {
+                if (_.includes(infoDbmss[index].status, filter)) {
                     return dbms;
                 }
                 return null;

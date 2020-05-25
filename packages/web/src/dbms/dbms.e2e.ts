@@ -93,20 +93,20 @@ describe('DBMSModule', () => {
             });
     });
 
-    test('/graphql statusDbmss (started DBMS)', () => {
+    test('/graphql infoDbmss (started DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
-                        statusDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                    `query InfoDBMSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {statusDbmss} = res.body.data;
-                expect(statusDbmss[0]).toContain('Neo4j is running');
+                const {infoDbmss} = res.body.data;
+                expect(infoDbmss[0]).toContain('Neo4j is running');
             });
     });
 
@@ -171,30 +171,30 @@ describe('DBMSModule', () => {
             });
     });
 
-    test('/graphql statusDbmss (stopped DBMS)', () => {
+    test('/graphql infoDbmss (stopped DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
-                        statusDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                    `query InfoDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
-                const {statusDbmss} = res.body.data;
-                expect(statusDbmss[0]).toContain('Neo4j is not running');
+                const {infoDbmss} = res.body.data;
+                expect(infoDbmss[0]).toContain('Neo4j is not running');
             });
     });
 
-    test('/graphql statusDbmss (non existent environment)', () => {
+    test('/graphql infoDbmss (non existent environment)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSs {
-                        statusDbmss(environmentId: "non-existent", dbmsIds: ["test"])
+                    `query InfoDBMSs {
+                        infoDbmss(environmentId: "non-existent", dbmsIds: ["test"])
                     }`,
                 ),
             )
@@ -206,13 +206,13 @@ describe('DBMSModule', () => {
             });
     });
 
-    test('/graphql statusDbmss (non existent DBMS)', () => {
+    test('/graphql infoDbmss (non existent DBMS)', () => {
         return request(app.getHttpServer())
             .post('/graphql')
             .send(
                 queryBody(
-                    `query StatusDBMSs($environmentId: String!) {
-                        statusDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"])
+                    `query InfoDBMSs($environmentId: String!) {
+                        infoDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"])
                     }`,
                 ),
             )
