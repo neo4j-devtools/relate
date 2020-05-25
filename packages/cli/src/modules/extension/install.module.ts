@@ -18,11 +18,13 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const {name} = this.parsed.args;
-        let {version} = this.parsed.args;
+        const {args, flags} = this.parsed;
+        const {name} = args;
+        const {environment: environmentId} = flags;
+        let {version} = flags;
 
         const pathVersion = version && path.resolve(version);
-        const environment = await this.systemProvider.getEnvironment();
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
         if (pathVersion && (await fse.pathExists(pathVersion))) {
             version = pathVersion;

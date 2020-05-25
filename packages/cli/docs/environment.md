@@ -1,7 +1,7 @@
 `relate environment`
 ====================
 
-Manage Relate environments
+Manage relate environments
 
 * [`relate environment:init`](#relate-environmentinit)
 * [`relate environment:login`](#relate-environmentlogin)
@@ -16,10 +16,10 @@ USAGE
   $ relate environment:init
 
 OPTIONS
-  --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
-  --name=name              Name of the environment to initialize
+  --httpOrigin=httpOrigin  (required) URL of the hosted instance of relate (only applies to --type=REMOTE)
+  --name=name              (required) Name of the environment to initialize
   --remoteEnv=remoteEnv    Name of the hosted environment (in case of --type=REMOTE)
-  --type=(LOCAL|REMOTE)    Type of environment
+  --type=(LOCAL|REMOTE)    (required) Type of environment
 
 ALIASES
   $ relate env:init

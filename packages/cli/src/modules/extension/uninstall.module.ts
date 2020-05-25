@@ -17,15 +17,11 @@ export class UninstallModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const {args} = this.parsed;
-        const {extension} = args;
+        const {args, flags} = this.parsed;
+        const {name} = args;
+        let {environment: environmentId} = flags;
 
-        if (!extension) {
-            // @todo: add select prompt once we can list installed extensions
-            throw new Error(`Not yet implemented`);
-        }
-
-        const environment = await this.systemProvider.getEnvironment();
+        const environment = await this.systemProvider.getEnvironment(environmentId);
 
         return environment.uninstallExtension(name).then((exts) => {
             // @todo: will we have more than 1 version installed? If so, will

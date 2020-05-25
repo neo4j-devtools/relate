@@ -1,5 +1,9 @@
+import {flags} from '@oclif/command';
+
 import BaseCommand from '../../base.command';
+
 import {InstallModule} from '../../modules/extension/install.module';
+import {FLAGS} from '../../constants';
 
 export default class InstallCommand extends BaseCommand {
     commandClass = InstallCommand;
@@ -13,10 +17,14 @@ export default class InstallCommand extends BaseCommand {
             name: 'name',
             required: true,
         },
-        {
-            name: 'version',
-            required: true,
-            description: 'Version to install',
-        },
     ];
+
+    static flags = {
+        ...FLAGS.ENVIRONMENT,
+        version: flags.string({
+            char: 'V',
+            description: 'Version to install',
+            required: true,
+        }),
+    };
 }
