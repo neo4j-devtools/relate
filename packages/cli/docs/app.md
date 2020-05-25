@@ -3,15 +3,15 @@
 
 Manage Graph Apps
 
-* [`relate app:open APPNAME`](#relate-appopen-appname)
+* [`relate app:open [APPNAME]`](#relate-appopen-appname)
 
-## `relate app:open APPNAME`
+## `relate app:open [APPNAME]`
 
 Open Graph App
 
 ```
 USAGE
-  $ relate app:open APPNAME
+  $ relate app:open [APPNAME]
 
 OPTIONS
   -D, --dbmsId=dbmsId            The DBMS to automatically connect to
