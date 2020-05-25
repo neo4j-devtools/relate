@@ -1,18 +1,20 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
+import {FLAGS} from '../../constants';
 import {OpenModule} from '../../modules/environment/open.module';
-import {DBMS_FLAGS} from '../../constants';
 
 export default class OpenCommand extends BaseCommand {
     commandClass = OpenCommand;
 
     commandModule = OpenModule;
 
+    static description = "Open an environment's configuration with the default editor";
+
     static aliases = ['env:open'];
 
     static flags = {
-        ...DBMS_FLAGS,
+        ...FLAGS.ENVIRONMENT,
         log: flags.boolean({
             char: 'L',
             description: 'If set, log the path instead',

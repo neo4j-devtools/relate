@@ -63,6 +63,20 @@
     ],
     "oclif": {
         "commands": "./dist/commands",
+        "topics": {
+            "app": {
+                "description": "Manage Graph Apps"
+            },
+            "dbms": {
+                "description": "Manage Neo4j DBMSs"
+            },
+            "environment": {
+                "description": "Manage relate environments"
+            },
+            "extension": {
+                "description": "Manage relate extensions"
+            }
+        },
         "hooks": {
             "command_not_found": "./dist/hooks/command-not-found"
         },

@@ -23,7 +23,7 @@ export class OpenModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
         let {appName} = args;
-        const {environment: environmentId, principal, dbmsId, log = false} = flags;
+        const {environment: environmentId, user, dbmsId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedExtensions = await this.systemProvider.listInstalledExtensions();
         const installedApps = _.filter(installedExtensions, ({type}) => type === EXTENSION_TYPES.STATIC);
@@ -51,7 +51,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         const dbms = await environment.getDbms(dbmsId);
 
-        if (!principal) {
+        if (!user) {
             const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);
             const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
 
@@ -59,9 +59,9 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         return this.systemProvider
-            .getAccessToken(environment.id, dbms.id, principal)
+            .getAccessToken(environment.id, dbms.id, user)
             .then((accessToken) =>
-                this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id, principal, accessToken),
+                this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id, user, accessToken),
             )
             .then((launchToken) => {
                 const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;

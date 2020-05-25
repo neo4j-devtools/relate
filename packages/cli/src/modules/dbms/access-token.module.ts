@@ -23,8 +23,8 @@ export class AccessTokenModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         const dbmsId =
-            args.dbmsId || (await selectDbmsPrompt('Select a DBMS to create an access token for', environment));
-        const principal = flags.principal || (await inputPrompt('Enter a principal name'));
+            args.dbms || (await selectDbmsPrompt('Select a DBMS to create an access token for', environment));
+        const principal = flags.user || (await inputPrompt('Enter a Neo4j DBMS user'));
         const credentials = await passwordPrompt('Enter passphrase');
 
         const dbms = await environment.getDbms(dbmsId);

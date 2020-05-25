@@ -3,7 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/dbms/open';
-import {isInteractive, readStdin} from '../../stdin';
+import {isInteractive} from '../../stdin';
 import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
@@ -20,23 +20,19 @@ export class OpenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<any> {
         const {args, flags} = this.parsed;
-        let {nameOrId = ''} = args;
+        let {dbms: dbmsId = ''} = args;
         const {environment: environmentId, log = false} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        if (!nameOrId.length) {
-            if (isInteractive()) {
-                const selectedDbms = await selectDbmsPrompt('Select a DBMS to open', environment);
-                nameOrId = selectedDbms;
-            } else {
-                nameOrId = await readStdin();
-            }
+        if (!dbmsId.length && isInteractive()) {
+            const selectedDbms = await selectDbmsPrompt('Select a DBMS to open', environment);
+            dbmsId = selectedDbms;
         }
 
-        const dbms = await environment.getDbms(nameOrId);
+        const dbms = await environment.getDbms(dbmsId);
 
         if (!dbms || !dbms.rootPath) {
-            throw new Error(`DBMS ${nameOrId} could not be opened`);
+            throw new Error(`DBMS ${dbmsId} could not be opened`);
         }
 
         return log ? this.utils.log(dbms.rootPath) : cli.open(dbms.rootPath);

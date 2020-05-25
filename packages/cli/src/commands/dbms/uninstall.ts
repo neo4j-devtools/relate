@@ -1,15 +1,17 @@
-import {UninstallModule} from '../../modules/dbms/uninstall.module';
 import BaseCommand from '../../base.command';
-import {DBMS_FLAGS} from '../../constants';
+import {ARGS, FLAGS} from '../../constants';
+import {UninstallModule} from '../../modules/dbms/uninstall.module';
 
 export default class UninstallCommand extends BaseCommand {
     commandClass = UninstallCommand;
 
     commandModule = UninstallModule;
 
-    static args = [{name: 'dbmsId'}];
+    static description = 'Uninstall a Neo4j DBMS from the selected environment';
+
+    static args = [ARGS.DBMS];
 
     static flags = {
-        ...DBMS_FLAGS,
+        ...FLAGS.ENVIRONMENT,
     };
 }

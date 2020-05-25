@@ -1,13 +1,15 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
+import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {OpenModule} from '../../modules/app/open.module';
-import {DBMS_FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
 
 export default class OpenCommand extends BaseCommand {
     commandClass = OpenCommand;
 
     commandModule = OpenModule;
+
+    static description = 'Open Graph App';
 
     static args = [
         {
@@ -17,7 +19,7 @@ export default class OpenCommand extends BaseCommand {
     ];
 
     static flags = {
-        ...DBMS_FLAGS,
+        ...FLAGS.ENVIRONMENT,
         dbmsId: flags.string({
             char: 'D',
             description: 'The DBMS to automatically connect to',
@@ -28,9 +30,9 @@ export default class OpenCommand extends BaseCommand {
             description: 'If set, log the path instead',
             required: false,
         }),
-        principal: flags.string({
-            char: 'P',
-            description: 'The DBMS user to automatically connect with, assuming an access token exists',
+        user: flags.string({
+            char: 'u',
+            description: 'The Neo4j DBMS user to automatically connect with, assuming an access token exists',
             required: false,
         }),
     };

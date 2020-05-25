@@ -1,5 +1,5 @@
 import BaseCommand from '../../base.command';
-import {DBMS_FLAGS} from '../../constants';
+import {FLAGS} from '../../constants';
 import {LoginModule} from '../../modules/environment/login.module';
 
 export default class LoginCommand extends BaseCommand {
@@ -7,9 +7,11 @@ export default class LoginCommand extends BaseCommand {
 
     commandModule = LoginModule;
 
+    static description = 'Login into an environment';
+
     static aliases = ['env:login'];
 
     static flags = {
-        ...DBMS_FLAGS,
+        ...FLAGS.ENVIRONMENT,
     };
 }
