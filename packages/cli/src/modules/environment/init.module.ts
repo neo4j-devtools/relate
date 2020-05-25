@@ -18,7 +18,7 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        let {type, name, httpOrigin, remoteEnv} = this.parsed.flags;
+        let {type, name, httpOrigin} = this.parsed.flags;
 
         const envChoices = Object.values(ENVIRONMENT_TYPES).map((envType) => ({
             name: envType,
@@ -29,14 +29,13 @@ export class InitModule implements OnApplicationBootstrap {
         name = name || (await inputPrompt('Enter environment name'));
         if (type === ENVIRONMENT_TYPES.REMOTE) {
             httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
-            remoteEnv = remoteEnv || 'default';
         }
 
         const config: IEnvironmentConfig = {
             type: type as ENVIRONMENT_TYPES,
             id: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
-            relateEnvironment: remoteEnv,
+            relateEnvironment: 'default',
             user: 'foo',
         };
 
