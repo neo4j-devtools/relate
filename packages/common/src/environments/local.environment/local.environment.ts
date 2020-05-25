@@ -17,6 +17,7 @@ import {
     NotSupportedError,
     NotFoundError,
     InvalidConfigError,
+    ExtensionExistsError,
 } from '../../errors';
 import {
     DEFAULT_NEO4J_BOLT_PORT,
@@ -34,8 +35,28 @@ import {
     NEO4J_CERT_DIR,
     NEO4J_JWT_CONF_FILE,
 } from '../environment.constants';
-import {BOLT_DEFAULT_PORT, DBMS_DIR_NAME, DBMS_TLS_LEVEL, JSON_FILE_EXTENSION} from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, extractNeo4j, getAppBasePath} from '../../utils';
+import {
+    BOLT_DEFAULT_PORT,
+    DBMS_DIR_NAME,
+    DBMS_TLS_LEVEL,
+    EXTENSION_DIR_NAME,
+    EXTENSION_TYPES,
+    JSON_FILE_EXTENSION,
+} from '../../constants';
+import {
+    envPaths,
+    parseNeo4jConfigPort,
+    isValidUrl,
+    isValidPath,
+    extractNeo4j,
+    getAppBasePath,
+    discoverExtension,
+    IExtensionMeta,
+    arrayHasItems,
+    discoverExtensionDistributions,
+    extractExtension,
+    downloadExtension,
+} from '../../utils';
 
 import {
     resolveDbms,
@@ -47,6 +68,7 @@ import {
     downloadNeo4j,
     discoverNeo4jDistributions,
 } from './utils';
+import {exec} from 'child_process';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -55,6 +77,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
         ...envPaths(),
         dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
+        extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        extensionsData: path.join(envPaths().data, EXTENSION_DIR_NAME),
     };
 
     public get id(): string {
@@ -428,5 +452,137 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const appBase = await getAppBasePath(appName);
 
         return `${appRoot}${appBase}`;
+    }
+
+    async listInstalledApps(): Promise<IExtensionMeta[]> {
+        return discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, EXTENSION_TYPES.STATIC));
+    }
+
+    async linkExtension(filePath: string): Promise<IExtensionMeta> {
+        const extension = await discoverExtension(filePath);
+        const target = path.join(this.dirPaths.extensionsData, extension.type, extension.name);
+
+        if (await fse.pathExists(target)) {
+            throw new ExtensionExistsError(`${extension.name} is already installed`);
+        }
+
+        await fse.symlink(filePath, target);
+
+        return extension;
+    }
+
+    async installExtension(name: string, version: string): Promise<IExtensionMeta> {
+        if (!version) {
+            throw new InvalidArgumentError('Version must be specified');
+        }
+
+        const {extensionsCache, extensionsData} = this.dirPaths;
+
+        // @todo: version as a URL.
+        if (isValidUrl(version)) {
+            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
+        }
+
+        const coercedVersion = coerce(version)?.version;
+
+        if (coercedVersion && !isValidPath(version)) {
+            let requestedDistribution = _.find(
+                await discoverExtensionDistributions(extensionsCache),
+                (dist) => dist.name === name && dist.version === coercedVersion,
+            );
+
+            // if cached version of extension doesn't exist, attempt to download
+            if (!requestedDistribution) {
+                try {
+                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
+                } catch (e) {
+                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                }
+            }
+
+            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
+        }
+
+        // version as a file path.
+        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
+            // extract extension to cache dir first
+            const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
+                version,
+                extensionsCache,
+            );
+
+            // move the extracted dir
+            const destination = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
+
+            await fse.move(dist, destination, {
+                overwrite: true,
+            });
+
+            try {
+                const discovered = await discoverExtension(destination);
+
+                return this.installRelateExtension(discovered, extensionsData, discovered.dist);
+            } catch (e) {
+                throw new NotFoundError(`Unable to find the requested version: ${version}`);
+            }
+        }
+
+        throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
+    }
+
+    private async installRelateExtension(
+        extension: IExtensionMeta,
+        extensionsDir: string,
+        extractedDistPath: string,
+    ): Promise<IExtensionMeta> {
+        const target = path.join(extensionsDir, extension.type, extension.name);
+
+        if (!(await fse.pathExists(extractedDistPath))) {
+            throw new AmbiguousTargetError(`Path to extension does not exist "${extractedDistPath}"`);
+        }
+
+        if (await fse.pathExists(target)) {
+            throw new ExtensionExistsError(`${extension.name} is already installed`);
+        }
+
+        await fse.copy(extractedDistPath, target);
+
+        // @todo: need to look at our use of exec (and maybe child processes) in general
+        // this does not account for all scenarios at the moment so needs more thought
+        await new Promise((resolve, reject) => {
+            exec(
+                'npm install --production',
+                {
+                    cwd: target,
+                },
+                (err, stdout, _stderr) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(stdout);
+                },
+            );
+        });
+
+        return extension;
+    }
+
+    async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
+        const installedExtensions = await this.listInstalledApps();
+        // @todo: if more than one version installed, would need to filter version too
+        const targets = _.filter(installedExtensions, (ext) => ext.name === name);
+
+        if (!arrayHasItems(targets)) {
+            throw new InvalidArgumentError(`Extension ${name} is not installed`);
+        }
+
+        return Promise.all(
+            _.map(targets, async (ext) => {
+                await fse.remove(ext.dist);
+
+                return ext;
+            }),
+        );
     }
 }

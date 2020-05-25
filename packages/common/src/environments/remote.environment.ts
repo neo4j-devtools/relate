@@ -8,12 +8,12 @@ import path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
 
-import {InvalidConfigError, NotAllowedError, NotFoundError} from '../errors';
+import {InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
-import {EXTENSION_TYPES, JSON_FILE_EXTENSION} from '../constants';
-import {envPaths} from '../utils';
+import {JSON_FILE_EXTENSION} from '../constants';
+import {envPaths, IExtensionMeta} from '../utils';
 import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
 
@@ -311,7 +311,18 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     }
 
     async getAppPath(appName: string): Promise<string> {
-        const {data}: any = await this.graphql({
+        const installed: any = await this.listInstalledApps();
+        const app = _.find(installed, ({name}) => name === appName);
+
+        if (!app) {
+            throw new NotFoundError(`App ${appName} not found`);
+        }
+
+        return app.path;
+    }
+
+    async listInstalledApps(): Promise<IExtensionMeta[]> {
+        const {data, errors}: any = await this.graphql({
             query: gql`
                 query InstalledApps {
                     installedApps {
@@ -324,15 +335,22 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             variables: {},
         });
 
-        const app = _.find(
-            _.get(data, 'installedApps'),
-            ({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName,
-        );
-
-        if (!app) {
-            throw new NotFoundError(`App ${appName} not found`);
+        if (errors) {
+            throw new NotSupportedError('Unable to list installed apps');
         }
 
-        return app.path;
+        return data.installedApps;
+    }
+
+    linkExtension(_filePath: string): Promise<IExtensionMeta> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support linking extensions`);
+    }
+
+    installExtension(_name: string, _version: string): Promise<IExtensionMeta> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support installing extensions`);
+    }
+
+    uninstallExtension(_name: string): Promise<IExtensionMeta[]> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support uninstalling extensions`);
     }
 }
