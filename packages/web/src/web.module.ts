@@ -30,6 +30,11 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         GraphQLModule.forRoot({
             autoSchemaFile: path.join(PATH_TO_EXECUTABLE_ROOT, 'schema.graphql'),
             installSubscriptionHandlers: true,
+            playground: {
+                settings: {
+                    'request.credentials': 'same-origin',
+                },
+            },
         }),
         AuthModule,
     ],

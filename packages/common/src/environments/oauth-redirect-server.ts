@@ -1,15 +1,15 @@
 import http from 'http';
 import {workerData, parentPort, isMainThread} from 'worker_threads';
+import url from 'url';
 
 import {NotSupportedError, AuthenticationError} from '../errors';
-import {AUTH_TOKEN_KEY} from '../constants';
 
 if (isMainThread) {
     throw new NotSupportedError('OAuth redirect server must run in a worker thread');
 }
 
 const requestListener = (req: http.IncomingMessage, res: http.ServerResponse): void => {
-    const authToken = req.headers[AUTH_TOKEN_KEY];
+    const {authToken} = url.parse(req.url || '', true).query;
 
     if (!authToken) {
         throw new AuthenticationError('Failed to authenticate');

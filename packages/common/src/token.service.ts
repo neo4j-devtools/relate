@@ -27,8 +27,8 @@ export class TokenService {
 
         return new Promise((resolve, reject) => {
             jwt.verify(token, jwtTokenSalt, (err: any, decoded: any) => {
-                if (err) {
-                    reject(new ValidationFailureError('Failed to decode App Launch Token'));
+                if (err || !decoded) {
+                    reject(new ValidationFailureError(err ? err.message : 'Failed to decode token'));
                     return;
                 }
 

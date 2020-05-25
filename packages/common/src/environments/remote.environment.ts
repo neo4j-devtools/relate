@@ -1,5 +1,5 @@
 import {ApolloLink, execute, FetchResult, GraphQLRequest, makePromise} from 'apollo-link';
-import {HttpLink} from 'apollo-link-http';
+import {createHttpLink} from 'apollo-link-http';
 import {IAuthToken} from '@huboneo/tapestry';
 import fetch from 'node-fetch';
 import gql from 'graphql-tag';
@@ -20,7 +20,6 @@ import {AUTH_TOKEN_KEY} from '../constants';
 import {envPaths, IExtensionMeta} from '../utils';
 import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
-import {TokenService} from '../token.service';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     static readonly AUTH_REDIRECT_HOST = LOCALHOST_IP_ADDRESS;
@@ -44,28 +43,23 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     constructor(config: EnvironmentConfigModel, configPath: string) {
         super(config, configPath);
 
-        const headers = {};
-        // @todo: this could probably be done better
-        Object.defineProperty(headers, 'Authorization', {
-            get: () => {
-                let authorization = '';
-
-                if (this.config.authToken) {
-                    // eslint-disable-next-line no-sync
-                    const {id_token: idToken} = TokenService.verifySync(this.config.authToken);
-                    authorization = idToken;
-                }
-
-                return `Bearer ${authorization}`;
-            },
-        });
-
-        this.client = new HttpLink({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.client = createHttpLink({
             // HttpLink wants a fetch implementation to make requests to a
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
-            fetch: fetch as any,
-            headers,
+            credentials: 'include',
+            fetch: (url: string, opts: any) => {
+                // @todo: this could definitely be done better
+                const options = _.merge({}, opts, {
+                    credentials: 'include',
+                    headers: {[AUTH_TOKEN_KEY]: this.config.authToken},
+                    mode: 'cors',
+                });
+
+                return fetch(url, options);
+            },
             uri: this.relateUrl,
         });
 
@@ -100,8 +94,11 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     }
 
     async login(redirectTo?: string): Promise<IEnvironmentAuth> {
+        const redirect =
+            redirectTo || `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
+
         return {
-            authUrl: this.authUrl,
+            authUrl: `${this.authUrl}?redirectTo=${redirect}`,
             getToken: async (): Promise<{authToken: string; redirectTo?: string}> => {
                 const authToken = await oAuthRedirectServer({
                     host: RemoteEnvironment.AUTH_REDIRECT_HOST,

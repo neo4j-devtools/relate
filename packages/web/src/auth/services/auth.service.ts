@@ -45,13 +45,15 @@ export class AuthService {
                 return;
             }
 
-            const token = req.cookies[AUTH_TOKEN_KEY];
+            const token =
+                req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()] || req.cookies[AUTH_TOKEN_KEY];
             const environment = await this.systemProvider.getEnvironment();
 
             try {
                 await environment.verifyAuthToken(token);
                 next();
             } catch (e) {
+                res.clearCookie(AUTH_TOKEN_KEY);
                 res.redirect(`${authenticationEndpoint}${AuthService.AUTHENTICATION_ENDPOINT}?redirectTo=${req.url}`);
             }
         });
@@ -78,7 +80,7 @@ export class AuthService {
             async (req, res): Promise<void> => {
                 const queryObject = req.query;
                 // @todo: this is Google OAuth specific
-                const state = new URL(req.url).hash;
+                const {state} = queryObject;
 
                 if (queryObject.error) {
                     res.status(401);
@@ -95,7 +97,7 @@ export class AuthService {
                     res.header(AUTH_TOKEN_KEY, authToken);
 
                     if (state) {
-                        res.redirect(state);
+                        res.redirect(`${state}?authToken=${authToken}`);
                         return;
                     }
 

@@ -70,6 +70,6 @@ export abstract class EnvironmentAbstract {
 
         config[key] = value;
 
-        await fse.writeJSON(config, {encoding: 'utf8'});
+        await fse.writeJSON(this.configFilePath, config, {encoding: 'utf8'});
     }
 }

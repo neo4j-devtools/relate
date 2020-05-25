@@ -26,12 +26,12 @@ export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const BOLT_DEFAULT_PORT = ':7687';
 // @todo: move these?
 export const GOOGLE_AUTHENTICATION_CLIENT_ID =
-    '287762628639-t40b4jbvff0qecvb3iv7bep8fosfpbal.apps.googleusercontent.com';
+    '287762628639-g0o2dq9gftlckeqdhevkebeqhn82eetn.apps.googleusercontent.com';
 // According to this client_secret is not used as a secret in our case,
 // so it should be fine for it to be here.
 // https://developers.google.com/identity/protocols/oauth2#installed
 // https://tools.ietf.org/html/rfc8252#page-12
-export const GOOGLE_AUTHENTICATION_CLIENT_SECRET = '_rlHhLaiymDRVvjRwfumyN70';
+export const GOOGLE_AUTHENTICATION_CLIENT_SECRET = 'vooPgOV37ZkmUTI-7OYVJQ7Q';
 
 export enum EXTENSION_TYPES {
     SYSTEM = 'SYSTEM',

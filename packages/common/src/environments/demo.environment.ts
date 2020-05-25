@@ -17,7 +17,7 @@ export class DemoEnvironment extends LocalEnvironment {
         this.oauth2Client = new google.auth.OAuth2({
             clientId: GOOGLE_AUTHENTICATION_CLIENT_ID,
             clientSecret: GOOGLE_AUTHENTICATION_CLIENT_SECRET,
-            redirectUri: `${this.httpOrigin}/authenticate/validate`,
+            redirectUri: `${this.httpOrigin}/authentication/validate`,
         });
     }
 
