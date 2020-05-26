@@ -16,9 +16,9 @@ USAGE
   $ relate environment:init
 
 OPTIONS
-  --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
-  --name=name              Name of the environment to initialize
-  --type=(LOCAL|REMOTE)    Type of environment
+  --httpOrigin=httpOrigin  (required) URL of the hosted instance of relate (only applies to --type=REMOTE)
+  --name=name              (required) Name of the environment to initialize
+  --type=(LOCAL|REMOTE)    (required) Type of environment
 
 ALIASES
   $ relate env:init

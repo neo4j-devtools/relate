@@ -5,7 +5,7 @@ Manage relate extensions
 
 * [`relate extension:install NAME`](#relate-extensioninstall-name)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
-* [`relate extension:uninstall [EXTENSION]`](#relate-extensionuninstall-extension)
+* [`relate extension:uninstall EXTENSION`](#relate-extensionuninstall-extension)
 
 ## `relate extension:install NAME`
 
@@ -33,13 +33,13 @@ USAGE
 
 _See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/extension/link.ts)_
 
-## `relate extension:uninstall [EXTENSION]`
+## `relate extension:uninstall EXTENSION`
 
 Uninstall an extension
 
 ```
 USAGE
-  $ relate extension:uninstall [EXTENSION]
+  $ relate extension:uninstall EXTENSION
 
 ARGUMENTS
   EXTENSION  Name of the extension to uninstall
