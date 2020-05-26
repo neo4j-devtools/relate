@@ -1,0 +1,6 @@
+src
+.npmrc
+typings
+jest.config.js
+.eslintrc.json
+tsconfig.json
