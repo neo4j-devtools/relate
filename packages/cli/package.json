@@ -94,7 +94,7 @@
         "build": "npm run prepack",
         "build:clean": "run-s clean build:tsc",
         "build:tsc": "tsc -b",
-        "build:manifest": "npm run dev-cli -- manifest </dev/null",
+        "build:manifest": "node -e '' | npm run dev-cli -- manifest",
         "build:readme": "npm run dev-cli -- readme --multi --dir=./docs",
         "clean": "rimraf dist",
         "test": "jest",
