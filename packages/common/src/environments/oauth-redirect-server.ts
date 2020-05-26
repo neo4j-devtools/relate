@@ -9,14 +9,14 @@ if (isMainThread) {
 }
 
 const requestListener = (req: http.IncomingMessage, res: http.ServerResponse): void => {
-    const {authToken} = url.parse(req.url || '', true).query;
+    const {code} = url.parse(req.url || '', true).query;
 
-    if (!authToken) {
+    if (!code) {
         throw new AuthenticationError('Failed to authenticate');
     }
 
     if (parentPort && parentPort.postMessage) {
-        parentPort.postMessage(authToken);
+        parentPort.postMessage(code);
     }
 
     res.writeHead(200);

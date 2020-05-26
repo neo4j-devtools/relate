@@ -22,10 +22,21 @@ export class DemoEnvironment extends LocalEnvironment {
     }
 
     login(redirectTo?: string): Promise<IEnvironmentAuth> {
+        let redirectUri = `${this.httpOrigin}/authentication/validate`;
+
+        try {
+            // @todo: Investigate better way for CLI OAuth?
+            if (redirectTo && new URL(redirectTo).origin !== this.httpOrigin) {
+                redirectUri = redirectTo;
+            }
+        } catch (_e) {}
+
         return Promise.resolve({
             authUrl: this.oauth2Client.generateAuthUrl({
                 // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
                 access_type: 'offline',
+                // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+                redirect_uri: redirectUri,
                 scope: 'email',
                 state: redirectTo,
             }),

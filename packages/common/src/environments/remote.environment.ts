@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
 import _ from 'lodash';
+import {google} from 'googleapis';
 
 import {AuthenticationError, InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
 import {
@@ -16,15 +17,20 @@ import {
 } from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
-import {AUTH_TOKEN_KEY} from '../constants';
 import {envPaths, IExtensionMeta} from '../utils';
+import {AUTH_TOKEN_KEY, GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
 import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
+import {TokenService} from '../token.service';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     static readonly AUTH_REDIRECT_HOST = LOCALHOST_IP_ADDRESS;
 
     static readonly AUTH_REDIRECT_PORT = '5555';
+
+    static readonly LOCAL_AUTH_SERVER = `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
+
+    private oauth2Client: any;
 
     private client: ApolloLink;
 
@@ -42,6 +48,12 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
     constructor(config: EnvironmentConfigModel, configPath: string) {
         super(config, configPath);
+
+        this.oauth2Client = new google.auth.OAuth2({
+            clientId: GOOGLE_AUTHENTICATION_CLIENT_ID,
+            clientSecret: GOOGLE_AUTHENTICATION_CLIENT_SECRET,
+            redirectUri: RemoteEnvironment.LOCAL_AUTH_SERVER,
+        });
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
@@ -100,10 +112,11 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return {
             authUrl: `${this.authUrl}?redirectTo=${redirect}`,
             getToken: async (): Promise<{authToken: string; redirectTo?: string}> => {
-                const authToken = await oAuthRedirectServer({
+                const code = await oAuthRedirectServer({
                     host: RemoteEnvironment.AUTH_REDIRECT_HOST,
                     port: RemoteEnvironment.AUTH_REDIRECT_PORT,
                 });
+                const authToken = await this.generateAuthToken(code);
 
                 return {
                     authToken,
@@ -113,8 +126,20 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         };
     }
 
-    async generateAuthToken(_code: string): Promise<string> {
-        throw new NotAllowedError(`${RemoteEnvironment.name} does not support generating auth tokens`);
+    async generateAuthToken(code: string): Promise<string> {
+        console.log(code);
+        const {tokens} = await this.oauth2Client.getToken({code});
+
+        if (!tokens.id_token) {
+            throw new AuthenticationError('Login failed: Unable to extract id token');
+        }
+
+        await this.oauth2Client.verifyIdToken({
+            audience: GOOGLE_AUTHENTICATION_CLIENT_ID,
+            idToken: tokens.id_token,
+        });
+
+        return TokenService.sign(tokens);
     }
 
     verifyAuthToken(token: string): Promise<void> {

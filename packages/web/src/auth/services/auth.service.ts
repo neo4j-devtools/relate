@@ -97,7 +97,7 @@ export class AuthService {
                     res.header(AUTH_TOKEN_KEY, authToken);
 
                     if (state) {
-                        res.redirect(`${state}?authToken=${authToken}`);
+                        res.redirect(state);
                         return;
                     }
 
