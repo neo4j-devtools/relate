@@ -1,5 +1,3 @@
 {
-  "hooks": {
-    "pre-commit": "npm ci && npm test && lint-staged"
-  }
+  "hooks": {}
 }
