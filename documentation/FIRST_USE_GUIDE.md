@@ -91,8 +91,8 @@ relate app:open neo4j-browser --dbmsId foo
 
 And even connect automatically by passing a principal
 ```shell script
-# relate app:open <app-name> --dbmsId <nameOrId> --principal <dbms-user>
-relate app:open neo4j-browser --dbmsId foo --principal neo4j
+# relate app:open <app-name> --dbmsId <nameOrId> --user <dbms-user>
+relate app:open neo4j-browser --dbmsId foo --user neo4j
 ```
 Assuming you have already [created an access token](#creating-access-tokens) your app should connect to neo4j automatically.
 
