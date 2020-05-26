@@ -20,8 +20,8 @@
 And will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by adding cards to our trello inbox: https://trello.com/b/rS7oLVQZ.
 
 ## Installation
-We require NodeJS LTS (v12) https://nodejs.org/en/
-We require OpenJDK v11. https://cdn.azul.com/zulu/bin/ (search for 11.35.13-ca-jdk11.0.5)
+- **We require NodeJS LTS (v12)** https://nodejs.org/en/
+- **We require OpenJDK v11.** https://cdn.azul.com/zulu/bin/ (search for 11.35.13-ca-jdk11.0.5)
 
 To install `@relate` you need to login to our private npm registry:
 ```shell script
