@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "CLI tool for interacting with the Neo4j platform.",
-    "version": "1.0.0",
+    "version": "1.0.1-alpha.0",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo-technology/daedalus#readme",
@@ -30,7 +30,7 @@
         "@oclif/config": "1.13.3",
         "@oclif/plugin-autocomplete": "0.1.5",
         "@oclif/plugin-help": "2.2.3",
-        "@relate/common": "1.0.0",
+        "@relate/common": "^1.0.1-alpha.0",
         "cli-ux": "5.4.5",
         "cross-env": "7.0.2",
         "enquirer": "2.3.4",
