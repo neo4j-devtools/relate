@@ -6,7 +6,6 @@ import _ from 'lodash';
 import {
     DEFAULT_ENVIRONMENT_NAME,
     JSON_FILE_EXTENSION,
-    JWT_INSTANCE_TOKEN_SALT,
     DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
 } from '../constants';
@@ -142,9 +141,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     parseAppLaunchToken(appId: string, launchToken: string): Promise<IAppLaunchToken> {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
-
-        return TokenService.verify(launchToken, jwtTokenSalt)
+        return TokenService.verify(launchToken, appId)
             .then((decoded: any) => {
                 if (decoded.appId !== appId) {
                     throw new ValidationFailureError('App Launch Token mismatch');
