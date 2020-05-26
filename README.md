@@ -1,4 +1,6 @@
 # relate
+Just want to use it? See our [First use guide](./documentation/FIRST_USE_GUIDE.md) instead.
+
 
 ### Installation
 
