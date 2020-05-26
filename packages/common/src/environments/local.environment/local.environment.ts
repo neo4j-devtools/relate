@@ -90,6 +90,22 @@ export class LocalEnvironment extends EnvironmentAbstract {
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
         await this.discoverDbmss();
+
+        // @todo: this needs to be done proper
+        const securityPluginTmp = path.join(
+            __dirname,
+            '../../../',
+            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
+        );
+        const securityPluginCache = path.join(
+            this.dirPaths.cache,
+            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
+        );
+        const pluginInCache = await fse.pathExists(securityPluginCache);
+
+        if (!pluginInCache) {
+            await fse.copy(securityPluginTmp, securityPluginCache);
+        }
     }
 
     login(_redirectTo?: string): Promise<IEnvironmentAuth> {
