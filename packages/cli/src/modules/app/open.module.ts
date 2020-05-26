@@ -28,7 +28,9 @@ export class OpenModule implements OnApplicationBootstrap {
         const installedApps = await environment.listInstalledApps();
 
         if (!installedApps.length) {
-            throw new NotFoundError('No apps are installed', [`Run extension:install <app> -V <version> first`]);
+            throw new NotFoundError('No apps are installed', [
+                `Run "relate extension:install <app> -V <version>" first`,
+            ]);
         }
 
         if (!appName) {
@@ -42,7 +44,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!appIsInstalled) {
             throw new NotFoundError(`App ${appName} is not installed`, [
-                `Run extension:install ${appName} -V <version> and try again`,
+                `Run "relate extension:install ${appName} -V <version>" and try again`,
             ]);
         }
 
