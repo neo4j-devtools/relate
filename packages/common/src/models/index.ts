@@ -1,6 +1,7 @@
 export {
     EnvironmentConfigModel,
     IDbms,
+    IDbmsInfo,
     IDbmsVersion,
     IEnvironmentAuth,
     IEnvironmentConfig,

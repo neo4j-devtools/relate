@@ -1,9 +1,10 @@
 import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {Inject} from '@nestjs/common';
 
-import {SystemProvider, IDbms} from '@relate/common';
+import {SystemProvider, IDbms, IDbmsInfo} from '@relate/common';
 import {
     Dbms,
+    DbmsInfo,
     EnvironmentArgs,
     DbmssArgs,
     CreateAccessTokenArgs,
@@ -41,10 +42,10 @@ export class DBMSResolver {
         return environment.listDbmss();
     }
 
-    @Query(() => [String])
-    async statusDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+    @Query(() => [DbmsInfo])
+    async infoDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<IDbmsInfo[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.statusDbmss(dbmsIds);
+        return environment.infoDbmss(dbmsIds);
     }
 
     @Mutation(() => [String])

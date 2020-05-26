@@ -4,7 +4,7 @@ import {TestDbmss} from '@relate/common';
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
 import StartCommand from '../../commands/dbms/start';
-import StatusCommand from '../../commands/dbms/status';
+import InfoCommand from '../../commands/dbms/info';
 import StopCommand from '../../commands/dbms/stop';
 
 jest.mock('fs-extra', () => {
@@ -45,7 +45,7 @@ describe('$relate dbms', () => {
     });
 
     test.stdout().it('logs running status', async (ctx) => {
-        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Neo4j is running');
     });
 
@@ -68,12 +68,12 @@ describe('$relate dbms', () => {
         });
 
     test.stdout().it('logs stopped status', async (ctx) => {
-        await StatusCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Neo4j is not running');
     });
 
     test.it('errors when trying to access a non existing dbms', async () => {
-        const command = StatusCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
+        const command = InfoCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
         const expectedError = new Error('DBMS "non-existent" not found');
         await expect(command).rejects.toThrow(expectedError);
     });

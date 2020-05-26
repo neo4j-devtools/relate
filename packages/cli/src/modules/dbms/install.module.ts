@@ -35,13 +35,19 @@ export class InstallModule implements OnApplicationBootstrap {
                     if (v.origin === 'cached') {
                         return v;
                     }
+
                     const cachedVersionExists = _.find(
                         versions,
-                        (ver) => ver.origin === 'cached' && ver.version === v.version && ver.edition === v.edition,
+                        (vcached) =>
+                            vcached.origin === 'cached' &&
+                            vcached.version === v.version &&
+                            vcached.edition === v.edition,
                     );
+
                     if (!cachedVersionExists) {
-                        return version;
+                        return v;
                     }
+
                     return null;
                 }),
             );

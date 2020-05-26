@@ -1,9 +1,10 @@
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {EnvironmentAbstract} from './environment.abstract';
 import {NotAllowedError} from '../errors';
 import {IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
+import {IDbmsInfo} from '../models/environment-config.model';
 import {IExtensionMeta} from '../utils';
+import {EnvironmentAbstract} from './environment.abstract';
 
 export class AuraEnvironment extends EnvironmentAbstract {
     login(): Promise<IEnvironmentAuth> {
@@ -38,7 +39,7 @@ export class AuraEnvironment extends EnvironmentAbstract {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support stopping DBMSs`);
     }
 
-    statusDbmss(_dbmsIds: string[]): Promise<string[]> {
+    infoDbmss(_dbmsIds: string[]): Promise<IDbmsInfo[]> {
         throw new NotAllowedError(`${AuraEnvironment.name} does not support getting DBMSs status`);
     }
 

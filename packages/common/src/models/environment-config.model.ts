@@ -22,6 +22,13 @@ export interface IDbms {
     config: PropertiesFile;
 }
 
+export interface IDbmsInfo extends Omit<IDbms, 'config'> {
+    status: string;
+    config?: null | undefined;
+    edition?: NEO4J_EDITION;
+    version?: string;
+}
+
 export interface IDbmsVersion {
     edition: NEO4J_EDITION;
     version: string;

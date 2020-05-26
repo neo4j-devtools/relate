@@ -16,6 +16,18 @@ export class Dbms {
     connectionUri?: string;
 }
 
+@ObjectType()
+export class DbmsInfo extends Dbms {
+    @Field(() => String)
+    status: string;
+
+    @Field(() => String, {nullable: true})
+    version: string;
+
+    @Field(() => String, {nullable: true})
+    edition: string;
+}
+
 @ArgsType()
 export class EnvironmentArgs {
     @Field(() => String, {nullable: true})

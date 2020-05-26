@@ -86,8 +86,8 @@ describe('LocalEnvironment - install', () => {
         const dbmsID = await environment.installDbms(dbmss.createName(), TestDbmss.DBMS_CREDENTIALS, archivePath);
         expect(dbmsID).toMatch(UUID_REGEX);
 
-        const message = await environment.statusDbmss([dbmsID]);
-        expect(message[0]).toContain('Neo4j is not running');
+        const message = await environment.infoDbmss([dbmsID]);
+        expect(message[0].status).toContain('Neo4j is not running');
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
         expect(info?.version).toEqual(TEST_NEO4J_VERSION);
@@ -114,8 +114,8 @@ describe('LocalEnvironment - install', () => {
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
 
-        const message = await environment.statusDbmss([dbmsId]);
-        expect(message[0]).toContain('Neo4j is not running');
+        const message = await environment.infoDbmss([dbmsId]);
+        expect(message[0].status).toContain('Neo4j is not running');
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(TEST_NEO4J_VERSION);
@@ -138,8 +138,8 @@ describe('LocalEnvironment - install', () => {
             TEST_NEO4J_VERSION,
         );
 
-        const message = await environment.statusDbmss([dbmsId]);
-        expect(message[0]).toContain('Neo4j is not running');
+        const message = await environment.infoDbmss([dbmsId]);
+        expect(message[0].status).toContain('Neo4j is not running');
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(TEST_NEO4J_VERSION);
@@ -150,8 +150,8 @@ describe('LocalEnvironment - install', () => {
             TEST_NEO4J_VERSION,
         );
 
-        const message2 = await environment.statusDbmss([dbmsId2]);
-        expect(message2[0]).toContain('Neo4j is not running');
+        const message2 = await environment.infoDbmss([dbmsId2]);
+        expect(message2[0].status).toContain('Neo4j is not running');
 
         const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
         expect(info2?.version).toEqual(TEST_NEO4J_VERSION);

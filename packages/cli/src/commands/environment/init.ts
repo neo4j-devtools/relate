@@ -28,9 +28,5 @@ export default class InitCommand extends BaseCommand {
             description: `URL of the hosted instance of relate (only applies to --type=${ENVIRONMENT_TYPES.REMOTE})`,
             required: REQUIRED_FOR_SCRIPTS,
         }),
-        remoteEnv: flags.string({
-            description: `Name of the hosted environment (in case of --type=${ENVIRONMENT_TYPES.REMOTE})`,
-            required: false,
-        }),
     };
 }

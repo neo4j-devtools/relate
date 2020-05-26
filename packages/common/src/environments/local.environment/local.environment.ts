@@ -1,3 +1,4 @@
+import {exec} from 'child_process';
 import fse from 'fs-extra';
 import _ from 'lodash';
 import {v4 as uuidv4} from 'uuid';
@@ -67,8 +68,9 @@ import {
     generatePluginCerts,
     downloadNeo4j,
     discoverNeo4jDistributions,
+    getDistributionInfo,
 } from './utils';
-import {exec} from 'child_process';
+import {IDbmsInfo} from '../../models/environment-config.model';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -104,6 +106,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
     async installDbms(name: string, credentials: string, version: string): Promise<string> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
+        }
+
+        let dbmsExists;
+        try {
+            await this.getDbms(name);
+            dbmsExists = true;
+        } catch {
+            dbmsExists = false;
+        }
+
+        if (dbmsExists) {
+            throw new DbmsExistsError(`DBMS with name "${name}" already exists`);
         }
 
         const coercedVersion = coerce(version)?.version;
@@ -168,9 +182,27 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'stop')));
     }
 
-    statusDbmss(nameOrIds: string[]): Promise<string[]> {
-        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
-        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'status')));
+    async infoDbmss(nameOrIds: string[]): Promise<IDbmsInfo[]> {
+        const dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
+
+        return Promise.all(
+            dbmss.map(async (dbms) => {
+                const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
+
+                const info = {
+                    id: dbms.id,
+                    name: dbms.name,
+                    description: dbms.description,
+                    rootPath: dbms.rootPath,
+                    connectionUri: dbms.connectionUri,
+                    status: await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'),
+                    version: v?.version,
+                    edition: v?.edition,
+                };
+
+                return info;
+            }),
+        );
     }
 
     async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<void> {
