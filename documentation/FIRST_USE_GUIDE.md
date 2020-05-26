@@ -15,6 +15,7 @@
 - Authentication errors for remote environments produce strange network errors without indication that re-authentication is required
 - Unable to create access-tokens in remote environments
 - Remote browser unable to connect due to neo4j encryption not set up
+- Errors thrown during DBMS installation does not result in a rollback, meaning corrupt installations can be visible in `dbms:list`
 
 And will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by adding cards to our trello inbox: https://trello.com/b/rS7oLVQZ.
 
