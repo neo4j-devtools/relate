@@ -25,7 +25,7 @@ We require OpenJDK v11. https://cdn.azul.com/zulu/bin/ (search for 11.35.13-ca-j
 
 To install `@relate` you need to login to our private npm registry:
 ```shell script
-npm login --registry https://neo.jfrog.io/artifactory/api/npm/npm-local-private
+npm login --scope @relate --registry https://neo.jfrog.io/artifactory/api/npm/npm-local-private
 ```
 Credentials are stored in 1Password under `jfrog reader`
 
