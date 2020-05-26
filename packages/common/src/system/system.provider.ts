@@ -142,9 +142,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     parseAppLaunchToken(appId: string, launchToken: string): Promise<IAppLaunchToken> {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
-
-        return TokenService.verify(launchToken, jwtTokenSalt)
+        return TokenService.verify(launchToken, appId)
             .then((decoded: any) => {
                 if (decoded.appId !== appId) {
                     throw new ValidationFailureError('App Launch Token mismatch');
