@@ -9,6 +9,7 @@ import {EnvironmentAbstract} from './environment.abstract';
 import {LocalEnvironment} from './local.environment';
 import {envPaths} from '../utils';
 import {RemoteEnvironment} from './remote.environment';
+import {DemoEnvironment} from './demo.environment';
 
 export async function createEnvironmentInstance(
     config: EnvironmentConfigModel,
@@ -18,6 +19,9 @@ export async function createEnvironmentInstance(
     switch (config.type) {
         case ENVIRONMENT_TYPES.LOCAL:
             environment = new LocalEnvironment(config, configPath);
+            break;
+        case ENVIRONMENT_TYPES.DEMO:
+            environment = new DemoEnvironment(config, configPath);
             break;
         case ENVIRONMENT_TYPES.REMOTE:
             environment = new RemoteEnvironment(config, configPath);

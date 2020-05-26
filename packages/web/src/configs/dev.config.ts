@@ -4,9 +4,11 @@ const DEFAULT_PORT = 3000;
 const DEFAULT_HOST = '127.0.0.1';
 const DEFAULT_APP_HTTP_ROOT = '/static';
 const DEFAULT_HEALTH_CHECK_ENDPOINT = '/health';
+const DEFAULT_AUTHENTICATION_ENDPOINT = '/authentication';
 
 export default (): IWebModuleConfig => ({
     appRoot: process.env.APP_HTTP_ROOT || DEFAULT_APP_HTTP_ROOT,
+    authenticationEndpoint: process.env.AUTHENTICATION_ENDPOINT || DEFAULT_AUTHENTICATION_ENDPOINT,
     healthCheckEndpoint: process.env.HEALTH_CHECK_ENDPOINT || DEFAULT_HEALTH_CHECK_ENDPOINT,
     host: process.env.HOST || DEFAULT_HOST,
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : DEFAULT_PORT,

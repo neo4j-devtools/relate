@@ -2,7 +2,6 @@ import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import _ from 'lodash';
-import jwt from 'jsonwebtoken';
 
 import {
     DEFAULT_ENVIRONMENT_NAME,
@@ -10,7 +9,6 @@ import {
     JWT_INSTANCE_TOKEN_SALT,
     DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
-    TWENTY_FOUR_HOURS_SECONDS,
 } from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, createEnvironmentInstance} from '../environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
@@ -18,6 +16,7 @@ import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken} from '../m
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {ensureDirs, ensureFiles} from './files';
 import {IEnvironmentConfig} from '../models/environment-config.model';
+import {TokenService} from '../token.service';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -127,7 +126,6 @@ export class SystemProvider implements OnModuleInit {
         principal?: string,
         accessToken?: string,
     ): Promise<string> {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
         const validated = JSON.parse(
             JSON.stringify(
                 new AppLaunchTokenModel({
@@ -140,53 +138,32 @@ export class SystemProvider implements OnModuleInit {
             ),
         );
 
-        return new Promise((resolve, reject) => {
-            jwt.sign(validated, jwtTokenSalt, {expiresIn: TWENTY_FOUR_HOURS_SECONDS}, (err, token) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                resolve(token);
-            });
-        });
+        return TokenService.sign(validated, appId);
     }
 
     parseAppLaunchToken(appId: string, launchToken: string): Promise<IAppLaunchToken> {
         const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${appId}`;
 
-        return new Promise((resolve, reject) => {
-            jwt.verify(launchToken, jwtTokenSalt, (err: any, decoded: any) => {
-                if (err) {
-                    reject(new ValidationFailureError('Failed to decode App Launch Token'));
-                    return;
-                }
-
+        return TokenService.verify(launchToken, jwtTokenSalt)
+            .then((decoded: any) => {
                 if (decoded.appId !== appId) {
-                    reject(new ValidationFailureError('App Launch Token mismatch'));
-                    return;
+                    throw new ValidationFailureError('App Launch Token mismatch');
                 }
 
-                try {
-                    resolve(
-                        new AppLaunchTokenModel({
-                            accessToken: decoded.accessToken,
-                            appId: decoded.appId,
-                            dbmsId: decoded.dbmsId,
-                            environmentId: decoded.environmentId,
-                            principal: decoded.principal,
-                        }),
-                    );
-                    return;
-                } catch (e) {
-                    if (e instanceof ValidationFailureError) {
-                        reject(e);
-                        return;
-                    }
-
-                    reject(new ValidationFailureError('Invalid App Launch Token'));
+                return new AppLaunchTokenModel({
+                    accessToken: decoded.accessToken,
+                    appId: decoded.appId,
+                    dbmsId: decoded.dbmsId,
+                    environmentId: decoded.environmentId,
+                    principal: decoded.principal,
+                });
+            })
+            .catch((e) => {
+                if (e instanceof ValidationFailureError) {
+                    throw e;
                 }
+
+                throw new ValidationFailureError('Invalid App Launch Token');
             });
-        });
     }
 }

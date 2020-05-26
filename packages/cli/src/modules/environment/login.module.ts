@@ -26,9 +26,12 @@ export class LoginModule implements OnApplicationBootstrap {
         this.utils.log('Your browser has been opened to visit:');
         this.utils.log(`\n    ${login.authUrl}\n`);
 
-        const data = await login.getToken();
-        if (data && data.payload) {
-            this.utils.log(`You are now logged in as [${data.payload.email}]`);
+        const {authToken} = await login.getToken();
+
+        await environment.updateConfig('authToken', authToken);
+
+        if (authToken) {
+            this.utils.log(`You are now logged in`);
         } else {
             this.utils.log('Something went wrong.');
         }

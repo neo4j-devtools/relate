@@ -1,14 +1,13 @@
 import {ApolloLink, execute, FetchResult, GraphQLRequest, makePromise} from 'apollo-link';
-import {HttpLink} from 'apollo-link-http';
-import {google} from 'googleapis';
+import {createHttpLink} from 'apollo-link-http';
 import {IAuthToken} from '@huboneo/tapestry';
 import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
-import fse from 'fs-extra';
 import _ from 'lodash';
+import {google} from 'googleapis';
 
-import {InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
+import {AuthenticationError, InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
 import {
     EnvironmentConfigModel,
     IDbms,
@@ -18,13 +17,26 @@ import {
 } from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
-import {JSON_FILE_EXTENSION} from '../constants';
 import {envPaths, IExtensionMeta} from '../utils';
+import {AUTH_TOKEN_KEY, GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
 import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
+import {TokenService} from '../token.service';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
+    static readonly AUTH_REDIRECT_HOST = LOCALHOST_IP_ADDRESS;
+
+    static readonly AUTH_REDIRECT_PORT = '5555';
+
+    static readonly LOCAL_AUTH_SERVER = `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
+
+    private oauth2Client: any;
+
     private client: ApolloLink;
+
+    private relateUrl = `${this.httpOrigin}/graphql`;
+
+    private readonly authUrl: string;
 
     private readonly dirPaths = {
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
@@ -37,20 +49,37 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     constructor(config: EnvironmentConfigModel, configPath: string) {
         super(config, configPath);
 
-        this.client = new HttpLink({
+        this.oauth2Client = new google.auth.OAuth2({
+            clientId: GOOGLE_AUTHENTICATION_CLIENT_ID,
+            clientSecret: GOOGLE_AUTHENTICATION_CLIENT_SECRET,
+            redirectUri: RemoteEnvironment.LOCAL_AUTH_SERVER,
+        });
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        this.client = createHttpLink({
             // HttpLink wants a fetch implementation to make requests to a
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
-            fetch: fetch as any,
-            headers: {
-                Authorization: `Bearer ${this.config.accessToken}`,
+            credentials: 'include',
+            fetch: (url: string, opts: any) => {
+                // @todo: this could definitely be done better
+                const options = _.merge({}, opts, {
+                    credentials: 'include',
+                    headers: {[AUTH_TOKEN_KEY]: this.config.authToken},
+                    mode: 'cors',
+                });
+
+                return fetch(url, options);
             },
-            uri: `${this.httpOrigin}/graphql`,
+            uri: this.relateUrl,
         });
+
+        this.authUrl = `${this.httpOrigin}/authentication/authenticate`;
     }
 
     private async graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
-        if (!this.config.accessToken) {
+        if (!this.config.authToken) {
             throw new NotAllowedError('Unauthorized: must login to perform this operation');
         }
 
@@ -76,64 +105,54 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         }
     }
 
-    async login(): Promise<IEnvironmentAuth> {
-        const CLIENT_ID = '287762628639-t40b4jbvff0qecvb3iv7bep8fosfpbal.apps.googleusercontent.com';
-        // According to this client_secret is not used as a secret in our case,
-        // so it should be fine for it to be here.
-        // https://developers.google.com/identity/protocols/oauth2#installed
-        // https://tools.ietf.org/html/rfc8252#page-12
-        const CLIENT_SECRET = '_rlHhLaiymDRVvjRwfumyN70';
-        const host = LOCALHOST_IP_ADDRESS;
-        const port = '5555';
-
-        const oauth2Client = new google.auth.OAuth2({
-            clientId: CLIENT_ID,
-            clientSecret: CLIENT_SECRET,
-            redirectUri: `http://${host}:${port}`,
-        });
-
-        const authUrl = oauth2Client.generateAuthUrl({
-            // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-            access_type: 'offline',
-            scope: 'email',
-        });
+    async login(redirectTo?: string): Promise<IEnvironmentAuth> {
+        const redirect =
+            redirectTo || `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
 
         return {
-            authUrl,
-            getToken: async (): Promise<{token: string; payload: any} | null> => {
+            authUrl: `${this.authUrl}?redirectTo=${redirect}`,
+            getToken: async (): Promise<{authToken: string; redirectTo?: string}> => {
                 const code = await oAuthRedirectServer({
-                    host,
-                    port,
+                    host: RemoteEnvironment.AUTH_REDIRECT_HOST,
+                    port: RemoteEnvironment.AUTH_REDIRECT_PORT,
                 });
-
-                const {tokens} = await oauth2Client.getToken({code});
-
-                if (!tokens.id_token) {
-                    return null;
-                }
-
-                const data = await oauth2Client.verifyIdToken({
-                    audience: CLIENT_ID,
-                    idToken: tokens.id_token,
-                });
-
-                // TODO: store refresh token too
-                const environmentConfigPath = path.join(
-                    this.dirPaths.environmentsConfig,
-                    this.id + JSON_FILE_EXTENSION,
-                );
-                const configStr = await fse.readFile(environmentConfigPath, 'utf-8');
-                const config = configStr && JSON.parse(configStr);
-
-                config.accessToken = tokens.id_token;
-                await fse.writeFile(environmentConfigPath, JSON.stringify(config));
+                const authToken = await this.generateAuthToken(code);
 
                 return {
-                    payload: await data.getPayload(),
-                    token: tokens.id_token,
+                    authToken,
+                    redirectTo,
                 };
             },
         };
+    }
+
+    async generateAuthToken(code: string): Promise<string> {
+        console.log(code);
+        const {tokens} = await this.oauth2Client.getToken({code});
+
+        if (!tokens.id_token) {
+            throw new AuthenticationError('Login failed: Unable to extract id token');
+        }
+
+        await this.oauth2Client.verifyIdToken({
+            audience: GOOGLE_AUTHENTICATION_CLIENT_ID,
+            idToken: tokens.id_token,
+        });
+
+        return TokenService.sign(tokens);
+    }
+
+    verifyAuthToken(token: string): Promise<void> {
+        return fetch(`${this.httpOrigin}/authentication/verify`, {
+            headers: {
+                [AUTH_TOKEN_KEY]: token,
+            },
+            method: 'POST',
+        }).then((res) => {
+            if (!res.ok) {
+                throw new AuthenticationError(`${res.status}: ${res.statusText}`);
+            }
+        });
     }
 
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
