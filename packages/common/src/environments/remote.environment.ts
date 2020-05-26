@@ -127,7 +127,6 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     }
 
     async generateAuthToken(code: string): Promise<string> {
-        console.log(code);
         const {tokens} = await this.oauth2Client.getToken({code});
 
         if (!tokens.id_token) {
