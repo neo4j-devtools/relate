@@ -2,7 +2,7 @@ import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {Environment, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 import _ from 'lodash';
-import fetch from 'node-fetch';
+import fetch, {Response} from 'node-fetch';
 
 import OpenCommand from '../../commands/app/open';
 import {isInteractive, readStdinArray} from '../../stdin';
@@ -27,6 +27,10 @@ export class OpenModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = await environment.listInstalledApps();
 
+        if (!installedApps.length) {
+            throw new NotFoundError('No apps are installed', [`Run extension:install <app> -V <version> first`]);
+        }
+
         if (!appName) {
             if (isInteractive()) {
                 appName = await selectAppPrompt('Select a DBMS to start', installedApps);
@@ -37,7 +41,9 @@ export class OpenModule implements OnApplicationBootstrap {
         const appIsInstalled = _.some(installedApps, ({name}) => appName === name);
 
         if (!appIsInstalled) {
-            throw new Error(`App ${appName} is not installed`);
+            throw new NotFoundError(`App ${appName} is not installed`, [
+                `Run extension:install ${appName} -V <version> and try again`,
+            ]);
         }
 
         const appRoot = await this.getServerAppRoot(environment);
@@ -70,13 +76,19 @@ export class OpenModule implements OnApplicationBootstrap {
     }
 
     private async getServerAppRoot(environment: Environment): Promise<string> {
-        const res = await fetch(`${environment.httpOrigin}/health`);
+        let res: Response;
+        const error = new NotFoundError(`Could not connect to the @relate/web server`, [
+            'If you are connecting locally, run "relate-web start" and try again.',
+            'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
+        ]);
 
-        if (!res.ok) {
-            throw new NotFoundError(`Could not connect to the @relate/web server`, [
-                'If you are connecting locally, run "relate-web start" and try again.',
-                'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
-            ]);
+        try {
+            res = await fetch(`${environment.httpOrigin}/health`);
+            if (!res.ok) {
+                throw error;
+            }
+        } catch (_error) {
+            throw error;
         }
 
         const {appRoot} = await res.json();
