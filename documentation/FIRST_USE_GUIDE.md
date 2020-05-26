@@ -12,6 +12,7 @@
 
 ## Disclaimer
 `@relate` is currently in alpha and as such not stable. We are working hard to address any know bugs such as:
+- Authentication errors for remote environments produce strange network errors without indication that re-authentication is required
 - Unable to create access-tokens in remote environments
 - Remote browser unable to connect due to neo4j encryption not set up
 
@@ -98,8 +99,8 @@ Assuming you have already [created an access token](#creating-access-tokens) you
 ## Creating access tokens
 `@relate` only supports credentials in the form of access tokens issued by neo4j. To generate an access token you can run:
 ```shell script
-# relate dbms:access-token <dbms-nameorid> --principal <dbms-user> --credentials <user-credentials>
-relate dbms:access-token foo --principal neo4j --credentials password
+# relate dbms:access-token 
+relate dbms:access-token
 ```
 The command will generate and store an access token that is automatically passed to other commands.
 
