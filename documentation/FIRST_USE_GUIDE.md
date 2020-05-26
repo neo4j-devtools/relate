@@ -93,13 +93,6 @@ You can also open an app for a specific DBMS by running:
 relate app:open neo4j-browser --dbmsId foo
 ```
 
-And even connect automatically by passing a principal
-```shell script
-# relate app:open <app-name> --dbmsId <nameOrId> --user <dbms-user>
-relate app:open neo4j-browser --dbmsId foo --user neo4j
-```
-Assuming you have already [created an access token](#creating-access-tokens) your app should connect to neo4j automatically.
-
 ## Creating access tokens
 `@relate` only supports credentials in the form of access tokens issued by neo4j. To generate an access token you can run:
 ```shell script
@@ -108,13 +101,20 @@ relate dbms:access-token
 ```
 The command will generate and store an access token that is automatically passed to other commands.
 
+Now your graph apps can even connect automatically by passing a user
+```shell script
+# relate app:open <app-name> --dbmsId <nameOrId> --user <dbms-user>
+relate app:open neo4j-browser --dbmsId foo --user neo4j
+```
+
+
 ## Connecting to remote environments
 To connect to a remote environment, such as our demo server, you need to initialize a remote env:
 ```shell script
 relate env:init
 ```
 You will be presented with several prompts, enter the following values:
-- `Type`: "Local"
+- `Type`: "Remote"
 - `URL`: "https://relate.neo4jlabs.com/" (or any other `@relate` remote)
 
 Then you need to authenticate:
