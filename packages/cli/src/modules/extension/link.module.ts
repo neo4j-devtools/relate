@@ -3,6 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 
 import LinkCommand from '../../commands/extension/link';
+import {RequiredArgsError} from '../../errors';
 
 @Module({
     exports: [],
@@ -22,7 +23,7 @@ export class LinkModule implements OnApplicationBootstrap {
 
         if (!filePath) {
             // @todo: figure this out in combination with TTY
-            throw new Error(`File path must be specified`);
+            throw new RequiredArgsError(['filepath']);
         }
 
         const environment = await this.systemProvider.getEnvironment();
