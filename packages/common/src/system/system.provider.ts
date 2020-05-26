@@ -6,7 +6,6 @@ import _ from 'lodash';
 import {
     DEFAULT_ENVIRONMENT_NAME,
     JSON_FILE_EXTENSION,
-    JWT_INSTANCE_TOKEN_SALT,
     DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
 } from '../constants';
