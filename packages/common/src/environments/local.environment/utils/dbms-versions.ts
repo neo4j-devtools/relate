@@ -111,16 +111,16 @@ export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
 };
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
-    const SEMVER_REGEX = /[0-9]+\.[0-9]+\.[0-9]+/;
-    const NEO4J_JAR_REGEX = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+    const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
+    const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
     const libs = await fse.readdir(path.join(dbmsRoot, 'lib'));
-    const neo4jJar = _.find(libs, (name) => NEO4J_JAR_REGEX.test(name));
+    const neo4jJar = _.find(libs, (name) => neo4jJarRegex.test(name));
 
     if (!neo4jJar) {
         throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
     }
 
-    const version = semver.valid(_.head(neo4jJar.match(SEMVER_REGEX)));
+    const version = semver.valid(_.head(neo4jJar.match(semverRegex)));
 
     if (!version) {
         throw new InvalidArgumentError(`Could not parse version`);

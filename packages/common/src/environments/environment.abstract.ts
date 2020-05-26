@@ -1,3 +1,4 @@
+import fse from 'fs-extra';
 import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
@@ -28,7 +29,11 @@ export abstract class EnvironmentAbstract {
         return Promise.resolve();
     }
 
-    abstract login(): Promise<IEnvironmentAuth>;
+    abstract login(redirectTo?: string): Promise<IEnvironmentAuth>;
+
+    abstract generateAuthToken(token: string): Promise<string>;
+
+    abstract verifyAuthToken(token: string): Promise<void>;
 
     abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
 
@@ -59,4 +64,12 @@ export abstract class EnvironmentAbstract {
     abstract installExtension(name: string, version: string): Promise<IExtensionMeta>;
 
     abstract uninstallExtension(name: string): Promise<IExtensionMeta[]>;
+
+    async updateConfig(key: string, value: any): Promise<void> {
+        const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
+
+        config[key] = value;
+
+        await fse.writeJSON(this.configFilePath, config, {encoding: 'utf8'});
+    }
 }

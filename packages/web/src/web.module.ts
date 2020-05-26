@@ -7,6 +7,7 @@ import {AppsModule} from './apps';
 import {DBMSModule} from './dbms';
 import {HealthModule} from './health';
 import {PATH_TO_EXECUTABLE_ROOT} from './constants';
+import {AuthModule} from './auth';
 
 export interface IWebModuleConfig {
     protocol: string;
@@ -14,6 +15,7 @@ export interface IWebModuleConfig {
     port: number;
     appRoot: string;
     healthCheckEndpoint: string;
+    authenticationEndpoint: string;
 }
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
@@ -28,7 +30,13 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         GraphQLModule.forRoot({
             autoSchemaFile: path.join(PATH_TO_EXECUTABLE_ROOT, 'schema.graphql'),
             installSubscriptionHandlers: true,
+            playground: {
+                settings: {
+                    'request.credentials': 'same-origin',
+                },
+            },
         }),
+        AuthModule,
     ],
 })
 export class WebModule {}
