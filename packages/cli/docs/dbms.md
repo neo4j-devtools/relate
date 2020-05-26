@@ -3,22 +3,22 @@
 
 Manage Neo4j DBMSs
 
-* [`relate dbms:access-token [DBMS]`](#relate-dbmsaccess-token-dbms)
+* [`relate dbms:access-token DBMS`](#relate-dbmsaccess-token-dbms)
 * [`relate dbms:info [DBMSS]`](#relate-dbmsinfo-dbmss)
-* [`relate dbms:install [VERSION]`](#relate-dbmsinstall-version)
+* [`relate dbms:install VERSION`](#relate-dbmsinstall-version)
 * [`relate dbms:list`](#relate-dbmslist)
-* [`relate dbms:open [DBMS]`](#relate-dbmsopen-dbms)
+* [`relate dbms:open DBMS`](#relate-dbmsopen-dbms)
 * [`relate dbms:start [DBMSS]`](#relate-dbmsstart-dbmss)
 * [`relate dbms:stop [DBMSS]`](#relate-dbmsstop-dbmss)
-* [`relate dbms:uninstall [DBMS]`](#relate-dbmsuninstall-dbms)
+* [`relate dbms:uninstall DBMS`](#relate-dbmsuninstall-dbms)
 
-## `relate dbms:access-token [DBMS]`
+## `relate dbms:access-token DBMS`
 
 Generate access token for a Neo4j DBMS
 
 ```
 USAGE
-  $ relate dbms:access-token [DBMS]
+  $ relate dbms:access-token DBMS
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -54,20 +54,20 @@ OPTIONS
 
 _See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/info.ts)_
 
-## `relate dbms:install [VERSION]`
+## `relate dbms:install VERSION`
 
 Install a Neo4j DBMS in the selected environment
 
 ```
 USAGE
-  $ relate dbms:install [VERSION]
+  $ relate dbms:install VERSION
 
 ARGUMENTS
   VERSION  Version to install (semver, url, or path)
 
 OPTIONS
   -e, --environment=environment  [default: default] Name of the environment to run the command against
-  -n, --name=name                Name to give the newly installed DBMS
+  -n, --name=name                (required) Name to give the newly installed DBMS
 ```
 
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/install.ts)_
@@ -92,13 +92,13 @@ OPTIONS
 
 _See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/list.ts)_
 
-## `relate dbms:open [DBMS]`
+## `relate dbms:open DBMS`
 
 Open a Neo4j DBMS's directory
 
 ```
 USAGE
-  $ relate dbms:open [DBMS]
+  $ relate dbms:open DBMS
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -144,13 +144,13 @@ OPTIONS
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.0/dist/commands/dbms/stop.ts)_
 
-## `relate dbms:uninstall [DBMS]`
+## `relate dbms:uninstall DBMS`
 
 Uninstall a Neo4j DBMS from the selected environment
 
 ```
 USAGE
-  $ relate dbms:uninstall [DBMS]
+  $ relate dbms:uninstall DBMS
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
