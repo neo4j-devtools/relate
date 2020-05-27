@@ -619,6 +619,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
+        // @todo: this is uninstalling only static extensions
         const installedExtensions = await this.listInstalledApps();
         // @todo: if more than one version installed, would need to filter version too
         const targets = _.filter(installedExtensions, (ext) => ext.name === name);

@@ -50,7 +50,6 @@ describe('LocalEnvironment - list', () => {
             neo4jDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
-            httpOrigin: 'http://foo',
         });
 
         environment = new LocalEnvironment(config, 'nowhere');

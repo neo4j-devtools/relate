@@ -1,21 +1,16 @@
 import fse from 'fs-extra';
-import decompress from 'decompress';
-import path from 'path';
 
 import {FileStructureError} from '../../../errors';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
+import {extract} from '../../../utils';
 
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {
-    await decompress(archivePath, outputDir);
-    await fse.remove(archivePath);
-
-    const packageDir = path.join(outputDir, 'package');
+    const topLevelDir = await extract(archivePath, outputDir);
 
     try {
-        return discoverExtension(packageDir);
+        return discoverExtension(topLevelDir);
     } catch (e) {
-        await fse.remove(outputDir);
-        await fse.remove(packageDir);
+        await fse.remove(topLevelDir);
 
         throw new FileStructureError(`Unexpected file structure after unpacking`);
     }
