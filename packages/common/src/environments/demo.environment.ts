@@ -6,7 +6,7 @@ import {LocalEnvironment} from './local.environment';
 import {AuthenticationError, NotAllowedError} from '../errors';
 import {GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
 import {TokenService} from '../token.service';
-import {IExtensionMeta} from '../utils';
+import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
 
 export class DemoEnvironment extends LocalEnvironment {
     // @todo: typings;
@@ -112,5 +112,9 @@ export class DemoEnvironment extends LocalEnvironment {
 
     uninstallExtension(_name: string): Promise<IExtensionMeta[]> {
         throw new NotAllowedError(`${DemoEnvironment.name} does not support uninstalling extensions`);
+    }
+
+    listExtensionVersions(): Promise<IExtensionVersion[]> {
+        throw new NotAllowedError(`${DemoEnvironment.name} does not support listing extension versions`);
     }
 }

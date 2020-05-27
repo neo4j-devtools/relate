@@ -4,6 +4,8 @@ import path from 'path';
 import fse from 'fs-extra';
 
 import InstallCommand from '../../commands/extension/install';
+import _ from 'lodash';
+import {selectPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -19,12 +21,32 @@ export class InstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {name} = args;
+        let {name} = args;
+        let {version = ''} = flags;
         const {environment: environmentId} = flags;
-        let {version} = flags;
-
-        const pathVersion = version && path.resolve(version);
         const environment = await this.systemProvider.getEnvironment(environmentId);
+
+        if (!name || !version) {
+            let versions = await environment.listExtensionVersions();
+
+            versions = name ? _.filter(versions, (v) => v.name === name) : versions;
+
+            const selected = await selectPrompt(
+                'Select a version to install',
+                versions.map((v) => ({
+                    message: `[${v.origin.toLowerCase()}] ${v.name}@${v.version}`,
+                    name: v.version,
+                    // ridiculous
+                    value: JSON.stringify(v),
+                })),
+            );
+            const parsed = JSON.parse(selected);
+
+            name = parsed.name;
+            version = parsed.version;
+        }
+
+        const pathVersion = path.resolve(version);
 
         if (pathVersion && (await fse.pathExists(pathVersion))) {
             version = pathVersion;

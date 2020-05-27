@@ -15,7 +15,6 @@ export default class InstallCommand extends BaseCommand {
     static args = [
         {
             name: 'name',
-            required: true,
         },
     ];
 
@@ -24,7 +23,6 @@ export default class InstallCommand extends BaseCommand {
         version: flags.string({
             char: 'V',
             description: 'Version to install',
-            required: true,
         }),
     };
 }
