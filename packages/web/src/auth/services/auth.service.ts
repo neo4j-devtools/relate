@@ -54,6 +54,12 @@ export class AuthService {
                 next();
             } catch (e) {
                 res.clearCookie(AUTH_TOKEN_KEY);
+
+                if (req.method !== 'GET') {
+                    res.sendStatus(401);
+                    return;
+                }
+
                 res.redirect(`${authenticationEndpoint}${AuthService.AUTHENTICATION_ENDPOINT}?redirectTo=${req.url}`);
             }
         });
