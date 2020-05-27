@@ -366,6 +366,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return data.installedApps;
     }
 
+    listInstalledExtensions(): Promise<IExtensionMeta[]> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support listing installed extensions`);
+    }
+
     linkExtension(_filePath: string): Promise<IExtensionMeta> {
         throw new NotAllowedError(`${RemoteEnvironment.name} does not support linking extensions`);
     }

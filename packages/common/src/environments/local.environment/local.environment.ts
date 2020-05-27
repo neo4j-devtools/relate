@@ -513,7 +513,19 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async listInstalledApps(): Promise<IExtensionMeta[]> {
-        return discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, EXTENSION_TYPES.STATIC));
+        const allInstalled = await this.listInstalledExtensions();
+
+        return _.filter(allInstalled, ({type}) => type === EXTENSION_TYPES.STATIC);
+    }
+
+    async listInstalledExtensions(): Promise<IExtensionMeta[]> {
+        const allInstalledExtensions: IExtensionMeta[][] = await Promise.all(
+            _.map(_.values(EXTENSION_TYPES), (type) =>
+                discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)),
+            ),
+        );
+
+        return _.flatten(allInstalledExtensions);
     }
 
     async linkExtension(filePath: string): Promise<IExtensionMeta> {
