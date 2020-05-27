@@ -59,6 +59,8 @@ export abstract class EnvironmentAbstract {
 
     abstract listInstalledApps(): Promise<IExtensionMeta[]>;
 
+    abstract listInstalledExtensions(): Promise<IExtensionMeta[]>;
+
     abstract linkExtension(filePath: string): Promise<IExtensionMeta>;
 
     abstract installExtension(name: string, version: string): Promise<IExtensionMeta>;
