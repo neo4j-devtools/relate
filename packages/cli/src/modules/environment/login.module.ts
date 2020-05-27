@@ -21,8 +21,9 @@ export class LoginModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         const login = await environment.login();
-        cli.open(login.authUrl);
 
+        // @todo: local server needs time...
+        setTimeout(() => cli.open(login.authUrl), 1000);
         this.utils.log('Your browser has been opened to visit:');
         this.utils.log(`\n    ${login.authUrl}\n`);
 

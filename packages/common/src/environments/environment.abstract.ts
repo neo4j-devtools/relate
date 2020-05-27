@@ -3,8 +3,15 @@ import {IAuthToken} from '@huboneo/tapestry';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 import {IDbmsInfo} from '../models/environment-config.model';
-import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
+import {AUTHENTICATOR_TYPES, DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
+import {
+    googleAuthenticatorFactory,
+    IAuthenticator,
+    IAuthenticatorOptions,
+    IGoogleAuthenticatorOptions,
+} from './authenticators';
+import {NotSupportedError} from '../errors';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
@@ -23,17 +30,58 @@ export abstract class EnvironmentAbstract {
         return this.configFilePath;
     }
 
-    constructor(protected config: EnvironmentConfigModel, protected readonly configFilePath: string) {}
+    private authenticator?: IAuthenticator;
+
+    constructor(protected config: EnvironmentConfigModel, protected readonly configFilePath: string) {
+        if (config.authenticator) {
+            // @todo: move to init?
+            this.setupAuthenticator({
+                httpOrigin: this.httpOrigin,
+                ...config.authenticator,
+            });
+        }
+    }
+
+    private setupAuthenticator(options: IAuthenticatorOptions) {
+        switch (options.type) {
+            case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2: {
+                this.authenticator = googleAuthenticatorFactory(options as IGoogleAuthenticatorOptions);
+                return;
+            }
+
+            default: {
+                throw new NotSupportedError(`Authenticator type ${options.type} not supported`);
+            }
+        }
+    }
 
     init(): Promise<void> {
         return Promise.resolve();
     }
 
-    abstract login(redirectTo?: string): Promise<IEnvironmentAuth>;
+    login(redirectTo?: string): Promise<IEnvironmentAuth> {
+        if (!this.authenticator) {
+            throw new NotSupportedError(`Environment ${this.id} does not support login.`);
+        }
 
-    abstract generateAuthToken(token: string): Promise<string>;
+        return this.authenticator.login(redirectTo);
+    }
 
-    abstract verifyAuthToken(token: string): Promise<void>;
+    generateAuthToken(code = ''): Promise<string> {
+        if (!this.authenticator) {
+            return Promise.resolve('');
+        }
+
+        return this.authenticator.generateAuthToken(code);
+    }
+
+    verifyAuthToken(token = ''): Promise<void> {
+        if (!this.authenticator) {
+            return Promise.resolve();
+        }
+
+        return this.authenticator.verifyAuthToken(token);
+    }
 
     abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
 

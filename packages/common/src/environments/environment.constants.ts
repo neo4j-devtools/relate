@@ -71,3 +71,7 @@ export const EXTENSION_SEARCH_PATH = 'https://neo.jfrog.io/artifactory/api/searc
 export const EXTENSION_REPO_NAME = 'npm-local-private';
 export const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
 export const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';
+
+export enum AUTHENTICATOR_TYPES {
+    GOOGLE_OAUTH2 = 'GOOGLE_OAUTH2',
+}

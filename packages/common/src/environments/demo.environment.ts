@@ -1,77 +1,12 @@
-import {google} from 'googleapis';
-
-import {EnvironmentConfigModel, IDbmsVersion, IEnvironmentAuth} from '../models';
+import {EnvironmentConfigModel, IDbmsVersion} from '../models';
 
 import {LocalEnvironment} from './local.environment';
-import {AuthenticationError, NotAllowedError} from '../errors';
-import {GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
-import {TokenService} from '../token.service';
+import {NotAllowedError} from '../errors';
 import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
 
 export class DemoEnvironment extends LocalEnvironment {
-    // @todo: typings;
-    private readonly oauth2Client: any;
-
     constructor(config: EnvironmentConfigModel, configFilePath: string) {
         super(config, configFilePath);
-
-        this.oauth2Client = new google.auth.OAuth2({
-            clientId: GOOGLE_AUTHENTICATION_CLIENT_ID,
-            clientSecret: GOOGLE_AUTHENTICATION_CLIENT_SECRET,
-            redirectUri: `${this.httpOrigin}/authentication/validate`,
-        });
-    }
-
-    login(redirectTo?: string): Promise<IEnvironmentAuth> {
-        let redirectUri = `${this.httpOrigin}/authentication/validate`;
-
-        try {
-            // @todo: Investigate better way for CLI OAuth?
-            if (redirectTo && new URL(redirectTo).origin !== this.httpOrigin) {
-                redirectUri = redirectTo;
-            }
-        } catch (_e) {}
-
-        return Promise.resolve({
-            authUrl: this.oauth2Client.generateAuthUrl({
-                // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-                access_type: 'offline',
-                // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-                redirect_uri: redirectUri,
-                scope: 'email',
-                state: redirectTo,
-            }),
-            // not used in web environment
-            getToken: async (): Promise<{authToken: string}> => ({authToken: ''}),
-        });
-    }
-
-    async generateAuthToken(code: string): Promise<string> {
-        const {tokens} = await this.oauth2Client.getToken({code});
-
-        if (!tokens.id_token) {
-            throw new AuthenticationError('Login failed: Unable to extract id token');
-        }
-
-        await this.oauth2Client.verifyIdToken({
-            audience: GOOGLE_AUTHENTICATION_CLIENT_ID,
-            idToken: tokens.id_token,
-        });
-
-        return TokenService.sign(tokens);
-    }
-
-    async verifyAuthToken(token: string): Promise<void> {
-        try {
-            const {id_token: idToken} = await TokenService.verify(token);
-
-            await this.oauth2Client.verifyIdToken({
-                audience: GOOGLE_AUTHENTICATION_CLIENT_ID,
-                idToken,
-            });
-        } catch (e) {
-            throw new AuthenticationError('Failed to validate auth token');
-        }
     }
 
     listInstalledExtensions(): Promise<IExtensionMeta[]> {

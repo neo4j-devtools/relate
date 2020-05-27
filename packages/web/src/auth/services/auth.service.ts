@@ -2,11 +2,27 @@ import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import {AUTH_TOKEN_KEY, SystemProvider} from '@relate/common';
-import {Application} from 'express';
+import {Application, Request} from 'express';
 import cookieParser from 'cookie-parser';
 import _ from 'lodash';
 
 import {IWebModuleConfig} from '../../web.module';
+
+const getRequestAuthToken = (req: Request): string | undefined => {
+    const lowerCased = AUTH_TOKEN_KEY.toLowerCase();
+
+    if (_.has(req.headers, AUTH_TOKEN_KEY)) {
+        return req.headers[AUTH_TOKEN_KEY] as string;
+    }
+
+    if (_.has(req.headers, lowerCased)) {
+        return req.headers[lowerCased] as string;
+    }
+
+    if (_.has(req.cookies, AUTH_TOKEN_KEY)) {
+        return req.cookies[AUTH_TOKEN_KEY];
+    }
+};
 
 @Injectable()
 export class AuthService {
@@ -45,12 +61,11 @@ export class AuthService {
                 return;
             }
 
-            const token =
-                req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()] || req.cookies[AUTH_TOKEN_KEY];
+            const authToken = getRequestAuthToken(req);
             const environment = await this.systemProvider.getEnvironment();
 
             try {
-                await environment.verifyAuthToken(token);
+                await environment.verifyAuthToken(authToken);
                 next();
             } catch (e) {
                 res.clearCookie(AUTH_TOKEN_KEY);
@@ -119,11 +134,11 @@ export class AuthService {
         app.get(
             `${authenticationEndpoint}${AuthService.VERIFICATION_ENDPOINT}`,
             async (req, res): Promise<void> => {
-                const token = req.cookies[AUTH_TOKEN_KEY];
+                const authToken = getRequestAuthToken(req);
                 const environment = await this.systemProvider.getEnvironment();
 
                 try {
-                    await environment.verifyAuthToken(token);
+                    await environment.verifyAuthToken(authToken);
                     res.sendStatus(200);
                 } catch (e) {
                     res.status(403);
