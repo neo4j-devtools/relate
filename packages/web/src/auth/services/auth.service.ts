@@ -22,6 +22,8 @@ const getRequestAuthToken = (req: Request): string | undefined => {
     if (_.has(req.cookies, AUTH_TOKEN_KEY)) {
         return req.cookies[AUTH_TOKEN_KEY];
     }
+
+    return undefined;
 };
 
 @Injectable()

@@ -1,11 +1,7 @@
 import {IsEnum, IsNotEmpty, IsString, IsOptional, IsUrl} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
-import {
-    ENVIRONMENT_TYPES,
-    NEO4J_EDITION,
-    NEO4J_ORIGIN,
-} from '../environments/environment.constants';
+import {ENVIRONMENT_TYPES, NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
 import {PropertiesFile} from '../system/files';
 import {AuthenticatorOptions} from './authenticator.model';
 

@@ -40,7 +40,9 @@ export function googleAuthenticatorFactory(options: IGoogleAuthenticatorOptions)
                 if (redirectTo && new URL(redirectTo).origin !== httpOrigin) {
                     redirectUri = redirectTo;
                 }
-            } catch (_e) {}
+            } catch (_e) {
+                // not handled
+            }
 
             /* eslint-disable indent */
             const authUrl = authenticationUrl
