@@ -18,10 +18,18 @@ export class OpenModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    async onApplicationBootstrap(): Promise<any> {
+    logOrOpen(path: string): void {
+        if (this.parsed.flags.log) {
+            this.utils.log(path);
+        } else {
+            cli.open(path);
+        }
+    }
+
+    async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {dbms: dbmsId = ''} = args;
-        const {environment: environmentId, log = false} = flags;
+        const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         if (!dbmsId.length && isInteractive()) {
@@ -35,6 +43,6 @@ export class OpenModule implements OnApplicationBootstrap {
             throw new Error(`DBMS ${dbmsId} could not be opened`);
         }
 
-        return log ? this.utils.log(dbms.rootPath) : cli.open(dbms.rootPath);
+        this.logOrOpen(dbms.rootPath);
     }
 }

@@ -20,10 +20,18 @@ export class OpenModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    async onApplicationBootstrap(): Promise<any> {
+    logOrOpen(path: string): void {
+        if (this.parsed.flags.log) {
+            this.utils.log(path);
+        } else {
+            cli.open(path);
+        }
+    }
+
+    async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {appName} = args;
-        const {environment: environmentId, user, dbmsId, log = false} = flags;
+        const {environment: environmentId, user, dbmsId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = await environment.listInstalledApps();
 
@@ -53,7 +61,8 @@ export class OpenModule implements OnApplicationBootstrap {
         const appUrl = `${environment.httpOrigin}${appPath}`;
 
         if (!dbmsId) {
-            return log ? this.utils.log(appUrl) : cli.open(appUrl);
+            this.logOrOpen(appUrl);
+            return;
         }
 
         const dbms = await environment.getDbms(dbmsId);
@@ -62,19 +71,21 @@ export class OpenModule implements OnApplicationBootstrap {
             const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);
             const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
 
-            return log ? this.utils.log(tokenUrl) : cli.open(tokenUrl);
+            this.logOrOpen(tokenUrl);
+            return;
         }
 
-        return this.systemProvider
-            .getAccessToken(environment.id, dbms.id, user)
-            .then((accessToken) =>
-                this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id, user, accessToken),
-            )
-            .then((launchToken) => {
-                const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
+        const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
+        const launchToken = await this.systemProvider.createAppLaunchToken(
+            environment.id,
+            appName,
+            dbms.id,
+            user,
+            accessToken,
+        );
 
-                return log ? this.utils.log(tokenUrl) : cli.open(tokenUrl);
-            });
+        const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
+        this.logOrOpen(tokenUrl);
     }
 
     private async getServerAppRoot(environment: Environment): Promise<string> {

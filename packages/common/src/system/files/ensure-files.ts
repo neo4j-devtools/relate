@@ -18,7 +18,7 @@ export const ensureDirs = (
 };
 
 export const ensureFiles = (paths: ISystemProviderFilePaths): Promise<void[]> => {
-    const ensureFilePromises = _.map(paths, async (path) => fse.ensureFile(path));
+    const ensureFilePromises = _.map(paths, (path) => fse.ensureFile(path));
 
     return Promise.all(ensureFilePromises);
 };

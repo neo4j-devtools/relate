@@ -15,17 +15,17 @@ export default class InitCommand extends BaseCommand {
     static aliases = ['env:init'];
 
     static flags = {
-        type: flags.enum({
-            options: Object.values(ENVIRONMENT_TYPES),
-            description: 'Type of environment',
+        httpOrigin: flags.string({
+            description: `URL of the hosted instance of relate (only applies to --type=${ENVIRONMENT_TYPES.REMOTE})`,
             required: REQUIRED_FOR_SCRIPTS,
         }),
         name: flags.string({
             description: 'Name of the environment to initialize',
             required: REQUIRED_FOR_SCRIPTS,
         }),
-        httpOrigin: flags.string({
-            description: `URL of the hosted instance of relate (only applies to --type=${ENVIRONMENT_TYPES.REMOTE})`,
+        type: flags.enum({
+            description: 'Type of environment',
+            options: Object.values(ENVIRONMENT_TYPES),
             required: REQUIRED_FOR_SCRIPTS,
         }),
     };

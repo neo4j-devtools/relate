@@ -17,8 +17,8 @@ export default class AccessTokenCommand extends BaseCommand {
         ...FLAGS.ENVIRONMENT,
         user: flags.string({
             char: 'u',
-            description: 'Neo4j DBMS user to create the token for',
             default: 'neo4j',
+            description: 'Neo4j DBMS user to create the token for',
         }),
     };
 }
