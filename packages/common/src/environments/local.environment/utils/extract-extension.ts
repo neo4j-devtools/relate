@@ -3,7 +3,7 @@ import decompress from 'decompress';
 import path from 'path';
 
 import {FileStructureError} from '../../../errors';
-import {discoverExtension, IExtensionMeta} from '../../../utils/extension-versions';
+import {discoverExtension, IExtensionMeta} from './extension-versions';
 
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {
     await decompress(archivePath, outputDir);

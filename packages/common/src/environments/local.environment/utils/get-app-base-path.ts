@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {getInstalledExtensions} from '../../../utils/get-installed-extensions';
 import {EXTENSION_TYPES} from '../../../constants';
 import {NotFoundError} from '../../../errors/not-found.error';
-import {discoverExtension} from '../../../utils/extension-versions';
+import {discoverExtension} from './extension-versions';
 
 export async function getAppBasePath(appName: string): Promise<string> {
     const installed = await getInstalledExtensions();

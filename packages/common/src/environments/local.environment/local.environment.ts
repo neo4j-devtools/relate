@@ -60,7 +60,9 @@ import {
     generatePluginCerts,
     downloadNeo4j,
     discoverNeo4jDistributions,
-    getDistributionInfo, IExtensionVersion, fetchExtensionVersions,
+    getDistributionInfo,
+    IExtensionVersion,
+    fetchExtensionVersions,
 } from './utils';
 import {IDbmsInfo} from '../../models/environment-config.model';
 

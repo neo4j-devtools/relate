@@ -9,11 +9,8 @@ import hasha from 'hasha';
 import {FetchError, NotFoundError, IntegrityError} from '../../../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../../../constants';
-import {discoverExtension, IExtensionMeta} from '../../../utils/extension-versions';
-
-// @todo: needs to be removed and handled by env vars
-const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
-const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';
+import {discoverExtension, IExtensionMeta} from './extension-versions';
+import {JFROG_PRIVATE_REGISTRY_PASSWORD, JFROG_PRIVATE_REGISTRY_USERNAME} from '../../environment.constants';
 
 export interface IExtensionRegistryManifest {
     name: string;

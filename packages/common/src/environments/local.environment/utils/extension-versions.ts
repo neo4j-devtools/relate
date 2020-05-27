@@ -5,15 +5,21 @@ import {promises as fs} from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 
-import {EXTENSION_DIR_NAME, EXTENSION_NPM_PREFIX, EXTENSION_ORIGIN} from '../../../constants';
+import {
+    EXTENSION_DIR_NAME,
+    EXTENSION_NPM_PREFIX,
+    EXTENSION_ORIGIN,
+    EXTENSION_MANIFEST,
+    EXTENSION_MANIFEST_KEY,
+    EXTENSION_TYPES,
+    PACKAGE_JSON,
+} from '../../../constants';
 import {
     EXTENSION_REPO_NAME,
     EXTENSION_SEARCH_PATH,
     JFROG_PRIVATE_REGISTRY_PASSWORD,
     JFROG_PRIVATE_REGISTRY_USERNAME,
 } from '../../environment.constants';
-
-import {EXTENSION_MANIFEST, EXTENSION_MANIFEST_KEY, EXTENSION_TYPES, PACKAGE_JSON} from '../../../constants';
 import {InvalidArgumentError, NotFoundError} from '../../../errors';
 import {ExtensionModel, IInstalledExtension} from '../../../models';
 import {envPaths} from '../../../utils';

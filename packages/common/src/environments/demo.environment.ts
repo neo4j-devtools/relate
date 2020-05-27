@@ -30,7 +30,9 @@ export class DemoEnvironment extends LocalEnvironment {
             if (redirectTo && new URL(redirectTo).origin !== this.httpOrigin) {
                 redirectUri = redirectTo;
             }
-        } catch (_e) {}
+        } catch (_e) {
+            // not handled
+        }
 
         return Promise.resolve({
             authUrl: this.oauth2Client.generateAuthUrl({
