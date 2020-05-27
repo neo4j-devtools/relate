@@ -1,15 +1,18 @@
 import {IsEnum, IsNotEmpty, IsString, IsOptional, IsUrl} from 'class-validator';
 
-import {ENVIRONMENT_TYPES} from '../environments';
 import {ModelAbstract} from './model.abstract';
-import {NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
+import {
+    ENVIRONMENT_TYPES,
+    NEO4J_EDITION,
+    NEO4J_ORIGIN,
+} from '../environments/environment.constants';
 import {PropertiesFile} from '../system/files';
+import {AuthenticatorOptions} from './authenticator.model';
 
 export interface IEnvironmentAuth {
     authUrl: string;
     getToken: () => Promise<{
         authToken: string;
-        payload?: any;
         redirectTo?: string;
     }>;
 }
@@ -74,6 +77,9 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsString()
     @IsOptional()
     public relateEnvironment?: string;
+
+    @IsOptional()
+    public authenticator?: AuthenticatorOptions;
 
     // @todo: move this to data
     @IsString()

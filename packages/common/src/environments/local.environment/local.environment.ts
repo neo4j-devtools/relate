@@ -7,7 +7,7 @@ import path from 'path';
 import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
 
-import {IDbms, EnvironmentConfigModel, IDbmsVersion, IEnvironmentAuth} from '../../models';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
 import {PropertiesFile, ensureDirs} from '../../system';
 import {
@@ -100,20 +100,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
         if (!pluginInCache) {
             await fse.copy(securityPluginTmp, securityPluginCache);
         }
-    }
-
-    login(_redirectTo?: string): Promise<IEnvironmentAuth> {
-        throw new NotAllowedError(`${LocalEnvironment.name} does not support login`);
-    }
-
-    // we do not have local auth yet
-    generateAuthToken(_code: string): Promise<string> {
-        return Promise.resolve('');
-    }
-
-    // we do not have local auth yet
-    verifyAuthToken(_token: string): Promise<void> {
-        return Promise.resolve();
     }
 
     async listDbmsVersions(): Promise<IDbmsVersion[]> {

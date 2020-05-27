@@ -5,46 +5,20 @@ import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
 import _ from 'lodash';
-import {google} from 'googleapis';
 
-import {
-    AuthenticationError,
-    GraphqlError,
-    InvalidConfigError,
-    NotAllowedError,
-    NotFoundError,
-    NotSupportedError,
-} from '../errors';
-import {
-    EnvironmentConfigModel,
-    IDbms,
-    IDbmsInfo,
-    IDbmsVersion,
-    IEnvironmentAuth,
-} from '../models/environment-config.model';
+import {GraphqlError, InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
+import {EnvironmentConfigModel, IDbms, IDbmsInfo, IDbmsVersion} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
-import {oAuthRedirectServer} from './oauth-utils';
 import {envPaths} from '../utils';
-import {AUTH_TOKEN_KEY, GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
-import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
+import {AUTH_TOKEN_KEY} from '../constants';
+import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../system';
-import {TokenService} from '../token.service';
 import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
-    static readonly AUTH_REDIRECT_HOST = LOCALHOST_IP_ADDRESS;
-
-    static readonly AUTH_REDIRECT_PORT = '5555';
-
-    static readonly LOCAL_AUTH_SERVER = `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
-
-    private oauth2Client: any;
-
     private client: ApolloLink;
 
     private relateUrl = `${this.httpOrigin}/graphql`;
-
-    private readonly authUrl: string;
 
     private readonly dirPaths = {
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
@@ -56,12 +30,6 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
     constructor(config: EnvironmentConfigModel, configPath: string) {
         super(config, configPath);
-
-        this.oauth2Client = new google.auth.OAuth2({
-            clientId: GOOGLE_AUTHENTICATION_CLIENT_ID,
-            clientSecret: GOOGLE_AUTHENTICATION_CLIENT_SECRET,
-            redirectUri: RemoteEnvironment.LOCAL_AUTH_SERVER,
-        });
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
@@ -82,8 +50,6 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             },
             uri: this.relateUrl,
         });
-
-        this.authUrl = `${this.httpOrigin}/authentication/authenticate`;
     }
 
     private async graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {
@@ -110,55 +76,6 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
             throw err;
         }
-    }
-
-    async login(redirectTo?: string): Promise<IEnvironmentAuth> {
-        const redirect =
-            redirectTo || `http://${RemoteEnvironment.AUTH_REDIRECT_HOST}:${RemoteEnvironment.AUTH_REDIRECT_PORT}`;
-
-        return {
-            authUrl: `${this.authUrl}?redirectTo=${redirect}`,
-            getToken: async (): Promise<{authToken: string; redirectTo?: string}> => {
-                const code = await oAuthRedirectServer({
-                    host: RemoteEnvironment.AUTH_REDIRECT_HOST,
-                    port: RemoteEnvironment.AUTH_REDIRECT_PORT,
-                });
-                const authToken = await this.generateAuthToken(code);
-
-                return {
-                    authToken,
-                    redirectTo,
-                };
-            },
-        };
-    }
-
-    async generateAuthToken(code: string): Promise<string> {
-        const {tokens} = await this.oauth2Client.getToken({code});
-
-        if (!tokens.id_token) {
-            throw new AuthenticationError('Login failed: Unable to extract id token');
-        }
-
-        await this.oauth2Client.verifyIdToken({
-            audience: GOOGLE_AUTHENTICATION_CLIENT_ID,
-            idToken: tokens.id_token,
-        });
-
-        return TokenService.sign(tokens);
-    }
-
-    verifyAuthToken(token: string): Promise<void> {
-        return fetch(`${this.httpOrigin}/authentication/verify`, {
-            headers: {
-                [AUTH_TOKEN_KEY]: token,
-            },
-            method: 'POST',
-        }).then((res) => {
-            if (!res.ok) {
-                throw new AuthenticationError(`${res.status}: ${res.statusText}`);
-            }
-        });
     }
 
     updateDbmsConfig(_dbmsId: string, _properties: Map<string, string>): Promise<void> {
