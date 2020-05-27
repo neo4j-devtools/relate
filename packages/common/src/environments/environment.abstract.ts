@@ -4,7 +4,7 @@ import {IAuthToken} from '@huboneo/tapestry';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 import {IDbmsInfo} from '../models/environment-config.model';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
-import {IExtensionMeta} from '../utils';
+import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
@@ -62,6 +62,8 @@ export abstract class EnvironmentAbstract {
     abstract listInstalledExtensions(): Promise<IExtensionMeta[]>;
 
     abstract linkExtension(filePath: string): Promise<IExtensionMeta>;
+
+    abstract listExtensionVersions(): Promise<IExtensionVersion[]>;
 
     abstract installExtension(name: string, version: string): Promise<IExtensionMeta>;
 

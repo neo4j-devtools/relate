@@ -3,21 +3,21 @@
 
 Manage relate extensions
 
-* [`relate extension:install NAME`](#relate-extensioninstall-name)
+* [`relate extension:install [NAME]`](#relate-extensioninstall-name)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
 * [`relate extension:list`](#relate-extensionlist)
 * [`relate extension:uninstall EXTENSION`](#relate-extensionuninstall-extension)
 
-## `relate extension:install NAME`
+## `relate extension:install [NAME]`
 
 Install an extension
 
 ```
 USAGE
-  $ relate extension:install NAME
+  $ relate extension:install [NAME]
 
 OPTIONS
-  -V, --version=version          (required) Version to install
+  -V, --version=version          Version to install
   -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 

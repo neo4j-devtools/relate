@@ -6,10 +6,10 @@ import stream from 'stream';
 import {promisify} from 'util';
 import hasha from 'hasha';
 
-import {FetchError, NotFoundError, IntegrityError} from '../errors';
+import {FetchError, NotFoundError, IntegrityError} from '../../../errors';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../constants';
-import {discoverExtension, IExtensionMeta} from './extension-versions';
+import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION} from '../../../constants';
+import {discoverExtension, IExtensionMeta} from '../../../utils/extension-versions';
 
 // @todo: needs to be removed and handled by env vars
 const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
@@ -37,7 +37,7 @@ export interface IFetchExtensionInfo {
     shasum: string;
 }
 
-export const fetchExtensionInfo = async (extensionName: string, version: string): Promise<IFetchExtensionInfo> => {
+const fetchExtensionInfo = async (extensionName: string, version: string): Promise<IFetchExtensionInfo> => {
     let res: IExtensionRegistryManifest;
     try {
         res = await got(`${EXTENSION_URL_PATH}${extensionName}`, {
@@ -63,7 +63,7 @@ export const fetchExtensionInfo = async (extensionName: string, version: string)
     };
 };
 
-export const pipeline = async (url: string, outputPath: string): Promise<void> => {
+const pipeline = async (url: string, outputPath: string): Promise<void> => {
     const streamPipeline = promisify(stream.pipeline);
 
     try {
@@ -81,7 +81,7 @@ export const pipeline = async (url: string, outputPath: string): Promise<void> =
     }
 };
 
-export const verifyHash = async (
+const verifyHash = async (
     expectedShasumHash: string,
     pathToFile: string,
     algorithm = EXTENSION_SHA_ALGORITHM,

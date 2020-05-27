@@ -4,3 +4,7 @@ export * from './neo4j-cmd';
 export * from './neo4j-admin-cmd';
 export * from './generate-plugin-certs';
 export * from './download-neo4j';
+export * from './extension-versions';
+export * from './extract-extension';
+export * from './download-extension';
+export * from './get-app-base-path';

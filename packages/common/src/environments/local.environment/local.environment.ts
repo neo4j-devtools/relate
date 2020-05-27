@@ -44,22 +44,14 @@ import {
     EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
 } from '../../constants';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j} from '../../utils';
 import {
-    envPaths,
-    parseNeo4jConfigPort,
-    isValidUrl,
-    isValidPath,
-    extractNeo4j,
     getAppBasePath,
     discoverExtension,
     IExtensionMeta,
-    arrayHasItems,
     discoverExtensionDistributions,
     extractExtension,
     downloadExtension,
-} from '../../utils';
-
-import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
     neo4jCmd,
@@ -68,7 +60,7 @@ import {
     generatePluginCerts,
     downloadNeo4j,
     discoverNeo4jDistributions,
-    getDistributionInfo,
+    getDistributionInfo, IExtensionVersion, fetchExtensionVersions,
 } from './utils';
 import {IDbmsInfo} from '../../models/environment-config.model';
 
@@ -654,5 +646,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 return ext;
             }),
         );
+    }
+
+    listExtensionVersions(): Promise<IExtensionVersion[]> {
+        return fetchExtensionVersions();
     }
 }

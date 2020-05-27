@@ -17,11 +17,12 @@ import {
 } from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {oAuthRedirectServer} from './oauth-utils';
-import {envPaths, IExtensionMeta} from '../utils';
+import {envPaths} from '../utils';
 import {AUTH_TOKEN_KEY, GOOGLE_AUTHENTICATION_CLIENT_ID, GOOGLE_AUTHENTICATION_CLIENT_SECRET} from '../constants';
 import {ENVIRONMENTS_DIR_NAME, LOCALHOST_IP_ADDRESS} from './environment.constants';
 import {ensureDirs} from '../system';
 import {TokenService} from '../token.service';
+import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     static readonly AUTH_REDIRECT_HOST = LOCALHOST_IP_ADDRESS;
@@ -376,6 +377,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
     installExtension(_name: string, _version: string): Promise<IExtensionMeta> {
         throw new NotAllowedError(`${RemoteEnvironment.name} does not support installing extensions`);
+    }
+
+    listExtensionVersions(): Promise<IExtensionVersion[]> {
+        throw new NotAllowedError(`${RemoteEnvironment.name} does not support listing extension versions`);
     }
 
     uninstallExtension(_name: string): Promise<IExtensionMeta[]> {

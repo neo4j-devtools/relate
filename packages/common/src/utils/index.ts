@@ -12,8 +12,4 @@ export {loadExtensionsFor} from './load-extensions-for';
 export {download} from './download';
 export {extract} from './extract';
 export * from './extract-neo4j';
-export * from './extract-extension';
-export * from './extension-versions';
-export * from './download-extension';
 export * from './event-hooks';
-export * from './get-app-base-path';
