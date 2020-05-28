@@ -60,7 +60,7 @@ export const selectDbmsPrompt = async (
     );
 };
 
-export const selectAppPrompt = async (message: string, installedApps: IExtensionMeta[]): Promise<string> => {
+export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]): Promise<string> => {
     return selectPrompt(
         message,
         installedApps.map((app) => ({

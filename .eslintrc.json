@@ -229,7 +229,19 @@
         "padding-line-between-statements": "error",
         "prefer-arrow-callback": "error",
         "prefer-const": "error",
-        "prefer-destructuring": "error",
+        "prefer-destructuring": [
+            "error",
+            {
+                "VariableDeclarator": {
+                    "array": true,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": false,
+                    "object": false
+                }
+            }
+        ],
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
         "prefer-rest-params": "error",

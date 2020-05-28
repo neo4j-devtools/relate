@@ -21,14 +21,14 @@ const CREATE_APP_LAUNCH_TOKEN = {
         mutation CreateAppLaunchToken(
             $environmentId: String!,
             $dbmsId: String!,
-            $appId: String!,
+            $appName: String!,
             $principal: String!,
             $accessToken: String!
         ) {
             createAppLaunchToken(
                 environmentId: $environmentId,
                 dbmsId: $dbmsId,
-                appId: $appId,
+                appName: $appName,
                 principal: $principal,
                 accessToken: $accessToken
             ) {
@@ -39,7 +39,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
     `,
     variables: {
         accessToken: TEST_ACCESS_TOKEN,
-        appId: TEST_APP_ID,
+        appName: TEST_APP_ID,
         environmentId: 'test',
         principal: 'bam',
         // dbmsId: 'bar', // added in test
@@ -48,10 +48,10 @@ const CREATE_APP_LAUNCH_TOKEN = {
 
 const APP_LAUNCH_DATA = {
     query: `
-        query appLaunchData($appId: String!, $launchToken: String!) {
-            appLaunchData(appId: $appId, launchToken: $launchToken) {
+        query appLaunchData($environmentId: String!, $appName: String!, $launchToken: String!) {
+            appLaunchData(environmentId: $environmentId, appName: $appName, launchToken: $launchToken) {
                 environmentId
-                appId
+                appName
                 dbms {
                     id
                 }
@@ -61,7 +61,8 @@ const APP_LAUNCH_DATA = {
         }
     `,
     variables: {
-        appId: TEST_APP_ID,
+        environmentId: 'test',
+        appName: TEST_APP_ID,
         // launchToken: "" // added in test
     },
 };
@@ -100,7 +101,7 @@ describe('AppsModule', () => {
     });
 
     test('/graphql createAppLaunchToken', () => {
-        const {appId} = CREATE_APP_LAUNCH_TOKEN.variables;
+        const {appName} = CREATE_APP_LAUNCH_TOKEN.variables;
 
         return request(app.getHttpServer())
             .post('/graphql')
@@ -116,7 +117,7 @@ describe('AppsModule', () => {
             .expect((res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
                 const {token, path: tokenPath} = createAppLaunchToken;
-                const expectedPath = createAppLaunchUrl(`/static/${appId}`, token);
+                const expectedPath = createAppLaunchUrl(`/static/${appName}`, token);
 
                 expect(token).toEqual(expect.stringMatching(JWT_REGEX));
                 expect(tokenPath).toEqual(expectedPath);
@@ -124,11 +125,11 @@ describe('AppsModule', () => {
     });
 
     test('/graphql appLaunchData', async () => {
-        const {environmentId, appId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
+        const {environmentId, appName, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
         const systemProvider = app.get(SystemProvider);
         const launchToken = await systemProvider.createAppLaunchToken(
             environmentId,
-            appId,
+            appName,
             TEST_DB_ID,
             principal,
             TEST_ACCESS_TOKEN,
@@ -149,7 +150,7 @@ describe('AppsModule', () => {
 
                 expect(appLaunchData).toEqual({
                     accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
-                    appId: CREATE_APP_LAUNCH_TOKEN.variables.appId,
+                    appName: CREATE_APP_LAUNCH_TOKEN.variables.appName,
                     dbms: {
                         id: TEST_DB_ID,
                     },

@@ -10,8 +10,10 @@ import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.CLI);
 
 export default abstract class BaseCommand extends Command {
-    protected abstract commandClass: parser.Input<any>;
+    protected abstract commandClass: parser.Input<parser.flags.Output>;
 
+    // Any nestjs module should be a valid command module.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected abstract commandModule: Type<any>;
 
     run(): Promise<INestApplicationContext> {

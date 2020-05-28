@@ -6,18 +6,18 @@ export const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === 'development';
 export const IS_TEST_ENV = process.env.NODE_ENV === 'test';
 
 export const ARGS = {
-    DBMSS: {
-        name: 'dbmss',
-        description: 'Names or IDs of Neo4j instances',
-    },
     DBMS: {
-        name: 'dbms',
         description: 'Name or ID of a Neo4j instance',
+        name: 'dbms',
         required: REQUIRED_FOR_SCRIPTS,
     },
+    DBMSS: {
+        description: 'Names or IDs of Neo4j instances',
+        name: 'dbmss',
+    },
     VERSION: {
-        name: 'version',
         description: 'Version to install (semver, url, or path)',
+        name: 'version',
         required: REQUIRED_FOR_SCRIPTS,
     },
 };
@@ -26,8 +26,8 @@ export const FLAGS = {
     ENVIRONMENT: {
         environment: flags.string({
             char: 'e',
-            description: 'Name of the environment to run the command against',
             default: 'default',
+            description: 'Name of the environment to run the command against',
         }),
     },
 };

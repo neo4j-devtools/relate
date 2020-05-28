@@ -12,8 +12,8 @@ export default class UninstallCommand extends BaseCommand {
 
     static args = [
         {
-            name: 'extension',
             description: 'Name of the extension to uninstall',
+            name: 'extension',
             required: REQUIRED_FOR_SCRIPTS,
         },
     ];

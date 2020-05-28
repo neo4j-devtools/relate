@@ -16,13 +16,13 @@ export async function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: 
     return returnData;
 }
 
-export function registerHookListener(eventName: HOOK_EVENTS, listener: Listener) {
+export function registerHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
     const eventListeners = REGISTERED_LISTENERS.get(eventName);
 
     REGISTERED_LISTENERS.set(eventName, new Set([...eventListeners, listener]));
 }
 
-export function deregisterHookListener(eventName: HOOK_EVENTS, listener: Listener) {
+export function deregisterHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
     const eventListeners = REGISTERED_LISTENERS.get(eventName);
 
     REGISTERED_LISTENERS.set(eventName, new Set(_.without([...eventListeners], listener)));
