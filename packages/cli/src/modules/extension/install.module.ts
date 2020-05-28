@@ -45,12 +45,13 @@ export class InstallModule implements OnApplicationBootstrap {
             const maybeWithName = name ? _.filter(choices, (v) => v.name === name) : choices;
             const selected: any = await selectPrompt(
                 'Select a version to install',
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
                 // @ts-ignore
                 _.map(maybeWithName, (v) => ({
                     message: `[${v.origin.toLowerCase()}] ${v.name}@${v.version}`,
                     // name: `[${v.origin.toLowerCase()}] ${v.name}@${v.version}`,
                     // name overrides value, ridiculous
-                    value: v
+                    value: v,
                 })),
             );
 
