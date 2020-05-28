@@ -6,7 +6,7 @@
             "ci": true
         },
         "publish": {
-            "registry": "https://npm.pkg.github.com/"
+            "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
         }
     }
 }

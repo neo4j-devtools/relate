@@ -12,7 +12,7 @@
         "url": "git+https://github.com/neo-technology/daedalus.git"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
+        "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
     },
     "scripts": {
         "prettify": "prettier --write 'packages/**/*.ts'",
