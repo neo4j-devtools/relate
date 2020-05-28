@@ -23,21 +23,11 @@ And will definitely find more issues and cases as adoption increases. Please hel
 - **We require NodeJS LTS (v12)** https://nodejs.org/en/
 - **We require OpenJDK v11.** https://cdn.azul.com/zulu/bin/ (search for 11.35.13-ca-jdk11.0.5)
 
-
-You will need to generate a GitHub personal access token to 
-login to the NPM registry:
-
-- Go to https://github.com/settings/tokens
-- Click "generate new token"
-- Add a name and check the "read:packages" permission
-- Click "generate new token"
-
-Using your GitHub username and the token from the previous step, login to the NPM registry:
+To install `@relate` you need to login to our private npm registry:
 ```shell script
-npm login --scope @relate --registry=https://npm.pkg.github.com/
+npm login --scope @relate --registry https://neo.jfrog.io/artifactory/api/npm/npm-local-private
 ```
-
-
+Credentials are stored in 1Password under `jfrog reader`
 
 Once authenticated you can install the CLI and WEB packages:
 ```shell script
