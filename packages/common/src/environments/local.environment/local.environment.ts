@@ -106,7 +106,29 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const cached = await discoverNeo4jDistributions(this.dirPaths.dbmssCache);
         const online = await fetchNeo4jVersions();
 
-        return [...cached, ...online];
+        const versions: IDbmsVersion[] = _.compact(
+            _.map([...cached, ...online], (v) => {
+                if (v.origin === 'cached') {
+                    return v;
+                }
+
+                const cachedVersionExists = _.find(
+                    [...cached, ...online],
+                    (vcached) =>
+                        vcached.origin === 'cached' &&
+                        vcached.version === v.version &&
+                        vcached.edition === v.edition,
+                );
+
+                if (!cachedVersionExists) {
+                    return v;
+                }
+
+                return null;
+            }),
+        );
+
+        return versions;
     }
 
     async installDbms(name: string, credentials: string, version: string): Promise<string> {
