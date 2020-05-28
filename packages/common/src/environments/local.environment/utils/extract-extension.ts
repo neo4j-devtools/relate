@@ -2,7 +2,7 @@ import fse from 'fs-extra';
 import decompress from 'decompress';
 import path from 'path';
 
-import {FileStructureError} from '../errors';
+import {FileStructureError} from '../../../errors';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
 
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {

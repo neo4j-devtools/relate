@@ -65,3 +65,9 @@ export const NEO4J_JWT_CERT_ATTRS = [
         value: 'JWT Auth',
     },
 ];
+
+// @todo: needs to be removed and handled by env vars
+export const EXTENSION_SEARCH_PATH = 'https://neo.jfrog.io/artifactory/api/search/aql';
+export const EXTENSION_REPO_NAME = 'npm-local-private';
+export const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
+export const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';

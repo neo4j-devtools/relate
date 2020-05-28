@@ -44,22 +44,14 @@ import {
     EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
 } from '../../constants';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j} from '../../utils';
 import {
-    envPaths,
-    parseNeo4jConfigPort,
-    isValidUrl,
-    isValidPath,
-    extractNeo4j,
     getAppBasePath,
     discoverExtension,
     IExtensionMeta,
-    arrayHasItems,
     discoverExtensionDistributions,
     extractExtension,
     downloadExtension,
-} from '../../utils';
-
-import {
     resolveDbms,
     elevatedNeo4jWindowsCmd,
     neo4jCmd,
@@ -69,6 +61,8 @@ import {
     downloadNeo4j,
     discoverNeo4jDistributions,
     getDistributionInfo,
+    IExtensionVersion,
+    fetchExtensionVersions,
 } from './utils';
 import {IDbmsInfo} from '../../models/environment-config.model';
 
@@ -513,7 +507,19 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async listInstalledApps(): Promise<IExtensionMeta[]> {
-        return discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, EXTENSION_TYPES.STATIC));
+        const allInstalled = await this.listInstalledExtensions();
+
+        return _.filter(allInstalled, ({type}) => type === EXTENSION_TYPES.STATIC);
+    }
+
+    async listInstalledExtensions(): Promise<IExtensionMeta[]> {
+        const allInstalledExtensions: IExtensionMeta[][] = await Promise.all(
+            _.map(_.values(EXTENSION_TYPES), (type) =>
+                discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)),
+            ),
+        );
+
+        return _.flatten(allInstalledExtensions);
     }
 
     async linkExtension(filePath: string): Promise<IExtensionMeta> {
@@ -642,5 +648,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 return ext;
             }),
         );
+    }
+
+    listExtensionVersions(): Promise<IExtensionVersion[]> {
+        return fetchExtensionVersions();
     }
 }

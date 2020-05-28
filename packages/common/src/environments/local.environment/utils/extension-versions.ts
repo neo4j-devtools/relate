@@ -1,19 +1,28 @@
+import got from 'got';
+import _ from 'lodash';
+import semver from 'semver';
 import {promises as fs} from 'fs';
 import fse from 'fs-extra';
-import _ from 'lodash';
 import path from 'path';
-import semver from 'semver';
 
 import {
-    EXTENSION_MANIFEST,
-    EXTENSION_MANIFEST_KEY,
+    EXTENSION_DIR_NAME,
     EXTENSION_NPM_PREFIX,
     EXTENSION_ORIGIN,
+    EXTENSION_MANIFEST,
+    EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
-} from '../constants';
-import {InvalidArgumentError, NotFoundError} from '../errors';
-import {ExtensionModel, IInstalledExtension} from '../models';
+} from '../../../constants';
+import {
+    EXTENSION_REPO_NAME,
+    EXTENSION_SEARCH_PATH,
+    JFROG_PRIVATE_REGISTRY_PASSWORD,
+    JFROG_PRIVATE_REGISTRY_USERNAME,
+} from '../../environment.constants';
+import {InvalidArgumentError, NotFoundError} from '../../../errors';
+import {ExtensionModel, IInstalledExtension} from '../../../models';
+import {envPaths} from '../../../utils';
 
 export interface IExtensionMeta {
     type: EXTENSION_TYPES;
@@ -65,7 +74,6 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
                 ...manifest,
             }),
             name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
-            // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
             version: manifest.version,
@@ -113,4 +121,53 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
         type: EXTENSION_TYPES.STATIC,
         version,
     };
+}
+
+export interface IExtensionVersion {
+    name: string;
+    version: string;
+    origin: EXTENSION_ORIGIN;
+}
+
+export async function fetchExtensionVersions(): Promise<IExtensionVersion[]> {
+    const cached = await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME));
+    const search = {
+        path: {$match: `${EXTENSION_NPM_PREFIX}*`},
+        repo: {$eq: EXTENSION_REPO_NAME},
+    };
+
+    const {results} = await got(EXTENSION_SEARCH_PATH, {
+        // @todo: handle env vars
+        body: `items.find(${JSON.stringify(search)})`,
+        method: 'POST',
+        password: JFROG_PRIVATE_REGISTRY_PASSWORD,
+        username: JFROG_PRIVATE_REGISTRY_USERNAME,
+    }).json();
+
+    return _.concat(cached, mapArtifactoryResponse(results));
+}
+
+function mapArtifactoryResponse(results: any[]): IExtensionVersion[] {
+    return _.compact(
+        _.map(results, ({name}) => {
+            const versionPart = _.last(_.split(_.replace(name, '.tgz', ''), '-'));
+            const version = semver.coerce(versionPart);
+
+            if (!version) {
+                return null;
+            }
+
+            const extName = _.head(_.split(name, `-${version.version}`));
+
+            if (!extName) {
+                return null;
+            }
+
+            return {
+                name: extName,
+                origin: EXTENSION_ORIGIN.ONLINE,
+                version: version.version,
+            };
+        }),
+    );
 }
