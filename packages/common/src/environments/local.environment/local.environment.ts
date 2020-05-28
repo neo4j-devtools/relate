@@ -488,7 +488,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                     // @todo: verify these settings with driver team
                     const tlsLevel = config.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
                     const protocol = tlsLevel !== DBMS_TLS_LEVEL.DISABLED ? 'neo4j+s://' : 'neo4j://';
-                    const host = config.get('dbms.default_listen_address') || LOCALHOST_IP_ADDRESS;
+                    const host = config.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
                     const port = config.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
                     const defaultValues = {
                         description: '',

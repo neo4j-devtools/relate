@@ -300,7 +300,14 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data}: any = await this.graphql({
             query: gql`
                 query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds) {
+                        id
+                        name
+                        connectionUri
+                        version
+                        status
+                        edition
+                    }
                 }
             `,
             variables: {
