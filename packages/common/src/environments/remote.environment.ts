@@ -7,7 +7,14 @@ import path from 'path';
 import _ from 'lodash';
 import {google} from 'googleapis';
 
-import {AuthenticationError, InvalidConfigError, NotAllowedError, NotFoundError, NotSupportedError} from '../errors';
+import {
+    AuthenticationError,
+    GraphqlError,
+    InvalidConfigError,
+    NotAllowedError,
+    NotFoundError,
+    NotSupportedError,
+} from '../errors';
 import {
     EnvironmentConfigModel,
     IDbms,
@@ -91,8 +98,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             const res = await makePromise(execute(this.client, operation));
 
             if (res.errors) {
-                // @todo figure out handling when GraphQL returns multiple errors
-                throw new Error(res.errors[0].message);
+                throw new GraphqlError('Failed to fetch GraphQL', _.map(res.errors, 'message'));
             }
 
             return res;
@@ -294,7 +300,14 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data}: any = await this.graphql({
             query: gql`
                 query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds) {
+                        id
+                        name
+                        connectionUri
+                        version
+                        status
+                        edition
+                    }
                 }
             `,
             variables: {
