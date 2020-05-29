@@ -34,7 +34,7 @@ export default class Monad<T extends any> implements IMonad<T> {
 
     get isEmpty() {
         // eslint-disable-next-line no-eq-null,eqeqeq
-        return !this.original
+        return !this.original;
     }
 
     static isMonad<T extends any>(val: any): val is Monad<T> {
