@@ -29,12 +29,7 @@ export function fromStringToNum(str: string, radix: number = DEFAULT_NUM_RADIX):
         throw new Error('number format error: empty string');
     }
 
-    if (
-        str === 'NaN' ||
-        str === 'Infinity' ||
-        str === '+Infinity' ||
-        str === '-Infinity'
-    ) {
+    if (str === 'NaN' || str === 'Infinity' || str === '+Infinity' || str === '-Infinity') {
         return Num.ZERO;
     }
 
@@ -187,7 +182,8 @@ export function multiplyNum(right: Num, multiplier: Num): Num {
         if (multiplier.isNegative) {
             return right.negate().multiply(multiplier.negate());
         } else {
-            return right.negate()
+            return right
+                .negate()
                 .multiply(multiplier)
                 .negate();
         }
@@ -307,7 +303,8 @@ export function divideNums(val: Num, divisor: Num): Num {
             return val.negate().divide(divisor.negate());
         }
 
-        return val.negate()
+        return val
+            .negate()
             .divide(divisor)
             .negate();
     }
@@ -367,10 +364,7 @@ export function shiftNumLeft(val: Num, numberOfBits: Num) {
     }
 
     if (numBitsAsInt < 32) {
-        return Num.fromBits(
-            val.low << numBitsAsInt,
-            (val.high << numBitsAsInt) | (val.low >>> (32 - numBitsAsInt))
-        );
+        return Num.fromBits(val.low << numBitsAsInt, (val.high << numBitsAsInt) | (val.low >>> (32 - numBitsAsInt)));
     }
 
     return Num.fromBits(0, val.low << (numBitsAsInt - 32));
@@ -385,14 +379,8 @@ export function shiftNumRight(val: Num, numberOfBits: Num) {
     }
 
     if (numBitsAsInt < 32) {
-        return Num.fromBits(
-            (val.low >>> numBitsAsInt) | (val.high << (32 - numBitsAsInt)),
-            val.high >> numBitsAsInt
-        );
+        return Num.fromBits((val.low >>> numBitsAsInt) | (val.high << (32 - numBitsAsInt)), val.high >> numBitsAsInt);
     }
 
-    return Num.fromBits(
-        val.high >> (numBitsAsInt - 32),
-        val.high >= 0 ? 0 : -1
-    );
+    return Num.fromBits(val.high >> (numBitsAsInt - 32), val.high >= 0 ? 0 : -1);
 }

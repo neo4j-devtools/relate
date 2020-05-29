@@ -20,9 +20,8 @@ export default class Str<T extends string = string> extends Monad<T> {
         return new Str<T>(val !== undefined ? String(val) : '');
     }
 
-    static from<T extends string = string>(val: any): Str<T> {
-        return val instanceof Str
-            ? val
-            : Str.of(val);
+    // @ts-ignore
+    static from<T = any>(val: any): Str<T> {
+        return val instanceof Str ? val : Str.of(val);
     }
 }

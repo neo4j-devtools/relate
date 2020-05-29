@@ -65,12 +65,10 @@ export default class Monad<T extends any> implements IMonad<T> {
             : this.get();
     }
 
-    equals(other: IMonad<any>) {
-        if (other.constructor !== this.constructor) {
-            return false;
-        }
+    equals(other: any) {
+        const toCompare = Monad.from(other)
 
-        return other.get() === this.get();
+        return toCompare.get() === this.get();
     }
 
     map(project: (value: T) => T): this {
@@ -78,7 +76,7 @@ export default class Monad<T extends any> implements IMonad<T> {
         return new this.constructor(project(this.original));
     }
 
-    flatMap<M extends IMonad<any> = Monad<any>>(project: (value: T) => M): M {
+    flatMap<M = Monad<any>>(project: (value: T) => M): M {
         return project(this.original);
     }
 

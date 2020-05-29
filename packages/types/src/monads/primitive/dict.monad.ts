@@ -5,9 +5,9 @@ import {arrayHasItems} from '../../utils/array.utils';
 import Maybe from './maybe.monad';
 import Str from './str.monad';
 
-export type RawDict<T = Monad<any>> = Map<string, T>
+export type RawDict<T extends Monad<any> = Monad<any>> = Map<string, T>;
 
-export default class Dict<T = Monad<any>> extends Monad<RawDict<T>> {
+export default class Dict<T extends Monad<any> = Monad<any>> extends Monad<RawDict<T>> {
     protected readonly keys: readonly Str[];
 
     constructor(val: RawDict<T>) {
@@ -21,25 +21,23 @@ export default class Dict<T = Monad<any>> extends Monad<RawDict<T>> {
         return arrayHasItems(this.keys);
     }
 
-    static isDict<T = Monad<any>>(val: any): val is Dict<T> {
+    static isDict<T extends Monad<any> = Monad<any>>(val: any): val is Dict<T> {
         return val instanceof Dict;
     }
 
-    static of<T = Monad<any>>(val: any): Dict<T> {
-        const sane: [string, T][] = Array.isArray(val)
-            ? val
-            : entries(val);
+    // @ts-ignore
+    static of<T extends Monad<any> = Monad<any>>(val: any): Dict<T> {
+        const sane: [string, T][] = Array.isArray(val) ? val : entries(val);
 
         return new Dict<T>(new Map(sane));
     }
 
-    static from<T = Monad<any>>(val: any): Dict<T> {
-        return Dict.isDict<T>(val)
-            ? val
-            : Dict.of<T>(val);
+    // @ts-ignore
+    static from<T extends Monad<any> = Monad<any>>(val: any): Dict<T> {
+        return Dict.isDict<T>(val) ? val : Dict.of<T>(val);
     }
 
-    static fromObject<T = Monad<any>>(obj: object) {
+    static fromObject<T extends Monad<any> = Monad<any>>(obj: object) {
         return Dict.of<T>(obj);
     }
 
@@ -60,14 +58,21 @@ export default class Dict<T = Monad<any>> extends Monad<RawDict<T>> {
     }
 
     toString(): string {
-        return `{${join(map([...this.original.entries()], ([key, val]) => `${key}: ${val}`), ', ')}}`;
+        return `{${join(
+            map([...this.original.entries()], ([key, val]) => `${key}: ${val}`),
+            ', ',
+        )}}`;
     }
 
     toJSON(): any {
-        const asObj = reduce([...this.original.entries()], (agg, [key, val]) => ({
-            ...agg,
-            [key]: val
-        }), {});
+        const asObj = reduce(
+            [...this.original.entries()],
+            (agg, [key, val]) => ({
+                ...agg,
+                [key]: val,
+            }),
+            {},
+        );
 
         return JSON.parse(JSON.stringify(asObj));
     }

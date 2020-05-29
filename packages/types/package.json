@@ -26,6 +26,10 @@
         "lodash": "4.17.15"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.153"
+        "@types/jest": "25.2.3",
+        "@types/lodash": "4.14.153",
+        "jest": "26.0.1",
+        "ts-jest": "26.0.0",
+        "typescript": "3.9.3"
     }
 }

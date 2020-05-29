@@ -58,21 +58,17 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
     }
 
     static of<T extends Monad<any> = Monad<any>>(val: any): List<T> {
-        const sane: T[] = Array.isArray(val)
-            ? val
-            : Array.of(val);
+        const sane: T[] = Array.isArray(val) ? val : Array.of(val);
 
         return new List(sane);
     }
 
     static from<T extends Monad<any> = Monad<any>>(val: any): List<T> {
-        return List.isList<T>(val)
-            ? val
-            : List.of(val);
+        return List.isList<T>(val) ? val : List.of(val);
     }
 
     // @ts-ignore
-    * [Symbol.iterator](): Iterator<T> {
+    *[Symbol.iterator](): Iterator<T> {
         for (const val of this.iterableValue) {
             yield val;
         }
@@ -93,11 +89,7 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
     find(val: T): Maybe<T> {
         const found = find(this.original, (other) => val.equals(other));
 
-        return Maybe.of<T>(
-            val.isThis(found)
-                ? found
-                : None.EMPTY
-        );
+        return Maybe.of<T>(val.isThis(found) ? found : None.EMPTY);
     }
 
     reduce<R = any>(cb: (agg: R, next: T, index: number) => R, seed: R): R {

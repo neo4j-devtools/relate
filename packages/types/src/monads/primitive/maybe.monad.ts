@@ -2,7 +2,7 @@ import Monad from '../monad';
 import None from './none.monad';
 import Nil from './nil.monad';
 
-export default class Maybe<T = Monad<any>> extends Monad<T | None<T>> {
+export default class Maybe<T extends Monad<any> = Monad<any>> extends Monad<T> {
     static EMPTY = new Maybe(None.EMPTY);
 
     constructor(val?: T | None) {
@@ -11,24 +11,21 @@ export default class Maybe<T = Monad<any>> extends Monad<T | None<T>> {
     }
 
     get isEmpty() {
-        return None.isNone(this.original) || Nil.isNil(this.original);
+        return !Monad.isMonad(this.original) || None.isNone(this.original) || Nil.isNil(this.original);
     }
 
-    static isMaybe<T = Monad<any>>(val: any): val is Maybe<T> {
+    static isMaybe<T extends Monad<any> = Monad<any>>(val: any): val is Maybe<T> {
         return val instanceof Maybe;
     }
 
-    static of<T = Monad<any>>(val?: T | None): Maybe<T> {
+    static of<T extends Monad<any> = Monad<any>>(val?: T | None): Maybe<T> {
         // @ts-ignore
-        return val !== undefined && !None.isNone(val)
-            ? new Maybe<T>(val)
-            : Maybe.EMPTY;
+        return val !== undefined && !None.isNone(val) ? new Maybe<T>(val) : Maybe.EMPTY;
     }
 
-    static from<T = Monad<any>>(val: any): Maybe<T> {
-        return Maybe.isMaybe(val)
-            ? val
-            : Maybe.of(val);
+    // @ts-ignore
+    static from<T = any>(val: any): Maybe<T> {
+        return Maybe.isMaybe(val) ? val : Maybe.of(val);
     }
 
     getOrElse<M = T>(other: M): M {

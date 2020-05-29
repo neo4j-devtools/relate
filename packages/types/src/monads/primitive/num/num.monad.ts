@@ -11,7 +11,7 @@ import {
     isCacheable,
     multiplyNum,
     shiftNumLeft,
-    shiftNumRight
+    shiftNumRight,
 } from '../../../utils/num.utils';
 
 export default class Num extends Monad<number> {
@@ -74,9 +74,7 @@ export default class Num extends Monad<number> {
     }
 
     static from(val: any): Num {
-        return Num.isNum(val)
-            ? val
-            : Num.of(val);
+        return Num.isNum(val) ? val : Num.of(val);
     }
 
     static fromInt(val: number): Num {
@@ -133,9 +131,7 @@ export default class Num extends Monad<number> {
     }
 
     equals(other: any): boolean {
-        const otherToUse = Num.isNum(other)
-            ? other
-            : Num.fromValue(other);
+        const otherToUse = Num.isNum(other) ? other : Num.fromValue(other);
 
         return this.high === otherToUse.high && this.low === otherToUse.low;
     }
@@ -165,17 +161,13 @@ export default class Num extends Monad<number> {
     }
 
     add(other: number | string | Num): Num {
-        const otherToUse = Num.isNum(other)
-            ? other
-            : Num.fromValue(other);
+        const otherToUse = Num.isNum(other) ? other : Num.fromValue(other);
 
         return addNums(this, otherToUse);
     }
 
     subtract(other: number | string | Num): Num {
-        const otherToUse = Num.isNum(other)
-            ? other
-            : Num.fromValue(other);
+        const otherToUse = Num.isNum(other) ? other : Num.fromValue(other);
 
         return this.add(otherToUse.negate());
     }
@@ -185,49 +177,37 @@ export default class Num extends Monad<number> {
     }
 
     multiply(multiplier: number | string | Num): Num {
-        const multiplierToUse = Num.isNum(multiplier)
-            ? multiplier
-            : Num.fromValue(multiplier);
+        const multiplierToUse = Num.isNum(multiplier) ? multiplier : Num.fromValue(multiplier);
 
         return multiplyNum(this, multiplierToUse);
     }
 
     divide(divisor: number | string | Num): Num {
-        const divisorToUse = Num.isNum(divisor)
-            ? divisor
-            : Num.fromValue(divisor);
+        const divisorToUse = Num.isNum(divisor) ? divisor : Num.fromValue(divisor);
 
         return divideNums(this, divisorToUse);
     }
 
     modulo(divisor: number | string | Num): Num {
-        const divisorToUse = Num.isNum(divisor)
-            ? divisor
-            : Num.fromValue(divisor);
+        const divisorToUse = Num.isNum(divisor) ? divisor : Num.fromValue(divisor);
 
         return this.subtract(this.divide(divisorToUse).multiply(divisorToUse));
     }
 
     compare(other: number | string | Num): 0 | -1 | 1 {
-        const otherToUse = Num.isNum(other)
-            ? other
-            : Num.fromValue(other);
+        const otherToUse = Num.isNum(other) ? other : Num.fromValue(other);
 
         return compareNums(this, otherToUse);
     }
 
     shiftLeft(numBits: number | string | Num): Num {
-        const numBitsToUse = Num.isNum(numBits)
-            ? numBits
-            : Num.fromValue(numBits);
+        const numBitsToUse = Num.isNum(numBits) ? numBits : Num.fromValue(numBits);
 
         return shiftNumLeft(this, numBitsToUse);
     }
 
     shiftRight(numBits: number | string | Num): Num {
-        const numBitsToUse = Num.isNum(numBits)
-            ? numBits
-            : Num.fromValue(numBits);
+        const numBitsToUse = Num.isNum(numBits) ? numBits : Num.fromValue(numBits);
 
         return shiftNumRight(this, numBitsToUse);
     }
