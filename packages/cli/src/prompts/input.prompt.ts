@@ -7,7 +7,7 @@ export const inputPrompt = async (message: string, options?: IInputPromptOptions
         initial: options?.initial,
         name: 'selection',
         type: 'input',
-        required: options?.required || true
+        required: options?.required === false ? false : true
     });
 
     return selection;
