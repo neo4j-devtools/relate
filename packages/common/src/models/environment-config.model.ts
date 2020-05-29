@@ -77,6 +77,10 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public authenticator?: AuthenticatorOptions;
 
+    @IsOptional()
+    @IsString({each: true})
+    public allowedMethods?: string[];
+
     // @todo: move this to data
     @IsString()
     @IsOptional()

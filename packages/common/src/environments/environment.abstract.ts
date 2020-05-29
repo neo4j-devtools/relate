@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import {IAuthToken} from '@huboneo/tapestry';
+import _ from 'lodash';
 
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 import {IDbmsInfo} from '../models/environment-config.model';
@@ -12,6 +13,7 @@ import {
     IGoogleAuthenticatorOptions,
 } from './authenticators';
 import {NotSupportedError} from '../errors';
+import {arrayHasItems} from '../utils';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
@@ -81,6 +83,16 @@ export abstract class EnvironmentAbstract {
         }
 
         return this.authenticator.verifyAuthToken(token);
+    }
+
+    supports(methodName: string): boolean {
+        const {allowedMethods} = this.config;
+
+        if (!arrayHasItems(allowedMethods)) {
+            return true;
+        }
+
+        return _.includes(allowedMethods, methodName);
     }
 
     abstract listDbmsVersions(): Promise<IDbmsVersion[]>;

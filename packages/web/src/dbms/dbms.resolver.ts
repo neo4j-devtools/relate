@@ -1,5 +1,5 @@
 import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
-import {Inject} from '@nestjs/common';
+import {Inject, UseGuards} from '@nestjs/common';
 
 import {SystemProvider, IDbms, IDbmsInfo} from '@relate/common';
 import {
@@ -12,8 +12,10 @@ import {
     UninstallDbmsArgs,
     DbmsArgs,
 } from './dbms.types';
+import {EnvironmentMethodGuard} from '../guards/environment-method.guard';
 
 @Resolver(() => String)
+@UseGuards(EnvironmentMethodGuard)
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
