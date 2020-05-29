@@ -47,8 +47,8 @@ type DbmsInfo {
 
 type Mutation {
   createAppLaunchToken(environmentId: String, accessToken: String, principal: String, dbmsId: String!, appName: String!): AppLaunchToken!
-  installDbms(environmentId: String!, name: String!, credentials: String!, version: String!): String!
-  uninstallDbms(environmentId: String!, name: String!): String!
+  installDbms(environmentId: String, name: String!, credentials: String!, version: String!): String!
+  uninstallDbms(environmentId: String, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentId: String, dbmsId: String!, appId: String!, authToken: AuthTokenInput!): String!
