@@ -57,3 +57,13 @@ export enum HOOK_EVENTS {
 export const DEFAULT_JWT_SIGN_OPTIONS: SignOptions = {expiresIn: TWENTY_FOUR_HOURS_SECONDS};
 
 export const AUTH_TOKEN_KEY = 'X-Auth-Token';
+
+export enum DBMS_STATUS_FILTERS {
+    STARTED = 'Neo4j is running',
+    STOPPED = 'Neo4j is not running',
+}
+
+export enum DBMS_STATUS {
+    STARTED = 'started',
+    STOPPED = 'stopped'
+}

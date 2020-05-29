@@ -43,6 +43,8 @@ import {
     EXTENSION_DIR_NAME,
     EXTENSION_TYPES,
     JSON_FILE_EXTENSION,
+    DBMS_STATUS_FILTERS,
+    DBMS_STATUS,
 } from '../../constants';
 import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j} from '../../utils';
 import {
@@ -211,19 +213,20 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async infoDbmss(nameOrIds: string[]): Promise<IDbmsInfo[]> {
-        const dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
+        let dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
 
         return Promise.all(
             dbmss.map(async (dbms) => {
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-
+                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status')
+                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED
                 const info = {
                     id: dbms.id,
                     name: dbms.name,
                     description: dbms.description,
                     rootPath: dbms.rootPath,
                     connectionUri: dbms.connectionUri,
-                    status: await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'),
+                    status,
                     version: v?.version,
                     edition: v?.edition,
                 };
