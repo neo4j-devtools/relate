@@ -1,5 +1,5 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
-import {Inject} from '@nestjs/common';
+import {Inject, UseGuards} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {SystemProvider} from '@relate/common';
 import _ from 'lodash';
@@ -8,8 +8,10 @@ import {IWebModuleConfig} from '../web.module';
 
 import {AppData, AppLaunchData, AppLaunchToken} from './models';
 import {createAppLaunchUrl} from './apps.utils';
+import {EnvironmentMethodGuard} from '../guards/environment-method.guard';
 
 @Resolver(() => String)
+@UseGuards(EnvironmentMethodGuard)
 export class AppsResolver {
     constructor(
         @Inject(ConfigService) protected readonly configService: ConfigService<IWebModuleConfig>,

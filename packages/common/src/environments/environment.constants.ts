@@ -2,7 +2,6 @@ export const ENVIRONMENTS_DIR_NAME = 'environments';
 export const RUNTIME_DIR_NAME = 'runtime';
 
 export enum ENVIRONMENT_TYPES {
-    DEMO = 'DEMO',
     LOCAL = 'LOCAL',
     REMOTE = 'REMOTE',
 }

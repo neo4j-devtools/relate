@@ -54,8 +54,8 @@ export class DbmssArgs {
 
 @ArgsType()
 export class InstallDbmsArgs {
-    @Field(() => String)
-    environmentId: string;
+    @Field(() => String, {nullable: true})
+    environmentId?: string;
 
     @Field(() => String)
     name: string;
@@ -69,8 +69,8 @@ export class InstallDbmsArgs {
 
 @ArgsType()
 export class UninstallDbmsArgs {
-    @Field(() => String)
-    environmentId: string;
+    @Field(() => String, {nullable: true})
+    environmentId?: string;
 
     @Field(() => String)
     name: string;

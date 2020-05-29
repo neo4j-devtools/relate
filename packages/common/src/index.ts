@@ -7,4 +7,4 @@ export * from './models';
 export * from './errors';
 export * from './utils';
 export * from './constants';
-export {EnvironmentAbstract as Environment, TestDbmss, ENVIRONMENT_TYPES} from './environments';
+export {EnvironmentAbstract as Environment, TestDbmss, ENVIRONMENT_TYPES, AUTHENTICATOR_TYPES} from './environments';
