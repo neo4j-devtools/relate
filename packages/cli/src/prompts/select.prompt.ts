@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import {prompt} from 'enquirer';
-import {Environment, IExtensionMeta, NotFoundError} from '@relate/common';
+import {AUTHENTICATOR_TYPES, Environment, AuthenticatorOptions, IExtensionMeta, NotFoundError, PUBLIC_ENVIRONMENT_METHODS} from '@relate/common';
 
 import {DBMS_STATUS_FILTERS} from '../constants';
+import {inputPrompt} from './input.prompt';
 
 interface IChoice {
     name: string;
@@ -18,6 +19,17 @@ export const selectPrompt = async (message: string, choices: string[] | IChoice[
         choices,
         name: 'selection',
         type: 'select',
+    });
+
+    return selection;
+};
+
+export const selectMultiplePrompt = async (message: string, choices: string[] | IChoice[]): Promise<string[]> => {
+    const {selection} = await prompt({
+        message,
+        choices,
+        name: 'selection',
+        type: 'multiselect',
     });
 
     return selection;
@@ -67,5 +79,57 @@ export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]
             name: app.name,
             message: app.name,
         })),
+    );
+};
+
+export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions | undefined> => {
+    const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
+
+    if (needsWhitelist === 'No') {
+        return undefined;
+    }
+
+    const type = await selectPrompt('Authentication type', _.map(_.values(AUTHENTICATOR_TYPES), (name) => ({name})));
+
+    switch (type) {
+        case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2:
+            return googleAuthenticatorPrompt()
+        default:
+            return undefined
+    }
+};
+
+export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions> => {
+    const authenticationUrl = await inputPrompt('Authentication request URL (optional)',);
+    const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)', '', true);
+    const verificationUrl = await inputPrompt('Authentication verification URL (optional)');
+    const clientId = await inputPrompt('OAuth Client ID', '', true);
+    const clientSecret = await inputPrompt('OAuth Client Secret', '', true);
+
+    console.log(redirectUrl);
+
+    return {
+        type: AUTHENTICATOR_TYPES.GOOGLE_OAUTH2,
+        authenticationUrl: authenticationUrl || undefined,
+        redirectUrl,
+        verificationUrl: verificationUrl || undefined,
+        clientId,
+        clientSecret,
+    }
+};
+
+export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
+    const needsWhitelist = await selectPrompt('Do you need to restrict access to the GraphQL API methods?', [
+        {name: 'Yes'},
+        {name: 'No'},
+    ]);
+
+    if (needsWhitelist === 'No') {
+        return [];
+    }
+
+    return selectMultiplePrompt(
+        'Select allowed GraphQL API methods',
+        _.map(_.values(PUBLIC_ENVIRONMENT_METHODS), (name) => ({name})),
     );
 };

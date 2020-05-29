@@ -10,7 +10,7 @@ import {GraphqlError, InvalidConfigError, NotAllowedError, NotFoundError} from '
 import {EnvironmentConfigModel, IDbms, IDbmsInfo, IDbmsVersion} from '../models/environment-config.model';
 import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../utils';
-import {AUTH_TOKEN_KEY} from '../constants';
+import {AUTH_TOKEN_KEY, PUBLIC_ENVIRONMENT_METHODS} from '../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../system';
 import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
@@ -78,7 +78,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation UpdateDbmsConfig($dbmsId: String!, $properties: [[String!, String!]]!) {
-                    updateDbmsConfig(dbmsId: $dbmsId, properties: $properties)
+                    ${PUBLIC_ENVIRONMENT_METHODS.UPDATE_DBMS_CONFIG}(dbmsId: $dbmsId, properties: $properties)
                 }
             `,
             variables: {
@@ -98,7 +98,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ListDbmsVersions {
-                    listDbmsVersions {
+                    ${PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS} {
                         edition
                         version
                         origin
@@ -124,7 +124,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                     $credentials: String!
                     $version: String!
                 ) {
-                    installDbms(
+                    ${PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS}(
                         environmentId: $environmentId
                         name: $name
                         credentials: $credentials
@@ -151,7 +151,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation UninstallDbms($environmentId: String!, $name: String!) {
-                    uninstallDbms(environmentId: $environmentId, name: $name)
+                    ${PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_DBMS}(environmentId: $environmentId, name: $name)
                 }
             `,
             variables: {
@@ -171,7 +171,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query GetDbms($environmentId: String!, $nameOrId: String!) {
-                    getDbms(environmentId: $environmentId, dbmsId: $nameOrId) {
+                    ${PUBLIC_ENVIRONMENT_METHODS.GET_DBMS}(environmentId: $environmentId, dbmsId: $nameOrId) {
                         id
                         name
                         description
@@ -209,7 +209,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ListDbmss($environmentId: String!) {
-                    listDbmss(environmentId: $environmentId) {
+                    ${PUBLIC_ENVIRONMENT_METHODS.LIST_DBMSS}(environmentId: $environmentId) {
                         id
                         name
                         description
@@ -231,7 +231,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation StartDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    startDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    ${PUBLIC_ENVIRONMENT_METHODS.START_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
@@ -251,7 +251,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation StopDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    stopDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    ${PUBLIC_ENVIRONMENT_METHODS.STOP_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
@@ -271,7 +271,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
-                    infoDbmss(environmentId: $environmentId, dbmsIds: $namesOrIds) {
+                    ${PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds) {
                         id
                         name
                         connectionUri
@@ -303,7 +303,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                     $authToken: AuthTokenInput!
                     $appId: String!
                 ) {
-                    createAccessToken(
+                    ${PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN}(
                         environmentId: $environmentId
                         dbmsId: $dbmsNameOrId
                         appId: $appId
@@ -341,7 +341,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InstalledApps {
-                    installedApps {
+                    ${PUBLIC_ENVIRONMENT_METHODS.INSTALLED_APPS} {
                         name
                         type
                         path
@@ -362,7 +362,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InstalledExtensions {
-                    installedExtensions {
+                    ${PUBLIC_ENVIRONMENT_METHODS.INSTALLED_EXTENSIONS} {
                         name
                         type
                         path
@@ -387,7 +387,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation InstallExtension($name: String!, version: String!) {
-                    installExtension(name: $name, version: $version) {
+                    ${PUBLIC_ENVIRONMENT_METHODS.INSTALL_EXTENSION}(name: $name, version: $version) {
                         name
                         type
                         path
@@ -411,7 +411,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ExtensionVersions {
-                    listExtensionVersions {
+                    ${PUBLIC_ENVIRONMENT_METHODS.LIST_EXTENSION_VERSIONS} {
                         name
                         version
                         origin
@@ -432,7 +432,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation UninstallExtension($name: String!) {
-                    uninstallExtension(name: $name) {
+                    ${PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_EXTENSION}(name: $name) {
                         name
                         type
                         path

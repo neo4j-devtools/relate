@@ -10,7 +10,6 @@ export interface IAuthenticator {
 export interface IAuthenticatorOptions {
     type: AUTHENTICATOR_TYPES;
     httpOrigin: string;
-    isRemote?: boolean;
     authenticationUrl?: string;
     redirectUrl: string;
     verificationUrl?: string;

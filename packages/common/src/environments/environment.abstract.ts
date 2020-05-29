@@ -14,6 +14,7 @@ import {
 } from './authenticators';
 import {NotSupportedError} from '../errors';
 import {arrayHasItems} from '../utils';
+import {PUBLIC_ENVIRONMENT_METHODS} from '../constants';
 
 export abstract class EnvironmentAbstract {
     get id(): string {
@@ -95,39 +96,39 @@ export abstract class EnvironmentAbstract {
         return _.includes(allowedMethods, methodName);
     }
 
-    abstract listDbmsVersions(): Promise<IDbmsVersion[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS](): Promise<IDbmsVersion[]>;
 
-    abstract installDbms(name: string, credentials: string, version: string): Promise<string>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS](name: string, credentials: string, version: string): Promise<string>;
 
-    abstract uninstallDbms(dbmsId: string): Promise<void>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_DBMS](dbmsId: string): Promise<void>;
 
-    abstract listDbmss(): Promise<IDbms[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMSS](): Promise<IDbms[]>;
 
-    abstract getDbms(nameOrId: string): Promise<IDbms>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.GET_DBMS](nameOrId: string): Promise<IDbms>;
 
-    abstract startDbmss(dbmsIds: string[]): Promise<string[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.START_DBMSS](dbmsIds: string[]): Promise<string[]>;
 
-    abstract stopDbmss(dbmsIds: string[]): Promise<string[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.STOP_DBMSS](dbmsIds: string[]): Promise<string[]>;
 
-    abstract infoDbmss(dbmsIds: string[]): Promise<IDbmsInfo[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[]): Promise<IDbmsInfo[]>;
 
-    abstract createAccessToken(appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
-    abstract updateDbmsConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.UPDATE_DBMS_CONFIG](dbmsId: string, properties: Map<string, string>): Promise<boolean>;
 
     abstract getAppPath(appName: string, appRoot?: string): Promise<string>;
 
-    abstract listInstalledApps(): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_APPS](): Promise<IExtensionMeta[]>;
 
-    abstract listInstalledExtensions(): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_EXTENSIONS](): Promise<IExtensionMeta[]>;
 
     abstract linkExtension(filePath: string): Promise<IExtensionMeta>;
 
-    abstract listExtensionVersions(): Promise<IExtensionVersion[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_EXTENSION_VERSIONS](): Promise<IExtensionVersion[]>;
 
-    abstract installExtension(name: string, version: string): Promise<IExtensionMeta>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_EXTENSION](name: string, version: string): Promise<IExtensionMeta>;
 
-    abstract uninstallExtension(name: string): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_EXTENSION](name: string): Promise<IExtensionMeta[]>;
 
     async updateConfig(key: string, value: any): Promise<void> {
         const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});

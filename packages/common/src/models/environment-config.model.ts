@@ -1,9 +1,10 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional, IsUrl} from 'class-validator';
+import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES, NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
 import {PropertiesFile} from '../system/files';
 import {AuthenticatorOptions} from './authenticator.model';
+import {IsValidUrl} from './custom-validators';
 
 export interface IEnvironmentAuth {
     authUrl: string;
@@ -45,6 +46,8 @@ export interface IEnvironmentConfig {
     relateEnvironment?: string;
     authToken?: string;
     dbmss?: {[key: string]: IDbms};
+    authenticator?: AuthenticatorOptions;
+    allowedMethods?: string[];
 }
 
 export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
@@ -64,8 +67,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public neo4jDataPath?: string;
 
-    @IsString()
-    @IsUrl()
+    @IsValidUrl()
     @IsOptional()
     public httpOrigin?: string;
 
