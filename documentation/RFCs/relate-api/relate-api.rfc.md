@@ -1,5 +1,5 @@
 -   Start Date: (2020-01-15)
--   RFC PR: https://github.com/neo-technology/daedalus/pull/1
+-   RFC PR: https://github.com/neo-technology/relate/pull/1
 -   @relate Issue: (leave this empty)
 
 # Summary
