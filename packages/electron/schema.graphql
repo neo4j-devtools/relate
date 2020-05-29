@@ -35,19 +35,29 @@ type Dbms {
   connectionUri: String
 }
 
+type DbmsInfo {
+  id: ID!
+  name: String
+  description: String
+  connectionUri: String
+  status: String!
+  version: String
+  edition: String
+}
+
 type Mutation {
   createAppLaunchToken(environmentId: String, accessToken: String, principal: String, dbmsId: String!, appName: String!): AppLaunchToken!
-  installDbms(environmentId: String!, name: String!, credentials: String!, version: String!): String!
-  uninstallDbms(environmentId: String!, name: String!): String!
+  installDbms(environmentId: String, name: String!, credentials: String!, version: String!): String!
+  uninstallDbms(environmentId: String, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentId: String, dbmsId: String!, appId: String!, authToken: AuthTokenInput!): String!
 }
 
 type Query {
-  appLaunchData(launchToken: String!, appName: String!): AppLaunchData!
+  appLaunchData(environmentId: String, launchToken: String!, appName: String!): AppLaunchData!
   installedApps(environmentId: String): [AppData!]!
   getDbms(environmentId: String, dbmsId: String!): Dbms!
   listDbmss(environmentId: String): [Dbms!]!
-  statusDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
+  infoDbmss(environmentId: String, dbmsIds: [String!]!): [DbmsInfo!]!
 }

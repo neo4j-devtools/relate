@@ -117,9 +117,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 const cachedVersionExists = _.find(
                     [...cached, ...online],
                     (vcached) =>
-                        vcached.origin === 'cached' &&
-                        vcached.version === v.version &&
-                        vcached.edition === v.edition,
+                        vcached.origin === 'cached' && vcached.version === v.version && vcached.edition === v.edition,
                 );
 
                 if (!cachedVersionExists) {
@@ -236,7 +234,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         );
     }
 
-    async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<void> {
+    async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean> {
         const dbmsId = resolveDbms(this.dbmss, nameOrId).id;
         const neo4jConfig = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -245,6 +243,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
         properties.forEach((value, key) => neo4jConfig.set(key, value));
 
         await neo4jConfig.flush();
+
+        return true;
     }
 
     async listDbmss(): Promise<IDbms[]> {

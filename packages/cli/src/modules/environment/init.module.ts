@@ -1,9 +1,15 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
-import {ENVIRONMENT_TYPES, IEnvironmentConfig, SystemModule, SystemProvider} from '@relate/common';
+import {
+    AuthenticatorOptions,
+    ENVIRONMENT_TYPES,
+    IEnvironmentConfig,
+    SystemModule,
+    SystemProvider,
+} from '@relate/common';
 
 import InitCommand from '../../commands/environment/init';
-import {inputPrompt, selectPrompt} from '../../prompts';
+import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -27,15 +33,21 @@ export class InitModule implements OnApplicationBootstrap {
 
         type = type || (await selectPrompt('Choose environment type', envChoices));
         name = name || (await inputPrompt('Enter environment name'));
+
         if (type === ENVIRONMENT_TYPES.REMOTE) {
             httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
         }
+
+        const authenticator: AuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
+        const allowedMethods: string[] = await selectAllowedMethodsPrompt();
 
         const config: IEnvironmentConfig = {
             type: type as ENVIRONMENT_TYPES,
             id: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             relateEnvironment: 'default',
+            authenticator,
+            allowedMethods,
             user: 'foo',
         };
 

@@ -1,14 +1,15 @@
-import {IsEnum, IsString, IsOptional, IsUrl} from 'class-validator';
+import {IsEnum, IsString, IsOptional} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {AUTHENTICATOR_TYPES} from '../environments/environment.constants';
 import {IGoogleAuthenticatorOptions} from '../environments/authenticators';
+import {IsValidUrl} from './custom-validators';
 
 export type AuthenticatorOptions = Omit<IGoogleAuthenticatorOptions, 'httpOrigin'>;
 
 export class AuthenticatorModel extends ModelAbstract<IGoogleAuthenticatorOptions>
     implements IGoogleAuthenticatorOptions {
-    @IsUrl()
+    @IsValidUrl()
     public httpOrigin!: string;
 
     @IsEnum(AUTHENTICATOR_TYPES)
@@ -20,14 +21,14 @@ export class AuthenticatorModel extends ModelAbstract<IGoogleAuthenticatorOption
     @IsString()
     public clientSecret!: string;
 
-    @IsUrl()
+    @IsValidUrl()
     @IsOptional()
     public authenticationUrl?: string;
 
-    @IsUrl()
+    @IsValidUrl()
     public redirectUrl!: string;
 
-    @IsUrl()
+    @IsValidUrl()
     @IsOptional()
     public verificationUrl?: string;
 }

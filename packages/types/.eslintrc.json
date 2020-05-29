@@ -1,0 +1,12 @@
+{
+    "overrides": [
+        {
+            "files": ["**/*.ts"],
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/ban-ts-ignore": "off",
+                "lines-between-class-members": "off"
+            }
+        }
+    ]
+}

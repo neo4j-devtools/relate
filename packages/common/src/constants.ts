@@ -67,3 +67,21 @@ export enum DBMS_STATUS {
     STARTED = 'started',
     STOPPED = 'stopped'
 }
+export enum PUBLIC_ENVIRONMENT_METHODS {
+    INSTALL_DBMS = 'installDbms',
+    UNINSTALL_DBMS = 'uninstallDbms',
+    INSTALL_EXTENSION = 'installExtension',
+    UNINSTALL_EXTENSION = 'uninstallExtension',
+    START_DBMSS = 'startDbmss',
+    STOP_DBMSS = 'stopDbmss',
+    CREATE_ACCESS_TOKEN = 'createAccessToken',
+    GET_DBMS = 'getDbms',
+    INFO_DBMSS = 'infoDbmss',
+    LIST_DBMSS = 'listDbmss',
+    LIST_DBMS_VERSIONS = 'listDbmsVersions',
+    LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
+    UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
+    INSTALLED_APPS = 'listInstalledApps',
+    INSTALLED_EXTENSIONS = 'listInstalledExtensions',
+    APP_LAUNCH_DATA = 'appLaunchData',
+}

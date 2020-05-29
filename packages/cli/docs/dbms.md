@@ -28,7 +28,7 @@ OPTIONS
   -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
 ```
 
-_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/access-token.ts)_
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/access-token.ts)_
 
 ## `relate dbms:info [DBMSS]`
 
@@ -52,7 +52,7 @@ OPTIONS
   --sort=sort                    property to sort by (prepend '-' for descending)
 ```
 
-_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/info.ts)_
+_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/info.ts)_
 
 ## `relate dbms:install VERSION`
 
@@ -70,7 +70,7 @@ OPTIONS
   -n, --name=name                (required) Name to give the newly installed DBMS
 ```
 
-_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/install.ts)_
+_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/install.ts)_
 
 ## `relate dbms:list`
 
@@ -90,7 +90,7 @@ OPTIONS
   --sort=sort                    property to sort by (prepend '-' for descending)
 ```
 
-_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/list.ts)_
+_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/list.ts)_
 
 ## `relate dbms:open DBMS`
 
@@ -108,7 +108,7 @@ OPTIONS
   -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
-_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/open.ts)_
+_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/open.ts)_
 
 ## `relate dbms:start [DBMSS]`
 
@@ -125,7 +125,7 @@ OPTIONS
   -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
-_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/start.ts)_
+_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/start.ts)_
 
 ## `relate dbms:stop [DBMSS]`
 
@@ -142,7 +142,7 @@ OPTIONS
   -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
-_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/stop.ts)_
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/stop.ts)_
 
 ## `relate dbms:uninstall DBMS`
 
@@ -159,4 +159,4 @@ OPTIONS
   -e, --environment=environment  [default: default] Name of the environment to run the command against
 ```
 
-_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/daedalus/blob/v1.0.1-alpha.0/dist/commands/dbms/uninstall.ts)_
+_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/uninstall.ts)_
