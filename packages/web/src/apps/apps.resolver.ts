@@ -20,8 +20,9 @@ export class AppsResolver {
     async appLaunchData(
         @Args('appName') appName: string,
         @Args('launchToken') launchToken: string,
+        @Args('environmentId', {nullable: true}) environmentId?: string,
     ): Promise<AppLaunchData> {
-        const {environmentId, dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appName, launchToken);
+        const {dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appName, launchToken);
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const dbms = await environment.getDbms(dbmsId);
 
