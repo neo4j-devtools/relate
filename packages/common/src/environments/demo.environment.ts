@@ -4,10 +4,6 @@ import {NotAllowedError} from '../errors';
 import {IDbmsVersion} from '../models';
 
 export class DemoEnvironment extends LocalEnvironment {
-    listInstalledExtensions(): Promise<IExtensionMeta[]> {
-        throw new NotAllowedError(`${DemoEnvironment.name} does not support listing installed extensions`);
-    }
-
     listDbmsVersions(): Promise<IDbmsVersion[]> {
         throw new NotAllowedError(`${DemoEnvironment.name} does not support listing DBMS versions`);
     }
