@@ -124,7 +124,7 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
                 res.push(current.value);
             }
 
-            i++;
+            i += 1;
             current = it.next();
         }
 

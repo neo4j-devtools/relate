@@ -13,14 +13,14 @@ describe('Str', () => {
         const two = Str.from('');
 
         expect(one.isEmpty).toBe(false);
-        expect(two.isEmpty);
+        expect(two.isEmpty).toBe(true);
     });
 
     test('isStr', () => {
         const one = Str.from('test');
         const two = 'foo';
 
-        expect(Str.isStr(one));
+        expect(Str.isStr(one)).toBe(true);
         expect(Str.isStr(two)).toBe(false);
     });
 
@@ -37,6 +37,7 @@ describe('Str', () => {
 
         expect(Str.from(one)).toEqual(two);
         expect(Str.from(two)).toEqual(two);
-        expect(two === two);
+        // eslint-disable-next-line no-self-compare
+        expect(two === two).toBe(true);
     });
 });

@@ -17,7 +17,7 @@ export default class Bool extends Monad<boolean> {
     }
 
     static of(val: any): Bool {
-        return Boolean(val) ? Bool.TRUE : Bool.FALSE;
+        return val ? Bool.TRUE : Bool.FALSE;
     }
 
     static from(val: any): Bool {

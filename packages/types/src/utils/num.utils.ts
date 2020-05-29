@@ -9,6 +9,7 @@ export function fromNumberToNum(value: number) {
     if (isNaN(value) || !isFinite(value)) {
         return Num.ZERO;
     }
+
     if (value <= -TWO_PWR_63_DBL) {
         return Num.MIN_VALUE;
     }
@@ -34,13 +35,13 @@ export function fromStringToNum(str: string, radix: number = DEFAULT_NUM_RADIX):
     }
 
     if (radix < 2 || radix > 36) {
-        throw new Error('radix out of range: ' + radix);
+        throw new Error(`radix out of range: ${radix}`);
     }
 
     const p = str.indexOf('-');
 
     if (p > 0) {
-        throw new Error('number format error: interior "-" character: ' + str);
+        throw new Error(`number format error: interior "-" character: ${str}`);
     } else if (p === 0) {
         return Num.fromString(str.substring(1), radix).negate();
     }
@@ -87,14 +88,14 @@ export function fromValueToNum(val: any): Num {
 
 export function fromNumToString(val: Num, radix: number = DEFAULT_NUM_RADIX) {
     if (radix < 2 || radix > 36) {
-        throw RangeError('radix out of range: ' + radix);
+        throw RangeError(`radix out of range: ${radix}`);
     }
 
     if (val.isZero) {
         return '0';
     }
 
-    let rem;
+    let rem = val;
     if (val.isNegative) {
         if (val.equals(Num.MIN_VALUE)) {
             // We need to change the Num value before it can be negated, so we remove
@@ -102,44 +103,47 @@ export function fromNumToString(val: Num, radix: number = DEFAULT_NUM_RADIX) {
             const radixNum = Num.fromNumber(radix);
             const div = val.divide(radixNum);
             rem = div.multiply(radixNum).subtract(val);
+
             return div.toString(radix) + rem.toInt().toString(radix);
-        } else {
-            return '-' + val.negate().toString(radix);
         }
+
+        return `-${val.negate().toString(radix)}`;
     }
 
     // Do several (6) digits each time through the loop, so as to
     // minimize the calls to the very expensive emulated div.
     const radixToPower = Num.fromNumber(Math.pow(radix, 6));
-    rem = val;
+
     let result = '';
+    // eslint-disable-next-line no-constant-condition
     while (true) {
         const remDiv = rem.divide(radixToPower);
         const intval = rem.subtract(remDiv.multiply(radixToPower)).toInt() >>> 0;
         let digits = intval.toString(radix);
         rem = remDiv;
+
         if (rem.isZero) {
-            return digits + result;
-        } else {
-            while (digits.length < 6) {
-                digits = '0' + digits;
-            }
-            result = '' + digits + result;
+            return `${digits}${result}`;
         }
+
+        while (digits.length < 6) {
+            digits = `0${digits}`;
+        }
+        result = `${digits}${result}`;
     }
 }
 
 export function addNums(right: Num, left: Num) {
     // Divide each number into 4 chunks of 16 bits, and then sum the chunks.
-    let a48 = right.high >>> 16;
-    let a32 = right.high & 0xffff;
-    let a16 = right.low >>> 16;
-    let a00 = right.low & 0xffff;
+    const a48 = right.high >>> 16;
+    const a32 = right.high & 0xffff;
+    const a16 = right.low >>> 16;
+    const a00 = right.low & 0xffff;
 
-    let b48 = left.high >>> 16;
-    let b32 = left.high & 0xffff;
-    let b16 = left.low >>> 16;
-    let b00 = left.low & 0xffff;
+    const b48 = left.high >>> 16;
+    const b32 = left.high & 0xffff;
+    const b16 = left.low >>> 16;
+    const b00 = left.low & 0xffff;
 
     let c48 = 0;
     let c32 = 0;
@@ -181,13 +185,15 @@ export function multiplyNum(right: Num, multiplier: Num): Num {
     if (right.isNegative) {
         if (multiplier.isNegative) {
             return right.negate().multiply(multiplier.negate());
-        } else {
-            return right
-                .negate()
-                .multiply(multiplier)
-                .negate();
         }
-    } else if (multiplier.isNegative) {
+
+        return right
+            .negate()
+            .multiply(multiplier)
+            .negate();
+    }
+
+    if (multiplier.isNegative) {
         return right.multiply(multiplier.negate()).negate();
     }
 
@@ -199,15 +205,15 @@ export function multiplyNum(right: Num, multiplier: Num): Num {
     // Divide each long into 4 chunks of 16 bits, and then add up 4x4 products.
     // We can skip products that would overflow.
 
-    let a48 = right.high >>> 16;
-    let a32 = right.high & 0xffff;
-    let a16 = right.low >>> 16;
-    let a00 = right.low & 0xffff;
+    const a48 = right.high >>> 16;
+    const a32 = right.high & 0xffff;
+    const a16 = right.low >>> 16;
+    const a00 = right.low & 0xffff;
 
-    let b48 = multiplier.high >>> 16;
-    let b32 = multiplier.high & 0xffff;
-    let b16 = multiplier.low >>> 16;
-    let b00 = multiplier.low & 0xffff;
+    const b48 = multiplier.high >>> 16;
+    const b32 = multiplier.high & 0xffff;
+    const b16 = multiplier.low >>> 16;
+    const b00 = multiplier.low & 0xffff;
 
     let c48 = 0;
     let c32 = 0;

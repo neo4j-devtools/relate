@@ -20,7 +20,7 @@ describe('None', () => {
         const one = None.from('test');
         const two = 'foo';
 
-        expect(None.isNone(one));
+        expect(None.isNone(one)).toBe(true);
         expect(None.isNone(two)).toBe(false);
     });
 

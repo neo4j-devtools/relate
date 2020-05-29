@@ -7,7 +7,7 @@ export interface IMonad<T> extends Iterable<T> {
 
     getOrElse(other: T): T;
 
-    toString(formatter?: (val: T) => string): string
+    toString(formatter?: (val: T) => string): string;
 
     map(project: (value: T) => T): IMonad<T>;
 
@@ -19,12 +19,13 @@ export default class Monad<T extends any> implements IMonad<T> {
     protected iterableValue: Iterable<T> = [];
 
     constructor(protected readonly original: T) {
+        /* eslint-disable no-eq-null,eqeqeq */
+        this.alreadyIterable =
+            // @ts-ignore
+            original != null && typeof original !== 'string' && typeof original[Symbol.iterator] === 'function';
         // @ts-ignore
-        this.alreadyIterable = original != null && typeof original !== 'string' && typeof original[Symbol.iterator] === 'function';
-        // @ts-ignore
-        this.iterableValue = this.alreadyIterable
-            ? original
-            : [original];
+        this.iterableValue = this.alreadyIterable ? original : [original];
+        /* eslint-enable no-eq-null,eqeqeq */
     }
 
     isThis(other?: any): other is this {
@@ -32,7 +33,8 @@ export default class Monad<T extends any> implements IMonad<T> {
     }
 
     get isEmpty() {
-        return this.original == null;
+        // eslint-disable-next-line no-eq-null,eqeqeq
+        return !this.original
     }
 
     static isMonad<T extends any>(val: any): val is Monad<T> {
@@ -44,12 +46,10 @@ export default class Monad<T extends any> implements IMonad<T> {
     }
 
     static from(val: any) {
-        return val instanceof Monad
-            ? val
-            : Monad.of(val);
+        return val instanceof Monad ? val : Monad.of(val);
     }
 
-    * [Symbol.iterator](): Iterator<T> {
+    *[Symbol.iterator](): Iterator<T> {
         for (const val of this.iterableValue) {
             yield val;
         }
@@ -60,13 +60,11 @@ export default class Monad<T extends any> implements IMonad<T> {
     }
 
     getOrElse(other: T): T {
-        return this.isEmpty
-            ? other
-            : this.get();
+        return this.isEmpty ? other : this.get();
     }
 
     equals(other: any) {
-        const toCompare = Monad.from(other)
+        const toCompare = Monad.from(other);
 
         return toCompare.get() === this.get();
     }

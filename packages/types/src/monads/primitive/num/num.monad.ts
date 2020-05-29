@@ -25,7 +25,8 @@ export default class Num extends Monad<number> {
     static readonly MAX_SAFE_VALUE = Num.fromBits(0xffffffff | 0, 0x1fffff | 0);
     static readonly TWO_PWR_24 = Num.fromInt(TWO_PWR_24_DBL);
 
-    constructor(value: number = 0, private readonly ourLow = value, private readonly ourHigh = value < 0 ? -1 : 0) {
+    // eslint-disable-next-line default-param-last
+    constructor(value = 0, private readonly ourLow = value, private readonly ourHigh = value < 0 ? -1 : 0) {
         super(value);
     }
 

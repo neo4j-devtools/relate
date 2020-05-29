@@ -13,42 +13,35 @@ describe('Monad', () => {
             const m = Monad.from(undefined);
             const o = Monad.from(undefined);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('null', () => {
             const m = Monad.from(null);
             const o = Monad.from(null);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('Number', () => {
             const m = Monad.from(1);
             const o = Monad.from(1);
 
-            expect(m.equals(o));
-        });
-
-        test('Number', () => {
-            const m = Monad.from(1);
-            const o = Monad.from(1);
-
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('String', () => {
             const m = Monad.from('foo');
             const o = Monad.from('foo');
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('Boolean', () => {
             const m = Monad.from(true);
             const o = Monad.from(true);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('Array', () => {
@@ -56,7 +49,7 @@ describe('Monad', () => {
             const m = Monad.from(arr);
             const o = Monad.from(arr);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('Object', () => {
@@ -64,7 +57,7 @@ describe('Monad', () => {
             const m = Monad.from(obj);
             const o = Monad.from(obj);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
 
         test('Map', () => {
@@ -72,26 +65,26 @@ describe('Monad', () => {
             const m = Monad.from(map);
             const o = Monad.from(map);
 
-            expect(m.equals(o));
+            expect(m.equals(o)).toBe(true);
         });
     });
 
     describe('isEmpty', () => {
-        test('derivatives of null', () => {
+        test('falsey', () => {
             const undef = Monad.from(undefined);
             const notTrue = Monad.from(false);
             const nulled = Monad.from(null);
             const zero = Monad.from(0);
             const emptyStr = Monad.from('');
 
-            expect(undef.isEmpty);
-            expect(notTrue.isEmpty);
-            expect(nulled.isEmpty);
-            expect(zero.isEmpty);
-            expect(emptyStr.isEmpty);
+            expect(undef.isEmpty).toBe(true);
+            expect(notTrue.isEmpty).toBe(true);
+            expect(nulled.isEmpty).toBe(true);
+            expect(zero.isEmpty).toBe(true);
+            expect(emptyStr.isEmpty).toBe(true);
         });
 
-        test('non-derivatives of null', () => {
+        test('truthy', () => {
             const notFalse = Monad.from(true);
             const notZero = Monad.from(1);
             const str = Monad.from('hi');
@@ -108,15 +101,15 @@ describe('Monad', () => {
         const three = Monad.from('foo');
 
         test('Works with same instance', () => {
-            expect(one.isThis(one));
+            expect(one.isThis(one)).toBe(true);
         });
 
         test('Works with other instance', () => {
-            expect(one.isThis(two));
+            expect(one.isThis(two)).toBe(true);
         });
 
         test('Works with other value type', () => {
-            expect(one.isThis(three));
+            expect(one.isThis(three)).toBe(true);
         });
     });
 
@@ -126,11 +119,11 @@ describe('Monad', () => {
         const three = 'foo';
 
         test('Works with monad instance', () => {
-            expect(Monad.isMonad(one));
+            expect(Monad.isMonad(one)).toBe(true);
         });
 
         test('Works with empty monad instance', () => {
-            expect(Monad.isMonad(two));
+            expect(Monad.isMonad(two)).toBe(true);
         });
 
         test('Works with non-monad', () => {
@@ -146,24 +139,24 @@ describe('Monad', () => {
         test('Works with monad instance', () => {
             const created = Monad.from(one);
 
-            expect(created instanceof Monad);
-            expect(created === one);
-            expect(created.equals(one));
+            expect(created instanceof Monad).toBe(true);
+            expect(created === one).toBe(true);
+            expect(created.equals(one)).toBe(true);
         });
 
         test('Works with empty monad instance', () => {
             const created = Monad.from(two);
 
-            expect(created instanceof Monad);
-            expect(created === two);
-            expect(created.equals(two));
+            expect(created instanceof Monad).toBe(true);
+            expect(created === two).toBe(true);
+            expect(created.equals(two)).toBe(true);
         });
 
         test('Works with non-monad', () => {
             const created = Monad.from(three);
 
-            expect(created instanceof Monad);
-            expect(created.equals(three));
+            expect(created instanceof Monad).toBe(true);
+            expect(created.equals(three)).toBe(true);
         });
     });
 
@@ -175,24 +168,24 @@ describe('Monad', () => {
         test('Works with monad instance', () => {
             const created = Monad.of(one);
 
-            expect(created instanceof Monad);
-            expect(created !== one);
-            expect(created.get() === one);
+            expect(created instanceof Monad).toBe(true);
+            expect(created !== one).toBe(true);
+            expect(created.get() === one).toBe(true);
         });
 
         test('Works with empty monad instance', () => {
             const created = Monad.of(two);
 
-            expect(created instanceof Monad);
-            expect(created !== two);
-            expect(created.get() === two);
+            expect(created instanceof Monad).toBe(true);
+            expect(created !== two).toBe(true);
+            expect(created.get() === two).toBe(true);
         });
 
         test('Works with non-monad', () => {
             const created = Monad.of(three);
 
-            expect(created instanceof Monad);
-            expect(created.equals(three));
+            expect(created instanceof Monad).toBe(true);
+            expect(created.equals(three)).toBe(true);
         });
     });
 
@@ -223,12 +216,12 @@ describe('Monad', () => {
     });
 
     describe('map', () => {
-        test('preserves monad instance', () => {
+        test('preserves monad type', () => {
             const one = Monad.from('foo');
             const mapped = one.map(() => 'bar');
 
-            expect(one === mapped);
-            expect(one.equals('bar'));
+            expect(one.isThis(mapped)).toBe(true);
+            expect(mapped.equals('bar')).toBe(true);
         });
     });
 
@@ -244,8 +237,8 @@ describe('Monad', () => {
             const one = Monad.of(Monad.from('foo'));
             const mapped = one.flatMap((_) => _);
 
-            expect(mapped instanceof Monad);
-            expect(mapped.equals(Monad.from('foo')));
+            expect(mapped instanceof Monad).toBe(true);
+            expect(mapped.equals(Monad.from('foo'))).toBe(true);
         });
     });
 
@@ -254,8 +247,8 @@ describe('Monad', () => {
             const one = Monad.from('foo');
             const mapped = one.switchMap(() => Monad.from('bar'));
 
-            expect(mapped.equals('bar'));
-            expect(one !== mapped);
+            expect(mapped.equals('bar')).toBe(true);
+            expect(one !== mapped).toBe(true);
         });
     });
 });

@@ -20,7 +20,7 @@ describe('Bool', () => {
         const one = Bool.from('test');
         const two = false;
 
-        expect(Bool.isBool(one));
+        expect(Bool.isBool(one)).toBe(true);
         expect(Bool.isBool(two)).toBe(false);
     });
 

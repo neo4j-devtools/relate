@@ -20,7 +20,7 @@ describe('Nil', () => {
         const one = Nil.from('test');
         const two = 'foo';
 
-        expect(Nil.isNil(one));
+        expect(Nil.isNil(one)).toBe(true);
         expect(Nil.isNil(two)).toBe(false);
     });
 
