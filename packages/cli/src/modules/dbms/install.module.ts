@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
@@ -29,7 +28,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         let {version = ''} = args;
         if (!version) {
-            let versions = await environment.listDbmsVersions();
+            const versions = await environment.listDbmsVersions();
             version = await selectPrompt(
                 'Select a version to install',
                 versions.map((v) => ({

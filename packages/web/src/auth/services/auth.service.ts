@@ -54,11 +54,12 @@ export class AuthService {
         }
 
         const app: Application = httpAdapter.getInstance();
+        const healthEndpoint = this.configService.get('healthCheckEndpoint');
         const authenticationEndpoint = this.configService.get('authenticationEndpoint');
 
         app.use(cookieParser());
         app.use(async (req, res, next) => {
-            if (_.startsWith(req.path, authenticationEndpoint)) {
+            if (_.startsWith(req.path, authenticationEndpoint) || _.startsWith(req.path, healthEndpoint)) {
                 next();
                 return;
             }

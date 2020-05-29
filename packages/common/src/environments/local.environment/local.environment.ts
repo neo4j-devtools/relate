@@ -115,9 +115,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 const cachedVersionExists = _.find(
                     [...cached, ...online],
                     (vcached) =>
-                        vcached.origin === 'cached' &&
-                        vcached.version === v.version &&
-                        vcached.edition === v.edition,
+                        vcached.origin === 'cached' && vcached.version === v.version && vcached.edition === v.edition,
                 );
 
                 if (!cachedVersionExists) {
