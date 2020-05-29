@@ -31,7 +31,7 @@ If you would like to chat about the question in real-time, you can reach out via
 
 ## Found a Bug?
 If you find a bug in the source code, you can help us by
-[submitting an issue](#submitting-an-issue) to our [GitHub Repository][https://github.com/neo-technology/daedalus]. Even better, you can
+[submitting an issue](#submitting-an-issue) to our [GitHub Repository][https://github.com/neo-technology/relate]. Even better, you can
 [submit a Pull Request](#submitting-a-pull-request-pr) with a fix.
 
 ## Missing a Feature?
@@ -59,13 +59,13 @@ We will be insisting on a minimal reproduction scenario in order to save maintai
 
 Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you, we are going to close an issue that doesn't have enough info to be reproduced.
 
-You can file new issues by selecting from our [new issue templates](https://github.com/neo-technology/daedalus/issues/new/choose) and filling out the issue template.
+You can file new issues by selecting from our [new issue templates](https://github.com/neo-technology/relate/issues/new/choose) and filling out the issue template.
 
 
 ### Submitting a Pull Request (PR)
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-1. Search [GitHub](https://github.com/neo-technology/daedalus/pulls) for an open or closed PR
+1. Search [GitHub](https://github.com/neo-technology/relate/pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
 1. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
   Discussing the design up front helps to ensure that we're ready to accept your work.
@@ -169,7 +169,7 @@ to read on GitHub as well as in various git tools.
 
 The footer should contain a [closing reference to an issue](https://help.github.com/articles/closing-issues-via-commit-messages/) if any.
 
-Samples: (even more [samples](https://github.com/neo-technology/daedalus/commits/master))
+Samples: (even more [samples](https://github.com/neo-technology/relate/commits/master))
 
 ```
 docs(changelog): update changelog to beta.5

@@ -4,10 +4,10 @@
     "description": "JS toolkit",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
-    "homepage": "https://github.com/neo-technology/daedalus#readme",
+    "homepage": "https://github.com/neo-technology/relate#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/neo-technology/daedalus.git"
+        "url": "git+https://github.com/neo-technology/relate.git"
     },
     "publishConfig": {
         "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
