@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import {prompt} from 'enquirer';
-import {AUTHENTICATOR_TYPES, Environment, AuthenticatorOptions, IExtensionMeta, NotFoundError, PUBLIC_ENVIRONMENT_METHODS} from '@relate/common';
+import {AUTHENTICATOR_TYPES, Environment, AuthenticatorOptions, IExtensionMeta, NotFoundError, PUBLIC_ENVIRONMENT_METHODS, DBMS_STATUS} from '@relate/common';
 
-import {DBMS_STATUS_FILTERS} from '../constants';
 import {inputPrompt} from './input.prompt';
 
 interface IChoice {
@@ -38,7 +37,7 @@ export const selectMultiplePrompt = async (message: string, choices: string[] | 
 export const selectDbmsPrompt = async (
     message: string,
     environment: Environment,
-    filter?: DBMS_STATUS_FILTERS,
+    filter?: DBMS_STATUS,
 ): Promise<string> => {
     let dbmss = await environment.listDbmss();
     if (!dbmss.length) {
@@ -49,7 +48,7 @@ export const selectDbmsPrompt = async (
         const infoDbmss = await environment.infoDbmss(_.map(dbmss, (dbms) => dbms.id));
         dbmss = _.compact(
             _.map(dbmss, (dbms, index) => {
-                if (_.includes(infoDbmss[index].status, filter)) {
+                if (infoDbmss[index].status === filter) {
                     return dbms;
                 }
                 return null;
@@ -59,7 +58,7 @@ export const selectDbmsPrompt = async (
 
     if (!dbmss.length) {
         throw new NotFoundError(
-            `All DBMSs are currently ${filter === DBMS_STATUS_FILTERS.START ? 'running' : 'stopped'}`,
+            `All DBMSs are currently ${filter === DBMS_STATUS.STARTED ? 'stopped' : 'started'}`,
         );
     }
 

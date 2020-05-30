@@ -1,12 +1,13 @@
 import {prompt} from 'enquirer';
+import { IInputPromptOptions } from '../constants';
 
-export const inputPrompt = async (message: string, initial?: string, required: boolean = false): Promise<string> => {
+export const inputPrompt = async (message: string, options?: IInputPromptOptions): Promise<string> => {
     const {selection} = await prompt({
         message,
-        initial,
+        initial: options?.initial,
         name: 'selection',
         type: 'input',
-        required,
+        required: options?.required === false ? false : true
     });
 
     return selection;

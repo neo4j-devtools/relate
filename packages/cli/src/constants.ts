@@ -32,8 +32,7 @@ export const FLAGS = {
     },
 };
 
-// @todo - it might be best to move this to common
-export enum DBMS_STATUS_FILTERS {
-    START = 'Neo4j is not running',
-    STOP = 'Neo4j is running',
+export interface IInputPromptOptions {
+    initial?: string
+    required?: boolean
 }

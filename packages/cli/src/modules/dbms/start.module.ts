@@ -1,10 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
 
 import {readStdinArray, isInteractive} from '../../stdin';
 import StartCommand from '../../commands/dbms/start';
 import {selectDbmsPrompt} from '../../prompts';
-import {DBMS_STATUS_FILTERS} from '../../constants';
 
 @Module({
     exports: [],
@@ -28,7 +27,7 @@ export class StartModule implements OnApplicationBootstrap {
                 const selectedDbms = await selectDbmsPrompt(
                     'Select a DBMS to start',
                     environment,
-                    DBMS_STATUS_FILTERS.START,
+                    DBMS_STATUS.STOPPED,
                 );
                 dbmss = [selectedDbms];
             } else {
