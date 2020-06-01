@@ -205,7 +205,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async infoDbmss(nameOrIds: string[]): Promise<IDbmsInfo[]> {
-        let dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
+        const dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
 
         return Promise.all(
             dbmss.map(async (dbms) => {

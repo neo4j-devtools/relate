@@ -1,6 +1,14 @@
 import _ from 'lodash';
 import {prompt} from 'enquirer';
-import {AUTHENTICATOR_TYPES, Environment, AuthenticatorOptions, IExtensionMeta, NotFoundError, PUBLIC_ENVIRONMENT_METHODS, DBMS_STATUS} from '@relate/common';
+import {
+    AUTHENTICATOR_TYPES,
+    Environment,
+    AuthenticatorOptions,
+    IExtensionMeta,
+    NotFoundError,
+    PUBLIC_ENVIRONMENT_METHODS,
+    DBMS_STATUS,
+} from '@relate/common';
 
 import {inputPrompt} from './input.prompt';
 
@@ -57,9 +65,7 @@ export const selectDbmsPrompt = async (
     }
 
     if (!dbmss.length) {
-        throw new NotFoundError(
-            `All DBMSs are currently ${filter === DBMS_STATUS.STARTED ? 'stopped' : 'started'}`,
-        );
+        throw new NotFoundError(`All DBMSs are currently ${filter === DBMS_STATUS.STARTED ? 'stopped' : 'started'}`);
     }
 
     return selectPrompt(
@@ -81,23 +87,6 @@ export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]
     );
 };
 
-export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions | undefined> => {
-    const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
-
-    if (needsWhitelist === 'No') {
-        return undefined;
-    }
-
-    const type = await selectPrompt('Authentication type', _.map(_.values(AUTHENTICATOR_TYPES), (name) => ({name})));
-
-    switch (type) {
-        case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2:
-            return googleAuthenticatorPrompt()
-        default:
-            return undefined
-    }
-};
-
 export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions> => {
     const authenticationUrl = await inputPrompt('Authentication request URL (optional)');
     const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)');
@@ -114,7 +103,7 @@ export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions>
         verificationUrl: verificationUrl || undefined,
         clientId,
         clientSecret,
-    }
+    };
 };
 
 export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
@@ -131,4 +120,24 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
         'Select allowed GraphQL API methods',
         _.map(_.values(PUBLIC_ENVIRONMENT_METHODS), (name) => ({name})),
     );
+};
+
+export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions | undefined> => {
+    const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
+
+    if (needsWhitelist === 'No') {
+        return undefined;
+    }
+
+    const type = await selectPrompt(
+        'Authentication type',
+        _.map(_.values(AUTHENTICATOR_TYPES), (name) => ({name})),
+    );
+
+    switch (type) {
+        case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2:
+            return googleAuthenticatorPrompt();
+        default:
+            return undefined;
+    }
 };
