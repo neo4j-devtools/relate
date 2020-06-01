@@ -99,11 +99,11 @@ export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions 
 };
 
 export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions> => {
-    const authenticationUrl = await inputPrompt('Authentication request URL (optional)',);
-    const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)', '', true);
+    const authenticationUrl = await inputPrompt('Authentication request URL (optional)');
+    const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)');
     const verificationUrl = await inputPrompt('Authentication verification URL (optional)');
-    const clientId = await inputPrompt('OAuth Client ID', '', true);
-    const clientSecret = await inputPrompt('OAuth Client Secret', '', true);
+    const clientId = await inputPrompt('OAuth Client ID');
+    const clientSecret = await inputPrompt('OAuth Client Secret');
 
     console.log(redirectUrl);
 
