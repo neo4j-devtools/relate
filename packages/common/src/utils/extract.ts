@@ -7,7 +7,7 @@ import {FileStructureError} from '../errors';
 export const extract = async (archivePath: string, outputDir: string): Promise<string> => {
     const outputFiles = await decompress(archivePath, outputDir);
     // get unique top level file paths
-    const outputFilePaths = [...new Set(_.map(outputFiles, file => _.split(path.normalize(file.path), path.sep)[0]))];
+    const outputFilePaths = [...new Set(_.map(outputFiles, (file) => _.split(path.normalize(file.path), path.sep)[0]))];
 
     if (outputFilePaths.length !== 1) {
         // delete the extracted output (not the archive)

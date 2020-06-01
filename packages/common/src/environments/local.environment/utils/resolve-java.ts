@@ -48,10 +48,12 @@ const resolveJavaName = (): IJavaName => {
 export const downloadJava = async (): Promise<void> => {
     await emitHookEvent(HOOK_EVENTS.JAVA_DOWNLOAD_START, null);
     const runtimeDir = path.join(envPaths().cache, RUNTIME_DIR_NAME);
-    const localArchivePath = path.join(runtimeDir, resolveJavaName().archive);
     const downloadUrl = new URL(resolveJavaName().archive, ZULU_JAVA_DOWNLOAD_URL).toString();
 
-    await download(downloadUrl, localArchivePath);
+    const localArchivePath = path.join(runtimeDir, resolveJavaName().archive);
+    const downloadFilePath = await download(downloadUrl, runtimeDir);
+    await fse.move(downloadFilePath, localArchivePath);
+
     await extract(localArchivePath, runtimeDir);
     await fse.remove(localArchivePath);
     await emitHookEvent(HOOK_EVENTS.JAVA_DOWNLOAD_STOP, null);

@@ -5,7 +5,7 @@ import {ENVIRONMENT_TYPES, NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/en
 import {PropertiesFile} from '../system/files';
 import {AuthenticatorOptions} from './authenticator.model';
 import {IsValidUrl} from './custom-validators';
-import { DBMS_STATUS } from '../constants';
+import {DBMS_STATUS} from '../constants';
 
 export interface IEnvironmentAuth {
     authUrl: string;

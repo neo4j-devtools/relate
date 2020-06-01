@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import got from 'got';
+import got, {Options} from 'got';
 import path from 'path';
 import stream from 'stream';
 import {promisify} from 'util';
@@ -10,22 +10,22 @@ import {FetchError} from '../errors';
 
 // @todo: this still needs a test in future as I couldn't figure out the tests just yet.
 // https://dev.to/cdanielsen/testing-streams-a-primer-3n6e has some interesting points to start with.
-export const download = async (url: string, outputFilePath: string): Promise<void> => {
+export const download = async (url: string, outputDirPath: string, options?: Options): Promise<string> => {
     // Download straight to the destination directory with a temporary name that
     // makes it obvious that the file is not finished downloading.
-    const outputDirPath = path.dirname(outputFilePath);
-    const downloadingName = `Unconfirmed_${uuidv4().slice(0, 8)}${DOWNLOADING_FILE_EXTENSION}`;
-    const downloadingPath = path.join(outputDirPath, downloadingName);
+    const downloadFileName = `Unconfirmed_${uuidv4().slice(0, 8)}${DOWNLOADING_FILE_EXTENSION}`;
+    const downloadFilePath = path.join(outputDirPath, downloadFileName);
 
-    await fse.ensureFile(downloadingPath);
+    await fse.ensureFile(downloadFilePath);
     const streamPipeline = promisify(stream.pipeline);
 
     try {
-        await streamPipeline(got.stream(url), fse.createWriteStream(downloadingPath));
-        await fse.move(downloadingPath, outputFilePath);
+        await streamPipeline(got.stream(url, options), fse.createWriteStream(downloadFilePath));
+
+        return downloadFilePath;
     } catch (e) {
         // remove tmp output
-        await fse.remove(downloadingPath);
+        await fse.remove(downloadFilePath);
         throw new FetchError(e);
     }
 };

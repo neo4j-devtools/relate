@@ -1,28 +1,22 @@
-import _ from 'lodash';
-
 import {FileStructureError} from '../errors';
 import {getDistributionInfo} from '../environments/local.environment/utils/dbms-versions';
 import {IDbmsVersion} from '../models';
-import { extract } from './extract';
+import {extract} from './extract';
 
 interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;
 }
 
 export const extractNeo4j = async (archivePath: string, outputDir: string): Promise<IExtractedArchive> => {
-    const extractedDistPath = await extract(archivePath, outputDir)
+    const extractedDistPath = await extract(archivePath, outputDir);
 
     // check if this is neo4j...
-    try {
-        const info = await getDistributionInfo(extractedDistPath);
-        if (!info) {
-            throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
-        }
-        return {
-            ...info,
-            extractedDistPath,
-        };
-    } catch (e) {
-        throw e;
+    const info = await getDistributionInfo(extractedDistPath);
+    if (!info) {
+        throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
     }
+    return {
+        ...info,
+        extractedDistPath,
+    };
 };

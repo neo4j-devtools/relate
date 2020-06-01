@@ -65,7 +65,7 @@ export enum DBMS_STATUS_FILTERS {
 
 export enum DBMS_STATUS {
     STARTED = 'started',
-    STOPPED = 'stopped'
+    STOPPED = 'stopped',
 }
 export enum PUBLIC_ENVIRONMENT_METHODS {
     INSTALL_DBMS = 'installDbms',
