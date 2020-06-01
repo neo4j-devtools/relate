@@ -6,6 +6,7 @@ import {coerce, satisfies} from 'semver';
 import path from 'path';
 import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
+import {promisify} from 'util';
 
 import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
@@ -45,8 +46,9 @@ import {
     JSON_FILE_EXTENSION,
     DBMS_STATUS_FILTERS,
     DBMS_STATUS,
+    HOOK_EVENTS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j, emitHookEvent} from '../../utils';
 import {
     getAppBasePath,
     discoverExtension,
@@ -65,6 +67,7 @@ import {
     getDistributionInfo,
     IExtensionVersion,
     fetchExtensionVersions,
+    spawnPromise
 } from './utils';
 import {IDbmsInfo} from '../../models/environment-config.model';
 
@@ -624,21 +627,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         // @todo: need to look at our use of exec (and maybe child processes) in general
         // this does not account for all scenarios at the moment so needs more thought
-        await new Promise((resolve, reject) => {
-            exec(
-                'npm install --production',
-                {
-                    cwd: target,
-                },
-                (err, stdout, _stderr) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    resolve(stdout);
-                },
-            );
-        });
+        const execute = promisify(exec)
+        try {
+            await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, `installing dependencies for ${extension.name}`);
+            const {stdout, stderr} = await execute('npm install --production', {
+                cwd: target,
+            });
+            process.stdout.write(stdout)
+            process.stdout.write(stderr)
+            emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, null);
+        } catch (err) {
+            throw new Error(err);
+        }
 
         return extension;
     }

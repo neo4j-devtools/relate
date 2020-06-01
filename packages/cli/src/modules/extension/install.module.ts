@@ -1,8 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {arrayHasItems, EXTENSION_ORIGIN, InvalidArgumentError, SystemModule, SystemProvider} from '@relate/common';
+import {arrayHasItems, EXTENSION_ORIGIN, InvalidArgumentError, SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
+import cli from 'cli-ux';
 
 import InstallCommand from '../../commands/extension/install';
 import {selectPrompt} from '../../prompts';
@@ -63,7 +64,15 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        return environment.installExtension(name, version).then((res) => {
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, () => cli.action.stop())
+        return environment.installExtension(name, version).then((res: { name: string | undefined; }) => {
             this.utils.log(res.name);
         });
     }
