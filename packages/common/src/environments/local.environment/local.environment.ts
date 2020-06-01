@@ -88,15 +88,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
         await this.discoverDbmss();
 
         // @todo: this needs to be done proper
-        const securityPluginTmp = path.join(
-            __dirname,
-            '../../../',
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
-        const securityPluginCache = path.join(
-            this.dirPaths.cache,
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
+        const securityPluginFilename = `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`;
+        const securityPluginTmp = path.join(__dirname, '..', '..', '..', securityPluginFilename);
+        const securityPluginCache = path.join(this.dirPaths.cache, securityPluginFilename);
         const pluginInCache = await fse.pathExists(securityPluginCache);
 
         if (!pluginInCache) {
@@ -216,8 +210,11 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return Promise.all(
             dbmss.map(async (dbms) => {
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status')
-                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED
+                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status');
+                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED)
+                    ? DBMS_STATUS.STARTED
+                    : DBMS_STATUS.STOPPED;
+
                 const info = {
                     id: dbms.id,
                     name: dbms.name,
@@ -316,7 +313,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const dbmsIdFilename = `dbms-${dbmsId}`;
 
         if (await fse.pathExists(path.join(dbmssDir, dbmsIdFilename))) {
-            throw new DbmsExistsError(`${dbmsIdFilename} already exists`);
+            throw new DbmsExistsError(`DBMS with name ${dbmsIdFilename} already exists`);
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));

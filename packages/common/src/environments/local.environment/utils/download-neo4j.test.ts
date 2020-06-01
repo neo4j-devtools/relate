@@ -19,7 +19,7 @@ const TEST_DIST = 'http://dist.neo4j.org';
 const TMP_NEO4J_DIST_PATH = path.join(systemUtils.envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';
-const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, `${TMP_UUID}${DOWNLOADING_FILE_EXTENSION}`);
+const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, `Unconfirmed_${TMP_UUID}${DOWNLOADING_FILE_EXTENSION}`);
 const EXPECTED_HASH_VALUE = 'test_hash1234';
 const DBMS_VERSION = {
     dist: TEST_DIST,
@@ -39,7 +39,10 @@ describe('Download Neo4j (to local cache)', () => {
             .spyOn(downloadNeo4j, 'getCheckSum')
             .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
 
-        const pipelineSpy = jest.spyOn(downloadNeo4j, 'pipeline').mockImplementation(() => fse.ensureFile(TMP_PATH));
+        const downloadSpy = jest.spyOn(systemUtils, 'download').mockImplementation(() => {
+            fse.ensureFile(TMP_PATH);
+            return Promise.resolve(TMP_PATH);
+        });
 
         const verifyHashSpy = jest
             .spyOn(downloadNeo4j, 'verifyHash')
@@ -62,7 +65,7 @@ describe('Download Neo4j (to local cache)', () => {
 
         // tests
         expect(getCheckSumSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`);
-        expect(pipelineSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}`, TMP_PATH);
+        expect(downloadSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}`, TMP_NEO4J_DIST_PATH);
         expect(verifyHashSpy).toHaveBeenCalledWith(EXPECTED_HASH_VALUE, TMP_PATH);
         expect(extractFromArchiveSpy).toHaveBeenCalledWith(TMP_PATH, TMP_NEO4J_DIST_PATH);
         expect(removeSpy).toHaveBeenCalledTimes(1);

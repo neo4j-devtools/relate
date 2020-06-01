@@ -1,5 +1,5 @@
 import {test} from '@oclif/test';
-import {TestDbmss} from '@relate/common';
+import {TestDbmss, DBMS_STATUS} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
@@ -46,7 +46,7 @@ describe('$relate dbms', () => {
 
     test.stdout().it('logs running status', async (ctx) => {
         await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
-        expect(ctx.stdout).toContain('Neo4j is running');
+        expect(ctx.stdout).toContain(DBMS_STATUS.STARTED);
     });
 
     test.skip()
@@ -69,7 +69,7 @@ describe('$relate dbms', () => {
 
     test.stdout().it('logs stopped status', async (ctx) => {
         await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
-        expect(ctx.stdout).toContain('Neo4j is not running');
+        expect(ctx.stdout).toContain(DBMS_STATUS.STOPPED);
     });
 
     test.it('errors when trying to access a non existing dbms', async () => {
