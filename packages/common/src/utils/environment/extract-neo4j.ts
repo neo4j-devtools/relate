@@ -1,9 +1,9 @@
-import {FileStructureError} from '../errors';
-import {getDistributionInfo} from './environment/dbms-versions';
-import {IDbmsVersion} from '../models';
-import {extract} from './extract';
-import {emitHookEvent} from './event-hooks';
-import {HOOK_EVENTS} from '../constants';
+import {HOOK_EVENTS} from '../../constants';
+import {FileStructureError} from '../../errors';
+import {IDbmsVersion} from '../../models';
+import {emitHookEvent} from '../event-hooks';
+import {extract} from '../extract';
+import {getDistributionInfo} from './dbms-versions';
 
 interface IExtractedArchive extends IDbmsVersion {
     extractedDistPath: string;

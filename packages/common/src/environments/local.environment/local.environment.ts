@@ -48,13 +48,14 @@ import {
     DBMS_STATUS,
     HOOK_EVENTS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, arrayHasItems, extractNeo4j, emitHookEvent} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, arrayHasItems, emitHookEvent} from '../../utils';
 import {
     getAppBasePath,
     discoverExtension,
     IExtensionMeta,
     discoverExtensionDistributions,
     extractExtension,
+    extractNeo4j,
     downloadExtension,
     resolveDbms,
     elevatedNeo4jWindowsCmd,

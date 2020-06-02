@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {getInstalledExtensions} from '../get-installed-extensions';
+import {getInstalledExtensions} from './get-installed-extensions';
 import {EXTENSION_TYPES} from '../../constants';
 import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';

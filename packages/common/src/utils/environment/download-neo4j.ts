@@ -5,9 +5,10 @@ import hasha from 'hasha';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
-import {fetchNeo4jVersions} from './dbms-versions';
 import {FetchError, IntegrityError, NotFoundError} from '../../errors';
-import {extractNeo4j, emitHookEvent, download} from '..';
+import {emitHookEvent, download} from '../index';
+import {fetchNeo4jVersions} from './dbms-versions';
+import {extractNeo4j} from './extract-neo4j';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {

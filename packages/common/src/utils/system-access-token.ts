@@ -1,5 +1,8 @@
-import {getAccessTokenRCKey} from './get-access-token-rc-key';
 import {PropertiesFile} from '../system';
+
+export function getAccessTokenRCKey(environmentId: string, dbmsId: string, dbmsUser: string): string {
+    return `//${environmentId}/${dbmsId}/${dbmsUser}/:_accessToken`;
+}
 
 export async function registerSystemAccessToken(
     knownConnectionsPath: string,
@@ -17,13 +20,13 @@ export async function registerSystemAccessToken(
 }
 
 export async function getSystemAccessToken(
-    rcPath: string,
+    knownConnectionsPath: string,
     environmentId: string,
     dbmsId: string,
     dbmsUser: string,
 ): Promise<string | undefined> {
     const key = getAccessTokenRCKey(environmentId, dbmsId, dbmsUser);
-    const properties = await PropertiesFile.readFile(rcPath);
+    const properties = await PropertiesFile.readFile(knownConnectionsPath);
 
     return properties.get(key);
 }

@@ -4,9 +4,9 @@ import * as path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
 
-import {envPaths} from './env-paths';
-import {ExtensionModel, IInstalledExtension} from '../models';
-import {InvalidArgumentError} from '../errors';
+import {envPaths} from '../env-paths';
+import {ExtensionModel, IInstalledExtension} from '../../models';
+import {InvalidArgumentError} from '../../errors';
 import {
     EXTENSION_DIR_NAME,
     EXTENSION_MANIFEST_KEY,
@@ -14,7 +14,7 @@ import {
     PACKAGE_JSON,
     EXTENSION_TYPES,
     EXTENSION_NPM_PREFIX,
-} from '../constants';
+} from '../../constants';
 
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
