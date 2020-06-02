@@ -29,7 +29,16 @@ export const pipeline = async (url: string, outputPath: string): Promise<void> =
     const streamPipeline = promisify(stream.pipeline);
 
     try {
-        await streamPipeline(got.stream(url), fse.createWriteStream(outputPath));
+        await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
+        await streamPipeline(
+            got
+                .stream(url)
+                .on('downloadProgress', async (progress) =>
+                    emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_PROGRESS, progress),
+                ),
+            fse.createWriteStream(outputPath),
+        );
+        await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
     } catch (e) {
         // remove tmp output
         await fse.remove(outputPath);
@@ -70,13 +79,10 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     const downloadingPath = path.join(neo4jDistributionPath, downloadingName);
 
     await fse.ensureFile(downloadingPath);
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, 'downloading neo4j');
     await pipeline(requestedDistributionUrl, downloadingPath);
     await verifyHash(shaSum, downloadingPath);
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
 
-    await emitHookEvent(HOOK_EVENTS.NEO4J_EXTRACT_START, 'extracting neo4j');
     await extractNeo4j(downloadingPath, neo4jDistributionPath);
-    await emitHookEvent(HOOK_EVENTS.NEO4J_EXTRACT_STOP, null);
+
     await fse.remove(downloadingPath);
 };

@@ -48,7 +48,15 @@ import {
     DBMS_STATUS,
     HOOK_EVENTS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, isValidPath, arrayHasItems, extractNeo4j, emitHookEvent} from '../../utils';
+import {
+    envPaths,
+    parseNeo4jConfigPort,
+    isValidUrl,
+    isValidPath,
+    arrayHasItems,
+    extractNeo4j,
+    emitHookEvent,
+} from '../../utils';
 import {
     getAppBasePath,
     discoverExtension,
@@ -213,13 +221,15 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     async infoDbmss(nameOrIds: string[]): Promise<IDbmsInfo[]> {
-        let dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
+        const dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
 
         return Promise.all(
             dbmss.map(async (dbms) => {
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status')
-                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED
+                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status');
+                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED)
+                    ? DBMS_STATUS.STARTED
+                    : DBMS_STATUS.STOPPED;
                 const info = {
                     id: dbms.id,
                     name: dbms.name,
@@ -626,9 +636,12 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         // @todo: need to look at our use of exec (and maybe child processes) in general
         // this does not account for all scenarios at the moment so needs more thought
-        const execute = promisify(exec)
+        const execute = promisify(exec);
         try {
-            await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, `installing dependencies for ${extension.name}`);
+            await emitHookEvent(
+                HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START,
+                `installing dependencies for ${extension.name}`,
+            );
             const output = await execute('npm install --production', {
                 cwd: target,
             });

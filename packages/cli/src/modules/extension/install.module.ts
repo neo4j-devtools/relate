@@ -1,5 +1,13 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {arrayHasItems, EXTENSION_ORIGIN, InvalidArgumentError, SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS} from '@relate/common';
+import {
+    arrayHasItems,
+    EXTENSION_ORIGIN,
+    InvalidArgumentError,
+    SystemModule,
+    SystemProvider,
+    registerHookListener,
+    HOOK_EVENTS,
+} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
@@ -22,18 +30,26 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val))
+        const downloadBar = cli.progress({
+            format: 'DOWNLOAD PROGRESS [{bar}] {percentage}% | ETA: {eta}s',
+            barCompleteChar: '\u2588',
+            barIncompleteChar: '\u2591',
+        });
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, () => downloadBar.start());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => downloadBar.stop());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_PROGRESS, ({percent}) =>
+            downloadBar.update(percent * 100),
+        );
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val));
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val));
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val));
         registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, ({stdout, stderr}) => {
             cli.action.stop();
-            this.utils.log(stdout);
-            this.utils.log(stderr);
-        })
+            this.utils.debug(stdout);
+            this.utils.debug(stderr);
+        });
     }
 
     async onApplicationBootstrap(): Promise<void> {
@@ -80,7 +96,7 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        return environment.installExtension(name, version).then((res: { name: string | undefined; }) => {
+        return environment.installExtension(name, version).then((res: {name: string | undefined}) => {
             this.utils.log(`${res.name} successfully installed`);
         });
     }

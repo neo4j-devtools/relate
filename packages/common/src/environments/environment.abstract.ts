@@ -98,7 +98,11 @@ export abstract class EnvironmentAbstract {
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS](): Promise<IDbmsVersion[]>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS](name: string, credentials: string, version: string): Promise<string>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS](
+        name: string,
+        credentials: string,
+        version: string,
+    ): Promise<string>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_DBMS](dbmsId: string): Promise<void>;
 
@@ -112,9 +116,16 @@ export abstract class EnvironmentAbstract {
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[]): Promise<IDbmsInfo[]>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](appId: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](
+        appId: string,
+        dbmsId: string,
+        authToken: IAuthToken,
+    ): Promise<string>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.UPDATE_DBMS_CONFIG](dbmsId: string, properties: Map<string, string>): Promise<boolean>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.UPDATE_DBMS_CONFIG](
+        dbmsId: string,
+        properties: Map<string, string>,
+    ): Promise<boolean>;
 
     abstract getAppPath(appName: string, appRoot?: string): Promise<string>;
 

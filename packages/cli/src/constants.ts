@@ -33,6 +33,6 @@ export const FLAGS = {
 };
 
 export interface IInputPromptOptions {
-    initial?: string
-    required?: boolean
+    initial?: string;
+    required?: boolean;
 }

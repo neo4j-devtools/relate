@@ -1,13 +1,13 @@
-import {registerDecorator} from "class-validator";
+import {registerDecorator} from 'class-validator';
 
 export function IsValidUrl() {
-    return function (object: Object, propertyName: string) {
+    return function(object: Object, propertyName: string) {
         registerDecorator({
-            name: "isValidUrl",
+            name: 'isValidUrl',
             target: object.constructor,
             propertyName: propertyName,
             options: {
-                message: 'Must be valid URL'
+                message: 'Must be valid URL',
             },
             validator: {
                 validate(value: any) {
@@ -17,20 +17,20 @@ export function IsValidUrl() {
                     } catch (e) {
                         return false;
                     }
-                }
-            }
+                },
+            },
         });
     };
 }
 
 export function IsValidJWT() {
-    return function (object: Object, propertyName: string) {
+    return function(object: Object, propertyName: string) {
         registerDecorator({
-            name: "isValidJWT",
+            name: 'isValidJWT',
             target: object.constructor,
             propertyName: propertyName,
             options: {
-                message: 'Must be valid JWT token'
+                message: 'Must be valid JWT token',
             },
             validator: {
                 validate(value: any) {
@@ -43,8 +43,8 @@ export function IsValidJWT() {
                     const match = value.match(JWT_REGEX);
 
                     return Boolean(match && match[0].length === value.length);
-                }
-            }
+                },
+            },
         });
     };
 }

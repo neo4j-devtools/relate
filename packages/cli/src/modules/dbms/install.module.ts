@@ -20,10 +20,16 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop())
+        const downloadBar = cli.progress({
+            format: 'DOWNLOAD PROGRESS [{bar}] {percentage}% | ETA: {eta}s',
+            barCompleteChar: '\u2588',
+            barIncompleteChar: '\u2591',
+        });
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, () => downloadBar.start());
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, () => downloadBar.stop());
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_PROGRESS, ({percent}) => downloadBar.update(percent * 100));
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val));
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {
