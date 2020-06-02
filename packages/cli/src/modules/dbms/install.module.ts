@@ -27,7 +27,9 @@ export class InstallModule implements OnApplicationBootstrap {
         });
         registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, () => downloadBar.start());
         registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, () => downloadBar.stop());
-        registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) => downloadBar.update(Math.round(percent * 100)));
+        registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
+            downloadBar.update(Math.round(percent * 100)),
+        );
         registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val));
         registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop());
     }
