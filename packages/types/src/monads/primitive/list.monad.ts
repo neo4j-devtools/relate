@@ -1,22 +1,30 @@
-import {join, find, findIndex} from 'lodash';
+import {join, filter, find, map} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
 import Num from './num/num.monad';
 import None from './none.monad';
 
-export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> {
+import {isIterable} from '../../utils/iterable.utils';
+import Nil from './nil.monad';
+
+type Compactable<T> = T extends null ? never : T
+    | T extends Nil ? never : T
+    | T extends None<any> ? never : T;
+
+export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
     protected iterableValue: Iterable<T>;
     protected ourFirst?: Maybe<T>;
     protected ourLast?: Maybe<T>;
-    protected readonly ourLength: Num;
+    protected ourPrivateLength = Maybe.of<Num>();
 
-    constructor(val: T[]) {
-        // @ts-ignore
-        super(val);
+    get ourLength(): Num {
+        if (this.ourPrivateLength.isEmpty) {
+            this.ourPrivateLength = Maybe.from(Num.of([...this].length));
+        }
 
-        this.ourLength = Num.of(val.length);
+        return this.ourPrivateLength.getOrElse(Num.ZERO);
     }
 
     get isEmpty(): boolean {
@@ -34,10 +42,24 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
 
         const it = this[Symbol.iterator]();
 
-        // @ts-ignore
         this.ourFirst = Maybe.of(it.next().value);
 
         return this.ourFirst!;
+    }
+
+    nth(index: number | string | Num): Maybe<T> {
+        const indexToUse = Num.from(index);
+        let i = 0;
+
+        for (const item of this) {
+            if (indexToUse.equals(i)) {
+                return Maybe.from<T>(item);
+            }
+
+            i += 1;
+        }
+
+        return Maybe.of<T>();
     }
 
     get last(): Maybe<T> {
@@ -47,23 +69,26 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
 
         const arr = [...this].reverse();
 
-        // @ts-ignore
         this.ourLast = Maybe.of(arr[0]);
 
         return this.ourLast!;
     }
 
-    static isList<T extends Monad<any> = Monad<any>>(val: any): val is List<T> {
+    static isList<T>(val: any): val is List<T> {
         return val instanceof List;
     }
 
-    static of<T extends Monad<any> = Monad<any>>(val: any): List<T> {
-        const sane: T[] = Array.isArray(val) ? val : Array.of(val);
+    static of<T>(val: Iterable<T>): List<T> {
+        const sane: Iterable<T> = isIterable(val) ? val : Array.of(val);
 
         return new List(sane);
     }
 
-    static from<T extends Monad<any> = Monad<any>>(val: any): List<T> {
+    static from<T>(val?: Iterable<T> | null): List<T> {
+        if (!val) {
+            return List.of<T>([]);
+        }
+
         return List.isList<T>(val) ? val : List.of(val);
     }
 
@@ -77,19 +102,27 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
     hasIndex(index: Num | number): boolean {
         const numToUse = Num.fromValue(index);
 
-        return numToUse.greaterThanOrEqual(Num.ZERO) && numToUse.lessThan(this.original.length);
+        return numToUse.greaterThanOrEqual(Num.ZERO) && numToUse.lessThan(this.ourLength);
     }
 
-    getIndex(index: Num | number): Maybe<T> {
-        const numToUse = Num.fromValue(index);
+    find(predicate: (val: T) => boolean): Maybe<T> {
+        const found = find([...this], predicate);
 
-        return Maybe.of(this.original[numToUse.get()]);
+        return Maybe.of<T>(found);
     }
 
-    find(val: T): Maybe<T> {
-        const found = find(this.original, (other) => val.equals(other));
+    filter(predicate: (val: T) => boolean): List<T> {
+        const found = filter([...this], predicate);
 
-        return Maybe.of<T>(val.isThis(found) ? found : None.EMPTY);
+        return List.of<T>(found);
+    }
+
+    // @todo: extend typing for empty monads
+    compact<R = Compactable<T>>(): List<R> {
+        // @ts-ignore
+        return this.filter((v) => {
+            return v !== null && !Nil.isNil(v) && !None.isNone(v);
+        });
     }
 
     reduce<R = any>(cb: (agg: R, next: T, index: number) => R, seed: R): R {
@@ -104,13 +137,24 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
         return result;
     }
 
-    indexOf(val: T): Num {
-        const found = findIndex(this.original, (other) => val.equals(other));
-
-        return Num.of(found);
+    mapEach<M = T>(project: (val: T) => M): List<M> {
+        return List.from(map([...this], project))
     }
 
-    slice<O extends Monad<any> = T>(from: Num | number, to?: Num | number): List<O> {
+    indexOf(val: T): Num {
+        const valToUse = Monad.from(val);
+        let i = 0;
+
+        for (const item of this) {
+            if (valToUse.equals(item)) {
+                return Num.from(i);
+            }
+        }
+
+        return Num.from(-1);
+    }
+
+    slice(from: Num | number, to?: Num | number): List<T> {
         const fromToUse = Num.fromValue(from);
         const toToUse = to ? Num.fromValue(to) : None.of<Num>();
         const it = this[Symbol.iterator]();
@@ -132,13 +176,23 @@ export default class List<T extends Monad<any> = Monad<any>> extends Monad<T[]> 
         return List.of([...res]);
     }
 
-    concat(other: T | List<T> | Array<T>): List<T> {
-        return List.isList(other) || Array.isArray(other)
+    concat(other: T | Iterable<T>): List<T> {
+        return isIterable(other)
             ? List.of<T>([...this, ...other])
             : List.of<T>([...this, other]);
     }
 
     toString() {
-        return `[${join(this.original, ', ')}]`;
+        return `[${join([...this.original], ', ')}]`;
+    }
+
+    toArray() {
+        return [...this];
+    }
+
+    // @todo: should we create an AsyncList instead?
+    async awaitAll<R = T extends PromiseLike<infer V> ? V : T>(): Promise<List<R>> {
+        // @ts-ignore
+        return List.of<R>(await Promise.all(this));
     }
 }

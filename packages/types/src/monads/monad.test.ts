@@ -140,7 +140,6 @@ describe('Monad', () => {
             const created = Monad.from(one);
 
             expect(created instanceof Monad).toBe(true);
-            expect(created === one).toBe(true);
             expect(created.equals(one)).toBe(true);
         });
 
@@ -148,7 +147,6 @@ describe('Monad', () => {
             const created = Monad.from(two);
 
             expect(created instanceof Monad).toBe(true);
-            expect(created === two).toBe(true);
             expect(created.equals(two)).toBe(true);
         });
 
@@ -169,7 +167,6 @@ describe('Monad', () => {
             const created = Monad.of(one);
 
             expect(created instanceof Monad).toBe(true);
-            expect(created !== one).toBe(true);
             expect(created.get() === one).toBe(true);
         });
 
@@ -177,7 +174,6 @@ describe('Monad', () => {
             const created = Monad.of(two);
 
             expect(created instanceof Monad).toBe(true);
-            expect(created !== two).toBe(true);
             expect(created.get() === two).toBe(true);
         });
 
@@ -248,7 +244,6 @@ describe('Monad', () => {
             const mapped = one.switchMap(() => Monad.from('bar'));
 
             expect(mapped.equals('bar')).toBe(true);
-            expect(one !== mapped).toBe(true);
         });
     });
 });
