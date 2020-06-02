@@ -2,8 +2,7 @@ import path from 'path';
 
 import {ENVIRONMENT_TYPES} from '../environment.constants';
 import {EnvironmentConfigModel} from '../../models';
-import {TestDbmss} from '../environment.utils';
-import {envPaths} from '../../utils';
+import {envPaths, TestDbmss} from '../../utils';
 import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import {LocalEnvironment} from './local.environment';
 import * as localUtils from './utils';
@@ -64,14 +63,6 @@ describe('LocalEnvironment - install', () => {
                 dbmss.createName(),
                 TestDbmss.DBMS_CREDENTIALS,
                 path.join('non', 'existing', 'path'),
-            ),
-        ).rejects.toThrow(new InvalidArgumentError(message));
-
-        await expect(
-            environment.installDbms(
-                dbmss.createName(),
-                TestDbmss.DBMS_CREDENTIALS,
-                path.join('non', 'existing', 'path', '4.0'),
             ),
         ).rejects.toThrow(new InvalidArgumentError(message));
     });

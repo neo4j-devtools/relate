@@ -17,13 +17,13 @@ export async function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: 
 }
 
 export function registerHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
-    const eventListeners = REGISTERED_LISTENERS.get(eventName);
+    const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
 
     REGISTERED_LISTENERS.set(eventName, new Set([...eventListeners, listener]));
 }
 
 export function deregisterHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
-    const eventListeners = REGISTERED_LISTENERS.get(eventName);
+    const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
 
     REGISTERED_LISTENERS.set(eventName, new Set(_.without([...eventListeners], listener)));
 }
