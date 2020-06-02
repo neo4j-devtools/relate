@@ -5,7 +5,7 @@ import {oAuthRedirectServer} from '../oauth-utils';
 import {LOCALHOST_IP_ADDRESS} from '../environment.constants';
 import {AuthenticationError} from '../../errors';
 import {TokenService} from '../../token.service';
-import {IAuthenticator, IAuthenticatorOptions} from './index';
+import {IAuthenticator, IAuthenticatorOptions} from './authenticator.types';
 import {AUTH_TOKEN_KEY} from '../../constants';
 import {AuthenticatorModel} from '../../models/authenticator.model';
 
