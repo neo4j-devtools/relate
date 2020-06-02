@@ -6,11 +6,11 @@ import * as uuid from 'uuid';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
-import * as systemUtils from '../../../utils';
+import * as systemUtils from '..';
 
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
-import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../../constants';
-import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
+import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
+import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
 jest.mock('uuid');
 

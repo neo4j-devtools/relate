@@ -4,10 +4,10 @@ import path from 'path';
 
 import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
 
-import {envPaths} from '../../../utils';
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environment.constants';
+import {envPaths} from '../env-paths';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environments/environment.constants';
 import * as localUtils from './index';
-import {DBMS_DIR_NAME} from '../../../constants';
+import {DBMS_DIR_NAME} from '../../constants';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';

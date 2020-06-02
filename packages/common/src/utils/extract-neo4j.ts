@@ -1,5 +1,5 @@
 import {FileStructureError} from '../errors';
-import {getDistributionInfo} from '../environments/local.environment/utils/dbms-versions';
+import {getDistributionInfo} from './environment/dbms-versions';
 import {IDbmsVersion} from '../models';
 import {extract} from './extract';
 import {emitHookEvent} from './event-hooks';

@@ -67,7 +67,7 @@ import {
     getDistributionInfo,
     IExtensionVersion,
     fetchExtensionVersions,
-} from './utils';
+} from '../../utils/environment';
 import {IDbmsInfo} from '../../models/environment-config.model';
 
 export class LocalEnvironment extends EnvironmentAbstract {

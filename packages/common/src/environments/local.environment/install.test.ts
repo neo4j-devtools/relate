@@ -6,7 +6,7 @@ import {envPaths} from '../../utils';
 import {TestDbmss} from '../../utils/environment';
 import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import {LocalEnvironment} from './local.environment';
-import * as localUtils from './utils';
+import * as localUtils from '../../utils/environment';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;

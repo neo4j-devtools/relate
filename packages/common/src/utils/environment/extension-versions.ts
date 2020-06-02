@@ -13,16 +13,16 @@ import {
     EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
-} from '../../../constants';
+} from '../../constants';
 import {
     EXTENSION_REPO_NAME,
     EXTENSION_SEARCH_PATH,
     JFROG_PRIVATE_REGISTRY_PASSWORD,
     JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../environment.constants';
-import {InvalidArgumentError, NotFoundError} from '../../../errors';
-import {ExtensionModel, IInstalledExtension} from '../../../models';
-import {envPaths} from '../../../utils';
+} from '../../environments/environment.constants';
+import {InvalidArgumentError, NotFoundError} from '../../errors';
+import {ExtensionModel, IInstalledExtension} from '../../models';
+import {envPaths} from '../env-paths';
 
 export interface IExtensionMeta {
     type: EXTENSION_TYPES;

@@ -3,12 +3,16 @@ import got from 'got';
 import path from 'path';
 import hasha from 'hasha';
 
-import {FetchError, NotFoundError, IntegrityError} from '../../../errors';
+import {FetchError, NotFoundError, IntegrityError} from '../../errors';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../../constants';
+import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../constants';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
-import {JFROG_PRIVATE_REGISTRY_PASSWORD, JFROG_PRIVATE_REGISTRY_USERNAME} from '../../environment.constants';
-import {download, emitHookEvent} from '../../../utils';
+import {
+    JFROG_PRIVATE_REGISTRY_PASSWORD,
+    JFROG_PRIVATE_REGISTRY_USERNAME,
+} from '../../environments/environment.constants';
+import {download} from '../download';
+import {emitHookEvent} from '../event-hooks';
 
 export interface IExtensionRegistryManifest {
     name: string;

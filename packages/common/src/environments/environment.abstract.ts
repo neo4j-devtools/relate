@@ -5,7 +5,7 @@ import _ from 'lodash';
 import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
 import {IDbmsInfo} from '../models/environment-config.model';
 import {AUTHENTICATOR_TYPES, DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
-import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
+import {IExtensionMeta, IExtensionVersion} from '../utils/environment';
 import {
     googleAuthenticatorFactory,
     IAuthenticator,
