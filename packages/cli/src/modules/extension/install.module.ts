@@ -37,7 +37,7 @@ export class InstallModule implements OnApplicationBootstrap {
         });
         registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, () => downloadBar.start());
         registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => downloadBar.stop());
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_PROGRESS, ({percent}) =>
+        registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
             downloadBar.update(percent * 100),
         );
         registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val));

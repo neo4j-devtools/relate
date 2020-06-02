@@ -1,34 +1,13 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 
-import {EnvironmentConfigModel, IDbms} from '../models';
-import {ENVIRONMENT_TYPES} from './environment.constants';
-import {InvalidConfigError, NotSupportedError, NotFoundError} from '../errors';
+import {EnvironmentConfigModel, IDbms} from '../../models';
+import {ENVIRONMENT_TYPES} from '../../environments/environment.constants';
 
-import {EnvironmentAbstract} from './environment.abstract';
-import {LocalEnvironment} from './local.environment';
-import {envPaths} from '../utils';
-import {RemoteEnvironment} from './remote.environment';
-
-export async function createEnvironmentInstance(
-    config: EnvironmentConfigModel,
-    configPath: string,
-): Promise<EnvironmentAbstract> {
-    let environment: EnvironmentAbstract;
-    switch (config.type) {
-        case ENVIRONMENT_TYPES.LOCAL:
-            environment = new LocalEnvironment(config, configPath);
-            break;
-        case ENVIRONMENT_TYPES.REMOTE:
-            environment = new RemoteEnvironment(config, configPath);
-            break;
-        default:
-            throw new InvalidConfigError(`Environment type ${config.type} not supported`);
-    }
-
-    await environment.init();
-    return environment;
-}
+import {EnvironmentAbstract} from '../../environments/environment.abstract';
+import {LocalEnvironment} from '../../environments/local.environment';
+import {NotSupportedError, NotFoundError} from '../../errors';
+import {envPaths} from '../env-paths';
 
 export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';

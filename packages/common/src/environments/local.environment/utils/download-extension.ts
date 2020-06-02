@@ -1,17 +1,14 @@
 import fse from 'fs-extra';
 import got from 'got';
-import {v4 as uuidv4} from 'uuid';
 import path from 'path';
-import stream from 'stream';
-import {promisify} from 'util';
 import hasha from 'hasha';
 
 import {FetchError, NotFoundError, IntegrityError} from '../../../errors';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, DOWNLOADING_FILE_EXTENSION, HOOK_EVENTS} from '../../../constants';
+import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../../constants';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
 import {JFROG_PRIVATE_REGISTRY_PASSWORD, JFROG_PRIVATE_REGISTRY_USERNAME} from '../../environment.constants';
-import {emitHookEvent} from '../../../utils';
+import {download, emitHookEvent} from '../../../utils';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -61,30 +58,6 @@ const fetchExtensionInfo = async (extensionName: string, version: string): Promi
     };
 };
 
-const pipeline = async (url: string, outputPath: string): Promise<void> => {
-    const streamPipeline = promisify(stream.pipeline);
-
-    try {
-        await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
-        await streamPipeline(
-            got
-                .stream(url, {
-                    password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-                    username: JFROG_PRIVATE_REGISTRY_USERNAME,
-                })
-                .on('downloadProgress', async (progress) =>
-                    emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_PROGRESS, progress),
-                ),
-            fse.createWriteStream(outputPath),
-        );
-        await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
-    } catch (e) {
-        // remove tmp output
-        await fse.remove(outputPath);
-        throw new FetchError(e);
-    }
-};
-
 const verifyHash = async (
     expectedShasumHash: string,
     pathToFile: string,
@@ -92,6 +65,7 @@ const verifyHash = async (
 ): Promise<string> => {
     const hash = await hasha.fromFile(pathToFile, {algorithm});
     if (hash !== expectedShasumHash) {
+        // @todo maybe not?
         // remove tmp output
         await fse.remove(pathToFile);
         throw new IntegrityError('Expected hash mismatch');
@@ -106,23 +80,28 @@ export const downloadExtension = async (
 ): Promise<IExtensionMeta> => {
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
-    // Download straight to the distribution path with a temporary name that
-    // makes it obvious that the file is not finished downloading.
-    const downloadingName = `${uuidv4()}${DOWNLOADING_FILE_EXTENSION}`;
-    const downloadingPath = path.join(extensionDistributionsPath, downloadingName);
-    await pipeline(tarball, downloadingPath);
-    await verifyHash(shasum, downloadingPath);
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
+    const downloadFilePath = await download(tarball, extensionDistributionsPath, {
+        password: JFROG_PRIVATE_REGISTRY_PASSWORD,
+        username: JFROG_PRIVATE_REGISTRY_USERNAME,
+    });
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
+
+    await verifyHash(shasum, downloadFilePath);
 
     // extract extension to cache dir first
     const extractPath = path.join(extensionDistributionsPath, `${name}@${version}.tmp`);
-    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(downloadingPath, extractPath);
+    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
+        downloadFilePath,
+        extractPath,
+    );
     const destinationPath = path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`);
 
     // move the extracted dir and remove the downloaded archive
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, `moving ${name} to data directory`);
     await fse.move(dist, destinationPath, {overwrite: true});
     await fse.remove(extractPath);
-    await fse.remove(downloadingPath);
+    await fse.remove(downloadFilePath);
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, null);
 
     return discoverExtension(destinationPath);

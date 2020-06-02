@@ -48,15 +48,7 @@ import {
     DBMS_STATUS,
     HOOK_EVENTS,
 } from '../../constants';
-import {
-    envPaths,
-    parseNeo4jConfigPort,
-    isValidUrl,
-    isValidPath,
-    arrayHasItems,
-    extractNeo4j,
-    emitHookEvent,
-} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, isValidUrl, arrayHasItems, extractNeo4j, emitHookEvent} from '../../utils';
 import {
     getAppBasePath,
     discoverExtension,
@@ -98,15 +90,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
         await this.discoverDbmss();
 
         // @todo: this needs to be done proper
-        const securityPluginTmp = path.join(
-            __dirname,
-            '../../../',
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
-        const securityPluginCache = path.join(
-            this.dirPaths.cache,
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
+        const securityPluginFilename = `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`;
+        const securityPluginTmp = path.join(__dirname, '..', '..', '..', securityPluginFilename);
+        const securityPluginCache = path.join(this.dirPaths.cache, securityPluginFilename);
         const pluginInCache = await fse.pathExists(securityPluginCache);
 
         if (!pluginInCache) {
@@ -158,8 +144,19 @@ export class LocalEnvironment extends EnvironmentAbstract {
             throw new DbmsExistsError(`DBMS with name "${name}" already exists`);
         }
 
+        // version as a file path.
+        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
+            const {extractedDistPath} = await extractNeo4j(version, this.dirPaths.dbmssCache);
+            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
+        }
+
+        // @todo: version as a URL.
+        if (isValidUrl(version)) {
+            throw new NotSupportedError(`fetch and install ${version}`);
+        }
+
         const coercedVersion = coerce(version)?.version;
-        if (coercedVersion && !isValidUrl(version) && !isValidPath(version)) {
+        if (coercedVersion) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
@@ -183,17 +180,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
             }
 
             return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
-        }
-
-        // @todo: version as a URL.
-        if (isValidUrl(version)) {
-            throw new NotSupportedError(`fetch and install ${version}`);
-        }
-
-        // version as a file path.
-        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractNeo4j(version, this.dirPaths.dbmssCache);
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
@@ -230,6 +216,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED)
                     ? DBMS_STATUS.STARTED
                     : DBMS_STATUS.STOPPED;
+
                 const info = {
                     id: dbms.id,
                     name: dbms.name,
@@ -328,7 +315,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const dbmsIdFilename = `dbms-${dbmsId}`;
 
         if (await fse.pathExists(path.join(dbmssDir, dbmsIdFilename))) {
-            throw new DbmsExistsError(`${dbmsIdFilename} already exists`);
+            throw new DbmsExistsError(`DBMS with name ${dbmsIdFilename} already exists`);
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
@@ -565,31 +552,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         const {extensionsCache, extensionsData} = this.dirPaths;
 
-        // @todo: version as a URL.
-        if (isValidUrl(version)) {
-            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
-        }
-
-        const coercedVersion = coerce(version)?.version;
-
-        if (coercedVersion && !isValidPath(version)) {
-            let requestedDistribution = _.find(
-                await discoverExtensionDistributions(extensionsCache),
-                (dist) => dist.name === name && dist.version === coercedVersion,
-            );
-
-            // if cached version of extension doesn't exist, attempt to download
-            if (!requestedDistribution) {
-                try {
-                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
-                } catch (e) {
-                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
-                }
-            }
-
-            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
-        }
-
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             // extract extension to cache dir first
@@ -612,6 +574,30 @@ export class LocalEnvironment extends EnvironmentAbstract {
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
+        }
+
+        // @todo: version as a URL.
+        if (isValidUrl(version)) {
+            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
+        }
+
+        const coercedVersion = coerce(version)?.version;
+        if (coercedVersion) {
+            let requestedDistribution = _.find(
+                await discoverExtensionDistributions(extensionsCache),
+                (dist) => dist.name === name && dist.version === coercedVersion,
+            );
+
+            // if cached version of extension doesn't exist, attempt to download
+            if (!requestedDistribution) {
+                try {
+                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
+                } catch (e) {
+                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                }
+            }
+
+            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');

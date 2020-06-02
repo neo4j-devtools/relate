@@ -7,8 +7,7 @@ export const inputPrompt = async (message: string, options?: IInputPromptOptions
         initial: options?.initial,
         name: 'selection',
         type: 'input',
-        // eslint-disable-next-line no-unneeded-ternary
-        required: options?.required === false ? false : true,
+        required: options?.required !== false,
     });
 
     return selection;

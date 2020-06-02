@@ -106,6 +106,22 @@ export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions>
     };
 };
 
+export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
+    const needsWhitelist = await selectPrompt('Do you need to restrict access to the GraphQL API methods?', [
+        {name: 'Yes'},
+        {name: 'No'},
+    ]);
+
+    if (needsWhitelist === 'No') {
+        return [];
+    }
+
+    return selectMultiplePrompt(
+        'Select allowed GraphQL API methods',
+        _.map(_.values(PUBLIC_ENVIRONMENT_METHODS), (name) => ({name})),
+    );
+};
+
 export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions | undefined> => {
     const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
 
@@ -124,20 +140,4 @@ export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions 
         default:
             return undefined;
     }
-};
-
-export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
-    const needsWhitelist = await selectPrompt('Do you need to restrict access to the GraphQL API methods?', [
-        {name: 'Yes'},
-        {name: 'No'},
-    ]);
-
-    if (needsWhitelist === 'No') {
-        return [];
-    }
-
-    return selectMultiplePrompt(
-        'Select allowed GraphQL API methods',
-        _.map(_.values(PUBLIC_ENVIRONMENT_METHODS), (name) => ({name})),
-    );
 };
