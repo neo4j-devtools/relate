@@ -67,7 +67,6 @@ import {
     getDistributionInfo,
     IExtensionVersion,
     fetchExtensionVersions,
-    spawnPromise
 } from './utils';
 import {IDbmsInfo} from '../../models/environment-config.model';
 
@@ -630,12 +629,10 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const execute = promisify(exec)
         try {
             await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, `installing dependencies for ${extension.name}`);
-            const {stdout, stderr} = await execute('npm install --production', {
+            const output = await execute('npm install --production', {
                 cwd: target,
             });
-            process.stdout.write(stdout)
-            process.stdout.write(stderr)
-            emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, null);
+            await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, output);
         } catch (err) {
             throw new Error(err);
         }

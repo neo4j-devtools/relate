@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 import cli from 'cli-ux';
@@ -19,10 +19,18 @@ export class InstallModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
+    registerHookListeners() {
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop())
+    }
+
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
+        this.registerHookListeners();
 
         const name = flags.name || (await inputPrompt('Enter the DBMS name'));
 
@@ -44,9 +52,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        cli.action.start('Installing DBMS');
         return environment.installDbms(name, credentials, version).then((res) => {
-            cli.action.stop();
             this.utils.log(res);
         });
     }

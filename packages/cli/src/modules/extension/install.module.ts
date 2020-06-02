@@ -21,12 +21,28 @@ export class InstallModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
+    registerHookListeners() {
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop())
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val))
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, ({stdout, stderr}) => {
+            cli.action.stop();
+            this.utils.log(stdout);
+            this.utils.log(stderr);
+        })
+    }
+
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {name} = args;
         let {version = ''} = flags;
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
+        this.registerHookListeners();
 
         if (!(name && version)) {
             const versions = await environment.listExtensionVersions();
@@ -64,16 +80,8 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop())
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val))
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, () => cli.action.stop())
         return environment.installExtension(name, version).then((res: { name: string | undefined; }) => {
-            this.utils.log(res.name);
+            this.utils.log(`${res.name} successfully installed`);
         });
     }
 }

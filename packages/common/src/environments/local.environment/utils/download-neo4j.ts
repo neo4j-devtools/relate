@@ -52,8 +52,6 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
-
     const onlineVersions = await fetchNeo4jVersions();
     const requestedDistribution = _.find(
         onlineVersions,
@@ -72,10 +70,13 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     const downloadingPath = path.join(neo4jDistributionPath, downloadingName);
 
     await fse.ensureFile(downloadingPath);
+    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, 'downloading neo4j');
     await pipeline(requestedDistributionUrl, downloadingPath);
     await verifyHash(shaSum, downloadingPath);
-
-    await extractNeo4j(downloadingPath, neo4jDistributionPath);
-    await fse.remove(downloadingPath);
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
+
+    await emitHookEvent(HOOK_EVENTS.NEO4J_EXTRACT_START, 'extracting neo4j');
+    await extractNeo4j(downloadingPath, neo4jDistributionPath);
+    await emitHookEvent(HOOK_EVENTS.NEO4J_EXTRACT_STOP, null);
+    await fse.remove(downloadingPath);
 };
