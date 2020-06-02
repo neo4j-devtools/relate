@@ -13,7 +13,6 @@ const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0
 const DATA_HOME = envPaths().data;
 const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
 const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, DBMS_DIR_NAME);
-const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
 
 describe('LocalEnvironment - install', () => {
     let environment: LocalEnvironment;
@@ -28,7 +27,7 @@ describe('LocalEnvironment - install', () => {
             user: 'test',
         });
 
-        await localUtils.downloadNeo4j(TEST_NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));
+        await localUtils.downloadNeo4j(TestDbmss.NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));
 
         environment = new LocalEnvironment(config, 'nowhere');
         dbmss = new TestDbmss(__filename, environment);
@@ -69,7 +68,7 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with valid version (file path)', async () => {
-        const archive = `neo4j-enterprise-${TEST_NEO4J_VERSION}${
+        const archive = `neo4j-enterprise-${TestDbmss.NEO4J_VERSION}${
             process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
         }`;
         const archivePath = path.join(DISTRIBUTIONS_ROOT, archive);
@@ -81,7 +80,7 @@ describe('LocalEnvironment - install', () => {
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
-        expect(info?.version).toEqual(TEST_NEO4J_VERSION);
+        expect(info?.version).toEqual(TestDbmss.NEO4J_VERSION);
     });
 
     test('with version in unsupported range (semver)', async () => {
@@ -100,7 +99,7 @@ describe('LocalEnvironment - install', () => {
         const dbmsId = await environment.installDbms(
             dbmss.createName(),
             TestDbmss.DBMS_CREDENTIALS,
-            TEST_NEO4J_VERSION,
+            TestDbmss.NEO4J_VERSION,
         );
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
@@ -109,16 +108,16 @@ describe('LocalEnvironment - install', () => {
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
-        expect(info?.version).toEqual(TEST_NEO4J_VERSION);
+        expect(info?.version).toEqual(TestDbmss.NEO4J_VERSION);
     });
 
     test('with invalid, non cached version (semver)', async () => {
-        const message = `Unable to find the requested version: ${TEST_NEO4J_VERSION} online`;
+        const message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online`;
         jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve([]));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
         await expect(
-            environment.installDbms(dbmss.createName(), TestDbmss.DBMS_CREDENTIALS, TEST_NEO4J_VERSION),
+            environment.installDbms(dbmss.createName(), TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION),
         ).rejects.toThrow(new NotFoundError(message));
     });
 
@@ -126,25 +125,25 @@ describe('LocalEnvironment - install', () => {
         const dbmsId = await environment.installDbms(
             dbmss.createName(),
             TestDbmss.DBMS_CREDENTIALS,
-            TEST_NEO4J_VERSION,
+            TestDbmss.NEO4J_VERSION,
         );
 
         const message = await environment.infoDbmss([dbmsId]);
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
-        expect(info?.version).toEqual(TEST_NEO4J_VERSION);
+        expect(info?.version).toEqual(TestDbmss.NEO4J_VERSION);
 
         const dbmsId2 = await environment.installDbms(
             dbmss.createName(),
             TestDbmss.DBMS_CREDENTIALS,
-            TEST_NEO4J_VERSION,
+            TestDbmss.NEO4J_VERSION,
         );
 
         const message2 = await environment.infoDbmss([dbmsId2]);
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
-        expect(info2?.version).toEqual(TEST_NEO4J_VERSION);
+        expect(info2?.version).toEqual(TestDbmss.NEO4J_VERSION);
     });
 });

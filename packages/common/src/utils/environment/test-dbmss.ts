@@ -11,6 +11,7 @@ import {envPaths} from '../env-paths';
 
 export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';
+
     static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
 
     dbmsNames: string[] = [];
