@@ -2,7 +2,8 @@ import path from 'path';
 
 import {ENVIRONMENT_TYPES} from '../environment.constants';
 import {EnvironmentConfigModel} from '../../models';
-import {envPaths, TestDbmss} from '../../utils';
+import {envPaths} from '../../utils';
+import {TestDbmss} from '../../utils/environment';
 import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import {LocalEnvironment} from './local.environment';
 import * as localUtils from './utils';

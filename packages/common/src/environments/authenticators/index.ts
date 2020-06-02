@@ -1,18 +1,2 @@
-import {IEnvironmentAuth} from '../../models';
-import {AUTHENTICATOR_TYPES} from '../environment.constants';
-
-export interface IAuthenticator {
-    login(redirectTo?: string): Promise<IEnvironmentAuth>;
-    generateAuthToken(token: string): Promise<string>;
-    verifyAuthToken(token: string): Promise<void>;
-}
-
-export interface IAuthenticatorOptions {
-    type: AUTHENTICATOR_TYPES;
-    httpOrigin: string;
-    authenticationUrl?: string;
-    redirectUrl: string;
-    verificationUrl?: string;
-}
-
+export {IAuthenticatorOptions, IAuthenticator} from './authenticator.types';
 export {googleAuthenticatorFactory, LOCAL_OAUTH_REDIRECT, IGoogleAuthenticatorOptions} from './google.authenticator';

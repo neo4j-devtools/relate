@@ -6,5 +6,6 @@ export * from './system';
 export * from './models';
 export * from './errors';
 export * from './utils';
+export {TestDbmss} from './utils/environment';
 export * from './constants';
 export {EnvironmentAbstract as Environment, ENVIRONMENT_TYPES, AUTHENTICATOR_TYPES} from './environments';
