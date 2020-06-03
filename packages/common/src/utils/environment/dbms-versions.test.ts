@@ -6,14 +6,14 @@ import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
 
 import {envPaths} from '../env-paths';
 import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environments/environment.constants';
-import * as localUtils from './index';
 import {DBMS_DIR_NAME} from '../../constants';
+import {downloadNeo4j} from './download-neo4j';
 import {TestDbmss} from './test-dbmss';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
 describe('DBMS versions (local environment)', () => {
-    beforeAll(() => localUtils.downloadNeo4j(TestDbmss.NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME)));
+    beforeAll(() => downloadNeo4j(TestDbmss.NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME)));
 
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
