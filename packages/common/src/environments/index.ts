@@ -1,2 +1,4 @@
-export {EnvironmentAbstract} from './environment.abstract';
-export {ENVIRONMENTS_DIR_NAME, ENVIRONMENT_TYPES, AUTHENTICATOR_TYPES} from './environment.constants';
+export * from './environment.abstract';
+export * from './environment.constants';
+export * from './remote.environment';
+export * from './local.environment';

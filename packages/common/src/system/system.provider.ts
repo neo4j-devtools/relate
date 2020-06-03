@@ -11,11 +11,10 @@ import {
 } from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
-import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken} from '../models';
+import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/environment';
 import {ensureDirs, ensureFiles} from './files';
-import {IEnvironmentConfig} from '../models/environment-config.model';
 import {TokenService} from '../token.service';
 
 @Injectable()

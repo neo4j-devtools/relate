@@ -7,7 +7,6 @@ import {AuthenticationError} from '../../errors';
 import {TokenService} from '../../token.service';
 import {IAuthenticator, IAuthenticatorOptions} from './authenticator.types';
 import {AUTH_TOKEN_KEY} from '../../constants';
-import {AuthenticatorModel} from '../../models/authenticator.model';
 
 export interface IGoogleAuthenticatorOptions extends IAuthenticatorOptions {
     clientId: string;
@@ -17,14 +16,7 @@ export interface IGoogleAuthenticatorOptions extends IAuthenticatorOptions {
 export const LOCAL_OAUTH_REDIRECT = `http://${LOCALHOST_IP_ADDRESS}:5555`;
 
 export function googleAuthenticatorFactory(options: IGoogleAuthenticatorOptions): IAuthenticator {
-    const {
-        httpOrigin,
-        authenticationUrl,
-        redirectUrl,
-        verificationUrl,
-        clientId,
-        clientSecret,
-    } = new AuthenticatorModel(options);
+    const {httpOrigin, authenticationUrl, redirectUrl, verificationUrl, clientId, clientSecret} = options;
     const oAuth2Client = new google.auth.OAuth2({
         clientId,
         clientSecret,

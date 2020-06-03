@@ -1,2 +1,3 @@
-export {IAuthenticatorOptions, IAuthenticator} from './authenticator.types';
-export {googleAuthenticatorFactory, LOCAL_OAUTH_REDIRECT, IGoogleAuthenticatorOptions} from './google.authenticator';
+export * from './authenticator.types';
+export * from './authenticators.constants';
+export * from './google.authenticator';

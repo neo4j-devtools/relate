@@ -1,6 +1,6 @@
 import {readFile} from 'fs-extra';
 import {filter, split, map, trim} from 'lodash';
-import {NEW_LINE, PROPERTIES_SEPARATOR} from '../constants';
+import {NEW_LINE, PROPERTIES_SEPARATOR} from '../../constants';
 
 export async function readPropertiesFile(path: string): Promise<Map<string, string>> {
     const conf = await readFile(path, 'utf8');

@@ -2,7 +2,7 @@ import {assign} from 'lodash';
 import {validateSync} from 'class-validator';
 
 // leave specific imports to prevent circular references
-import {arrayHasItems} from '../utils/array-has-items';
+import {arrayHasItems} from '../utils/generic/array-has-items';
 import {ValidationFailureError} from '../errors/validation-failure.error';
 
 export abstract class ModelAbstract<T = any> {

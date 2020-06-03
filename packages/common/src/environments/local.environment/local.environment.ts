@@ -8,9 +8,9 @@ import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
 import {promisify} from 'util';
 
-import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion, IDbmsInfo} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
-import {PropertiesFile, ensureDirs} from '../../system';
+import {PropertiesFile, ensureDirs} from '../../system/files';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -48,7 +48,8 @@ import {
     DBMS_STATUS,
     HOOK_EVENTS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, arrayHasItems, emitHookEvent} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, emitHookEvent} from '../../utils';
+import {isValidUrl, arrayHasItems} from '../../utils/generic';
 import {
     getAppBasePath,
     discoverExtension,
@@ -69,7 +70,6 @@ import {
     IExtensionVersion,
     fetchExtensionVersions,
 } from '../../utils/environment';
-import {IDbmsInfo} from '../../models/environment-config.model';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};

@@ -1,4 +1,4 @@
-import {PropertiesFile} from '../system';
+import {PropertiesFile} from '../system/files';
 
 export function getAccessTokenRCKey(environmentId: string, dbmsId: string, dbmsUser: string): string {
     return `//${environmentId}/${dbmsId}/${dbmsUser}/:_accessToken`;

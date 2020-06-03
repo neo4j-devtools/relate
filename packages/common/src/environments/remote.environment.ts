@@ -7,12 +7,12 @@ import path from 'path';
 import _ from 'lodash';
 
 import {GraphqlError, InvalidConfigError, NotAllowedError, NotFoundError} from '../errors';
-import {EnvironmentConfigModel, IDbms, IDbmsInfo, IDbmsVersion} from '../models/environment-config.model';
+import {EnvironmentConfigModel, IDbms, IDbmsInfo, IDbmsVersion} from '../models';
 import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../utils';
 import {AUTH_TOKEN_KEY, PUBLIC_ENVIRONMENT_METHODS} from '../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
-import {ensureDirs} from '../system';
+import {ensureDirs} from '../system/files';
 import {IExtensionMeta, IExtensionVersion} from '../utils/environment';
 
 export class RemoteEnvironment extends EnvironmentAbstract {

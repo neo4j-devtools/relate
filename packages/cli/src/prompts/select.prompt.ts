@@ -3,7 +3,7 @@ import {prompt} from 'enquirer';
 import {
     AUTHENTICATOR_TYPES,
     Environment,
-    AuthenticatorOptions,
+    GoogleAuthenticatorOptions,
     IExtensionMeta,
     NotFoundError,
     PUBLIC_ENVIRONMENT_METHODS,
@@ -87,7 +87,7 @@ export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]
     );
 };
 
-export const googleAuthenticatorPrompt = async (): Promise<AuthenticatorOptions> => {
+export const googleAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOptions> => {
     const authenticationUrl = await inputPrompt('Authentication request URL (optional)');
     const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)');
     const verificationUrl = await inputPrompt('Authentication verification URL (optional)');
@@ -122,7 +122,7 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
     );
 };
 
-export const selectAuthenticatorPrompt = async (): Promise<AuthenticatorOptions | undefined> => {
+export const selectAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOptions | undefined> => {
     const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
 
     if (needsWhitelist === 'No') {
