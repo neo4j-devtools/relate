@@ -162,16 +162,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
+            const distsBeforeDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
             let requestedDistribution = _.find(
-                await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
+                distsBeforeDownload,
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
             );
 
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
                 await downloadNeo4j(coercedVersion, this.dirPaths.dbmssCache);
+                const distsAfterDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
                 const requestedDistributionAfterDownload = _.find(
-                    await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
+                    distsAfterDownload,
                     (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
                 );
                 if (!requestedDistributionAfterDownload) {

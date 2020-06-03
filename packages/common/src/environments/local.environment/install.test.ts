@@ -7,6 +7,7 @@ import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../erro
 import {LocalEnvironment} from './local.environment';
 import * as localUtils from '../../utils/environment';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
+import {List} from '@relate/types';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const DATA_HOME = envPaths().data;
@@ -89,7 +90,7 @@ describe('LocalEnvironment - install', () => {
         // initially mock appearance of no downloaded neo4j dists
         const discoverNeo4jDistributionsSpy = jest
             .spyOn(localUtils, 'discoverNeo4jDistributions')
-            .mockImplementationOnce(() => Promise.resolve([]));
+            .mockImplementationOnce(() => Promise.resolve(List.of([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
         const dbmsId = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
@@ -105,7 +106,7 @@ describe('LocalEnvironment - install', () => {
 
     test('with invalid, non cached version (semver)', async () => {
         const message = `Unable to find the requested version: ${NEO4J_VERSION} online`;
-        jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve([]));
+        jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve(List.of([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
         await expect(environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION)).rejects.toThrow(

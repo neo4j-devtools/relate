@@ -14,6 +14,7 @@ import {
     shiftNumRight,
 } from '../../../utils/num.utils';
 
+// @ts-ignore
 export default class Num extends Monad<number> {
     static readonly INT_CACHE = new Map();
     static readonly ZERO = Num.fromInt(0);

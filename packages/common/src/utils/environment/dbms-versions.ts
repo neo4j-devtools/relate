@@ -1,9 +1,9 @@
 import {promises as fs} from 'fs';
 import fse from 'fs-extra';
 import got from 'got';
-import _ from 'lodash';
 import path from 'path';
 import semver from 'semver';
+import {Dict, List, None} from '@relate/types';
 
 import {DependencyError, InvalidArgumentError} from '../../errors';
 import {IDbmsVersion} from '../../models';
@@ -17,11 +17,6 @@ import {
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
         const version = await getDistributionVersion(dbmsRootDir);
-
-        if (!version) {
-            return null;
-        }
-
         const isEnterprise = await fse.pathExists(
             path.join(dbmsRootDir, 'lib', `neo4j-server-enterprise-${version}.jar`),
         );
@@ -41,90 +36,91 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
     }
 };
 
-export const discoverNeo4jDistributions = async (distributionsRoot: string): Promise<IDbmsVersion[]> => {
-    const files = await fs.readdir(distributionsRoot, {withFileTypes: true});
-    const dirs = _.filter(files, (file) => file.isDirectory());
+export const discoverNeo4jDistributions = async (distributionsRoot: string): Promise<List<IDbmsVersion>> => {
+    const files = List.of(await fs.readdir(distributionsRoot, {withFileTypes: true}));
+    const dists = await files
+        .filter((file) => file.isDirectory())
+        .mapEach((dir) => {
+            const dbmsRootDir = path.join(distributionsRoot, dir.name);
 
-    const distPromises = _.map(dirs, (dir) => {
-        const dbmsRootDir = path.join(distributionsRoot, dir.name);
-        return getDistributionInfo(dbmsRootDir);
-    });
+            return getDistributionInfo(dbmsRootDir);
+        })
+        .awaitAll();
 
-    // Typescript won't understand that I'm trying to filter out null values.
-    const notNull = <TValue>(value: TValue | null | undefined): value is TValue => {
-        return value !== null && value !== undefined;
-    };
-    const dists = _.filter(await Promise.all(distPromises), notNull);
-
-    return dists.filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
+    return dists.compact().filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
 };
+
+interface IVersions {
+    [version: string]: {
+        version: string;
+        releaseNotes: string;
+        limited: boolean;
+        latest: boolean;
+        dist: {
+            mac: string;
+            win: string;
+            linux: string;
+        };
+    };
+}
 
 interface IVersionManifest {
     'dist-tags': {
         [tag: string]: string;
     };
-    versions: {
-        [version: string]: {
-            version: string;
-            releaseNotes: string;
-            limited: boolean;
-            latest: boolean;
-            dist: {
-                mac: string;
-                win: string;
-                linux: string;
-            };
-        };
-    };
+    versions: IVersions;
 }
 
-export const fetchNeo4jVersions = async (): Promise<IDbmsVersion[]> => {
+export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
     let versionManifest: IVersionManifest;
     try {
         versionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
     } catch {
-        return [];
+        return List.of([]);
     }
 
-    const validVersions = Object.entries(versionManifest.versions).filter(([versionStr]) =>
-        semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE),
-    );
+    return Dict.from(versionManifest.versions)
+        .toList()
+        .filter(([versionStr]) => semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE))
+        .mapEach(([versionStr, versionObj]) => {
+            let url = versionObj.dist.linux;
 
-    return validVersions.map(([versionStr, versionObj]) => {
-        let url = versionObj.dist.linux;
+            if (process.platform === 'darwin') {
+                url = versionObj.dist.mac;
+            }
 
-        if (process.platform === 'darwin') {
-            url = versionObj.dist.mac;
-        }
+            if (process.platform === 'win32') {
+                url = versionObj.dist.win;
+            }
 
-        if (process.platform === 'win32') {
-            url = versionObj.dist.win;
-        }
-
-        return {
-            dist: url,
-            edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
-            origin: NEO4J_ORIGIN.ONLINE,
-            version: versionStr,
-        };
-    });
+            return {
+                dist: url,
+                edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
+                origin: NEO4J_ORIGIN.ONLINE,
+                version: versionStr,
+            };
+        });
 };
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
     const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
-    const libs = await fse.readdir(path.join(dbmsRoot, 'lib'));
-    const neo4jJar = _.find(libs, (name) => neo4jJarRegex.test(name));
+    const libs = List.of(await fse.readdir(path.join(dbmsRoot, 'lib')));
+    const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 
-    if (!neo4jJar) {
-        throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
-    }
+    return neo4jJar
+        .flatMap((jar) => {
+            if (None.isNone(jar)) {
+                throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
+            }
 
-    const version = semver.valid(_.head(neo4jJar.match(semverRegex)));
+            return List.from(jar.match(semverRegex)).first;
+        })
+        .flatMap((version) => {
+            if (None.isNone(version)) {
+                throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
+            }
 
-    if (!version) {
-        throw new InvalidArgumentError(`Could not parse version`);
-    }
-
-    return version;
+            return version;
+        });
 }
