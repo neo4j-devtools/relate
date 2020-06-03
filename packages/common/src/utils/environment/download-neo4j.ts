@@ -44,7 +44,8 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     );
 
     if (!requestedDistribution) {
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+        const onlineEnterpriseVersions = _.join(_.map(onlineVersions, onlineVersion => onlineVersion.version), ', ')
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`]);
     }
     const requestedDistributionUrl = requestedDistribution.dist;
     const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);

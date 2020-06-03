@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import {EnvironmentConfigModel} from '../../models';
 import {InvalidConfigError} from '../../errors';
 import {EnvironmentAbstract, RemoteEnvironment, LocalEnvironment, ENVIRONMENT_TYPES} from '../../environments';
@@ -15,7 +17,7 @@ export async function createEnvironmentInstance(
             environment = new RemoteEnvironment(config, configPath);
             break;
         default:
-            throw new InvalidConfigError(`Environment type ${config.type} not supported`);
+            throw new InvalidConfigError(`Environment type ${config.type} not supported`, [`The supported Environment types are: ${_.join(_.values(ENVIRONMENT_TYPES), ', ')}`]);
     }
 
     await environment.init();

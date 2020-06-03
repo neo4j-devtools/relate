@@ -17,7 +17,7 @@ export const extractNeo4j = async (archivePath: string, outputDir: string): Prom
     // check if this is neo4j...
     const info = await getDistributionInfo(extractedDistPath);
     if (!info) {
-        throw new FileStructureError(`Archive "${archivePath}" is not a Neo4j distribution`);
+        throw new FileStructureError(`Archive "${archivePath}" is not a recognized Neo4j distribution`);
     }
     return {
         ...info,
