@@ -33,6 +33,7 @@ export function registerHookActor(eventName: HOOK_EVENTS, actor: Actor): void {
 
 export function registerHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
     const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
+
     REGISTERED_LISTENERS.set(eventName, new Set([...eventListeners, listener]));
 }
 

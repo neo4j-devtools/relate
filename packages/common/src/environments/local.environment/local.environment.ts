@@ -623,6 +623,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         // @todo: need to look at our use of exec (and maybe child processes) in general
         // this does not account for all scenarios at the moment so needs more thought
         const execute = promisify(exec);
+
         try {
             await emitHookEvent(
                 HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START,
