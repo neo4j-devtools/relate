@@ -1,4 +1,4 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional} from 'class-validator';
+import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES, NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
@@ -40,9 +40,10 @@ export interface IDbmsVersion {
 
 export interface IEnvironmentConfig {
     id: string;
+    active?: boolean;
+    type: ENVIRONMENT_TYPES;
     user: any;
     neo4jDataPath?: string;
-    type: ENVIRONMENT_TYPES;
     httpOrigin?: string;
     relateEnvironment?: string;
     authToken?: string;
@@ -56,12 +57,16 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsString()
     public id!: string;
 
-    // @todo: should be typed
-    @IsNotEmpty()
-    public user: any;
+    @IsBoolean()
+    @IsOptional()
+    public active?: boolean;
 
     @IsEnum(ENVIRONMENT_TYPES)
     public type!: ENVIRONMENT_TYPES;
+
+    // @todo: should be typed
+    @IsNotEmpty()
+    public user: any;
 
     // @todo: this is LocalEnvironment specific
     @IsString()

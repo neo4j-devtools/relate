@@ -24,7 +24,7 @@ ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
   -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
 ```
 
@@ -42,7 +42,7 @@ ARGUMENTS
   DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
   -x, --extended                 show extra columns
   --columns=columns              only show provided columns (comma-separated)
   --filter=filter                filter property by partial string matching, ex: name=foo
@@ -66,7 +66,7 @@ ARGUMENTS
   VERSION  Version to install (semver, url, or path)
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
   -n, --name=name                (required) Name to give the newly installed DBMS
 ```
 
@@ -81,7 +81,7 @@ USAGE
   $ relate dbms:list
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
   --columns=columns              only show provided columns (comma-separated)
   --filter=filter                filter property by partial string matching, ex: name=foo
   --no-header                    hide table header from output
@@ -105,7 +105,7 @@ ARGUMENTS
 
 OPTIONS
   -L, --log                      If set, log the path instead
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/open.ts)_
@@ -122,7 +122,7 @@ ARGUMENTS
   DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/start.ts)_
@@ -139,7 +139,7 @@ ARGUMENTS
   DBMSS  Names or IDs of Neo4j instances
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/stop.ts)_
@@ -156,7 +156,7 @@ ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/uninstall.ts)_

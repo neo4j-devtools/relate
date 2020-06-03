@@ -16,6 +16,7 @@ import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../util
 import {createEnvironmentInstance} from '../utils/environment';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
+import {List, Dict, None, Maybe} from '@relate/types';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -38,16 +39,45 @@ export class SystemProvider implements OnModuleInit {
         await this.discoverEnvironments();
     }
 
+    async useEnvironment(uuid: string): Promise<EnvironmentAbstract> {
+        // Get the environment before modifying any config to make sure we don't
+        // make any changes in case it doesn't exist.
+        const defaultEnvironment = await this.getEnvironment(uuid);
+
+        const environments = List.of(this.allEnvironments.values());
+        await environments
+            .mapEach(async (env) => {
+                await env.updateConfig('active', env.id === uuid);
+            })
+            .awaitAll();
+
+        return defaultEnvironment;
+    }
+
     async getEnvironment(uuid?: string): Promise<EnvironmentAbstract> {
         await this.discoverEnvironments();
 
-        const environment = this.allEnvironments.get(uuid ? uuid : DEFAULT_ENVIRONMENT_NAME);
+        const environments = Dict.of(this.allEnvironments);
 
-        if (!environment) {
-            throw new NotFoundError(`Environment "${uuid}" not found`);
+        if (uuid) {
+            const environment: Maybe<EnvironmentAbstract> = environments.getValue(uuid);
+            return environment.flatMap((env) => {
+                if (None.isNone(env)) {
+                    throw new NotFoundError(`Environment "${uuid}" not found`);
+                }
+
+                return env;
+            });
         }
 
-        return environment;
+        const activeEnvironment = environments.values.find((env) => env.active);
+        return activeEnvironment.flatMap((env) => {
+            if (None.isNone(env)) {
+                throw new NotFoundError(`No environment in use`);
+            }
+
+            return env;
+        });
     }
 
     async registerAccessToken(
