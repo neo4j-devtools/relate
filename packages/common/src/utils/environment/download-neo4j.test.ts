@@ -3,6 +3,7 @@ import path from 'path';
 import nock from 'nock';
 import hasha from 'hasha';
 import * as uuid from 'uuid';
+import {List} from '@relate/types';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
@@ -11,7 +12,7 @@ import * as extractNeo4j from './extract-neo4j';
 
 import {TestDbmss} from './test-dbmss';
 import {envPaths} from '../env-paths';
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments';
 import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
@@ -61,7 +62,7 @@ describe('Download Neo4j (to local cache)', () => {
         const removeSpy = jest.spyOn(fse, 'remove');
 
         jest.spyOn(uuid, 'v4').mockImplementation(() => TMP_UUID);
-        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve([DBMS_VERSION]));
+        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve(List.of([DBMS_VERSION])));
 
         // call downloadNeo4j
         await downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH);
@@ -83,7 +84,7 @@ describe('Download Neo4j (to local cache)', () => {
             edition: NEO4J_EDITION.COMMUNITY,
         };
 
-        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve([dbmsVersion]));
+        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve(List.of([dbmsVersion])));
 
         await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),

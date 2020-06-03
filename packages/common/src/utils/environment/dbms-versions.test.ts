@@ -1,6 +1,7 @@
 import fse from 'fs-extra';
 import nock from 'nock';
 import path from 'path';
+import {List} from '@relate/types';
 
 import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
 
@@ -17,7 +18,7 @@ describe('DBMS versions (local environment)', () => {
 
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
-        const versions = await discoverNeo4jDistributions(dbmssDataDir);
+        const versions = (await discoverNeo4jDistributions(dbmssDataDir)).toArray();
         expect(versions.length).toEqual(1);
         expect(versions[0].edition).toEqual(NEO4J_EDITION.ENTERPRISE);
         expect(versions[0].origin).toEqual(NEO4J_ORIGIN.CACHED);
@@ -62,7 +63,7 @@ describe('DBMS versions (local environment)', () => {
                     },
                 },
             });
-        const versions = await fetchNeo4jVersions();
+        const versions = (await fetchNeo4jVersions()).toArray();
         expect(versions.length).toEqual(2);
         versions.forEach((v) => {
             expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
@@ -77,6 +78,6 @@ describe('DBMS versions (local environment)', () => {
             .replyWithError('something bad happened');
         const versions = await fetchNeo4jVersions();
 
-        expect(versions).toEqual([]);
+        expect(versions).toEqual(List.of([]));
     });
 });
