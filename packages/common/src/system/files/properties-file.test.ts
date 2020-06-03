@@ -1,4 +1,4 @@
-import * as utils from '../../utils';
+import * as utils from '../../utils/files';
 import {PropertiesFile} from './properties-file';
 
 jest.mock('./properties-file.constants.ts', () => ({

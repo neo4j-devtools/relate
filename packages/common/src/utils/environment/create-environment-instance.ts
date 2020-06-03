@@ -1,10 +1,6 @@
 import {EnvironmentConfigModel} from '../../models';
-import {ENVIRONMENT_TYPES} from '../../environments/environment.constants';
 import {InvalidConfigError} from '../../errors';
-
-import {EnvironmentAbstract} from '../../environments/environment.abstract';
-import {RemoteEnvironment} from '../../environments/remote.environment';
-import {LocalEnvironment} from '../../environments/local.environment';
+import {EnvironmentAbstract, RemoteEnvironment, LocalEnvironment, ENVIRONMENT_TYPES} from '../../environments';
 
 export async function createEnvironmentInstance(
     config: EnvironmentConfigModel,

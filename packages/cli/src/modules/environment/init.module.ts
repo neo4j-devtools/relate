@@ -1,7 +1,7 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {
-    AuthenticatorOptions,
+    GoogleAuthenticatorOptions,
     ENVIRONMENT_TYPES,
     IEnvironmentConfig,
     SystemModule,
@@ -38,7 +38,7 @@ export class InitModule implements OnApplicationBootstrap {
             httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
         }
 
-        const authenticator: AuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
+        const authenticator: GoogleAuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
         const allowedMethods: string[] = await selectAllowedMethodsPrompt();
 
         const config: IEnvironmentConfig = {
