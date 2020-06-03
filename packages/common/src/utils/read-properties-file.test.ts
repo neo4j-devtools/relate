@@ -7,10 +7,13 @@ jest.mock('fs-extra', () => {
             bar.bam=baz
             # durr
             bom.boz=true
+            # burr
+            bir.biz=bim.bam=true
         `,
         plain: `
             bar.bam=baz
             bom.boz=true
+            bir.biz=bim.bam=true
         `,
         whitespace: `
         
@@ -19,6 +22,8 @@ jest.mock('fs-extra', () => {
             
             
             bom.boz=true
+
+            bir.biz=bim.bam=true
         `,
     };
 
@@ -32,6 +37,7 @@ describe('readPropertiesFile', () => {
         const expected = new Map([
             ['bar.bam', 'baz'],
             ['bom.boz', 'true'],
+            ['bir.biz', 'bim.bam=true'],
         ]);
 
         const properties = await readPropertiesFile('plain');
@@ -44,6 +50,8 @@ describe('readPropertiesFile', () => {
             ['bar.bam', 'baz'],
             ['# durr', ''],
             ['bom.boz', 'true'],
+            ['# burr', ''],
+            ['bir.biz', 'bim.bam=true'],
         ]);
 
         const properties = await readPropertiesFile('comments');
@@ -54,6 +62,7 @@ describe('readPropertiesFile', () => {
         const expected = new Map([
             ['bar.bam', 'baz'],
             ['bom.boz', 'true'],
+            ['bir.biz', 'bim.bam=true'],
         ]);
 
         const properties = await readPropertiesFile('whitespace');

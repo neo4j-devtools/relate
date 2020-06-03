@@ -1,5 +1,5 @@
 import {readFile} from 'fs-extra';
-import {filter, split, map, trim} from 'lodash';
+import {filter, split, map, trim, join} from 'lodash';
 import {NEW_LINE, PROPERTIES_SEPARATOR} from '../constants';
 
 export async function readPropertiesFile(path: string): Promise<Map<string, string>> {
@@ -8,9 +8,9 @@ export async function readPropertiesFile(path: string): Promise<Map<string, stri
 
     return new Map<string, string>(
         map(filter(lines, Boolean), (line): [string, string] => {
-            const [key, val = ''] = split(line, PROPERTIES_SEPARATOR);
+            const [key, ...rest] = split(line, PROPERTIES_SEPARATOR);
 
-            return [key, val];
+            return [key, join(rest, '=')];
         }),
     );
 }
