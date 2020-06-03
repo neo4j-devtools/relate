@@ -1,75 +1,96 @@
 import {entries, join, map, reduce} from 'lodash';
 
 import Monad from '../monad';
-import {arrayHasItems} from '../../utils/array.utils';
+import List from './list.monad';
 import Maybe from './maybe.monad';
-import Str from './str.monad';
 
-export type RawDict<T extends Monad<any> = Monad<any>> = Map<string, T>;
+type RawDict<K, V> = Map<K, V>
 
-export default class Dict<T extends Monad<any> = Monad<any>> extends Monad<RawDict<T>> {
-    protected readonly keys: readonly Str[];
+// @todo: not sure Extract<> is the right approach
+// @ts-ignore
+export default class Dict<T = any, K = Extract<keyof T, string>, V = T[K]> extends Monad<RawDict<K, V>> {
+    protected ourKeys: Maybe<List<K>> = Maybe.of();
+    protected ourValues: Maybe<List<V>> = Maybe.of();
 
-    constructor(val: RawDict<T>) {
-        super(val);
+    constructor(private readonly ourOriginal: RawDict<K, V>) {
+        super(ourOriginal);
+    }
 
-        // @todo: could be optimised
-        this.keys = Object.freeze(map([...val.keys()], Str.of));
+    get keys(): List<K> {
+        if (this.ourKeys.isEmpty) {
+            this.ourKeys = Maybe.from(List.from<K>(this.ourOriginal.keys()));
+        }
+
+        return this.ourKeys.getOrElse(List.of<K>([]));
+    }
+
+    get values(): List<V> {
+        if (this.ourValues.isEmpty) {
+            this.ourValues = Maybe.from(List.from<V>(this.ourOriginal.values()));
+        }
+
+        return this.ourValues.getOrElse(List.of<V>([]));
     }
 
     get isEmpty(): boolean {
-        return arrayHasItems(this.keys);
+        return this.keys.length.lessThanOrEqual(0);
     }
 
-    static isDict<T extends Monad<any> = Monad<any>>(val: any): val is Dict<T> {
+    static isDict<T>(val: any): val is Dict<T> {
         return val instanceof Dict;
     }
 
-    // @ts-ignore
-    static of<T extends Monad<any> = Monad<any>>(val: any): Dict<T> {
-        const sane: [string, T][] = Array.isArray(val) ? val : entries(val);
+    static of<T>(val: T): Dict<T> {
+        // @ts-ignore
+        const sane = Array.isArray(val) ? val : entries(val);
 
+        // @ts-ignore
         return new Dict<T>(new Map(sane));
     }
 
-    // @ts-ignore
-    static from<T extends Monad<any> = Monad<any>>(val: any): Dict<T> {
-        return Dict.isDict<T>(val) ? val : Dict.of<T>(val);
+    static from<T, R = T extends Iterable<infer U> ? U : T>(val: R): Dict<R> {
+        return Dict.isDict<R>(val) ? val : Dict.of<R>(val);
     }
 
-    static fromObject<T extends Monad<any> = Monad<any>>(obj: object) {
+    static fromObject<T>(obj: T) {
         return Dict.of<T>(obj);
     }
 
     hasKey(index: number): boolean {
-        return index >= 0 && index < this.keys.length;
+        return index >= 0 && this.keys.length.lessThan(index);
     }
 
-    getKey(index: number): Maybe<Str> {
-        return Maybe.of<Str>(this.keys[index]);
+    getKey(index: number): Maybe<K> {
+        return this.keys.nth(index);
     }
 
-    hasValue(key: string): boolean {
-        return this.original.has(key);
+    hasValue(key: K): boolean {
+        return this.ourOriginal.has(key);
     }
 
-    getValue(key: string): Maybe<T> {
-        return Maybe.of(this.original.get(key));
+    // @ts-ignore
+    getValue<O extends K = K, R = T[O]>(key: O): Maybe<R> {
+        // @ts-ignore
+        return Maybe.from<R>(this.ourOriginal.get(key));
     }
 
     toString(): string {
         return `{${join(
-            map([...this.original.entries()], ([key, val]) => `${key}: ${val}`),
+            map([...this], ([key, val]) => `${key}: ${val}`),
             ', ',
         )}}`;
     }
 
+    toList(): List<[K, V]> {
+        return List.from<[K, V]>(this.ourOriginal.entries());
+    }
+
     toJSON(): any {
         const asObj = reduce(
-            [...this.original.entries()],
+            [...this],
             (agg, [key, val]) => ({
                 ...agg,
-                [key]: val,
+                [`${key}`]: val,
             }),
             {},
         );

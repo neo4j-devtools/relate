@@ -1,7 +1,7 @@
 import {writeFile} from 'fs-extra';
 import {filter, join, map, trim} from 'lodash';
 
-import {NEW_LINE, PROPERTIES_SEPARATOR} from '../constants';
+import {NEW_LINE, PROPERTIES_SEPARATOR} from '../../constants';
 
 export function writePropertiesFile(path: string, properties: Map<string, string>): Promise<void> {
     const asText = join(

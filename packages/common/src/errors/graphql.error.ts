@@ -1,5 +1,6 @@
-import {arrayHasItems} from '../utils';
 import {join, map} from 'lodash';
+
+import {arrayHasItems} from '../utils/generic/array-has-items';
 
 export class GraphqlError extends Error {
     constructor(message: string, errors: string[] = []) {

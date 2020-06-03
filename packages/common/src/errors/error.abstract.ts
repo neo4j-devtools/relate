@@ -1,6 +1,6 @@
 import {join, map} from 'lodash';
 
-import {arrayHasItems} from '../utils/array-has-items';
+import {arrayHasItems} from '../utils/generic/array-has-items';
 
 export abstract class ErrorAbstract extends Error {
     constructor(message: string, actions: string[] = []) {

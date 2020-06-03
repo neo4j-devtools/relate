@@ -37,7 +37,7 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    const onlineVersions = await fetchNeo4jVersions();
+    const onlineVersions = (await fetchNeo4jVersions()).toArray();
     const requestedDistribution = _.find(
         onlineVersions,
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,

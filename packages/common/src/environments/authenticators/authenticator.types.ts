@@ -1,5 +1,5 @@
 import {IEnvironmentAuth} from '../../models';
-import {AUTHENTICATOR_TYPES} from '../environment.constants';
+import {AUTHENTICATOR_TYPES} from './authenticators.constants';
 
 export interface IAuthenticator {
     login(redirectTo?: string): Promise<IEnvironmentAuth>;

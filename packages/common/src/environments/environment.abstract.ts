@@ -2,18 +2,25 @@ import fse from 'fs-extra';
 import {IAuthToken} from '@huboneo/tapestry';
 import _ from 'lodash';
 
-import {EnvironmentConfigModel, IDbms, IDbmsVersion, IEnvironmentAuth} from '../models';
-import {IDbmsInfo} from '../models/environment-config.model';
-import {AUTHENTICATOR_TYPES, DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
+import {
+    EnvironmentConfigModel,
+    IDbms,
+    IDbmsVersion,
+    IEnvironmentAuth,
+    IDbmsInfo,
+    GoogleAuthenticatorModel,
+} from '../models';
+import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 import {IExtensionMeta, IExtensionVersion} from '../utils/environment';
 import {
+    AUTHENTICATOR_TYPES,
     googleAuthenticatorFactory,
     IAuthenticator,
     IAuthenticatorOptions,
     IGoogleAuthenticatorOptions,
 } from './authenticators';
 import {NotSupportedError} from '../errors';
-import {arrayHasItems} from '../utils';
+import {arrayHasItems} from '../utils/generic';
 import {PUBLIC_ENVIRONMENT_METHODS} from '../constants';
 
 export abstract class EnvironmentAbstract {
@@ -48,7 +55,8 @@ export abstract class EnvironmentAbstract {
     private setupAuthenticator(options: IAuthenticatorOptions) {
         switch (options.type) {
             case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2: {
-                this.authenticator = googleAuthenticatorFactory(options as IGoogleAuthenticatorOptions);
+                const googleOptions = new GoogleAuthenticatorModel(options as IGoogleAuthenticatorOptions);
+                this.authenticator = googleAuthenticatorFactory(googleOptions);
                 return;
             }
 

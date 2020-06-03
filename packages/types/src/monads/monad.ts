@@ -1,5 +1,9 @@
+import {isIterable} from '../utils/iterable.utils';
+
 export interface IMonad<T> extends Iterable<T> {
     isEmpty: boolean;
+
+    isThis(other?: any): other is this;
 
     equals(other: IMonad<any>): boolean;
 
@@ -11,42 +15,37 @@ export interface IMonad<T> extends Iterable<T> {
 
     map(project: (value: T) => T): IMonad<T>;
 
-    flatMap<M extends IMonad<any> = Monad<any>>(project: (value: T) => M): M;
+    flatMap<M>(project: (value: T) => M): M;
 }
 
-export default class Monad<T extends any> implements IMonad<T> {
+export default class Monad<T> implements IMonad<T> {
     protected alreadyIterable = false;
-    protected iterableValue: Iterable<T> = [];
+    protected readonly iterableValue: Iterable<T>;
 
     constructor(protected readonly original: T) {
-        /* eslint-disable no-eq-null,eqeqeq */
-        this.alreadyIterable =
-            // @ts-ignore
-            original != null && typeof original !== 'string' && typeof original[Symbol.iterator] === 'function';
+        this.alreadyIterable = isIterable(original);
         // @ts-ignore
         this.iterableValue = this.alreadyIterable ? original : [original];
-        /* eslint-enable no-eq-null,eqeqeq */
     }
 
     isThis(other?: any): other is this {
         return other instanceof this.constructor;
     }
 
-    get isEmpty() {
-        // eslint-disable-next-line no-eq-null,eqeqeq
+    get isEmpty(): boolean {
         return !this.original;
     }
 
-    static isMonad<T extends any>(val: any): val is Monad<T> {
+    static isMonad<T>(val: any): val is Monad<T> {
         return val instanceof Monad;
     }
 
-    static of(val: any) {
-        return new Monad(val);
+    static of<T>(val: T): Monad<T> {
+        return new Monad<T>(val);
     }
 
-    static from(val: any) {
-        return val instanceof Monad ? val : Monad.of(val);
+    static from<T>(val: T): Monad<T> {
+        return Monad.isMonad<T>(val) ? val : Monad.of<T>(val);
     }
 
     *[Symbol.iterator](): Iterator<T> {
@@ -63,10 +62,16 @@ export default class Monad<T extends any> implements IMonad<T> {
         return this.isEmpty ? other : this.get();
     }
 
-    equals(other: any) {
+    equals(other: any): boolean {
         const toCompare = Monad.from(other);
 
         return toCompare.get() === this.get();
+    }
+
+    tap(project: (value: T) => void): this {
+        project(this.original);
+
+        return this;
     }
 
     map(project: (value: T) => T): this {
@@ -74,7 +79,7 @@ export default class Monad<T extends any> implements IMonad<T> {
         return new this.constructor(project(this.original));
     }
 
-    flatMap<M = Monad<any>>(project: (value: T) => M): M {
+    flatMap<M>(project: (value: T) => M): M {
         return project(this.original);
     }
 
@@ -82,15 +87,15 @@ export default class Monad<T extends any> implements IMonad<T> {
         return project(this);
     }
 
-    toString() {
+    toString(): string {
         return `${this.original}`;
     }
 
-    toJSON() {
+    toJSON(): string {
         return JSON.parse(JSON.stringify(this.original));
     }
 
-    valueOf() {
+    valueOf(): T {
         return this.original;
     }
 }

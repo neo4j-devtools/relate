@@ -8,9 +8,9 @@ import * as rxjs from 'rxjs/operators';
 import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
 import {promisify} from 'util';
 
-import {IDbms, EnvironmentConfigModel, IDbmsVersion} from '../../models';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion, IDbmsInfo} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
-import {PropertiesFile, ensureDirs} from '../../system';
+import {PropertiesFile, ensureDirs} from '../../system/files';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -48,7 +48,8 @@ import {
     DBMS_STATUS,
     HOOK_EVENTS,
 } from '../../constants';
-import {envPaths, parseNeo4jConfigPort, isValidUrl, arrayHasItems, emitHookEvent} from '../../utils';
+import {envPaths, parseNeo4jConfigPort, emitHookEvent} from '../../utils';
+import {isValidUrl, arrayHasItems} from '../../utils/generic';
 import {
     getAppBasePath,
     discoverExtension,
@@ -69,7 +70,6 @@ import {
     IExtensionVersion,
     fetchExtensionVersions,
 } from '../../utils/environment';
-import {IDbmsInfo} from '../../models/environment-config.model';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     private dbmss: {[id: string]: IDbms} = {};
@@ -162,16 +162,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
+            const distsBeforeDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
             let requestedDistribution = _.find(
-                await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
+                distsBeforeDownload,
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
             );
 
             // if cached version of neo4j doesn't exist, attempt to download
             if (!requestedDistribution) {
                 await downloadNeo4j(coercedVersion, this.dirPaths.dbmssCache);
+                const distsAfterDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
                 const requestedDistributionAfterDownload = _.find(
-                    await discoverNeo4jDistributions(this.dirPaths.dbmssCache),
+                    distsAfterDownload,
                     (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
                 );
                 if (!requestedDistributionAfterDownload) {

@@ -2,6 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {
     arrayHasItems,
     EXTENSION_ORIGIN,
+    IExtensionVersion,
     InvalidArgumentError,
     SystemModule,
     SystemProvider,
@@ -15,7 +16,6 @@ import cli from 'cli-ux';
 
 import InstallCommand from '../../commands/extension/install';
 import {selectPrompt} from '../../prompts';
-import {IExtensionVersion} from '@relate/common/dist/environments/local.environment/utils';
 
 @Module({
     exports: [],

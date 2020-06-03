@@ -1,5 +1,6 @@
 import Monad from '../monad';
 
+// @ts-ignore
 export default class Nil extends Monad<null> {
     static NULL = new Nil();
 
