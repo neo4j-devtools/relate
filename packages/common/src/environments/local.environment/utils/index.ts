@@ -8,3 +8,4 @@ export * from './extension-versions';
 export * from './extract-extension';
 export * from './download-extension';
 export * from './get-app-base-path';
+export * from './spawn-promise';

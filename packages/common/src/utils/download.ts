@@ -5,8 +5,9 @@ import stream from 'stream';
 import {promisify} from 'util';
 import {v4 as uuidv4} from 'uuid';
 
-import {DOWNLOADING_FILE_EXTENSION} from '../constants';
+import {DOWNLOADING_FILE_EXTENSION, HOOK_EVENTS} from '../constants';
 import {FetchError} from '../errors';
+import {emitHookEvent} from './event-hooks';
 
 // @todo: this still needs a test in future as I couldn't figure out the tests just yet.
 // https://dev.to/cdanielsen/testing-streams-a-primer-3n6e has some interesting points to start with.
@@ -20,7 +21,12 @@ export const download = async (url: string, outputDirPath: string, options?: Opt
     const streamPipeline = promisify(stream.pipeline);
 
     try {
-        await streamPipeline(got.stream(url, options), fse.createWriteStream(downloadFilePath));
+        await streamPipeline(
+            got
+                .stream(url, options)
+                .on('downloadProgress', async (progress) => emitHookEvent(HOOK_EVENTS.DOWNLOAD_PROGRESS, progress)),
+            fse.createWriteStream(downloadFilePath),
+        );
 
         return downloadFilePath;
     } catch (e) {

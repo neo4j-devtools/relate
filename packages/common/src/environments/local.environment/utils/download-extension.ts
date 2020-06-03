@@ -5,10 +5,10 @@ import hasha from 'hasha';
 
 import {FetchError, NotFoundError, IntegrityError} from '../../../errors';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM} from '../../../constants';
+import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../../constants';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
 import {JFROG_PRIVATE_REGISTRY_PASSWORD, JFROG_PRIVATE_REGISTRY_USERNAME} from '../../environment.constants';
-import {download} from '../../../utils';
+import {download, emitHookEvent} from '../../../utils';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -80,10 +80,13 @@ export const downloadExtension = async (
 ): Promise<IExtensionMeta> => {
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
     const downloadFilePath = await download(tarball, extensionDistributionsPath, {
         password: JFROG_PRIVATE_REGISTRY_PASSWORD,
         username: JFROG_PRIVATE_REGISTRY_USERNAME,
     });
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
+
     await verifyHash(shasum, downloadFilePath);
 
     // extract extension to cache dir first
@@ -95,9 +98,11 @@ export const downloadExtension = async (
     const destinationPath = path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`);
 
     // move the extracted dir and remove the downloaded archive
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, `moving ${name} to data directory`);
     await fse.move(dist, destinationPath, {overwrite: true});
     await fse.remove(extractPath);
     await fse.remove(downloadFilePath);
+    await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, null);
 
     return discoverExtension(destinationPath);
 };
