@@ -1,10 +1,10 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-import {NotSupportedError} from '../../../errors';
-import {download, envPaths, extract, emitHookEvent} from '../../../utils';
-import {RUNTIME_DIR_NAME, ZULU_JAVA_DOWNLOAD_URL, ZULU_JAVA_VERSION} from '../../environment.constants';
-import {HOOK_EVENTS} from '../../../constants';
+import {NotSupportedError} from '../../errors';
+import {download, envPaths, extract, emitHookEvent} from '..';
+import {RUNTIME_DIR_NAME, ZULU_JAVA_DOWNLOAD_URL, ZULU_JAVA_VERSION} from '../../environments/environment.constants';
+import {HOOK_EVENTS} from '../../constants';
 
 interface IJavaName {
     dirname: string;

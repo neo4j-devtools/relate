@@ -13,7 +13,7 @@ import {envPaths} from '../utils';
 import {AUTH_TOKEN_KEY, PUBLIC_ENVIRONMENT_METHODS} from '../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../system';
-import {IExtensionMeta, IExtensionVersion} from './local.environment/utils';
+import {IExtensionMeta, IExtensionVersion} from '../utils/environment';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     private client: ApolloLink;

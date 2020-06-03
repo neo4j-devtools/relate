@@ -2,8 +2,8 @@ import {exec} from 'child_process';
 import fse from 'fs-extra';
 import path from 'path';
 
-import {NotAllowedError, NotFoundError, DependencyError} from '../../../errors';
-import {NEO4J_BIN_DIR, NEO4J_BIN_FILE} from '../../environment.constants';
+import {NotAllowedError, NotFoundError, DependencyError} from '../../errors';
+import {NEO4J_BIN_DIR, NEO4J_BIN_FILE} from '../../environments/environment.constants';
 import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 

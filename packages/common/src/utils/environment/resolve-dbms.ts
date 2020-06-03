@@ -1,5 +1,5 @@
-import {IDbms} from '../../../models';
-import {NotFoundError, AmbiguousTargetError} from '../../../errors';
+import {IDbms} from '../../models';
+import {NotFoundError, AmbiguousTargetError} from '../../errors';
 
 export function resolveDbms(dbmss: {[uuid: string]: IDbms}, nameOrId: string): IDbms {
     if (dbmss[nameOrId]) {

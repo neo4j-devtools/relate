@@ -5,14 +5,14 @@ import _ from 'lodash';
 import path from 'path';
 import semver from 'semver';
 
-import {DependencyError, InvalidArgumentError} from '../../../errors';
-import {IDbmsVersion} from '../../../models';
+import {DependencyError, InvalidArgumentError} from '../../errors';
+import {IDbmsVersion} from '../../models';
 import {
     NEO4J_DIST_VERSIONS_URL,
     NEO4J_EDITION,
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
-} from '../../environment.constants';
+} from '../../environments/environment.constants';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {

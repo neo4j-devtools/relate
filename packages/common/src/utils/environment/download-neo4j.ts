@@ -3,11 +3,13 @@ import fse from 'fs-extra';
 import got from 'got';
 import hasha from 'hasha';
 
-import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
-import {HOOK_EVENTS} from '../../../constants';
+import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
+import {HOOK_EVENTS} from '../../constants';
+import {FetchError, IntegrityError, NotFoundError} from '../../errors';
+import {download} from '../download';
+import {emitHookEvent} from '../event-hooks';
 import {fetchNeo4jVersions} from './dbms-versions';
-import {FetchError, IntegrityError, NotFoundError} from '../../../errors';
-import {extractNeo4j, emitHookEvent, download} from '../../../utils';
+import {extractNeo4j} from './extract-neo4j';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {

@@ -2,8 +2,8 @@ import {DynamicModule} from '@nestjs/common';
 import _ from 'lodash';
 
 import {getInstalledExtensions} from './get-installed-extensions';
-import {InvalidArgumentError} from '../errors';
-import {EXTENSION_TYPES} from '../constants';
+import {InvalidArgumentError} from '../../errors';
+import {EXTENSION_TYPES} from '../../constants';
 
 const INSTALLED_EXTENSIONS = getInstalledExtensions();
 

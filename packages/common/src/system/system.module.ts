@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 
 import {SystemProvider} from './system.provider';
-import {loadExtensionsFor} from '../utils/load-extensions-for';
+import {loadExtensionsFor} from '../utils/environment';
 import {EXTENSION_TYPES} from '../constants';
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.SYSTEM);

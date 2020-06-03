@@ -1,9 +1,11 @@
 import fse from 'fs-extra';
 
-import {FileStructureError} from '../../../errors';
+import {FileStructureError} from '../../errors';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
-import {extract, emitHookEvent} from '../../../utils';
-import {HOOK_EVENTS} from '../../../constants';
+
+import {HOOK_EVENTS} from '../../constants';
+import {emitHookEvent} from '../event-hooks';
+import {extract} from '../extract';
 
 export const extractExtension = async (archivePath: string, outputDir: string): Promise<IExtensionMeta> => {
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, 'extracting');

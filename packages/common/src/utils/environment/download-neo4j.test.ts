@@ -6,17 +6,20 @@ import * as uuid from 'uuid';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
-import * as systemUtils from '../../../utils';
+import * as download from '../download';
+import * as extractNeo4j from './extract-neo4j';
 
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environment.constants';
-import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../../constants';
-import {NotFoundError, FetchError, IntegrityError} from '../../../errors';
+import {TestDbmss} from './test-dbmss';
+import {envPaths} from '../env-paths';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
+import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
+import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
 jest.mock('uuid');
 
 const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
-const TMP_NEO4J_DIST_PATH = path.join(systemUtils.envPaths().cache, DBMS_DIR_NAME);
+const TMP_NEO4J_DIST_PATH = path.join(envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';
 const TMP_PATH = path.join(TMP_NEO4J_DIST_PATH, `Unconfirmed_${TMP_UUID}${DOWNLOADING_FILE_EXTENSION}`);
@@ -25,7 +28,7 @@ const DBMS_VERSION = {
     dist: TEST_DIST,
     edition: NEO4J_EDITION.ENTERPRISE,
     origin: NEO4J_ORIGIN.ONLINE,
-    version: TEST_VERSION,
+    version: TestDbmss.NEO4J_VERSION,
 };
 
 describe('Download Neo4j (to local cache)', () => {
@@ -39,7 +42,7 @@ describe('Download Neo4j (to local cache)', () => {
             .spyOn(downloadNeo4j, 'getCheckSum')
             .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
 
-        const downloadSpy = jest.spyOn(systemUtils, 'download').mockImplementation(() => {
+        const downloadSpy = jest.spyOn(download, 'download').mockImplementation(() => {
             fse.ensureFile(TMP_PATH);
             return Promise.resolve(TMP_PATH);
         });
@@ -48,7 +51,7 @@ describe('Download Neo4j (to local cache)', () => {
             .spyOn(downloadNeo4j, 'verifyHash')
             .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
 
-        const extractFromArchiveSpy = jest.spyOn(systemUtils, 'extractNeo4j').mockImplementation(() =>
+        const extractFromArchiveSpy = jest.spyOn(extractNeo4j, 'extractNeo4j').mockImplementation(() =>
             Promise.resolve({
                 ...DBMS_VERSION,
                 extractedDistPath: path.join(TMP_NEO4J_DIST_PATH, `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}`),

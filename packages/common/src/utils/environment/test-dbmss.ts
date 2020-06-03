@@ -12,6 +12,8 @@ import {envPaths} from '../env-paths';
 export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';
 
+    static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
+
     dbmsNames: string[] = [];
 
     environment: EnvironmentAbstract;
@@ -42,10 +44,9 @@ export class TestDbmss {
     }
 
     async createDbms(): Promise<IDbms> {
-        const version = process.env.TEST_NEO4J_VERSION || '4.0.4';
         const name = this.createName();
 
-        await this.environment.installDbms(name, TestDbmss.DBMS_CREDENTIALS, version);
+        await this.environment.installDbms(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
 
         const shortUUID = uuid().slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
