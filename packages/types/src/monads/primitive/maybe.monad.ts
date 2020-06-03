@@ -21,7 +21,9 @@ export default class Maybe<T> extends Monad<T | None<T>> {
 
     static of<T>(val?: T | None): Maybe<T> {
         // @ts-ignore
-        return val !== undefined && val !== null && !None.isNone(val) && !Nil.isNil(val) ? new Maybe<T>(val) : Maybe.EMPTY;
+        return val !== undefined && val !== null && !None.isNone(val) && !Nil.isNil(val)
+            ? new Maybe<T>(val)
+            : Maybe.EMPTY;
     }
 
     static from<T>(val?: T): Maybe<T> {

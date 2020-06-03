@@ -17,7 +17,9 @@ export async function createEnvironmentInstance(
             environment = new RemoteEnvironment(config, configPath);
             break;
         default:
-            throw new InvalidConfigError(`Environment type ${config.type} not supported`, [`The supported Environment types are: ${_.join(_.values(ENVIRONMENT_TYPES), ', ')}`]);
+            throw new InvalidConfigError(`Environment type ${config.type} not supported`, [
+                `The supported Environment types are: ${_.join(_.values(ENVIRONMENT_TYPES), ', ')}`,
+            ]);
     }
 
     await environment.init();

@@ -44,8 +44,17 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     );
 
     if (!requestedDistribution) {
-        const onlineEnterpriseVersions = _.join(_.map(onlineVersions, onlineVersion => onlineVersion.version), ', ')
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`]);
+        const onlineEnterpriseVersions = _.join(
+            _.compact(
+                _.map(onlineVersions, (onlineVersion) => onlineVersion.edition === NEO4J_EDITION.ENTERPRISE && onlineVersion.version)
+                )
+            , ', '
+        );
+        let messages = [];
+        if (onlineEnterpriseVersions.length) {
+            messages.push(`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`)
+        };
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, messages);
     }
     const requestedDistributionUrl = requestedDistribution.dist;
     const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);

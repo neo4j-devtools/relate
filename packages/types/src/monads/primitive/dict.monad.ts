@@ -4,7 +4,7 @@ import Monad from '../monad';
 import List from './list.monad';
 import Maybe from './maybe.monad';
 
-type RawDict<K, V> = Map<K, V>
+type RawDict<K, V> = Map<K, V>;
 
 // @todo: not sure Extract<> is the right approach
 // @ts-ignore
