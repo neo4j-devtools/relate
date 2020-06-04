@@ -7,6 +7,7 @@ import None from './none.monad';
 
 import {isIterable} from '../../utils/iterable.utils';
 import Nil from './nil.monad';
+import Str from './str.monad';
 
 type Compactable<T> = T extends null ? never : T | T extends Nil ? never : T | T extends None<any> ? never : T;
 
@@ -112,6 +113,13 @@ export default class List<T> extends Monad<Iterable<T>> {
         return Maybe.of<T>(found);
     }
 
+    includes(other: T): boolean {
+        const valToUse = Monad.from(other);
+
+        // this could be a bug since maybe now considers null empty
+        return !this.find((val) => valToUse.equals(val)).isEmpty;
+    }
+
     filter(predicate: (val: T) => boolean): List<T> {
         const found = filter([...this], predicate);
 
@@ -150,6 +158,7 @@ export default class List<T> extends Monad<Iterable<T>> {
             if (valToUse.equals(item)) {
                 return Num.from(i);
             }
+
             i += 1;
         }
 
@@ -178,20 +187,38 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of([...res]);
     }
 
-    concat(other: T | Iterable<T>): List<T> {
-        return isIterable(other) ? List.of<T>([...this, ...other]) : List.of<T>([...this, other]);
+    concat<O extends Str<any>>(other: O): List<T | O>;
+    concat<O extends string>(other: O): List<T | O>;
+    concat<O, I = O extends Iterable<infer I> ? I : O>(other: O): List<T | I>;
+    concat<O>(other: O): List<T | O> {
+        if (isIterable(other) && !(typeof other === 'string' || Str.isStr(other))) {
+            return List.of([...this, ...other]);
+        }
+
+        return List.of([...this, other]);
+    }
+
+    flatten<R = T extends List<List<infer I>> ? I : T>(): List<R> {
+        return this.reduce((agg, next) => agg.concat(next), List.from<R>([]));
+    }
+
+    sort(compareFn?: (a: T, b: T) => number): List<T> {
+        return List.from([...this].sort(compareFn));
+    }
+
+    join(separator: string | Str): Str {
+        return Str.from(join([...this], `${separator}`));
     }
 
     toString() {
-        return `[${join([...this.original], ', ')}]`;
+        return `[${this.join(', ')}]`;
     }
 
     toArray() {
         return [...this];
     }
 
-    // @todo: should we create an AsyncList instead?
-    async awaitAll<R = T extends PromiseLike<infer V> ? V : T>(): Promise<List<R>> {
+    async unwindPromises<R = T extends PromiseLike<infer V> ? V : T>(): Promise<List<R>> {
         // @ts-ignore
         return List.of<R>(await Promise.all(this));
     }
