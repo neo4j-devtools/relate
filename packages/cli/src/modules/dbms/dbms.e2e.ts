@@ -40,7 +40,7 @@ describe('$relate dbms', () => {
     });
 
     test.stdout().it('lists DBMSs', async (ctx) => {
-        await ListCommand.run(['--environment', TEST_ENVIRONMENT_ID]);
+        await ListCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--no-truncate']);
         expect(ctx.stdout).toContain(TEST_DB_NAME);
     });
 

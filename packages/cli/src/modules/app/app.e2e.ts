@@ -1,11 +1,9 @@
 import {test} from '@oclif/test';
-import {TestDbmss} from '@relate/common';
+import {TestDbmss, TestExtensions, IInstalledExtension} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import OpenCommand from '../../commands/app/open';
 import StartCommand from '../../commands/dbms/start';
-import InstallCommand from '../../commands/extension/install';
-import UninstallCommand from '../../commands/extension/uninstall';
 
 jest.mock('cli-ux', () => {
     return {
@@ -15,25 +13,22 @@ jest.mock('cli-ux', () => {
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ENVIRONMENT_ID = 'test';
-const TEST_APP_NAME = 'neo4j-insight';
-const TEST_APP_VERSION = '1.0.0';
 let TEST_DB_NAME: string;
 
 describe('$relate app', () => {
     const dbmss = new TestDbmss(__filename);
+    const extensions = new TestExtensions(__filename);
+    let testExtension: IInstalledExtension;
 
     beforeAll(async () => {
         const {name} = await dbmss.createDbms();
-
-        await InstallCommand.run([TEST_APP_NAME, '-V', TEST_APP_VERSION]);
+        testExtension = await extensions.installNew();
 
         TEST_DB_NAME = name;
     });
 
     afterAll(async () => {
-        await UninstallCommand.run([TEST_APP_NAME]);
-
-        return dbmss.teardown();
+        await Promise.all([extensions.teardown(), dbmss.teardown()]);
     });
 
     test.skip()
@@ -52,7 +47,7 @@ describe('$relate app', () => {
             ]);
 
             await OpenCommand.run([
-                TEST_APP_NAME,
+                testExtension.name,
                 `--dbmsId=${TEST_DB_NAME}`,
                 '--principal=neo4j',
                 `--environment=${TEST_ENVIRONMENT_ID}`,
