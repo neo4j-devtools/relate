@@ -73,7 +73,7 @@ describe('LocalEnvironment - install', () => {
         const dbmsID = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, archivePath);
         expect(dbmsID).toMatch(UUID_REGEX);
 
-        const message = await environment.infoDbmss([dbmsID]);
+        const message = (await environment.infoDbmss([dbmsID])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
@@ -97,7 +97,7 @@ describe('LocalEnvironment - install', () => {
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
 
-        const message = await environment.infoDbmss([dbmsId]);
+        const message = (await environment.infoDbmss([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
@@ -117,7 +117,7 @@ describe('LocalEnvironment - install', () => {
     test('with valid version (semver)', async () => {
         const dbmsId = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
 
-        const message = await environment.infoDbmss([dbmsId]);
+        const message = (await environment.infoDbmss([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
@@ -125,7 +125,7 @@ describe('LocalEnvironment - install', () => {
 
         const dbmsId2 = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
 
-        const message2 = await environment.infoDbmss([dbmsId2]);
+        const message2 = (await environment.infoDbmss([dbmsId2])).toArray();
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));

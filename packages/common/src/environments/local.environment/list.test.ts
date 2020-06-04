@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import path from 'path';
+import {List} from '@relate/types';
 
 import {ENVIRONMENT_TYPES} from '../environment.constants';
 import {EnvironmentConfigModel} from '../../models';
@@ -64,7 +65,7 @@ describe('LocalEnvironment - list', () => {
 
     // @todo: broken as we now check for conf existing
     test('list dbmss installed', async () => {
-        const expected = [
+        const expected = List.from([
             {
                 config: generateDummyConf('6bb553ba'),
                 connectionUri: 'neo4j://127.0.0.1:7687',
@@ -81,7 +82,7 @@ describe('LocalEnvironment - list', () => {
                 name: '',
                 rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
             },
-        ];
+        ]);
 
         const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
 

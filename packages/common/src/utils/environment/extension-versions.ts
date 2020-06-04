@@ -1,9 +1,10 @@
 import got from 'got';
-import _ from 'lodash';
 import semver from 'semver';
 import {promises as fs} from 'fs';
+import _ from 'lodash';
 import fse from 'fs-extra';
 import path from 'path';
+import {List, None, Str} from '@relate/types';
 
 import {
     EXTENSION_DIR_NAME,
@@ -19,7 +20,7 @@ import {
     EXTENSION_SEARCH_PATH,
     JFROG_PRIVATE_REGISTRY_PASSWORD,
     JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../environments/environment.constants';
+} from '../../environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {ExtensionModel, IInstalledExtension} from '../../models';
 import {envPaths} from '../env-paths';
@@ -33,22 +34,21 @@ export interface IExtensionMeta {
     origin: EXTENSION_ORIGIN;
 }
 
-export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<IExtensionMeta[]> => {
-    const dirFiles = await fs.readdir(distributionsRoot, {withFileTypes: true});
-    const files = await Promise.all(
-        _.map(dirFiles, async (dir) => {
+export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<IExtensionMeta>> => {
+    const dirFiles = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
+    const files = await dirFiles
+        .mapEach(async (dir) => {
             const stats = await fse.stat(path.join(distributionsRoot, dir.name));
 
             return stats.isDirectory() ? dir : null;
-        }),
-    );
-    const dirs = _.compact(files);
-    const distPromises: Promise<IExtensionMeta | null>[] = _.map(dirs, (dir) =>
-        discoverExtension(path.join(distributionsRoot, dir.name)).catch(() => null),
-    );
-    const dists = _.compact(await Promise.all(distPromises));
+        })
+        .unwindPromises();
+    const dists = await files
+        .compact()
+        .mapEach((dir) => discoverExtension(path.join(distributionsRoot, dir.name)).catch(() => null))
+        .unwindPromises();
 
-    return dists.filter((dist) => dist.version === '*' || semver.valid(dist.version));
+    return dists.compact().filter((dist) => Boolean(dist.version === '*' || semver.valid(dist.version)));
 };
 
 export async function discoverExtension(extensionRootDir: string): Promise<IExtensionMeta> {
@@ -129,8 +129,8 @@ export interface IExtensionVersion {
     origin: EXTENSION_ORIGIN;
 }
 
-export async function fetchExtensionVersions(): Promise<IExtensionVersion[]> {
-    const cached = await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME));
+export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>> {
+    const cached = List.from(await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME)));
     const search = {
         path: {$match: `${EXTENSION_NPM_PREFIX}*`},
         repo: {$eq: EXTENSION_REPO_NAME},
@@ -144,30 +144,44 @@ export async function fetchExtensionVersions(): Promise<IExtensionVersion[]> {
         username: JFROG_PRIVATE_REGISTRY_USERNAME,
     }).json();
 
-    return _.concat(cached, mapArtifactoryResponse(results));
+    return cached.concat(mapArtifactoryResponse(List.from(results)));
 }
 
-function mapArtifactoryResponse(results: any[]): IExtensionVersion[] {
-    return _.compact(
-        _.map(results, ({name}) => {
-            const versionPart = _.last(_.split(_.replace(name, '.tgz', ''), '-'));
-            const version = semver.coerce(versionPart);
+function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {
+    return results
+        .mapEach(({name}) => {
+            const nameVal = Str.from(name);
 
-            if (!version) {
-                return null;
-            }
+            return nameVal
+                .replace('.tgz', '')
+                .split('-')
+                .last.map((versionPart) => {
+                    if (None.isNone(versionPart) || versionPart.isEmpty) {
+                        return None.EMPTY;
+                    }
 
-            const extName = _.head(_.split(name, `-${version.version}`));
+                    const found = semver.coerce(`${versionPart}`);
 
-            if (!extName) {
-                return null;
-            }
+                    return found ? Str.from(found.version) : None.EMPTY;
+                })
+                .flatMap((version) => {
+                    // @todo: discuss if mapping maybes should not exec if empty?
+                    if (None.isNone(version)) {
+                        return version;
+                    }
 
-            return {
-                name: extName,
-                origin: EXTENSION_ORIGIN.ONLINE,
-                version: version.version,
-            };
-        }),
-    );
+                    return nameVal.split(`-${version}`).first.flatMap((extName) => {
+                        if (None.isNone(extName)) {
+                            return extName;
+                        }
+
+                        return {
+                            name: `${extName}`,
+                            origin: EXTENSION_ORIGIN.ONLINE,
+                            version: `${version}`,
+                        };
+                    });
+                });
+        })
+        .compact();
 }
