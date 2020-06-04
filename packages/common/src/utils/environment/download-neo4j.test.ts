@@ -79,10 +79,9 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('downloadNeo4j: no requested distributions found online', async () => {
-        const message = `Unable to find the requested version: ${TEST_VERSION} online`;
-        // const message = `Unable to find the requested version: ${TEST_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: 4.0.4`;
+        let message = `Unable to find the requested version: ${TEST_VERSION} online`;
 
-        const dbmsVersion = {
+        let dbmsVersion = {
             ...DBMS_VERSION,
             edition: NEO4J_EDITION.COMMUNITY,
         };
@@ -90,6 +89,18 @@ describe('Download Neo4j (to local cache)', () => {
         jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
             Promise.resolve(List.of([dbmsVersion])),
         );
+
+        await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
+            new NotFoundError(message),
+        );
+
+        const majorVersionIncrease = (parseInt(TestDbmss.NEO4J_VERSION[0]) + 1) + TestDbmss.NEO4J_VERSION.slice(1);
+        dbmsVersion = {
+            ...DBMS_VERSION,
+            version: majorVersionIncrease
+        };
+
+        message = `Unable to find the requested version: ${TEST_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${majorVersionIncrease}`;
 
         await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),
