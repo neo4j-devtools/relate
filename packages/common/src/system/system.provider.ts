@@ -44,7 +44,7 @@ export class SystemProvider implements OnModuleInit {
         // make any changes in case it doesn't exist.
         const defaultEnvironment = await this.getEnvironment(uuid);
 
-        const environments = List.of(this.allEnvironments.values());
+        const environments = List.from(this.allEnvironments.values());
         await environments
             .mapEach(async (env) => {
                 await env.updateConfig('active', env.id === uuid);
