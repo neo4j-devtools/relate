@@ -44,7 +44,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         let {version = ''} = args;
         if (!version) {
-            const versions = await environment.listDbmsVersions();
+            const versions = (await environment.listDbmsVersions()).toArray();
             version = await selectPrompt(
                 'Select a version to install',
                 versions.map((v) => ({

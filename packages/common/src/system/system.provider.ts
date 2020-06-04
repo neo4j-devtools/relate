@@ -49,7 +49,7 @@ export class SystemProvider implements OnModuleInit {
             .mapEach(async (env) => {
                 await env.updateConfig('active', env.id === uuid);
             })
-            .awaitAll();
+            .unwindPromises();
 
         return defaultEnvironment;
     }

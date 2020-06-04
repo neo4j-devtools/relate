@@ -40,16 +40,18 @@ export class AppsResolver {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = await environment.listInstalledApps();
 
-        return Promise.all(
-            _.map(installedApps, async (app) => {
+        const mapped = await installedApps
+            .mapEach(async (app) => {
                 const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
 
                 return {
                     ...app,
                     path: appPath,
                 };
-            }),
-        );
+            })
+            .unwindPromises();
+
+        return mapped.toArray();
     }
 
     @Mutation(() => AppLaunchToken)

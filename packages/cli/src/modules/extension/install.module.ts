@@ -61,7 +61,7 @@ export class InstallModule implements OnApplicationBootstrap {
         this.registerHookListeners();
 
         if (!(name && version)) {
-            const versions = await environment.listExtensionVersions();
+            const versions = (await environment.listExtensionVersions()).toArray();
             const cached = _.filter(versions, ({origin}) => origin === EXTENSION_ORIGIN.CACHED);
             const onlineNotCached = _.filter(versions, (v) => {
                 if (v.origin !== EXTENSION_ORIGIN.ONLINE) {

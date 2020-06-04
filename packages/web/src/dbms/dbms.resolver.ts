@@ -41,25 +41,25 @@ export class DBMSResolver {
     @Query(() => [Dbms])
     async listDbmss(@Args() {environmentId}: EnvironmentArgs): Promise<IDbms[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.listDbmss();
+        return (await environment.listDbmss()).toArray();
     }
 
     @Query(() => [DbmsInfo])
     async infoDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<IDbmsInfo[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.infoDbmss(dbmsIds);
+        return (await environment.infoDbmss(dbmsIds)).toArray();
     }
 
     @Mutation(() => [String])
     async startDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.startDbmss(dbmsIds);
+        return (await environment.startDbmss(dbmsIds)).toArray();
     }
 
     @Mutation(() => [String])
     async stopDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.stopDbmss(dbmsIds);
+        return (await environment.stopDbmss(dbmsIds)).toArray();
     }
 
     @Mutation(() => String)
