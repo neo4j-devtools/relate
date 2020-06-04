@@ -16,7 +16,7 @@ USAGE
 OPTIONS
   -D, --dbmsId=dbmsId            The DBMS to automatically connect to
   -L, --log                      If set, log the path instead
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
   -u, --user=user                The Neo4j DBMS user to automatically connect with, assuming an access token exists
 ```
 

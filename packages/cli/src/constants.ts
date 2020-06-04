@@ -26,8 +26,8 @@ export const FLAGS = {
     ENVIRONMENT: {
         environment: flags.string({
             char: 'e',
-            default: 'default',
             description: 'Name of the environment to run the command against',
+            required: false,
         }),
     },
 };

@@ -13,8 +13,11 @@ type Compactable<T> = T extends null ? never : T | T extends Nil ? never : T | T
 export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
     protected iterableValue: Iterable<T>;
+
     protected ourFirst?: Maybe<T>;
+
     protected ourLast?: Maybe<T>;
+
     protected ourPrivateLength = Maybe.of<Num>();
 
     get ourLength(): Num {
@@ -147,6 +150,7 @@ export default class List<T> extends Monad<Iterable<T>> {
             if (valToUse.equals(item)) {
                 return Num.from(i);
             }
+            i += 1;
         }
 
         return Num.from(-1);

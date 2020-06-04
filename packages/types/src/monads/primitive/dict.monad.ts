@@ -5,11 +5,19 @@ import List from './list.monad';
 import Maybe from './maybe.monad';
 
 type RawDict<K, V> = Map<K, V>;
-
 // @todo: not sure Extract<> is the right approach
 // @ts-ignore
-export default class Dict<T = any, K = Extract<keyof T, string>, V = T[K]> extends Monad<RawDict<K, V>> {
+type KeyVal<T> = T extends Map<infer K, infer V>
+    ? {key: K; value: V}
+    : {
+          key: Extract<keyof T, string | symbol>;
+          value: T[Extract<keyof T, string | symbol>];
+      };
+
+// @ts-ignore
+export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends Monad<RawDict<K, V>> {
     protected ourKeys: Maybe<List<K>> = Maybe.of();
+
     protected ourValues: Maybe<List<V>> = Maybe.of();
 
     constructor(private readonly ourOriginal: RawDict<K, V>) {

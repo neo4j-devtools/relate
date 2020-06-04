@@ -6,6 +6,7 @@ Manage relate environments
 * [`relate environment:init`](#relate-environmentinit)
 * [`relate environment:login`](#relate-environmentlogin)
 * [`relate environment:open`](#relate-environmentopen)
+* [`relate environment:use ENVIRONMENT`](#relate-environmentuse-environment)
 
 ## `relate environment:init`
 
@@ -35,7 +36,7 @@ USAGE
   $ relate environment:login
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 
 ALIASES
   $ relate env:login
@@ -53,10 +54,27 @@ USAGE
 
 OPTIONS
   -L, --log                      If set, log the path instead
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 
 ALIASES
   $ relate env:open
 ```
 
 _See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/open.ts)_
+
+## `relate environment:use ENVIRONMENT`
+
+Set an environment as default
+
+```
+USAGE
+  $ relate environment:use ENVIRONMENT
+
+ARGUMENTS
+  ENVIRONMENT  Name of the environment to set as active
+
+ALIASES
+  $ relate env:use
+```
+
+_See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/use.ts)_

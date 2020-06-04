@@ -28,7 +28,7 @@ describe('DBMS versions (local environment)', () => {
     test('list no cached distributions', async () => {
         const dbmssTmpDir = path.join(envPaths().tmp, DBMS_DIR_NAME);
         await fse.ensureDir(dbmssTmpDir);
-        const versions = await discoverNeo4jDistributions(dbmssTmpDir);
+        const versions = (await discoverNeo4jDistributions(dbmssTmpDir)).toArray();
         await fse.remove(dbmssTmpDir);
 
         expect(versions).toEqual([]);
