@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {Dict} from '@relate/types';
 
 import {EnvironmentConfigModel} from '../../models';
 import {InvalidConfigError} from '../../errors';
@@ -18,7 +18,7 @@ export async function createEnvironmentInstance(
             break;
         default:
             throw new InvalidConfigError(`Environment type ${config.type} not supported`, [
-                `The supported Environment types are: ${_.join(_.values(ENVIRONMENT_TYPES), ', ')}`,
+                `The supported Environment types are: ${Dict.from(ENVIRONMENT_TYPES).values.toString()}`,
             ]);
     }
 
