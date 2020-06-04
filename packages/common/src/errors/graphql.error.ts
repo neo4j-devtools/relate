@@ -1,17 +1,14 @@
-import {join, map} from 'lodash';
-
-import {arrayHasItems} from '../utils/generic/array-has-items';
+import {List} from '@relate/types';
 
 export class GraphqlError extends Error {
-    constructor(message: string, errors: string[] = []) {
+    constructor(message: string, errors: string[] | List<string> = []) {
+        const asList = List.from(errors);
+
         super(
             /* eslint-disable indent */
-            arrayHasItems(errors)
-                ? `${message}.\n\nErrors(s):\n${join(
-                      map(errors, (action) => `- ${action}`),
-                      '\n',
-                  )}`
-                : message,
+            asList.isEmpty
+                ? message
+                : `${message}.\n\nErrors(s):\n${asList.mapEach((action) => `- ${action}`).join('\n')}`,
             /* eslint-enable indent */
         );
     }

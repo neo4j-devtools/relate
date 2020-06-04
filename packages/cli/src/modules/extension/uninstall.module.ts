@@ -28,7 +28,7 @@ export class UninstallModule implements OnApplicationBootstrap {
             // need to pass in / select version to uninstall
             const extFormatter = (ext: IExtensionMeta): string => `${ext.name}@${ext.version}`;
 
-            this.utils.log(`Uninstalled ${_.join(_.map(exts, extFormatter), ', ')}`);
+            this.utils.log(`Uninstalled ${_.join(_.map(exts.toArray(), extFormatter), ', ')}`);
         });
     }
 }

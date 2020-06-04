@@ -108,7 +108,7 @@ describe('LocalEnvironment - list', () => {
             }
             return 0;
         });
-        expect(sortedActual).toEqual(expected);
+        expect(sortedActual.toArray()).toEqual(expected);
     });
 
     test('do not list removed dbmss', async () => {
@@ -126,6 +126,6 @@ describe('LocalEnvironment - list', () => {
         ];
 
         const actual = await environment.listDbmss();
-        expect(actual).toEqual(expected);
+        expect(actual.toArray()).toEqual(expected);
     });
 });

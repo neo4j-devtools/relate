@@ -63,7 +63,7 @@ describe('Download Neo4j (to local cache)', () => {
 
         jest.spyOn(uuid, 'v4').mockImplementation(() => TMP_UUID);
         jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
-            Promise.resolve(List.of([DBMS_VERSION])),
+            Promise.resolve(List.from([DBMS_VERSION])),
         );
 
         // call downloadNeo4j
@@ -87,7 +87,7 @@ describe('Download Neo4j (to local cache)', () => {
         };
 
         jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
-            Promise.resolve(List.of([dbmsVersion])),
+            Promise.resolve(List.from([dbmsVersion])),
         );
 
         await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(

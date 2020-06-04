@@ -1,14 +1,14 @@
 import {exec} from 'child_process';
 import fse from 'fs-extra';
-import _ from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import * as rxjs from 'rxjs/operators';
-import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result, Str} from '@huboneo/tapestry';
+import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result} from '@huboneo/tapestry';
 import {promisify} from 'util';
+import {List, None, Maybe, Str, Dict} from '@relate/types';
 
-import {IDbms, EnvironmentConfigModel, IDbmsVersion, IDbmsInfo} from '../../models';
+import {IDbms, EnvironmentConfigModel, IDbmsVersion, IDbmsInfo, IEnvironmentConfig} from '../../models';
 import {EnvironmentAbstract} from '../environment.abstract';
 import {PropertiesFile, ensureDirs} from '../../system/files';
 import {
@@ -49,7 +49,7 @@ import {
     HOOK_EVENTS,
 } from '../../constants';
 import {envPaths, parseNeo4jConfigPort, emitHookEvent} from '../../utils';
-import {isValidUrl, arrayHasItems} from '../../utils/generic';
+import {isValidUrl} from '../../utils/generic';
 import {
     getAppBasePath,
     discoverExtension,
@@ -101,31 +101,33 @@ export class LocalEnvironment extends EnvironmentAbstract {
         }
     }
 
-    async listDbmsVersions(): Promise<IDbmsVersion[]> {
+    async listDbmsVersions(): Promise<List<IDbmsVersion>> {
         const cached = await discoverNeo4jDistributions(this.dirPaths.dbmssCache);
         const online = await fetchNeo4jVersions();
+        const allVersions = cached.concat(online);
 
-        const versions: IDbmsVersion[] = _.compact(
-            _.map([...cached, ...online], (v) => {
-                if (v.origin === 'cached') {
-                    return v;
+        return allVersions
+            .mapEach((version) => {
+                if (version.origin === 'cached') {
+                    return version;
                 }
 
-                const cachedVersionExists = _.find(
-                    [...cached, ...online],
-                    (vcached) =>
-                        vcached.origin === 'cached' && vcached.version === v.version && vcached.edition === v.edition,
-                );
+                return allVersions
+                    .find(
+                        (cachedVersion) =>
+                            cachedVersion.origin === 'cached' &&
+                            cachedVersion.version === version.version &&
+                            cachedVersion.edition === version.edition,
+                    )
+                    .flatMap((found) => {
+                        if (None.isNone(found)) {
+                            return version;
+                        }
 
-                if (!cachedVersionExists) {
-                    return v;
-                }
-
-                return null;
-            }),
-        );
-
-        return versions;
+                        return None;
+                    });
+            })
+            .compact();
     }
 
     async installDbms(name: string, credentials: string, version: string): Promise<string> {
@@ -162,27 +164,31 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
             }
 
-            const distsBeforeDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
-            let requestedDistribution = _.find(
-                distsBeforeDownload,
+            const beforeDownload = await discoverNeo4jDistributions(this.dirPaths.dbmssCache);
+            const requestedDistribution = beforeDownload.find(
                 (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
             );
 
-            // if cached version of neo4j doesn't exist, attempt to download
-            if (!requestedDistribution) {
-                await downloadNeo4j(coercedVersion, this.dirPaths.dbmssCache);
-                const distsAfterDownload = (await discoverNeo4jDistributions(this.dirPaths.dbmssCache)).toArray();
-                const requestedDistributionAfterDownload = _.find(
-                    distsAfterDownload,
-                    (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
-                );
-                if (!requestedDistributionAfterDownload) {
+            const found = await requestedDistribution.flatMap(async (dist) => {
+                if (None.isNone(dist)) {
+                    await downloadNeo4j(coercedVersion, this.dirPaths.dbmssCache);
+                    const afterDownload = await discoverNeo4jDistributions(this.dirPaths.dbmssCache);
+
+                    return afterDownload.find(
+                        (down) => down.edition === NEO4J_EDITION.ENTERPRISE && down.version === coercedVersion,
+                    );
+                }
+
+                return Maybe.of(dist);
+            });
+
+            return found.flatMap((dist) => {
+                if (None.isNone(dist)) {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
-                requestedDistribution = requestedDistributionAfterDownload;
-            }
 
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), requestedDistribution.dist);
+                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist);
+            });
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
@@ -190,37 +196,40 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     async uninstallDbms(nameOrId: string): Promise<void> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
-        const status = await neo4jCmd(this.getDbmsRootPath(id), 'status');
+        const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
-        if (!_.includes(status, 'Neo4j is not running')) {
+        if (!status.includes('Neo4j is not running')) {
             throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
         }
 
         return this.uninstallNeo4j(id);
     }
 
-    startDbmss(nameOrIds: string[]): Promise<string[]> {
-        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
-        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'start')));
+    startDbmss(nameOrIds: string[] | List<string>): Promise<List<string>> {
+        return List.from(nameOrIds)
+            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
+            .mapEach((id) => neo4jCmd(this.getDbmsRootPath(id), 'start'))
+            .unwindPromises();
     }
 
-    stopDbmss(nameOrIds: string[]): Promise<string[]> {
-        const ids = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId).id);
-        return Promise.all(ids.map((id) => neo4jCmd(this.getDbmsRootPath(id), 'stop')));
+    stopDbmss(nameOrIds: string[] | List<string>): Promise<List<string>> {
+        return List.from(nameOrIds)
+            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
+            .mapEach((id) => neo4jCmd(this.getDbmsRootPath(id), 'stop'))
+            .unwindPromises();
     }
 
-    async infoDbmss(nameOrIds: string[]): Promise<IDbmsInfo[]> {
-        const dbmss = nameOrIds.map((nameOrId) => resolveDbms(this.dbmss, nameOrId));
-
-        return Promise.all(
-            dbmss.map(async (dbms) => {
+    async infoDbmss(nameOrIds: string[] | List<string>): Promise<List<IDbmsInfo>> {
+        return List.from(nameOrIds)
+            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
+            .mapEach(async (dbms) => {
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-                const statusMessage = await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status');
-                const status = _.includes(statusMessage, DBMS_STATUS_FILTERS.STARTED)
+                const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
+                const status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED)
                     ? DBMS_STATUS.STARTED
                     : DBMS_STATUS.STOPPED;
 
-                const info = {
+                return {
                     id: dbms.id,
                     name: dbms.name,
                     description: dbms.description,
@@ -230,10 +239,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
                     version: v?.version,
                     edition: v?.edition,
                 };
-
-                return info;
-            }),
-        );
+            })
+            .unwindPromises();
     }
 
     async updateDbmsConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean> {
@@ -249,10 +256,11 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return true;
     }
 
-    async listDbmss(): Promise<IDbms[]> {
+    async listDbmss(): Promise<List<IDbms>> {
         // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
-        return Object.values(this.dbmss);
+
+        return Dict.from(this.dbmss).values;
     }
 
     async getDbms(nameOrId: string): Promise<IDbms> {
@@ -454,14 +462,16 @@ export class LocalEnvironment extends EnvironmentAbstract {
     }
 
     private async deleteEnvironmentDbmsConfig(uuid: string): Promise<void> {
-        const environmentConfig = JSON.parse(
+        const environmentConfig: IEnvironmentConfig = JSON.parse(
             await fse.readFile(
                 path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
                 'utf8',
             ),
         );
 
-        environmentConfig.dbmss = _.omit(environmentConfig.dbmss, uuid);
+        environmentConfig.dbmss = Dict.from(environmentConfig.dbmss)
+            .omit(uuid)
+            .toObject();
 
         await fse.writeJson(
             path.join(this.dirPaths.environmentsConfig, `${this.config.id}${JSON_FILE_EXTENSION}`),
@@ -480,11 +490,11 @@ export class LocalEnvironment extends EnvironmentAbstract {
         this.dbmss = {};
 
         const root = this.getDbmsRootPath();
-        const fileNames = await fse.readdir(root);
-        const configDbmss = this.config.dbmss || {};
+        const fileNames = List.from(await fse.readdir(root));
+        const configDbmss = Dict.from(this.config.dbmss);
 
-        await Promise.all(
-            _.map(fileNames, async (fileName) => {
+        await fileNames
+            .mapEach(async (fileName) => {
                 const fullPath = path.join(root, fileName);
                 const confPath = path.join(fullPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
                 const hasConf = await fse.pathExists(confPath);
@@ -502,15 +512,27 @@ export class LocalEnvironment extends EnvironmentAbstract {
                         name: '',
                     };
 
-                    this.dbmss[id] = _.merge(defaultValues, configDbmss[id], {
-                        config,
-                        connectionUri: `${protocol}${host}${port}`,
-                        id,
-                        rootPath: fullPath,
-                    });
+                    this.dbmss[id] = configDbmss
+                        .getValue(id)
+                        .flatMap((val) => {
+                            const defaults = Dict.from(defaultValues);
+                            const overrides = {
+                                config,
+                                connectionUri: `${protocol}${host}${port}`,
+                                id,
+                                rootPath: fullPath,
+                            };
+
+                            if (None.isNone(val)) {
+                                return defaults.merge(overrides);
+                            }
+
+                            return defaults.merge(val).merge(overrides);
+                        })
+                        .toObject();
                 }
-            }),
-        );
+            })
+            .unwindPromises();
     }
 
     async getAppPath(appName: string, appRoot = ''): Promise<string> {
@@ -519,20 +541,18 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return `${appRoot}${appBase}`;
     }
 
-    async listInstalledApps(): Promise<IExtensionMeta[]> {
-        const allInstalled = await this.listInstalledExtensions();
+    async listInstalledApps(): Promise<List<IExtensionMeta>> {
+        const allInstalled = List.from(await this.listInstalledExtensions());
 
-        return _.filter(allInstalled, ({type}) => type === EXTENSION_TYPES.STATIC);
+        return allInstalled.filter(({type}) => type === EXTENSION_TYPES.STATIC);
     }
 
-    async listInstalledExtensions(): Promise<IExtensionMeta[]> {
-        const allInstalledExtensions: IExtensionMeta[][] = await Promise.all(
-            _.map(_.values(EXTENSION_TYPES), (type) =>
-                discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)),
-            ),
-        );
+    async listInstalledExtensions(): Promise<List<IExtensionMeta>> {
+        const allInstalledExtensions = await Dict.from(EXTENSION_TYPES)
+            .values.mapEach((type) => discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)))
+            .unwindPromises();
 
-        return _.flatten(allInstalledExtensions);
+        return allInstalledExtensions.flatten();
     }
 
     async linkExtension(filePath: string): Promise<IExtensionMeta> {
@@ -586,19 +606,20 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
         const coercedVersion = coerce(version)?.version;
         if (coercedVersion) {
-            let requestedDistribution = _.find(
-                await discoverExtensionDistributions(extensionsCache),
-                (dist) => dist.name === name && dist.version === coercedVersion,
-            );
+            const dists = List.from(await discoverExtensionDistributions(extensionsCache));
+            const requestedDistribution = await dists
+                .find((dist) => dist.name === name && dist.version === coercedVersion)
+                .flatMap(async (requested) => {
+                    if (None.isNone(requested)) {
+                        try {
+                            return downloadExtension(name, coercedVersion, extensionsCache);
+                        } catch (e) {
+                            throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                        }
+                    }
 
-            // if cached version of extension doesn't exist, attempt to download
-            if (!requestedDistribution) {
-                try {
-                    requestedDistribution = await downloadExtension(name, coercedVersion, extensionsCache);
-                } catch (e) {
-                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
-                }
-            }
+                    return requested;
+                });
 
             return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
         }
@@ -643,26 +664,26 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return extension;
     }
 
-    async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
+    async uninstallExtension(name: string): Promise<List<IExtensionMeta>> {
         // @todo: this is uninstalling only static extensions
         const installedExtensions = await this.listInstalledApps();
         // @todo: if more than one version installed, would need to filter version too
-        const targets = _.filter(installedExtensions, (ext) => ext.name === name);
+        const targets = installedExtensions.filter((ext) => ext.name === name);
 
-        if (!arrayHasItems(targets)) {
+        if (targets.isEmpty) {
             throw new InvalidArgumentError(`Extension ${name} is not installed`);
         }
 
-        return Promise.all(
-            _.map(targets, async (ext) => {
+        return targets
+            .mapEach(async (ext) => {
                 await fse.remove(ext.dist);
 
                 return ext;
-            }),
-        );
+            })
+            .unwindPromises();
     }
 
-    listExtensionVersions(): Promise<IExtensionVersion[]> {
+    listExtensionVersions(): Promise<List<IExtensionVersion>> {
         return fetchExtensionVersions();
     }
 }

@@ -47,13 +47,13 @@ export const selectDbmsPrompt = async (
     environment: Environment,
     filter?: DBMS_STATUS,
 ): Promise<string> => {
-    let dbmss = await environment.listDbmss();
+    let dbmss = (await environment.listDbmss()).toArray();
     if (!dbmss.length) {
         throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
     }
 
     if (filter) {
-        const infoDbmss = await environment.infoDbmss(_.map(dbmss, (dbms) => dbms.id));
+        const infoDbmss = (await environment.infoDbmss(_.map(dbmss, (dbms) => dbms.id))).toArray();
         dbmss = _.compact(
             _.map(dbmss, (dbms, index) => {
                 if (infoDbmss[index].status === filter) {

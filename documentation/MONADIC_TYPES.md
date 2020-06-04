@@ -125,3 +125,67 @@ export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
         });
 };
 ```
+
+Asyncronously read from several directories, then flatten the result:
+```TypeScript
+import {List, Dict} from '@relate/types';
+import path from 'path';
+
+import {IExtensionMeta, EXTENSION_TYPES, discoverExtensionDistributions} from '<internal>';
+
+async function listInstalledExtensions(): Promise<List<IExtensionMeta>> {
+    const allInstalledExtensions = await Dict.from(EXTENSION_TYPES)
+        .values.mapEach((type) => discoverExtensionDistributions(path.join(this.dirPaths.extensionsData, type)))
+        .unwindPromises();
+
+    return allInstalledExtensions.flatten();
+}
+```
+
+Parse a file name, extracting a valid semver version and it's "human" name, before converting it to an object
+```TypeScript
+import {List, None, Str} from '@relate/types';
+import semver from 'semver'
+
+import {IExtensionVersion, EXTENSION_ORIGIN} from '<internal>';
+
+function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {
+    return results
+        .mapEach(({name}) => {
+            const nameVal = Str.from(name);
+
+            return nameVal
+                .replace('.tgz', '')
+                .split('-')
+                .last.map((versionPart) => {
+                    if (None.isNone(versionPart) || versionPart.isEmpty) {
+                        return None.EMPTY;
+                    }
+
+                    const found = semver.coerce(`${versionPart}`);
+
+                    return found ? Str.from(found.version) : None.EMPTY;
+                })
+                .flatMap((version) => {
+                    // @todo: discuss if mapping maybes should not exec if empty?
+                    if (None.isNone(version)) {
+                        return version;
+                    }
+
+                    return nameVal.split(`-${version}`).first.flatMap((extName) => {
+                        if (None.isNone(extName)) {
+                            return extName;
+                        }
+
+                        return {
+                            name: `${extName}`,
+                            origin: EXTENSION_ORIGIN.ONLINE,
+                            version: `${version}`,
+                        };
+                    });
+                });
+        })
+        .compact();
+}
+
+```
