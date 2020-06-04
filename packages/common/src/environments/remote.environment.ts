@@ -4,7 +4,7 @@ import {IAuthToken} from '@huboneo/tapestry';
 import fetch from 'node-fetch';
 import gql from 'graphql-tag';
 import path from 'path';
-import _ from 'lodash';
+import {List, Dict, None} from '@relate/types';
 
 import {GraphqlError, InvalidConfigError, NotAllowedError, NotFoundError} from '../errors';
 import {EnvironmentConfigModel, IDbms, IDbmsInfo, IDbmsVersion} from '../models';
@@ -40,11 +40,13 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             credentials: 'include',
             fetch: (url: string, opts: any) => {
                 // @todo: this could definitely be done better
-                const options = _.merge({}, opts, {
-                    credentials: 'include',
-                    headers: {[AUTH_TOKEN_KEY]: this.config.authToken},
-                    mode: 'cors',
-                });
+                const options = Dict.from(opts)
+                    .merge({
+                        credentials: 'include',
+                        headers: {[AUTH_TOKEN_KEY]: this.config.authToken},
+                        mode: 'cors',
+                    })
+                    .toObject();
 
                 return fetch(url, options);
             },
@@ -88,13 +90,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to update dbms config', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to update dbms config',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.updateDbmsConfig;
     }
 
-    async listDbmsVersions(): Promise<IDbmsVersion[]> {
+    async listDbmsVersions(): Promise<List<IDbmsVersion>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ListDbmsVersions {
@@ -109,7 +114,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to list dbms versions', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to list dbms versions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.listDbmsVersions;
@@ -141,7 +149,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to install dbms', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to install dbms',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.installDbms;
@@ -161,7 +172,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to uninstall dbms', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to uninstall dbms',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.uninstallDbms;
@@ -186,7 +200,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to get dbms', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to get dbms',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         const dbms = data.getDbms;
@@ -205,7 +222,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return dbms;
     }
 
-    async listDbmss(): Promise<IDbms[]> {
+    async listDbmss(): Promise<List<IDbms>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ListDbmss($environmentId: String!) {
@@ -221,13 +238,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to list dbmss', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to list dbmss',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.listDbmss;
+        return List.from(data.listDbmss);
     }
 
-    async startDbmss(namesOrIds: string[]): Promise<string[]> {
+    async startDbmss(namesOrIds: string[]): Promise<List<string>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation StartDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
@@ -241,13 +261,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to start dbmss', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to start dbmss',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.startDbmss;
+        return List.from(data.startDbmss);
     }
 
-    async stopDbmss(namesOrIds: string[]): Promise<string[]> {
+    async stopDbmss(namesOrIds: string[]): Promise<List<string>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation StopDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
@@ -261,13 +284,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to stop dbmss', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to stop dbmss',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.stopDbmss;
+        return List.from(data.stopDbmss);
     }
 
-    async infoDbmss(namesOrIds: string[]): Promise<IDbmsInfo[]> {
+    async infoDbmss(namesOrIds: string[]): Promise<List<IDbmsInfo>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
@@ -288,10 +314,13 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to info dbmss', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to info dbmss',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.infoDbmss;
+        return List.from(data.infoDbmss);
     }
 
     async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
@@ -320,24 +349,31 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to create access token', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to create access token',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.createAccessToken;
     }
 
     async getAppPath(appName: string): Promise<string> {
-        const installed: any = await this.listInstalledApps();
-        const app = _.find(installed, ({name}) => name === appName);
+        // @todo: listInstalledApps has a bad typing for remote env
+        const installed: List<any> = await this.listInstalledApps();
 
-        if (!app) {
-            throw new NotFoundError(`App ${appName} not found`);
-        }
+        return installed
+            .find(({name}) => name === appName)
+            .flatMap((app) => {
+                if (None.isNone(app)) {
+                    throw new NotFoundError(`App ${appName} not found`);
+                }
 
-        return app.path;
+                return app.path;
+            });
     }
 
-    async listInstalledApps(): Promise<IExtensionMeta[]> {
+    async listInstalledApps(): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InstalledApps {
@@ -352,13 +388,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to list installed apps', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to list installed apps',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.installedApps;
+        return List.from(data.installedApps);
     }
 
-    async listInstalledExtensions(): Promise<IExtensionMeta[]> {
+    async listInstalledExtensions(): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query InstalledExtensions {
@@ -373,10 +412,13 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to list installed extensions', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to list installed extensions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.installedExtensions;
+        return List.from(data.installedExtensions);
     }
 
     linkExtension(_filePath: string): Promise<IExtensionMeta> {
@@ -401,13 +443,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to install extension', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to install extension',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
         return data.installExtension;
     }
 
-    async listExtensionVersions(): Promise<IExtensionVersion[]> {
+    async listExtensionVersions(): Promise<List<IExtensionVersion>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 query ExtensionVersions {
@@ -422,13 +467,16 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to list extension versions', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to list extension versions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.listExtensionVersions;
+        return List.from(data.listExtensionVersions);
     }
 
-    async uninstallExtension(name: string): Promise<IExtensionMeta[]> {
+    async uninstallExtension(name: string): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation UninstallExtension($name: String!) {
@@ -443,9 +491,12 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         });
 
         if (errors) {
-            throw new GraphqlError('Unable to uninstall extensions', _.map(errors, 'message'));
+            throw new GraphqlError(
+                'Unable to uninstall extensions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
         }
 
-        return data.uninstallExtension;
+        return List.from(data.uninstallExtension);
     }
 }

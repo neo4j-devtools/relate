@@ -33,7 +33,7 @@ export class OpenModule implements OnApplicationBootstrap {
         let {appName} = args;
         const {environment: environmentId, user, dbmsId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedApps = await environment.listInstalledApps();
+        const installedApps = (await environment.listInstalledApps()).toArray();
 
         if (!installedApps.length) {
             throw new NotFoundError('No apps are installed', [

@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import {IAuthToken} from '@huboneo/tapestry';
-import _ from 'lodash';
+import {List} from '@relate/types';
 
 import {
     EnvironmentConfigModel,
@@ -105,10 +105,10 @@ export abstract class EnvironmentAbstract {
             return true;
         }
 
-        return _.includes(allowedMethods, methodName);
+        return List.from(allowedMethods).includes(methodName);
     }
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS](): Promise<IDbmsVersion[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS](): Promise<List<IDbmsVersion>>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS](
         name: string,
@@ -118,15 +118,15 @@ export abstract class EnvironmentAbstract {
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_DBMS](dbmsId: string): Promise<void>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMSS](): Promise<IDbms[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMSS](): Promise<List<IDbms>>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.GET_DBMS](nameOrId: string): Promise<IDbms>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.START_DBMSS](dbmsIds: string[]): Promise<string[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.START_DBMSS](dbmsIds: string[] | List<string>): Promise<List<string>>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.STOP_DBMSS](dbmsIds: string[]): Promise<string[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.STOP_DBMSS](dbmsIds: string[] | List<string>): Promise<List<string>>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[]): Promise<IDbmsInfo[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[] | List<string>): Promise<List<IDbmsInfo>>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](
         appId: string,
@@ -141,17 +141,17 @@ export abstract class EnvironmentAbstract {
 
     abstract getAppPath(appName: string, appRoot?: string): Promise<string>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_APPS](): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_APPS](): Promise<List<IExtensionMeta>>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_EXTENSIONS](): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_EXTENSIONS](): Promise<List<IExtensionMeta>>;
 
     abstract linkExtension(filePath: string): Promise<IExtensionMeta>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_EXTENSION_VERSIONS](): Promise<IExtensionVersion[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_EXTENSION_VERSIONS](): Promise<List<IExtensionVersion>>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_EXTENSION](name: string, version: string): Promise<IExtensionMeta>;
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_EXTENSION](name: string): Promise<IExtensionMeta[]>;
+    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_EXTENSION](name: string): Promise<List<IExtensionMeta>>;
 
     async updateConfig(key: string, value: any): Promise<void> {
         const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});

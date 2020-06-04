@@ -2,7 +2,6 @@ import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {SystemProvider} from '@relate/common';
-import _ from 'lodash';
 
 import {IWebModuleConfig} from '../web.module';
 
@@ -40,16 +39,18 @@ export class AppsResolver {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = await environment.listInstalledApps();
 
-        return Promise.all(
-            _.map(installedApps, async (app) => {
+        const mapped = await installedApps
+            .mapEach(async (app) => {
                 const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
 
                 return {
                     ...app,
                     path: appPath,
                 };
-            }),
-        );
+            })
+            .unwindPromises();
+
+        return mapped.toArray();
     }
 
     @Mutation(() => AppLaunchToken)

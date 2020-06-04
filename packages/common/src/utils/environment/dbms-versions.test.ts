@@ -78,6 +78,6 @@ describe('DBMS versions (local environment)', () => {
             .replyWithError('something bad happened');
         const versions = await fetchNeo4jVersions();
 
-        expect(versions).toEqual(List.of([]));
+        expect(versions).toEqual(List.from([]));
     });
 });

@@ -24,7 +24,7 @@ export class ListModule implements OnApplicationBootstrap {
         const installed = await environment.listInstalledExtensions();
 
         cli.table(
-            installed,
+            installed.toArray(),
             {
                 name: {},
                 type: {},

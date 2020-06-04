@@ -23,7 +23,7 @@ export class ListModule implements OnApplicationBootstrap {
 
         return environment.listDbmss().then((dbmss) => {
             cli.table(
-                dbmss,
+                dbmss.toArray(),
                 {
                     id: {},
                     name: {},

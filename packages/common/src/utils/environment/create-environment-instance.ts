@@ -18,7 +18,7 @@ export async function createEnvironmentInstance(
             break;
         default:
             throw new InvalidConfigError(`Environment type ${config.type} not supported`, [
-                `The supported Environment types are: ${Dict.from(ENVIRONMENT_TYPES).values.toString()}`,
+                `The supported Environment types are: ${Dict.from(ENVIRONMENT_TYPES).values.join(', ')}`,
             ]);
     }
 

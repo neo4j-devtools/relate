@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {SystemModule, SystemProvider, IDbmsInfo} from '@relate/common';
+import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import InfoCommand from '../../commands/dbms/info';
@@ -23,22 +23,24 @@ export class InfoModule implements OnApplicationBootstrap {
 
         let dbmss = await Promise.all(namesOrIds.map((n) => environment.getDbms(n)));
         if (!namesOrIds.length) {
-            dbmss = await environment.listDbmss();
+            dbmss = (await environment.listDbmss()).toArray();
         }
         const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        return environment.infoDbmss(dbmsIds).then((res: IDbmsInfo[]) => {
-            const table = res.map((dbms) => {
-                return {
-                    id: dbms.id,
-                    name: dbms.name,
-                    version: dbms.version,
-                    edition: dbms.edition,
-                    status: dbms.status.trim(),
-                    uri: dbms.connectionUri,
-                    path: dbms.rootPath,
-                };
-            });
+        return environment.infoDbmss(dbmsIds).then((res) => {
+            const table = res
+                .mapEach((dbms) => {
+                    return {
+                        id: dbms.id,
+                        name: dbms.name,
+                        version: dbms.version,
+                        edition: dbms.edition,
+                        status: dbms.status.trim(),
+                        uri: dbms.connectionUri,
+                        path: dbms.rootPath,
+                    };
+                })
+                .toArray();
 
             cli.table(
                 table,

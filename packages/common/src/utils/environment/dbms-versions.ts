@@ -7,12 +7,7 @@ import {Dict, List, None} from '@relate/types';
 
 import {DependencyError, InvalidArgumentError} from '../../errors';
 import {IDbmsVersion} from '../../models';
-import {
-    NEO4J_DIST_VERSIONS_URL,
-    NEO4J_EDITION,
-    NEO4J_ORIGIN,
-    NEO4J_SUPPORTED_VERSION_RANGE,
-} from '../../environments/environment.constants';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SUPPORTED_VERSION_RANGE} from '../../environments';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
@@ -37,7 +32,7 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
 };
 
 export const discoverNeo4jDistributions = async (distributionsRoot: string): Promise<List<IDbmsVersion>> => {
-    const files = List.of(await fs.readdir(distributionsRoot, {withFileTypes: true}));
+    const files = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
     const dists = await files
         .filter((file) => file.isDirectory())
         .mapEach((dir) => {
@@ -45,7 +40,7 @@ export const discoverNeo4jDistributions = async (distributionsRoot: string): Pro
 
             return getDistributionInfo(dbmsRootDir);
         })
-        .awaitAll();
+        .unwindPromises();
 
     return dists.compact().filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
 };
@@ -76,7 +71,7 @@ export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
     try {
         versionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
     } catch {
-        return List.of([]);
+        return List.from([]);
     }
 
     return Dict.from(versionManifest.versions)
@@ -105,7 +100,7 @@ export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
     const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
-    const libs = List.of(await fse.readdir(path.join(dbmsRoot, 'lib')));
+    const libs = List.from(await fse.readdir(path.join(dbmsRoot, 'lib')));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 
     return neo4jJar
