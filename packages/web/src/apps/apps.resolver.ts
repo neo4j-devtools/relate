@@ -69,7 +69,7 @@ export class AppsResolver {
             principal,
             accessToken,
         );
-        const appBasePath = await environment.getAppPath(appName);
+        const appBasePath = await environment.getAppPath(appName, this.configService.get('appRoot'));
 
         return {
             path: createAppLaunchUrl(appBasePath, token),

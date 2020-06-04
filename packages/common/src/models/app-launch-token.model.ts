@@ -7,7 +7,7 @@ export interface IAppLaunchToken {
     environmentId: string;
     dbmsId: string;
     principal?: string;
-    appId: string;
+    appName: string;
     accessToken?: string;
 }
 
@@ -23,7 +23,7 @@ export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implemen
     principal?: string;
 
     @IsString()
-    appId!: string;
+    appName!: string;
 
     // @todo: @IsJWT() validator seems to be broken.
     @IsOptional()

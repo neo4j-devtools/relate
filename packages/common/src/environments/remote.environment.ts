@@ -323,25 +323,25 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         return List.from(data.infoDbmss);
     }
 
-    async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
+    async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const {data, errors}: any = await this.graphql({
             query: gql`
                 mutation AccessDBMS(
                     $environmentId: String!
                     $dbmsNameOrId: String!
                     $authToken: AuthTokenInput!
-                    $appId: String!
+                    $appName: String!
                 ) {
                     ${PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN}(
                         environmentId: $environmentId
                         dbmsId: $dbmsNameOrId
-                        appId: $appId
+                        appName: $appName
                         authToken: $authToken
                     )
                 }
             `,
             variables: {
-                appId,
+                appName,
                 authToken,
                 dbmsNameOrId,
                 environmentId: this.config.relateEnvironment,

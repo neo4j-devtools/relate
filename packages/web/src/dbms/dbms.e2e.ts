@@ -2,7 +2,7 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
-import {TestDbmss, IDbms} from '@relate/common';
+import {TestDbmss, IDbms, DBMS_STATUS} from '@relate/common';
 
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
@@ -99,14 +99,18 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs($environmentId: String!, $dbmsNames: [String!]!) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
+                            name
+                            status
+                        }
                     }`,
                 ),
             )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {infoDbmss} = res.body.data;
-                expect(infoDbmss[0]).toContain('Neo4j is running');
+                expect(infoDbmss[0].name).toEqual(TEST_DB_NAME);
+                expect(infoDbmss[0].status).toEqual(DBMS_STATUS.STARTED);
             });
     });
 
@@ -122,17 +126,17 @@ describe('DBMSModule', () => {
                         $environmentId: String!,
                         $dbmsName: String!,
                         $authToken: AuthTokenInput!,
-                        $appId: String!
+                        $appName: String!
                     ) {
                         createAccessToken(
                             environmentId: $environmentId,
                             dbmsId: $dbmsName,
-                            appId: $appId,
+                            appName: $appName,
                             authToken: $authToken
                         )
                     }`,
                     {
-                        appId: TEST_APP_ID,
+                        appName: TEST_APP_ID,
                         authToken: {
                             credentials: TestDbmss.DBMS_CREDENTIALS,
                             principal: 'neo4j',
@@ -177,14 +181,18 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
+                            name
+                            status
+                        }
                     }`,
                 ),
             )
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {infoDbmss} = res.body.data;
-                expect(infoDbmss[0]).toContain('Neo4j is not running');
+                expect(infoDbmss[0].name).toEqual(TEST_DB_NAME);
+                expect(infoDbmss[0].status).toEqual(DBMS_STATUS.STOPPED);
             });
     });
 
@@ -194,7 +202,10 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs {
-                        infoDbmss(environmentId: "non-existent", dbmsIds: ["test"])
+                        infoDbmss(environmentId: "non-existent", dbmsIds: ["test"]) {
+                            name
+                            status
+                        }
                     }`,
                 ),
             )
@@ -212,7 +223,10 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs($environmentId: String!) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"])
+                        infoDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"]) {
+                            name
+                            status
+                        }
                     }`,
                 ),
             )

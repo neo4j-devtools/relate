@@ -9,7 +9,7 @@ export class AppLaunchData {
     environmentId: string;
 
     @Field(() => String)
-    appId: string;
+    appName: string;
 
     @Field(() => Dbms)
     dbms: IDbms;

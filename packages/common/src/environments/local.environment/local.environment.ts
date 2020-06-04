@@ -270,7 +270,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         return resolveDbms(this.dbmss, nameOrId);
     }
 
-    async createAccessToken(appId: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
+    async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
         const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || LOCALHOST_IP_ADDRESS;
@@ -285,7 +285,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             });
 
             const token = await driver
-                .query('CALL jwt.security.requestAccess($appId)', {appId})
+                .query('CALL jwt.security.requestAccess($appName)', {appName})
                 .pipe(
                     rxjs.first(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
                     rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),

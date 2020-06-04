@@ -129,7 +129,7 @@ export abstract class EnvironmentAbstract {
     abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[] | List<string>): Promise<List<IDbmsInfo>>;
 
     abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](
-        appId: string,
+        appName: string,
         dbmsId: string,
         authToken: IAuthToken,
     ): Promise<string>;

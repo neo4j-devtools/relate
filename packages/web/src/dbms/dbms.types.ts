@@ -85,7 +85,7 @@ export class CreateAccessTokenArgs {
     dbmsId: string;
 
     @Field(() => String)
-    appId: string;
+    appName: string;
 
     @Field(() => AuthTokenInput)
     authToken: AuthTokenInput;

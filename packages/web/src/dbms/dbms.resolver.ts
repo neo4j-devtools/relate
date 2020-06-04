@@ -63,9 +63,11 @@ export class DBMSResolver {
     }
 
     @Mutation(() => String)
-    async createAccessToken(@Args() {environmentId, dbmsId, appId, authToken}: CreateAccessTokenArgs): Promise<string> {
+    async createAccessToken(
+        @Args() {environmentId, dbmsId, appName, authToken}: CreateAccessTokenArgs,
+    ): Promise<string> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return environment.createAccessToken(appId, dbmsId, authToken);
+        return environment.createAccessToken(appName, dbmsId, authToken);
     }
 }

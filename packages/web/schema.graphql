@@ -11,7 +11,7 @@ type AppData {
 
 type AppLaunchData {
   environmentId: String!
-  appId: String!
+  appName: String!
   dbms: Dbms!
   principal: String
   accessToken: String
@@ -51,7 +51,7 @@ type Mutation {
   uninstallDbms(environmentId: String, name: String!): String!
   startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
-  createAccessToken(environmentId: String, dbmsId: String!, appId: String!, authToken: AuthTokenInput!): String!
+  createAccessToken(environmentId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
 }
 
 type Query {
