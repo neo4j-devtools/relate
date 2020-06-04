@@ -4,6 +4,7 @@
 Manage Neo4j DBMSs
 
 * [`relate dbms:access-token DBMS`](#relate-dbmsaccess-token-dbms)
+* [`relate dbms:dump DBMS`](#relate-dbmsdump-dbms)
 * [`relate dbms:info [DBMSS]`](#relate-dbmsinfo-dbmss)
 * [`relate dbms:install VERSION`](#relate-dbmsinstall-version)
 * [`relate dbms:list`](#relate-dbmslist)
@@ -29,6 +30,25 @@ OPTIONS
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/access-token.ts)_
+
+## `relate dbms:dump DBMS`
+
+Dump a database from a Neo4j DBMS
+
+```
+USAGE
+  $ relate dbms:dump DBMS
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+OPTIONS
+  -d, --db=db                    [default: neo4j] Database
+  -e, --environment=environment  Name of the environment to run the command against
+  -o, --outputDir=outputDir      [default: /Users/linus/Projects/neo4j/relate/packages/cli] Output dir
+```
+
+_See code: [dist/commands/dbms/dump.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/dump.ts)_
 
 ## `relate dbms:info [DBMSS]`
 

@@ -132,4 +132,6 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }
     }
+
+    abstract dbDump(dbms: IDbms, db: string, dir: string): Promise<string>;
 }

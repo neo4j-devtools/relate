@@ -368,7 +368,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), ['set-initial-password'], credentials);
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
@@ -527,5 +527,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.unlink(configFileName);
 
         return this.discoverDbmss();
+    }
+
+    async dbDump(dbms: IDbms, db: string, dir: string): Promise<string> {
+        const dateISO = new Date().toISOString();
+        const [date] = dateISO.split('.');
+        const filename = `${dbms.name}-${db}-${date}.dump`;
+        const params = ['dump', `--database=${db}`, `--to=${path.join(dir, filename)}`];
+
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbms.id), params);
+        return result;
     }
 }
