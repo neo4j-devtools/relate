@@ -10,7 +10,7 @@ import * as dbmsVersions from './dbms-versions';
 import * as download from '../download';
 import * as extractNeo4j from './extract-neo4j';
 
-import {TestDbmss} from './test-dbmss';
+import {TestDbmss} from '../system';
 import {envPaths} from '../env-paths';
 import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments';
 import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';

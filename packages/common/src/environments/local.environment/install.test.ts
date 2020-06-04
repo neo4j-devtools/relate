@@ -6,6 +6,7 @@ import {envPaths} from '../../utils';
 import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import {LocalEnvironment} from './local.environment';
 import * as localUtils from '../../utils/environment';
+import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 import {List} from '@relate/types';
 
@@ -13,11 +14,11 @@ const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0
 const DATA_HOME = envPaths().data;
 const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
 const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, DBMS_DIR_NAME);
-const {DBMS_CREDENTIALS, NEO4J_VERSION} = localUtils.TestDbmss;
+const {DBMS_CREDENTIALS, NEO4J_VERSION} = TestDbmss;
 
 describe('LocalEnvironment - install', () => {
     let environment: LocalEnvironment;
-    let dbmss: localUtils.TestDbmss;
+    let dbmss: TestDbmss;
 
     beforeAll(async () => {
         const config = new EnvironmentConfigModel({
@@ -31,7 +32,7 @@ describe('LocalEnvironment - install', () => {
         await localUtils.downloadNeo4j(NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));
 
         environment = new LocalEnvironment(config, 'nowhere');
-        dbmss = new localUtils.TestDbmss(__filename, environment);
+        dbmss = new TestDbmss(__filename, environment);
     });
 
     afterAll(() => dbmss.teardown());

@@ -13,7 +13,7 @@ import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
-import {createEnvironmentInstance} from '../utils/environment';
+import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
 import {List, Dict, None, Maybe} from '@relate/types';

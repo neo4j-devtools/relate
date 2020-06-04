@@ -9,7 +9,7 @@ import {envPaths} from '../env-paths';
 import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environments/environment.constants';
 import {DBMS_DIR_NAME} from '../../constants';
 import {downloadNeo4j} from './download-neo4j';
-import {TestDbmss} from './test-dbmss';
+import {TestDbmss} from '../system';
 
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
