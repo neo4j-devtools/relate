@@ -8,15 +8,16 @@ import None from './none.monad';
 import {isIterable} from '../../utils/iterable.utils';
 import Nil from './nil.monad';
 
-type Compactable<T> = T extends null ? never : T
-    | T extends Nil ? never : T
-    | T extends None<any> ? never : T;
+type Compactable<T> = T extends null ? never : T | T extends Nil ? never : T | T extends None<any> ? never : T;
 
 export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
     protected iterableValue: Iterable<T>;
+
     protected ourFirst?: Maybe<T>;
+
     protected ourLast?: Maybe<T>;
+
     protected ourPrivateLength = Maybe.of<Num>();
 
     get ourLength(): Num {
@@ -138,7 +139,7 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     mapEach<M = T>(project: (val: T) => M): List<M> {
-        return List.from(map([...this], project))
+        return List.from(map([...this], project));
     }
 
     indexOf(val: T): Num {
@@ -149,6 +150,7 @@ export default class List<T> extends Monad<Iterable<T>> {
             if (valToUse.equals(item)) {
                 return Num.from(i);
             }
+            i += 1;
         }
 
         return Num.from(-1);
@@ -177,9 +179,7 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     concat(other: T | Iterable<T>): List<T> {
-        return isIterable(other)
-            ? List.of<T>([...this, ...other])
-            : List.of<T>([...this, other]);
+        return isIterable(other) ? List.of<T>([...this, ...other]) : List.of<T>([...this, other]);
     }
 
     toString() {

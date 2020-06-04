@@ -62,7 +62,9 @@ describe('Download Neo4j (to local cache)', () => {
         const removeSpy = jest.spyOn(fse, 'remove');
 
         jest.spyOn(uuid, 'v4').mockImplementation(() => TMP_UUID);
-        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve(List.of([DBMS_VERSION])));
+        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
+            Promise.resolve(List.of([DBMS_VERSION])),
+        );
 
         // call downloadNeo4j
         await downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH);
@@ -84,7 +86,9 @@ describe('Download Neo4j (to local cache)', () => {
             edition: NEO4J_EDITION.COMMUNITY,
         };
 
-        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() => Promise.resolve(List.of([dbmsVersion])));
+        jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
+            Promise.resolve(List.of([dbmsVersion])),
+        );
 
         await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),

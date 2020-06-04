@@ -59,6 +59,12 @@
             "rules": {
                 "sort-keys": ["off"]
             }
+        },
+        {
+            "files": ["packages/types/src/**/*.ts"],
+            "rules": {
+                "@typescript-eslint/ban-ts-ignore": ["off"]
+            }
         }
     ],
     "rules": {

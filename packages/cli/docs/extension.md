@@ -18,7 +18,7 @@ USAGE
 
 OPTIONS
   -V, --version=version          Version to install
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/extension/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/install.ts)_
@@ -43,7 +43,7 @@ USAGE
   $ relate extension:list
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/extension/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/list.ts)_
@@ -60,7 +60,7 @@ ARGUMENTS
   EXTENSION  Name of the extension to uninstall
 
 OPTIONS
-  -e, --environment=environment  [default: default] Name of the environment to run the command against
+  -e, --environment=environment  Name of the environment to run the command against
 ```
 
 _See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/uninstall.ts)_

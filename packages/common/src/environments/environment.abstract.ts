@@ -28,6 +28,10 @@ export abstract class EnvironmentAbstract {
         return this.config.id;
     }
 
+    get active(): boolean {
+        return Boolean(this.config.active);
+    }
+
     get type(): ENVIRONMENT_TYPES {
         return this.config.type;
     }
