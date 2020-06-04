@@ -2,7 +2,6 @@ import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {SystemProvider} from '@relate/common';
-import _ from 'lodash';
 
 import {IWebModuleConfig} from '../web.module';
 

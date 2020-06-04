@@ -27,18 +27,20 @@ export class InfoModule implements OnApplicationBootstrap {
         }
         const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        return (environment.infoDbmss(dbmsIds)).then((res) => {
-            const table = res.mapEach((dbms) => {
-                return {
-                    id: dbms.id,
-                    name: dbms.name,
-                    version: dbms.version,
-                    edition: dbms.edition,
-                    status: dbms.status.trim(),
-                    uri: dbms.connectionUri,
-                    path: dbms.rootPath,
-                };
-            }).toArray();
+        return environment.infoDbmss(dbmsIds).then((res) => {
+            const table = res
+                .mapEach((dbms) => {
+                    return {
+                        id: dbms.id,
+                        name: dbms.name,
+                        version: dbms.version,
+                        edition: dbms.edition,
+                        status: dbms.status.trim(),
+                        uri: dbms.connectionUri,
+                        path: dbms.rootPath,
+                    };
+                })
+                .toArray();
 
             cli.table(
                 table,
