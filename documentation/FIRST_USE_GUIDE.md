@@ -67,10 +67,9 @@ relate dbms --help
 ## Installing extensions (i.e. "Graph Apps")
 You can install Neo4j Browser and Neo4j Bloom by running:
 ```shell script
-relate extension:install neo4j-browser -V 1.0.1
-relate extension:install neo4j-bloom -V 1.0.0
+relate extension:install
 ```
-We will be adding more/updating extensions as we go.
+And then selecting the appropriate version. We will be adding more/updating extensions as we go.
 
 ## Starting the web server
 To use `@relate` locally you'll probably want to start the web server by running:
