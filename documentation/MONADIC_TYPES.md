@@ -17,13 +17,13 @@ We use our own code-base as a living example and documentation. Please see the t
 
 ## Basic types
 We currently have the main data types of JS represented
--   [None (`undefined`)](../packages/types/src/monads/primitive/none.monad.ts)
--   [Nil (`null`)](../packages/types/src/monads/primitive/nil.monad.ts)
--   [Num (`Number`)](../packages/types/src/monads/primitive/num.monad.ts)
--   [Str (`String`)](../packages/types/src/monads/primitive/str.monad.ts)
--   [Bool (`Boolean`)](../packages/types/src/monads/primitive/bool.monad.ts)
--   [List (`Array`)](../packages/types/src/monads/primitive/list.monad.ts)
--   [Dict (`Object || Map`)](../packages/types/src/monads/primitive/dict.monad.ts)
+-   [None (`undefined`)](../packages/types/src/monads/primitive/none.test.ts)
+-   [Nil (`null`)](../packages/types/src/monads/primitive/nil.test.ts)
+-   [Num (`Number`)](../packages/types/src/monads/primitive/num.test.ts)
+-   [Str (`String`)](../packages/types/src/monads/primitive/str.test.ts)
+-   [Bool (`Boolean`)](../packages/types/src/monads/primitive/bool.test.ts)
+-   [List (`Array`)](../packages/types/src/monads/primitive/list.test.ts)
+-   [Dict (`Object || Map`)](../packages/types/src/monads/primitive/dict.test.ts)
 
 ## Primitive examples
 Create a number, divide it, check if it's modulo is 2
