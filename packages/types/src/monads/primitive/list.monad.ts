@@ -84,7 +84,7 @@ export default class List<T> extends Monad<Iterable<T>> {
         return this.ourLast!;
     }
 
-    static isList<T>(val: any): val is List<T> {
+    static isList<T = any>(val: any): val is List<T> {
         return val instanceof List;
     }
 
