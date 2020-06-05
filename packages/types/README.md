@@ -33,7 +33,7 @@ We have our own monadic type system which is continuously under development. The
 We currently have the main data types of JS represented
 -   [None (`undefined`)](./src/monads/primitive/none.monad.ts)
 -   [Nil (`null`)](./src/monads/primitive/nil.monad.ts)
--   [Num (`Number`)](./src/monads/primitive/num/num.monad.ts)
+-   [Num (`Number`)](src/monads/primitive/num.monad.ts)
 -   [Str (`String`)](./src/monads/primitive/str.monad.ts)
 -   [Bool (`Boolean`)](./src/monads/primitive/bool.monad.ts)
 -   [List (`Array`)](./src/monads/primitive/list.monad.ts)

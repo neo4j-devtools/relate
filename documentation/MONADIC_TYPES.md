@@ -18,7 +18,7 @@ We use our own code-base as a living example and documentation. Please see the t
 We currently have the main data types of JS represented
 -   [None (`undefined`)](../packages/types/src/monads/primitive/none.monad.ts)
 -   [Nil (`null`)](../packages/types/src/monads/primitive/nil.monad.ts)
--   [Num (`Number`)](../packages/types/src/monads/primitive/num/num.monad.ts)
+-   [Num (`Number`)](../packages/types/src/monads/primitive/num.monad.ts)
 -   [Str (`String`)](../packages/types/src/monads/primitive/str.monad.ts)
 -   [Bool (`Boolean`)](../packages/types/src/monads/primitive/bool.monad.ts)
 -   [List (`Array`)](../packages/types/src/monads/primitive/list.monad.ts)

@@ -1,5 +1,5 @@
 import List from './list.monad';
-import Num from './num/num.monad';
+import Num from './num.monad';
 import Maybe from './maybe.monad';
 import Str from './str.monad';
 import Dict from './dict.monad';
