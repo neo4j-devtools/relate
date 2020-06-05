@@ -124,7 +124,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                             return version;
                         }
 
-                        return None;
+                        return None.EMPTY;
                     });
             })
             .compact();

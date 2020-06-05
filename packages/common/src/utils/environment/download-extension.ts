@@ -44,7 +44,7 @@ const fetchExtensionInfo = async (extensionName: string, version: string): Promi
             password: JFROG_PRIVATE_REGISTRY_PASSWORD,
             username: JFROG_PRIVATE_REGISTRY_USERNAME,
         }).json();
-    } catch (error) {
+    } catch (_error) {
         throw new FetchError(`Invalid response from "${EXTENSION_URL_PATH}${extensionName}"`);
     }
 

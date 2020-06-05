@@ -4,6 +4,7 @@ import nock from 'nock';
 import hasha from 'hasha';
 import * as uuid from 'uuid';
 import {List} from '@relate/types';
+import {inc} from 'semver';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
@@ -18,7 +19,6 @@ import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
 jest.mock('uuid');
 
-const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
 const TMP_NEO4J_DIST_PATH = path.join(envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
@@ -55,7 +55,10 @@ describe('Download Neo4j (to local cache)', () => {
         const extractFromArchiveSpy = jest.spyOn(extractNeo4j, 'extractNeo4j').mockImplementation(() =>
             Promise.resolve({
                 ...DBMS_VERSION,
-                extractedDistPath: path.join(TMP_NEO4J_DIST_PATH, `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}`),
+                extractedDistPath: path.join(
+                    TMP_NEO4J_DIST_PATH,
+                    `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TestDbmss.NEO4J_VERSION}`,
+                ),
             }),
         );
 
@@ -67,7 +70,7 @@ describe('Download Neo4j (to local cache)', () => {
         );
 
         // call downloadNeo4j
-        await downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH);
+        await downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH);
 
         // tests
         expect(getCheckSumSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`);
@@ -79,9 +82,9 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('downloadNeo4j: no requested distributions found online', async () => {
-        const message = `Unable to find the requested version: ${TEST_VERSION} online`;
+        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online`;
 
-        const dbmsVersion = {
+        let dbmsVersion = {
             ...DBMS_VERSION,
             edition: NEO4J_EDITION.COMMUNITY,
         };
@@ -90,7 +93,20 @@ describe('Download Neo4j (to local cache)', () => {
             Promise.resolve(List.from([dbmsVersion])),
         );
 
-        await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
+        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
+            new NotFoundError(message),
+        );
+
+        const majorVersionIncrement = inc(TestDbmss.NEO4J_VERSION, 'major');
+        dbmsVersion = {
+            ...DBMS_VERSION,
+            version: majorVersionIncrement!,
+        };
+
+        // eslint-disable-next-line max-len
+        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${majorVersionIncrement}`;
+
+        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),
         );
     });
