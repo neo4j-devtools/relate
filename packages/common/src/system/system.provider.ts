@@ -13,7 +13,7 @@ import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
-import {createEnvironmentInstance} from '../utils/environment';
+import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
 import {List, Dict, None, Maybe} from '@relate/types';
@@ -150,7 +150,7 @@ export class SystemProvider implements OnModuleInit {
 
     createAppLaunchToken(
         environmentId: string,
-        appId: string,
+        appName: string,
         dbmsId: string,
         principal?: string,
         accessToken?: string,
@@ -159,7 +159,7 @@ export class SystemProvider implements OnModuleInit {
             JSON.stringify(
                 new AppLaunchTokenModel({
                     accessToken,
-                    appId,
+                    appName,
                     dbmsId,
                     environmentId,
                     principal,
@@ -167,19 +167,19 @@ export class SystemProvider implements OnModuleInit {
             ),
         );
 
-        return TokenService.sign(validated, appId);
+        return TokenService.sign(validated, appName);
     }
 
-    parseAppLaunchToken(appId: string, launchToken: string): Promise<IAppLaunchToken> {
-        return TokenService.verify(launchToken, appId)
+    parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
+        return TokenService.verify(launchToken, appName)
             .then((decoded: any) => {
-                if (decoded.appId !== appId) {
+                if (decoded.appName !== appName) {
                     throw new ValidationFailureError('App Launch Token mismatch');
                 }
 
                 return new AppLaunchTokenModel({
                     accessToken: decoded.accessToken,
-                    appId: decoded.appId,
+                    appName: decoded.appName,
                     dbmsId: decoded.dbmsId,
                     environmentId: decoded.environmentId,
                     principal: decoded.principal,

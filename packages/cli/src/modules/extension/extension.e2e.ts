@@ -1,48 +1,51 @@
 import {test} from '@oclif/test';
 import path from 'path';
-import {envPaths, EXTENSION_DIR_NAME, NotFoundError} from '@relate/common';
+import {envPaths, EXTENSION_DIR_NAME, NotFoundError, TestExtensions, IInstalledExtension} from '@relate/common';
 
 import InstallCommand from '../../commands/extension/install';
 import UninstallCommand from '../../commands/extension/uninstall';
 
 const TEST_EXTENSION_NAME = 'neo4j-insight';
-const TEST_EXTENSION_VERSION = '1.0.0';
-const TEST_MISSING_EXTENSION = 'neo4j-desktop';
 const TEST_ENVIRONMENT_NAME = 'test';
 
 describe('$relate extension', () => {
+    const extensions = new TestExtensions(__filename);
+    let testExtension: IInstalledExtension;
+
+    beforeAll(async () => {
+        testExtension = await extensions.cacheNew();
+    });
+
+    afterAll(async () => {
+        await extensions.teardown();
+    });
+
     test.stdout().it('installs extension from cache', async (ctx) => {
         await InstallCommand.run([
-            TEST_EXTENSION_NAME,
+            testExtension.name,
             '--version',
-            TEST_EXTENSION_VERSION,
+            testExtension.version,
             '--environment',
             TEST_ENVIRONMENT_NAME,
         ]);
 
-        expect(ctx.stdout).toContain(TEST_EXTENSION_NAME);
+        expect(ctx.stdout).toContain(testExtension.name);
     });
 
     test.skip()
         .stderr()
         .it('throws when extension not in cache', async () => {
             try {
-                await InstallCommand.run([
-                    TEST_MISSING_EXTENSION,
-                    '-V',
-                    TEST_EXTENSION_VERSION,
-                    '--environment',
-                    'test',
-                ]);
+                await InstallCommand.run(['missing-extension', '-V', '1.0.0', '--environment', TEST_ENVIRONMENT_NAME]);
             } catch (e) {
-                expect(e).toEqual(new NotFoundError('fetch and install neo4j-desktop@1.0.0'));
+                expect(e).toEqual(new NotFoundError('fetch and install missing-extension@1.0.0'));
             }
         });
 
     test.stdout().it('uninstalls extension', async (ctx) => {
-        await UninstallCommand.run([TEST_EXTENSION_NAME, '--environment', TEST_ENVIRONMENT_NAME]);
+        await UninstallCommand.run([testExtension.name, '--environment', TEST_ENVIRONMENT_NAME]);
 
-        expect(ctx.stdout).toContain(`Uninstalled ${TEST_EXTENSION_NAME}@`);
+        expect(ctx.stdout).toContain(`Uninstalled ${testExtension.name}@`);
     });
 
     test.stdout().it('installs extension from file', async (ctx) => {
