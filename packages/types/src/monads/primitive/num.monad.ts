@@ -22,11 +22,11 @@ export default class Num extends Monad<number> {
     }
 
     get isOdd(): boolean {
-        return (this.original & 1) === 1;
+        return !this.isEmpty && !this.isEven;
     }
 
     get isEven(): boolean {
-        return (this.original & 1) === 0;
+        return Math.abs(this.original % 2) === 0;
     }
 
     get isNegative(): boolean {
@@ -69,8 +69,8 @@ export default class Num extends Monad<number> {
         return `${this.original.toString(radix)}`;
     }
 
-    toInt(): number {
-        return this.original;
+    toInt(): Num {
+        return this.flatMap((v) => Num.from(Math.trunc(v)));
     }
 
     equals(other: any): boolean {
@@ -96,17 +96,13 @@ export default class Num extends Monad<number> {
     }
 
     negate(): Num {
-        if (this.equals(Num.MIN_VALUE)) {
-            return Num.MIN_VALUE;
-        }
-
-        return this.not();
+        return this.flatMap((v) => Num.from(v * -1));
     }
 
     add(other: number | string | Num): Num {
         const otherToUse = Num.from(other);
 
-        return this.map((v) => v + otherToUse.get());
+        return this.flatMap((v) => Num.from(v + otherToUse.get()));
     }
 
     subtract(other: number | string | Num): Num {
@@ -115,41 +111,39 @@ export default class Num extends Monad<number> {
         return this.add(otherToUse.negate());
     }
 
-    not(): Num {
-        return this.map((v) => v * -1);
-    }
-
     multiply(multiplier: number | string | Num): Num {
         const multiplierToUse = Num.from(multiplier);
 
-        return this.map((v) => v * multiplierToUse.get());
+        return this.flatMap((v) => Num.from(v * multiplierToUse.get()));
     }
 
     divide(divisor: number | string | Num): Num {
         const divisorToUse = Num.from(divisor);
 
-        return this.map((v) => v / divisorToUse.get());
+        return this.flatMap((v) => Num.from(v / divisorToUse.get()));
     }
 
     modulo(divisor: number | string | Num): Num {
         const divisorToUse = Num.isNum(divisor) ? divisor : Num.from(divisor);
 
-        return this.subtract(this.divide(divisorToUse).multiply(divisorToUse));
+        return this.flatMap((v) => Num.from(v % divisorToUse.get()));
     }
 
-    private compare(other: number | string | Num): 0 | 1 | -1 {
+    private compare(other: number | string | Num): number {
         const otherToUse = Num.from(other);
 
         return this.flatMap((v) => {
             const o = otherToUse.get();
 
+            if (this.isEmpty || otherToUse.isEmpty) {
+                return NaN;
+            }
+
             if (o === v) {
                 return 0;
             }
 
-            return o > v
-                ? -1
-                : 1
+            return o > v ? -1 : 1;
         });
     }
 }

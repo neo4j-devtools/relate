@@ -10,6 +10,7 @@ We use our own code-base as a living example and documentation. Please see the t
 2. [Advanced examples](#advanced-examples)
 
 ## Helpful Resources
+- [Monet.js](https://github.com/monet/monet.js/blob/master/docs/README.md)
 -   [What The Heck Is A Monad](https://khanlou.com/2015/09/what-the-heck-is-a-monad/)
 -   [A Guide to Scala Collections: Exploring Monads in Scala Collections](https://blog.redelastic.com/a-guide-to-scala-collections-exploring-monads-in-scala-collections-ef810ef3aec3)
 -   [Practical introduction to Functional Programming with JS](https://www.codingame.com/playgrounds/2980/practical-introduction-to-functional-programming-with-js/functors-and-monads)
