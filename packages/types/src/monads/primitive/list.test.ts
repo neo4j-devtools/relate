@@ -1,3 +1,5 @@
+/* eslint-disable object-property-newline */
+
 import List from './list.monad';
 import Num from './num.monad';
 import Maybe from './maybe.monad';
@@ -451,11 +453,11 @@ describe('List', () => {
             expect(await List.from().unwindPromises()).toEqual(List.from());
         });
 
-        test('handles non-empty, without promises', async() => {
+        test('handles non-empty, without promises', async () => {
             expect(await List.from([3, 2, 1]).unwindPromises()).toEqual(List.from([3, 2, 1]));
         });
 
-        test('handles non-empty, with promises', async() => {
+        test('handles non-empty, with promises', async () => {
             expect(await List.from([Promise.resolve(4), 3, 2, 1]).unwindPromises()).toEqual(List.from([4, 3, 2, 1]));
         });
     });

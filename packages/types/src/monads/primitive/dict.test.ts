@@ -1,3 +1,5 @@
+/* eslint-disable object-property-newline */
+
 import Dict from './dict.monad';
 import List from './list.monad';
 import Maybe from './maybe.monad';
@@ -257,7 +259,12 @@ describe('Dict', () => {
     describe('toList', () => {
         test('works', () => {
             expect(Dict.from({foo: 1}).toList()).toEqual(List.from([['foo', 1]]));
-            expect(Dict.from({foo: 1, bar: 'bam'}).toList()).toEqual(List.from([['foo', 1], ['bar', 'bam']]));
+            expect(Dict.from({foo: 1, bar: 'bam'}).toList()).toEqual(
+                List.from([
+                    ['foo', 1],
+                    ['bar', 'bam'],
+                ]),
+            );
         });
     });
 });

@@ -65,7 +65,7 @@ export default class Num extends Monad<number> {
         return Num.INT_CACHE.get(val);
     }
 
-    toString(radix: number = 10): string {
+    toString(radix = 10): string {
         return `${this.original.toString(radix)}`;
     }
 

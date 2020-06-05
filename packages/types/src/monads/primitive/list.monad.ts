@@ -9,7 +9,15 @@ import {isIterable} from '../../utils/iterable.utils';
 import Nil from './nil.monad';
 import Str from './str.monad';
 
-type Compactable<T> = T extends null ? never : T extends undefined ? never : T extends Nil ? never : T | T extends None<any> ? never : T;
+type Compactable<T> = T extends null
+    ? never
+    : T extends undefined
+    ? never
+    : T extends Nil
+    ? never
+    : T | T extends None<any>
+    ? never
+    : T;
 
 export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
@@ -130,8 +138,8 @@ export default class List<T> extends Monad<Iterable<T>> {
     compact<R = Compactable<T>>(): List<R> {
         // @ts-ignore
         return this.filter((val) => {
-            return val !== null && val !== undefined && !Nil.isNil(val) && !None.isNone(val)
-        })
+            return val !== null && val !== undefined && !Nil.isNil(val) && !None.isNone(val);
+        });
     }
 
     reduce<R = any>(cb: (agg: R, next: T, index: number) => R, seed: R): R {

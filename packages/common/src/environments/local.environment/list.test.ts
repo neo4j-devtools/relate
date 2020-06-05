@@ -59,7 +59,7 @@ describe('LocalEnvironment - list', () => {
 
     test('list no dbmss installed', async () => {
         const dbmss = await environment.listDbmss();
-        expect(dbmss).toEqual([]);
+        expect(dbmss.toArray()).toEqual([]);
     });
 
     // @todo: broken as we now check for conf existing
