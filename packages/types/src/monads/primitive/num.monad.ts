@@ -50,6 +50,10 @@ export default class Num extends Monad<number> {
     }
 
     static from(val?: any): Num {
+        if (val === undefined) {
+            return Num.ZERO;
+        }
+
         if (!Num.isCacheable(val)) {
             return Num.isNum(val) ? val : Num.of(val);
         }
@@ -137,11 +141,13 @@ export default class Num extends Monad<number> {
         const otherToUse = Num.from(other);
 
         return this.flatMap((v) => {
-            if (otherToUse.equals(v)) {
+            const o = otherToUse.get();
+
+            if (o === v) {
                 return 0;
             }
 
-            return otherToUse.greaterThan(v)
+            return o > v
                 ? -1
                 : 1
         });
