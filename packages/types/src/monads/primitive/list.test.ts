@@ -18,8 +18,13 @@ describe('List', () => {
 
         test('handles unsafe values', () => {
             expect(List.from().toArray()).toEqual([]);
-            // @ts-ignore
-            expect(List.from({foo: true, bar: 1}).toArray()).toEqual([]);
+            expect(
+                List.from({
+                    // @ts-ignore
+                    bar: 1,
+                    foo: true,
+                }).toArray(),
+            ).toEqual([]);
             expect(List.from(null).toArray()).toEqual([]);
             // @ts-ignore
             expect(List.from(1).toArray()).toEqual([]);
@@ -42,8 +47,18 @@ describe('List', () => {
         test('handles unsafe values', () => {
             // @ts-ignore
             expect(List.of(undefined).toArray()).toEqual([undefined]);
-            // @ts-ignore
-            expect(List.of({foo: true, bar: 1}).toArray()).toEqual([{foo: true, bar: 1}]);
+            expect(
+                List.of({
+                    // @ts-ignore
+                    bar: 1,
+                    foo: true,
+                }).toArray(),
+            ).toEqual([
+                {
+                    foo: true,
+                    bar: 1,
+                },
+            ]);
             // @ts-ignore
             expect(List.of(null).toArray()).toEqual([null]);
             // @ts-ignore
@@ -294,11 +309,27 @@ describe('List', () => {
 
     describe('reduce', () => {
         test('handles empty', () => {
-            expect(List.from([]).reduce((agg, [key, val]) => ({...agg, [key]: val}), {})).toEqual({});
+            expect(
+                List.from([]).reduce(
+                    (agg, [key, val]) => ({
+                        ...agg,
+                        [key]: val,
+                    }),
+                    {},
+                ),
+            ).toEqual({});
         });
 
         test('handles non-empty', () => {
-            expect(List.from([true, false]).reduce((agg, val, index) => ({...agg, [index]: val}), {})).toEqual({
+            expect(
+                List.from([true, false]).reduce(
+                    (agg, val, index) => ({
+                        ...agg,
+                        [index]: val,
+                    }),
+                    {},
+                ),
+            ).toEqual({
                 '0': true,
                 '1': false,
             });

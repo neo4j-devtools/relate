@@ -1,5 +1,3 @@
-/* eslint-disable object-property-newline */
-
 import Dict from './dict.monad';
 import List from './list.monad';
 import Maybe from './maybe.monad';
@@ -245,21 +243,36 @@ describe('Dict', () => {
     describe('omit', () => {
         test('works', () => {
             expect(Dict.from({foo: 1}).omit('foo')).toEqual(Dict.from());
-            expect(Dict.from({foo: 1, bar: 'bam'}).omit('foo')).toEqual(Dict.from({bar: 'bam'}));
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                }).omit('foo'),
+            ).toEqual(Dict.from({bar: 'bam'}));
         });
     });
 
     describe('merge', () => {
         test('works', () => {
             expect(Dict.from({foo: 1}).merge(Dict.from())).toEqual(Dict.from({foo: 1}));
-            expect(Dict.from({foo: 1}).merge(Dict.from({bar: 'bam'}))).toEqual(Dict.from({foo: 1, bar: 'bam'}));
+            expect(Dict.from({foo: 1}).merge(Dict.from({bar: 'bam'}))).toEqual(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                }),
+            );
         });
     });
 
     describe('toList', () => {
         test('works', () => {
             expect(Dict.from({foo: 1}).toList()).toEqual(List.from([['foo', 1]]));
-            expect(Dict.from({foo: 1, bar: 'bam'}).toList()).toEqual(
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                }).toList(),
+            ).toEqual(
                 List.from([
                     ['foo', 1],
                     ['bar', 'bam'],
