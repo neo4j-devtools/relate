@@ -7,7 +7,7 @@ import {isIterable} from '../../utils/iterable.utils';
 type RawDict<K, V> = Map<K, V>;
 
 // @todo: not sure Extract<> is the right approach
-type KeyVal<T> = T extends Map<infer K, infer V>
+type KeyVal<T, Key extends keyof T = keyof T> = T extends Map<infer K, infer V>
     ? {key: K; value: V}
     : T extends List<[infer K, infer V]>
     ? {key: Extract<K, string | symbol>; value: V}
@@ -16,8 +16,8 @@ type KeyVal<T> = T extends Map<infer K, infer V>
     : T extends Array<Array<infer I>>
     ? {key: Extract<I, string | symbol>; value: I}
     : {
-          key: Extract<keyof T, string | symbol>;
-          value: T[Extract<keyof T, string | symbol>];
+          key: Extract<Key, string | symbol>;
+          value: T[Extract<Key, string | symbol>];
       };
 
 interface IAsObject<T = any> {
@@ -85,7 +85,7 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     }
 
     // @ts-ignore
-    getValue<O extends K = K, R = T[O]>(key: O): Maybe<R> {
+    getValue<O extends K = K, R = KeyVal<T, O>['value']>(key: O): Maybe<R> {
         // @ts-ignore
         return Maybe.from<R>(this.ourOriginal.get(key));
     }

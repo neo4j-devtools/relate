@@ -2,7 +2,7 @@ import {join, filter, find, map} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
-import Num from './num/num.monad';
+import Num from './num.monad';
 import None from './none.monad';
 
 import {isIterable} from '../../utils/iterable.utils';
@@ -102,7 +102,7 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     hasIndex(index: Num | number): boolean {
-        const numToUse = Num.fromValue(index);
+        const numToUse = Num.from(index);
 
         return numToUse.greaterThanOrEqual(Num.ZERO) && numToUse.lessThan(this.ourLength);
     }
@@ -166,8 +166,8 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     slice(from: Num | number, to?: Num | number): List<T> {
-        const fromToUse = Num.fromValue(from);
-        const toToUse = to ? Num.fromValue(to) : None.of<Num>();
+        const fromToUse = Num.from(from);
+        const toToUse = to ? Num.from(to) : None.of<Num>();
         const it = this[Symbol.iterator]();
         const res = [];
 
