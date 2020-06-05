@@ -6,6 +6,8 @@ export default class LinkCommand extends BaseCommand {
 
     commandModule = LinkModule;
 
+    static aliases = ['ext:link'];
+
     static description = 'Link an extension (useful for development)';
 
     static args = [{name: 'filePath'}];

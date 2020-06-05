@@ -10,6 +10,8 @@ export default class InstallCommand extends BaseCommand {
 
     commandModule = InstallModule;
 
+    static aliases = ['ext:install'];
+
     static description = 'Install an extension';
 
     static args = [

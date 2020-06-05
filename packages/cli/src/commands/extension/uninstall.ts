@@ -8,6 +8,8 @@ export default class UninstallCommand extends BaseCommand {
 
     commandModule = UninstallModule;
 
+    static aliases = ['ext:uninstall'];
+
     static description = 'Uninstall an extension';
 
     static args = [

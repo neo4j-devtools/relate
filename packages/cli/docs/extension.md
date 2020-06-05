@@ -19,6 +19,9 @@ USAGE
 OPTIONS
   -V, --version=version          Version to install
   -e, --environment=environment  Name of the environment to run the command against
+
+ALIASES
+  $ relate ext:install
 ```
 
 _See code: [dist/commands/extension/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/install.ts)_
@@ -30,6 +33,9 @@ Link an extension (useful for development)
 ```
 USAGE
   $ relate extension:link [FILEPATH]
+
+ALIASES
+  $ relate ext:link
 ```
 
 _See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/link.ts)_
@@ -44,6 +50,9 @@ USAGE
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+
+ALIASES
+  $ relate ext:list
 ```
 
 _See code: [dist/commands/extension/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/list.ts)_
@@ -61,6 +70,9 @@ ARGUMENTS
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+
+ALIASES
+  $ relate ext:uninstall
 ```
 
 _See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/extension/uninstall.ts)_
