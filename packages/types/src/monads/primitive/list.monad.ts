@@ -9,7 +9,7 @@ import {isIterable} from '../../utils/iterable.utils';
 import Nil from './nil.monad';
 import Str from './str.monad';
 
-type Compactable<T> = T extends null ? never : T | T extends Nil ? never : T | T extends None<any> ? never : T;
+type Compactable<T> = T extends null ? never : T extends undefined ? never : T extends Nil ? never : T | T extends None<any> ? never : T;
 
 export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
@@ -21,7 +21,7 @@ export default class List<T> extends Monad<Iterable<T>> {
 
     protected ourPrivateLength = Maybe.of<Num>();
 
-    get ourLength(): Num {
+    protected get ourLength(): Num {
         if (this.ourPrivateLength.isEmpty) {
             this.ourPrivateLength = Maybe.from(Num.of([...this].length));
         }
@@ -91,7 +91,7 @@ export default class List<T> extends Monad<Iterable<T>> {
             return List.of<T>([]);
         }
 
-        return List.isList<T>(val) ? val : List.of(val);
+        return List.isList<T>(val) ? val : List.of(Array.from(val));
     }
 
     // @ts-ignore
@@ -126,12 +126,12 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of<T>(found);
     }
 
-    // @todo: extend typing for empty monads
+    // @todo: extend typing for empty monads?
     compact<R = Compactable<T>>(): List<R> {
         // @ts-ignore
-        return this.filter((v) => {
-            return v !== null && !Nil.isNil(v) && !None.isNone(v);
-        });
+        return this.filter((val) => {
+            return val !== null && val !== undefined && !Nil.isNil(val) && !None.isNone(val)
+        })
     }
 
     reduce<R = any>(cb: (agg: R, next: T, index: number) => R, seed: R): R {
@@ -191,7 +191,12 @@ export default class List<T> extends Monad<Iterable<T>> {
     concat<O extends string>(other: O): List<T | O>;
     concat<O, I = O extends Iterable<infer I> ? I : O>(other: O): List<T | I>;
     concat<O>(other: O): List<T | O> {
-        if (isIterable(other) && !(typeof other === 'string' || Str.isStr(other))) {
+        if (isIterable(other) && List.isList(other)) {
+            return List.of([...this, ...other]);
+        }
+
+        // @todo: does not handle Dict et al due to circulars
+        if (isIterable(other) && !Monad.isMonad(other)) {
             return List.of([...this, ...other]);
         }
 
@@ -206,8 +211,8 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.from([...this].sort(compareFn));
     }
 
-    join(separator: string | Str): Str {
-        return Str.from(join([...this], `${separator}`));
+    join(separator?: string | Str): Str {
+        return Str.from(join([...this], separator ? `${separator}` : separator));
     }
 
     toString() {

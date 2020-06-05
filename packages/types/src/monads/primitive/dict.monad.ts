@@ -1,14 +1,20 @@
-import {entries, join, map, merge, reduce} from 'lodash';
+import {entries, merge, reduce} from 'lodash';
 
-import Monad from '../monad';
 import List from './list.monad';
 import Maybe from './maybe.monad';
+import {isIterable} from '../../utils/iterable.utils';
 
 type RawDict<K, V> = Map<K, V>;
 
 // @todo: not sure Extract<> is the right approach
 type KeyVal<T> = T extends Map<infer K, infer V>
     ? {key: K; value: V}
+    : T extends List<[infer K, infer V]>
+    ? {key: Extract<K, string | symbol>; value: V}
+    : T extends List<Iterable<infer I>>
+    ? {key: Extract<I, string | symbol>; value: I}
+    : T extends Array<Array<infer I>>
+    ? {key: Extract<I, string | symbol>; value: I}
     : {
           key: Extract<keyof T, string | symbol>;
           value: T[Extract<keyof T, string | symbol>];
@@ -20,12 +26,13 @@ interface IAsObject<T = any> {
 }
 
 // @ts-ignore
-export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends Monad<RawDict<K, V>> {
+export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends List<RawDict<K, V>> {
     protected ourKeys: Maybe<List<K>> = Maybe.of();
 
     protected ourValues: Maybe<List<V>> = Maybe.of();
 
     constructor(private readonly ourOriginal: RawDict<K, V>) {
+        // @ts-ignore
         super(ourOriginal);
     }
 
@@ -55,38 +62,25 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
 
     static of<T>(val: T): Dict<T> {
         // @ts-ignore
-        const sane = Array.isArray(val) ? val : entries(val);
+        const sane = isIterable(val) ? val : entries(val);
 
         // @ts-ignore
         return new Dict<T>(new Map(sane));
     }
 
-    static from<T, R = T extends Iterable<[infer K, infer V]> ? Map<K, V> : T>(val?: R): Dict<R> {
+    static from<T, R = Map<KeyVal<T>['key'], KeyVal<T>['value']>>(val?: T): Dict<R> {
         return Dict.isDict<R>(val) ? val : Dict.of(val || {});
     }
 
-    static fromObject<T>(obj: T) {
-        return Dict.of<T>(obj);
-    }
-
-    static fromList<
-        T extends List<any>,
-        K = T extends List<[infer K, any]> ? K : any,
-        V = T extends List<[any, infer V]> ? V : any
-    >(list: T): Dict<T, K, V> {
-        // @ts-ignore
-        return Dict.of(list);
-    }
-
-    hasKey(index: number): boolean {
-        return index >= 0 && this.keys.length.lessThan(index);
+    hasIndex(index: number): boolean {
+        return index >= 0 && this.keys.length.greaterThan(index);
     }
 
     getKey(index: number): Maybe<K> {
         return this.keys.nth(index);
     }
 
-    hasValue(key: K): boolean {
+    hasKey(key: K): boolean {
         return this.ourOriginal.has(key);
     }
 
@@ -97,10 +91,10 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     }
 
     toString(): string {
-        return `{${join(
-            map([...this], ([key, val]) => `${key}: ${val}`),
-            ', ',
-        )}}`;
+        return `{${this.toList()
+            .mapEach(([key, val]) => `${key}: ${JSON.stringify(val)}`)
+            .join(', ')
+        }}`;
     }
 
     toObject<O extends T, R = O extends IAsObject<T> ? O : never>(): R {
@@ -114,19 +108,19 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
         );
     }
 
-    // @todo: this can probably be done better
+    // @todo: these types can probably be done better
     omit<K2 extends keyof T, I = T extends object ? T : never, R = Dict<Omit<I, K2>>>(other: K2): R;
-    omit<K2 extends KeyVal<T>, I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(other: K2): R;
+    omit<K2 extends KeyVal<T>['key'], I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(other: K2): R;
     omit(other: any) {
         return this.toList()
             .filter(([key]) => key !== other)
-            .switchMap((remaining) => Dict.fromList(remaining));
+            .switchMap(Dict.from);
     }
 
     merge<O extends object>(other: O): Dict<T & O>;
     merge<O extends Dict>(other: O): Dict<T & O> {
         // @ts-ignore
-        return Dict.fromObject(merge({}, this.toObject(), Dict.isDict(other) ? other.toObject() : other));
+        return Dict.from(merge({}, this.toObject(), Dict.isDict(other) ? other.toObject() : other));
     }
 
     toList(): List<[K, V]> {

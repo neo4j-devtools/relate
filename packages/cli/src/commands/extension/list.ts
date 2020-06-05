@@ -8,6 +8,8 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
+    static aliases = ['ext:list'];
+
     static description = 'Lists installed extensions';
 
     static flags = {

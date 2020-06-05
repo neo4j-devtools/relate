@@ -75,7 +75,7 @@ export default class Num extends Monad<number> {
         return new Num(Number(val));
     }
 
-    static from(val: any): Num {
+    static from(val?: any): Num {
         return Num.isNum(val) ? val : Num.of(val);
     }
 
@@ -133,7 +133,7 @@ export default class Num extends Monad<number> {
     }
 
     equals(other: any): boolean {
-        const otherToUse = Num.isNum(other) ? other : Num.fromValue(other);
+        const otherToUse = Num.isNum(other) ? other : Num.from(other);
 
         return this.high === otherToUse.high && this.low === otherToUse.low;
     }

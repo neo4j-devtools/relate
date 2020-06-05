@@ -12,7 +12,12 @@ export default class Maybe<T> extends Monad<T | None<T>> {
     }
 
     get isEmpty() {
-        return !Monad.isMonad(this.original) || None.isNone(this.original) || Nil.isNil(this.original);
+        return (
+            this.original === undefined ||
+            this.original === null ||
+            None.isNone(this.original) ||
+            Nil.isNil(this.original)
+        );
     }
 
     static isMaybe<T>(val: any): val is Maybe<T> {
