@@ -1,6 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {
-    arrayHasItems,
     EXTENSION_ORIGIN,
     IExtensionVersion,
     InvalidArgumentError,
@@ -70,22 +69,26 @@ export class InstallModule implements OnApplicationBootstrap {
 
                 return !_.some(cached, (cache) => cache.name === v.name && cache.version === v.version);
             });
-            const choices = [...cached, ...onlineNotCached];
+            const choices = new Map(
+                _.entries(_.keyBy([...cached, ...onlineNotCached], (v) => `${v.name}@${v.version}`)),
+            );
 
-            if (!arrayHasItems(choices)) {
+            if (choices.size === 0) {
                 throw new InvalidArgumentError(`Could not find extensions to install`);
             }
 
-            const maybeWithName = name ? _.filter(choices, (v) => v.name === name) : choices;
+            const maybeWithName = name
+                ? _.filter([...choices.values()], (v) => v.name === name)
+                : [...choices.values()];
             const selected = await selectPrompt(
                 'Select a version to install',
                 _.map(maybeWithName, (v) => ({
-                    name: JSON.stringify(v),
+                    name: `${v.name}@${v.version}`,
                     message: `[${v.origin.toLowerCase()}] ${v.name}@${v.version}`,
                 })),
             );
 
-            const selectedExtension: IExtensionVersion = JSON.parse(selected);
+            const selectedExtension: IExtensionVersion = choices.get(selected)!;
             version = selectedExtension.version;
             name = selectedExtension.name;
         }
