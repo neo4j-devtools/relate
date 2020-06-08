@@ -11,10 +11,10 @@ import {
     NotSupportedError,
     NotFoundError,
     ExtensionExistsError,
-} from '../errors';
-import {EXTENSION_TYPES, HOOK_EVENTS} from '../constants';
-import {emitHookEvent} from '../utils';
-import {isValidUrl} from '../utils/generic';
+} from '../../errors';
+import {EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
+import {emitHookEvent} from '../../utils';
+import {isValidUrl} from '../../utils/generic';
 import {
     getAppBasePath,
     discoverExtension,
@@ -24,7 +24,7 @@ import {
     downloadExtension,
     IExtensionVersion,
     fetchExtensionVersions,
-} from '../utils/extensions';
+} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/local.environment';
 

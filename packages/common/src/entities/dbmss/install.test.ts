@@ -1,11 +1,11 @@
 import path from 'path';
 import tar from 'tar';
 
-import {envPaths} from '../utils';
-import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../errors';
-import * as localUtils from '../utils/environment';
-import {TestDbmss} from '../utils/system';
-import {DBMS_DIR_NAME, DBMS_STATUS} from '../constants';
+import {envPaths} from '../../utils';
+import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
+import * as localUtils from '../../utils/dbmss';
+import {TestDbmss} from '../../utils/system';
+import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 import {List, None} from '@relate/types';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;

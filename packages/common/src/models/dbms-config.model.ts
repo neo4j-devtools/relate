@@ -3,7 +3,7 @@ import {IsString, IsOptional} from 'class-validator';
 import {ModelAbstract} from './model.abstract';
 import {PropertiesFile} from '../system/files';
 import {DBMS_STATUS} from '../constants';
-import {NEO4J_EDITION, NEO4J_ORIGIN} from '../environments';
+import {NEO4J_EDITION, NEO4J_ORIGIN} from '../entities/environments';
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
     status: DBMS_STATUS;

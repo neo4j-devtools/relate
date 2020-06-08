@@ -2,7 +2,7 @@ import http from 'http';
 import {workerData, parentPort, isMainThread} from 'worker_threads';
 import url from 'url';
 
-import {NotSupportedError, AuthenticationError} from '../errors';
+import {NotSupportedError, AuthenticationError} from '../../errors';
 
 if (isMainThread) {
     throw new NotSupportedError('OAuth redirect server must run in a worker thread');

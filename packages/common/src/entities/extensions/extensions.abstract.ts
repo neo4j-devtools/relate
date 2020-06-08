@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IExtensionMeta, IExtensionVersion} from '../utils/extensions';
+import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {EnvironmentAbstract} from '../environments';
 
 export abstract class ExtensionsAbstract<Env extends EnvironmentAbstract> {

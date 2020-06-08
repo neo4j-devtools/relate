@@ -6,13 +6,13 @@ import {Dict} from '@relate/types';
 
 import {RemoteDbmss} from '../dbmss';
 import {RemoteExtensions} from '../extensions';
-import {InvalidConfigError, NotAllowedError} from '../errors';
+import {InvalidConfigError, NotAllowedError} from '../../errors';
 import {EnvironmentAbstract} from './environment.abstract';
-import {EnvironmentConfigModel} from '../models';
-import {envPaths} from '../utils';
-import {AUTH_TOKEN_KEY} from '../constants';
+import {EnvironmentConfigModel} from '../../models';
+import {envPaths} from '../../utils';
+import {AUTH_TOKEN_KEY} from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
-import {ensureDirs} from '../system/files';
+import {ensureDirs} from '../../system/files';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);

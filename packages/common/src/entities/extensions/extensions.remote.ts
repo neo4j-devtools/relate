@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import {List, None} from '@relate/types';
 
-import {GraphqlError, NotAllowedError, NotFoundError} from '../errors';
-import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS} from '../constants';
-import {IExtensionMeta, IExtensionVersion} from '../utils/extensions';
+import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
+import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
 

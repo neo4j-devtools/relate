@@ -1,7 +1,7 @@
 import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
-import {ENVIRONMENT_TYPES} from '../environments/environment.constants';
+import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
 import {GoogleAuthenticatorOptions} from './authenticator.model';
 import {IsValidUrl} from './custom-validators';
 

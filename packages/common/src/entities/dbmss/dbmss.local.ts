@@ -7,7 +7,7 @@ import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../models';
+import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -19,7 +19,8 @@ import {
     neo4jAdminCmd,
     neo4jCmd,
     resolveDbms,
-} from '../utils/environment';
+    parseNeo4jConfigPort,
+} from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
@@ -28,8 +29,8 @@ import {
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
-} from '../errors';
-import {isValidUrl} from '../utils/generic';
+} from '../../errors';
+import {isValidUrl} from '../../utils/generic';
 import {
     LocalEnvironment,
     DEFAULT_NEO4J_BOLT_PORT,
@@ -46,9 +47,8 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
 } from '../environments';
-import {BOLT_DEFAULT_PORT, DBMS_DIR_NAME, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../constants';
-import {PropertiesFile} from '../system/files';
-import {parseNeo4jConfigPort} from '../utils';
+import {BOLT_DEFAULT_PORT, DBMS_DIR_NAME, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
+import {PropertiesFile} from '../../system/files';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(): Promise<List<IDbmsVersion>> {

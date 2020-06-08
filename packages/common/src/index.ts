@@ -8,5 +8,5 @@ export * from './errors';
 export * from './utils';
 export * from './utils/generic';
 export * from './constants';
-export {EnvironmentAbstract as Environment, ENVIRONMENT_TYPES} from './environments';
-export * from './environments/authenticators';
+export {EnvironmentAbstract as Environment, ENVIRONMENT_TYPES} from './entities/environments';
+export * from './entities/environments/authenticators';

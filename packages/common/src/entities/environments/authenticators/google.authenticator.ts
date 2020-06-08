@@ -3,10 +3,10 @@ import fetch from 'node-fetch';
 
 import {oAuthRedirectServer} from '../oauth-utils';
 import {LOCALHOST_IP_ADDRESS} from '../environment.constants';
-import {AuthenticationError} from '../../errors';
-import {TokenService} from '../../token.service';
+import {AuthenticationError} from '../../../errors';
+import {TokenService} from '../../../token.service';
 import {IAuthenticator, IAuthenticatorOptions} from './authenticator.types';
-import {AUTH_TOKEN_KEY} from '../../constants';
+import {AUTH_TOKEN_KEY} from '../../../constants';
 
 export interface IGoogleAuthenticatorOptions extends IAuthenticatorOptions {
     clientId: string;

@@ -9,7 +9,7 @@ import {
     DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
 } from '../constants';
-import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../environments';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';

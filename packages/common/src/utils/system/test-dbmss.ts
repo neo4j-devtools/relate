@@ -3,7 +3,7 @@ import path from 'path';
 import fse from 'fs-extra';
 
 import {EnvironmentConfigModel, IDbms} from '../../models';
-import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../environments';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../entities/environments';
 
 import {NotSupportedError, NotFoundError} from '../../errors';
 import {envPaths} from '../env-paths';

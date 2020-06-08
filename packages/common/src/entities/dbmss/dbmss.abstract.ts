@@ -1,10 +1,10 @@
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../models';
+import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
-import {PropertiesFile} from '../system/files';
+import {PropertiesFile} from '../../system/files';
 
 export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     public dbmss: {[id: string]: IDbms} = {};

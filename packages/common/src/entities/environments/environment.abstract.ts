@@ -1,7 +1,7 @@
 import fse from 'fs-extra';
 import {List} from '@relate/types';
 
-import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticatorModel} from '../models';
+import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticatorModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 import {
     AUTHENTICATOR_TYPES,
@@ -10,11 +10,11 @@ import {
     IAuthenticatorOptions,
     IGoogleAuthenticatorOptions,
 } from './authenticators';
-import {NotSupportedError} from '../errors';
-import {arrayHasItems} from '../utils/generic';
+import {NotSupportedError} from '../../errors';
+import {arrayHasItems} from '../../utils/generic';
 import {DbmssAbstract} from '../dbmss';
 import {ExtensionsAbstract} from '../extensions';
-import {envPaths} from '../utils';
+import {envPaths} from '../../utils';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;

@@ -1,17 +1,17 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-import {ENVIRONMENT_TYPES} from './environment.constants';
-import {EnvironmentConfigModel} from '../models';
-import {envPaths} from '../utils';
-import {LocalEnvironment} from './local.environment';
-import {PropertiesFile} from '../system/files';
-import {DBMS_DIR_NAME} from '../constants';
+import {ENVIRONMENT_TYPES} from '../environments/environment.constants';
+import {EnvironmentConfigModel} from '../../models';
+import {envPaths} from '../../utils';
+import {LocalEnvironment} from '../environments/local.environment';
+import {PropertiesFile} from '../../system/files';
+import {DBMS_DIR_NAME} from '../../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
-jest.mock('../utils/files/read-properties-file', () => ({
+jest.mock('../../utils/files/read-properties-file', () => ({
     readPropertiesFile: (): Map<string, string> => new Map(),
 }));
 

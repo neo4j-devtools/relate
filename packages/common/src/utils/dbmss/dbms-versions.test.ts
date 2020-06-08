@@ -6,7 +6,7 @@ import {List} from '@relate/types';
 import {discoverNeo4jDistributions, fetchNeo4jVersions} from './dbms-versions';
 
 import {envPaths} from '../env-paths';
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../environments/environment.constants';
+import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN} from '../../entities/environments/environment.constants';
 import {DBMS_DIR_NAME} from '../../constants';
 import {downloadNeo4j} from './download-neo4j';
 import {TestDbmss} from '../system';

@@ -2,13 +2,13 @@ import gql from 'graphql-tag';
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../models';
+import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {RemoteEnvironment} from '../environments';
-import {PUBLIC_GRAPHQL_METHODS} from '../constants';
-import {GraphqlError, InvalidConfigError, NotSupportedError} from '../errors';
-import {PropertiesFile} from '../system/files';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {GraphqlError, InvalidConfigError, NotSupportedError} from '../../errors';
+import {PropertiesFile} from '../../system/files';
 
 export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {

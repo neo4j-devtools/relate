@@ -4,10 +4,10 @@ import path from 'path';
 import {LocalDbmss} from '../dbmss';
 import {LocalExtensions} from '../extensions';
 import {EnvironmentAbstract} from './environment.abstract';
-import {envPaths} from '../utils';
-import {ensureDirs} from '../system/files';
+import {envPaths} from '../../utils';
+import {ensureDirs} from '../../system/files';
 import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} from './environment.constants';
-import {DBMS_DIR_NAME, EXTENSION_DIR_NAME} from '../constants';
+import {DBMS_DIR_NAME, EXTENSION_DIR_NAME} from '../../constants';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
