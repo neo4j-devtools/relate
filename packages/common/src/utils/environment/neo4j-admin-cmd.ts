@@ -5,6 +5,7 @@ import {NotFoundError, DependencyError} from '../../errors';
 import {NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE} from '../../environments/environment.constants';
 import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
+import {EnvVars} from '../env-vars';
 
 export async function neo4jAdminCmd(dbmsRootPath: string, command: string, credentials?: string): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
@@ -19,14 +20,14 @@ export async function neo4jAdminCmd(dbmsRootPath: string, command: string, crede
         args.push(process.platform === 'win32' ? `"${credentials}"` : credentials);
     }
 
+    const env = new EnvVars({cloneFromProcess: true});
+    env.set('JAVA_HOME', relateJavaHome || process.env.JAVA_HOME);
+    // relateJavaHome is prepended to the PATH in order to take
+    // precedence over any user installed JAVA executable.
+    env.set('PATH', relateJavaHome ? `${relateJavaHome}${path.delimiter}${process.env.PATH}` : process.env.PATH);
+
     const output = await spawnPromise(neo4jAdminBinPath, args, {
-        env: {
-            ...process.env,
-            JAVA_HOME: relateJavaHome || process.env.JAVA_HOME,
-            // relateJavaHome is prepended to the PATH in order to take
-            // precedence over any user installed JAVA executable.
-            PATH: `${relateJavaHome || ''}${path.delimiter}${process.env.PATH}`,
-        },
+        env: env.toObject(),
     });
 
     if (output.includes('ERROR: Unable to find Java executable.')) {
