@@ -59,8 +59,11 @@ export default class Monad<T> implements IMonad<T> {
         return this.original;
     }
 
-    getOrElse(other: T): T {
-        return this.isEmpty ? other : this.get();
+    getOrElse(other: T | (() => T)): T {
+        // @ts-ignore
+        const otherToUse = typeof other === 'function' ? other() : other;
+
+        return this.isEmpty ? otherToUse : this.get();
     }
 
     equals(other: any): boolean {
