@@ -1,11 +1,10 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
+import fse from 'fs-extra';
 
 import {EnvironmentConfigModel, IDbms} from '../../models';
-import {ENVIRONMENT_TYPES} from '../../environments/environment.constants';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../environments';
 
-import {EnvironmentAbstract} from '../../environments/environment.abstract';
-import {LocalEnvironment} from '../../environments/local.environment';
 import {NotSupportedError, NotFoundError} from '../../errors';
 import {envPaths} from '../env-paths';
 
@@ -23,16 +22,15 @@ export class TestDbmss {
             throw new NotSupportedError('Cannot use TestDbmss outside of testing environment');
         }
 
-        const config = new EnvironmentConfigModel({
-            dbmss: {},
-            id: 'test',
-            neo4jDataPath: envPaths().data,
-            type: ENVIRONMENT_TYPES.LOCAL,
-            user: 'test',
-            httpOrigin: 'http://127.0.0.1:3000',
-        });
+        if (environment) {
+            this.environment = environment;
+            return;
+        }
 
-        this.environment = environment || new LocalEnvironment(config, 'nowhere');
+        const configFilePath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
+        const config = new EnvironmentConfigModel(fse.readJSONSync(configFilePath));
+
+        this.environment = new LocalEnvironment(config, configFilePath);
     }
 
     createName(): string {

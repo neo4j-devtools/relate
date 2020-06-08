@@ -7,8 +7,8 @@ import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {LocalEnvironment} from '../environments/local.environment';
-import {IDbms, IDbmsInfo, IDbmsVersion, IEnvironmentConfig} from '../models';
+import {LocalEnvironment} from '../environments';
+import {IDbms, IDbmsInfo, IDbmsVersion} from '../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -52,7 +52,6 @@ import {
     DBMS_STATUS,
     DBMS_STATUS_FILTERS,
     DBMS_TLS_LEVEL,
-    JSON_FILE_EXTENSION,
 } from '../constants';
 import {PropertiesFile} from '../system/files';
 import {parseNeo4jConfigPort} from '../utils';
@@ -288,7 +287,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
-        await this.updateEnvironmentDbmsConfig(dbmsId, {name});
+        await this.updateEnvironmentConfig(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -331,7 +330,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
-        return fse.remove(dbmsDir).then(() => this.deleteEnvironmentDbmsConfig(dbmsId));
+        return fse.remove(dbmsDir).then(() => this.deleteEnvironmentConfig(dbmsId));
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
@@ -400,7 +399,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         const root = this.getDbmsRootPath();
         const fileNames = List.from(await fse.readdir(root));
-        const configDbmss = Dict.from(this.dbmss);
 
         await fileNames
             .mapEach(async (fileName) => {
@@ -421,8 +419,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         name: '',
                     };
 
+                    const configDbmss = await this.getEnvironmentConfig(id);
+
                     this.dbmss[id] = configDbmss
-                        .getValue(id)
                         .flatMap((val) => {
                             const defaults = Dict.from(defaultValues);
                             const overrides = {
@@ -444,42 +443,33 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    private async updateEnvironmentDbmsConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
-        const environmentConfig = JSON.parse(
-            await fse.readFile(
-                path.join(this.environment.dirPaths.environmentsConfig, `${this.environment.id}${JSON_FILE_EXTENSION}`),
-                'utf8',
-            ),
-        );
-        environmentConfig.dbmss = {
-            ...environmentConfig.dbmss,
+    private async getEnvironmentConfig(dbmsId: string): Promise<Maybe<IDbms>> {
+        const dbmsConfigs = await this.environment.getConfigValue('dbmss');
+
+        return Dict.from(dbmsConfigs).getValue(dbmsId);
+    }
+
+    private async updateEnvironmentConfig(uuid: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
+        const dbmsConfigs = await this.environment.getConfigValue('dbmss');
+        const updated = {
+            ...dbmsConfigs,
             [uuid]: {
                 ...update,
                 id: uuid,
             },
         };
 
-        await fse.writeJson(
-            path.join(this.environment.dirPaths.environmentsConfig, `${this.environment.id}${JSON_FILE_EXTENSION}`),
-            environmentConfig,
-        );
-        await this.environment.updateConfig('dbmss', environmentConfig.dbmss);
+        await this.environment.updateConfig('dbmss', updated);
         await this.discoverDbmss();
     }
 
-    private async deleteEnvironmentDbmsConfig(uuid: string): Promise<void> {
-        const environmentConfig: IEnvironmentConfig = JSON.parse(
-            await fse.readFile(
-                path.join(this.environment.dirPaths.environmentsConfig, `${this.environment.id}${JSON_FILE_EXTENSION}`),
-                'utf8',
-            ),
-        );
-
-        environmentConfig.dbmss = Dict.from(environmentConfig.dbmss)
+    private async deleteEnvironmentConfig(uuid: string): Promise<void> {
+        const dbmsConfigs = await this.environment.getConfigValue('dbmss');
+        const updated = Dict.from(dbmsConfigs)
             .omit(uuid)
             .toObject();
 
-        await this.environment.updateConfig('dbmss', environmentConfig.dbmss);
+        await this.environment.updateConfig('dbmss', updated);
         await this.discoverDbmss();
     }
 }

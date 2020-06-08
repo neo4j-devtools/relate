@@ -11,7 +11,7 @@ import {DBMS_DIR_NAME} from '../constants';
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
-jest.mock('../../utils/files/read-properties-file', () => ({
+jest.mock('../utils/files/read-properties-file', () => ({
     readPropertiesFile: (): Map<string, string> => new Map(),
 }));
 

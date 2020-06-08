@@ -112,11 +112,22 @@ export abstract class EnvironmentAbstract {
         return List.from(allowedMethods).includes(methodName);
     }
 
+    async getConfigValue<K extends keyof EnvironmentConfigModel>(key: K): Promise<EnvironmentConfigModel[K]> {
+        return this.config[key];
+    }
+
+    async reloadConfig(): Promise<void> {
+        const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
+
+        this.config = new EnvironmentConfigModel(config);
+    }
+
     async updateConfig(key: string, value: any): Promise<void> {
         const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
 
         config[key] = value;
 
         await fse.writeJSON(this.configFilePath, config, {encoding: 'utf8'});
+        await this.reloadConfig();
     }
 }
