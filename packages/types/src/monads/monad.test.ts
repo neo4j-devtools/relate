@@ -246,4 +246,26 @@ describe('Monad', () => {
             expect(mapped.equals('bar')).toBe(true);
         });
     });
+
+    describe('getOrElse', () => {
+        test('handles raw values', () => {
+            expect(Monad.of('').getOrElse('foo')).toBe('foo');
+            expect(Monad.of(-1).getOrElse(10)).toBe(-1);
+            // @ts-ignore
+            expect(Monad.of(null).getOrElse('bar')).toBe('bar');
+            expect(Monad.of(false).getOrElse(true)).toBe(true);
+        });
+
+        test('handles function values', () => {
+            expect(Monad.of('').getOrElse(() => 'foo')).toBe('foo');
+            expect(Monad.of(-1).getOrElse(() => 10)).toBe(-1);
+            // @ts-ignore
+            expect(() =>
+                Monad.of(null).getOrElse(() => {
+                    throw new Error('err');
+                }),
+            ).toThrow(new Error('err'));
+            expect(Monad.of(false).getOrElse(() => true)).toBe(true);
+        });
+    });
 });

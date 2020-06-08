@@ -19,6 +19,7 @@ export enum NEO4J_EDITION {
 export enum NEO4J_ORIGIN {
     CACHED = 'cached',
     ONLINE = 'online',
+    LIMITED = 'limited',
 }
 
 export const ZULU_JAVA_VERSION = '11.35.13-ca-jdk11.0.5';

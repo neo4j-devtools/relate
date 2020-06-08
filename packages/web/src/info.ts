@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import {infoWebModule} from './index';
 
 infoWebModule()

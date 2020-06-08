@@ -3,10 +3,15 @@ import Monad from '../monad';
 // @ts-ignore
 export default class Num extends Monad<number> {
     static readonly INT_CACHE = new Map();
+
     static readonly ZERO = Num.from(0);
+
     static readonly ONE = Num.from(1);
+
     static readonly NEG_ONE = Num.from(-1);
+
     static readonly MAX_VALUE = Num.from(Number.MAX_SAFE_INTEGER);
+
     static readonly MIN_VALUE = Num.from(Number.MIN_SAFE_INTEGER);
 
     static isCacheable(value: number) {
@@ -65,7 +70,7 @@ export default class Num extends Monad<number> {
         return Num.INT_CACHE.get(val);
     }
 
-    toString(radix: number = 10): string {
+    toString(radix = 10): string {
         return `${this.original.toString(radix)}`;
     }
 
