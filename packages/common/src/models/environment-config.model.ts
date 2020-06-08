@@ -1,11 +1,9 @@
 import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
-import {ENVIRONMENT_TYPES, NEO4J_EDITION, NEO4J_ORIGIN} from '../environments/environment.constants';
-import {PropertiesFile} from '../system/files';
+import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
 import {GoogleAuthenticatorOptions} from './authenticator.model';
 import {IsValidUrl} from './custom-validators';
-import {DBMS_STATUS} from '../constants';
 
 export interface IEnvironmentAuth {
     authUrl: string;
@@ -13,29 +11,6 @@ export interface IEnvironmentAuth {
         authToken: string;
         redirectTo?: string;
     }>;
-}
-
-export interface IDbms {
-    id: string;
-    name: string;
-    description: string;
-    rootPath?: string;
-    connectionUri: string;
-    config: PropertiesFile;
-}
-
-export interface IDbmsInfo extends Omit<IDbms, 'config'> {
-    status: DBMS_STATUS;
-    config?: null | undefined;
-    edition?: NEO4J_EDITION;
-    version?: string;
-}
-
-export interface IDbmsVersion {
-    edition: NEO4J_EDITION;
-    version: string;
-    dist: string;
-    origin: NEO4J_ORIGIN;
 }
 
 export interface IEnvironmentConfig {
@@ -47,7 +22,6 @@ export interface IEnvironmentConfig {
     httpOrigin?: string;
     relateEnvironment?: string;
     authToken?: string;
-    dbmss?: {[key: string]: IDbms};
     authenticator?: GoogleAuthenticatorOptions;
     allowedMethods?: string[];
 }
@@ -93,8 +67,4 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsString()
     @IsOptional()
     public authToken?: string;
-
-    // @todo: move this to data
-    @IsOptional()
-    public dbmss?: {[key: string]: IDbms};
 }

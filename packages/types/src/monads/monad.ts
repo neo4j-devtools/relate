@@ -60,10 +60,12 @@ export default class Monad<T> implements IMonad<T> {
     }
 
     getOrElse(other: T | (() => T)): T {
-        // @ts-ignore
-        const otherToUse = typeof other === 'function' ? other() : other;
+        if (!this.isEmpty) {
+            return this.get();
+        }
 
-        return this.isEmpty ? otherToUse : this.get();
+        // @ts-ignore
+        return typeof other === 'function' ? other() : other;
     }
 
     equals(other: any): boolean {
@@ -79,6 +81,10 @@ export default class Monad<T> implements IMonad<T> {
     }
 
     map(project: (value: T) => T): this {
+        if (this.isEmpty) {
+            return this;
+        }
+
         // @ts-ignore
         return new this.constructor(project(this.original));
     }
@@ -95,7 +101,7 @@ export default class Monad<T> implements IMonad<T> {
         return `${this.original}`;
     }
 
-    toJSON(): string {
+    toJSON(): any {
         return JSON.parse(JSON.stringify(this.original));
     }
 

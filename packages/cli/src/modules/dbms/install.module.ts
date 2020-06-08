@@ -44,7 +44,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         let {version = ''} = args;
         if (!version) {
-            const versions = (await environment.listDbmsVersions()).toArray();
+            const versions = (await environment.dbmss.versions()).toArray();
             version = await selectPrompt(
                 'Select a version to install',
                 versions.map((v) => ({
@@ -60,7 +60,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.installDbms(name, credentials, version).then((res) => {
+        return environment.dbmss.install(name, credentials, version).then((res) => {
             this.utils.log(res);
         });
     }

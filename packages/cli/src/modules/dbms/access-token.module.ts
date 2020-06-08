@@ -27,14 +27,14 @@ export class AccessTokenModule implements OnApplicationBootstrap {
         const principal = flags.user || (await inputPrompt('Enter a Neo4j DBMS user'));
         const credentials = await passwordPrompt('Enter passphrase');
 
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
         const authToken = new AuthTokenModel({
             credentials,
             principal,
             scheme: 'basic',
         });
 
-        return environment
+        return environment.dbmss
             .createAccessToken(AccessTokenModule.DEFAULT_APP_ID, dbms.id, authToken)
             .then((accessToken) =>
                 this.systemProvider.registerAccessToken(environment.id, dbms.id, authToken.principal, accessToken),

@@ -1,11 +1,10 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
+import fse from 'fs-extra';
 
 import {EnvironmentConfigModel, IDbms} from '../../models';
-import {ENVIRONMENT_TYPES} from '../../environments/environment.constants';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../entities/environments';
 
-import {EnvironmentAbstract} from '../../environments/environment.abstract';
-import {LocalEnvironment} from '../../environments/local.environment';
 import {NotSupportedError, NotFoundError} from '../../errors';
 import {envPaths} from '../env-paths';
 
@@ -23,16 +22,16 @@ export class TestDbmss {
             throw new NotSupportedError('Cannot use TestDbmss outside of testing environment');
         }
 
-        const config = new EnvironmentConfigModel({
-            dbmss: {},
-            id: 'test',
-            neo4jDataPath: envPaths().data,
-            type: ENVIRONMENT_TYPES.LOCAL,
-            user: 'test',
-            httpOrigin: 'http://127.0.0.1:3000',
-        });
+        if (environment) {
+            this.environment = environment;
+            return;
+        }
 
-        this.environment = environment || new LocalEnvironment(config, 'nowhere');
+        const configFilePath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
+        // eslint-disable-next-line no-sync
+        const config = new EnvironmentConfigModel(fse.readJSONSync(configFilePath));
+
+        this.environment = new LocalEnvironment(config, configFilePath);
     }
 
     createName(): string {
@@ -46,9 +45,9 @@ export class TestDbmss {
     async createDbms(): Promise<IDbms> {
         const name = this.createName();
 
-        await this.environment.installDbms(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
+        const dbmsId = await this.environment.dbmss.install(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
 
-        const shortUUID = uuid().slice(0, 8);
+        const shortUUID = dbmsId.slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
             // Weight char codes before summing them, to avoid collisions when
             // strings contain the same characters.
@@ -59,21 +58,21 @@ export class TestDbmss {
         // and max offset of 30k.
         const portOffset = (numUUID * 10) % 30000;
 
-        const properties = new Map<string, string>();
+        const properties = await this.environment.dbmss.getDbmsConfig(dbmsId);
         properties.set('dbms.connector.bolt.listen_address', `:${7687 + portOffset}`);
         properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
         properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
-        await this.environment.updateDbmsConfig(name, properties);
+        await properties.flush();
 
-        return this.environment.getDbms(name);
+        return this.environment.dbmss.get(name);
     }
 
     async teardown(): Promise<void> {
         const uninstallAll = this.dbmsNames.map(async (name) => {
             try {
-                await this.environment.stopDbmss([name]);
-                await this.environment.uninstallDbms(name);
+                await this.environment.dbmss.stop([name]);
+                await this.environment.dbmss.uninstall(name);
             } catch (e) {
                 if (e instanceof NotFoundError) {
                     return;

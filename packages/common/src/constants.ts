@@ -81,7 +81,7 @@ export enum DBMS_STATUS {
     STARTED = 'started',
     STOPPED = 'stopped',
 }
-export enum PUBLIC_ENVIRONMENT_METHODS {
+export enum PUBLIC_GRAPHQL_METHODS {
     INSTALL_DBMS = 'installDbms',
     UNINSTALL_DBMS = 'uninstallDbms',
     INSTALL_EXTENSION = 'installExtension',
@@ -98,4 +98,5 @@ export enum PUBLIC_ENVIRONMENT_METHODS {
     INSTALLED_APPS = 'listInstalledApps',
     INSTALLED_EXTENSIONS = 'listInstalledExtensions',
     APP_LAUNCH_DATA = 'appLaunchData',
+    CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 }

@@ -1,17 +1,8 @@
 import fse from 'fs-extra';
-import {IAuthToken} from '@huboneo/tapestry';
 import {List} from '@relate/types';
 
-import {
-    EnvironmentConfigModel,
-    IDbms,
-    IDbmsVersion,
-    IEnvironmentAuth,
-    IDbmsInfo,
-    GoogleAuthenticatorModel,
-} from '../models';
+import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticatorModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
-import {IExtensionMeta, IExtensionVersion} from '../utils/environment';
 import {
     AUTHENTICATOR_TYPES,
     googleAuthenticatorFactory,
@@ -19,11 +10,19 @@ import {
     IAuthenticatorOptions,
     IGoogleAuthenticatorOptions,
 } from './authenticators';
-import {NotSupportedError} from '../errors';
-import {arrayHasItems} from '../utils/generic';
-import {PUBLIC_ENVIRONMENT_METHODS} from '../constants';
+import {NotSupportedError} from '../../errors';
+import {arrayHasItems} from '../../utils/generic';
+import {DbmssAbstract} from '../dbmss';
+import {ExtensionsAbstract} from '../extensions';
+import {envPaths} from '../../utils';
 
 export abstract class EnvironmentAbstract {
+    public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
+
+    public readonly extensions!: ExtensionsAbstract<EnvironmentAbstract>;
+
+    public readonly dirPaths!: {[key: string]: string};
+
     get id(): string {
         return this.config.id;
     }
@@ -42,6 +41,14 @@ export abstract class EnvironmentAbstract {
 
     get configPath(): string {
         return this.configFilePath;
+    }
+
+    get relateEnvironment(): string | undefined {
+        return this.config.relateEnvironment;
+    }
+
+    public get neo4jDataPath(): string {
+        return this.config.neo4jDataPath || envPaths().data;
     }
 
     private authenticator?: IAuthenticator;
@@ -70,9 +77,7 @@ export abstract class EnvironmentAbstract {
         }
     }
 
-    init(): Promise<void> {
-        return Promise.resolve();
-    }
+    abstract init(): Promise<void>;
 
     login(redirectTo?: string): Promise<IEnvironmentAuth> {
         if (!this.authenticator) {
@@ -108,50 +113,15 @@ export abstract class EnvironmentAbstract {
         return List.from(allowedMethods).includes(methodName);
     }
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMS_VERSIONS](): Promise<List<IDbmsVersion>>;
+    getConfigValue<K extends keyof EnvironmentConfigModel>(key: K): Promise<EnvironmentConfigModel[K]> {
+        return Promise.resolve(this.config[key]);
+    }
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_DBMS](
-        name: string,
-        credentials: string,
-        version: string,
-    ): Promise<string>;
+    async reloadConfig(): Promise<void> {
+        const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
 
-    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_DBMS](dbmsId: string): Promise<void>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_DBMSS](): Promise<List<IDbms>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.GET_DBMS](nameOrId: string): Promise<IDbms>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.START_DBMSS](dbmsIds: string[] | List<string>): Promise<List<string>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.STOP_DBMSS](dbmsIds: string[] | List<string>): Promise<List<string>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INFO_DBMSS](dbmsIds: string[] | List<string>): Promise<List<IDbmsInfo>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.CREATE_ACCESS_TOKEN](
-        appName: string,
-        dbmsId: string,
-        authToken: IAuthToken,
-    ): Promise<string>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.UPDATE_DBMS_CONFIG](
-        dbmsId: string,
-        properties: Map<string, string>,
-    ): Promise<boolean>;
-
-    abstract getAppPath(appName: string, appRoot?: string): Promise<string>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_APPS](): Promise<List<IExtensionMeta>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALLED_EXTENSIONS](): Promise<List<IExtensionMeta>>;
-
-    abstract linkExtension(filePath: string): Promise<IExtensionMeta>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.LIST_EXTENSION_VERSIONS](): Promise<List<IExtensionVersion>>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.INSTALL_EXTENSION](name: string, version: string): Promise<IExtensionMeta>;
-
-    abstract [PUBLIC_ENVIRONMENT_METHODS.UNINSTALL_EXTENSION](name: string): Promise<List<IExtensionMeta>>;
+        this.config = new EnvironmentConfigModel(config);
+    }
 
     async updateConfig(key: string, value: any): Promise<void> {
         const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
@@ -159,5 +129,6 @@ export abstract class EnvironmentAbstract {
         config[key] = value;
 
         await fse.writeJSON(this.configFilePath, config, {encoding: 'utf8'});
+        await this.reloadConfig();
     }
 }

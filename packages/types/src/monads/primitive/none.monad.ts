@@ -27,4 +27,8 @@ export default class None<T extends any = any> extends Monad<T> {
     toString(): string {
         return `${this.constructor.name} {${this.original}}}`;
     }
+
+    toJSON(): any {
+        return null;
+    }
 }

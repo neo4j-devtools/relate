@@ -12,7 +12,7 @@ import * as extractNeo4j from './extract-neo4j';
 
 import {TestDbmss} from '../system';
 import {envPaths} from '../env-paths';
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../entities/environments';
 import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 

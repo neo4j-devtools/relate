@@ -33,6 +33,6 @@ export class StopModule implements OnApplicationBootstrap {
         }
 
         cli.action.start('Stopping Neo4j');
-        return environment.stopDbmss(dbmss).then(() => cli.action.stop());
+        return environment.dbmss.stop(dbmss).then(() => cli.action.stop());
     }
 }
