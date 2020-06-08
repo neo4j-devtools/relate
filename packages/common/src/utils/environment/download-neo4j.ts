@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import fse from 'fs-extra';
 import got from 'got';
 import hasha from 'hasha';
@@ -10,6 +9,7 @@ import {download} from '../download';
 import {emitHookEvent} from '../event-hooks';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractNeo4j} from './extract-neo4j';
+import {None, List} from '@relate/types';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
@@ -37,38 +37,41 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    const onlineVersions = (await fetchNeo4jVersions()).toArray();
-    const requestedDistribution = _.find(
-        onlineVersions,
+    const onlineVersions = await fetchNeo4jVersions();
+    const requestedDistribution = onlineVersions.find(
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
     );
+    const errorMessage = () => {
+        const onlineEnterpriseVersions = onlineVersions
+            .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
+            .mapEach((dist) => dist.version)
+            .join(', ');
+        const messages = `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`;
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [messages]);
+    };
 
-    if (!requestedDistribution) {
-        const onlineEnterpriseVersions = _.join(
-            _.compact(
-                _.map(
-                    onlineVersions,
-                    (onlineVersion) => onlineVersion.edition === NEO4J_EDITION.ENTERPRISE && onlineVersion.version,
-                ),
-            ),
-            ', ',
-        );
-        const messages = [];
-        if (onlineEnterpriseVersions.length) {
-            messages.push(
-                `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`,
-            );
-        }
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, messages);
-    }
-    const requestedDistributionUrl = requestedDistribution.dist;
-    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
+    return requestedDistribution
+        .flatMap((dist) => {
+            if (None.isNone(dist)) {
+                return errorMessage();
+            }
 
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
-    const downloadFilePath = await download(requestedDistributionUrl, neo4jDistributionPath);
-    await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
-    await verifyHash(shaSum, downloadFilePath);
+            return List.from([dist]).first;
+        })
+        .flatMap(async (dist) => {
+            if (None.isNone(dist)) {
+                return errorMessage();
+            }
 
-    await extractNeo4j(downloadFilePath, neo4jDistributionPath);
-    await fse.remove(downloadFilePath);
+            const requestedDistributionUrl = dist.dist;
+            const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
+
+            await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
+            const downloadFilePath = await download(requestedDistributionUrl, neo4jDistributionPath);
+            await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
+            await verifyHash(shaSum, downloadFilePath);
+
+            await extractNeo4j(downloadFilePath, neo4jDistributionPath);
+            return fse.remove(downloadFilePath);
+        });
 };
