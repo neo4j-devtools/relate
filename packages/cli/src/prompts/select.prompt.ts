@@ -94,8 +94,6 @@ export const googleAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOp
     const clientId = await inputPrompt('OAuth Client ID');
     const clientSecret = await inputPrompt('OAuth Client Secret');
 
-    console.log(redirectUrl);
-
     return {
         type: AUTHENTICATOR_TYPES.GOOGLE_OAUTH2,
         authenticationUrl: authenticationUrl || undefined,

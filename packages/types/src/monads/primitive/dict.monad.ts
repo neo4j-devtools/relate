@@ -109,9 +109,11 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
 
     // @todo: these types can probably be done better
     omit<K2 extends keyof T, I = T extends object ? T : never, R = Dict<Omit<I, K2>>>(other: K2): R;
+
     omit<K2 extends KeyVal<T>['key'], I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(
         other: K2,
     ): R;
+
     omit(other: any) {
         return this.toList()
             .filter(([key]) => key !== other)
@@ -119,6 +121,7 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     }
 
     merge<O extends object>(other: O): Dict<T & O>;
+
     merge<O extends Dict>(other: O): Dict<T & O> {
         // @ts-ignore
         return Dict.from(merge({}, this.toObject(), Dict.isDict(other) ? other.toObject() : other));

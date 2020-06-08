@@ -196,8 +196,11 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     concat<O extends Str<any>>(other: O): List<T | O>;
+
     concat<O extends string>(other: O): List<T | O>;
+
     concat<O, I = O extends Iterable<infer I> ? I : O>(other: O): List<T | I>;
+
     concat<O>(other: O): List<T | O> {
         if (isIterable(other) && List.isList(other)) {
             return List.of([...this, ...other]);

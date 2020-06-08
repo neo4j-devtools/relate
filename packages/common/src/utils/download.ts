@@ -24,7 +24,7 @@ export const download = async (url: string, outputDirPath: string, options?: Opt
         await streamPipeline(
             got
                 .stream(url, options)
-                .on('downloadProgress', async (progress) => emitHookEvent(HOOK_EVENTS.DOWNLOAD_PROGRESS, progress)),
+                .on('downloadProgress', (progress) => emitHookEvent(HOOK_EVENTS.DOWNLOAD_PROGRESS, progress)),
             fse.createWriteStream(downloadFilePath),
         );
 

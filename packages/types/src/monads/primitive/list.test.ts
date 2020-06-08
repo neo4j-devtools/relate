@@ -295,12 +295,6 @@ describe('List', () => {
 
     describe('compact', () => {
         test('removes "empty" values', () => {
-            const withEmpties = List.from([null, 1, 'foo', {}, true]);
-
-            expect(withEmpties.compact()).toEqual(List.from([1, 'foo', {}, true]));
-        });
-
-        test('removes "empty" values', () => {
             const withEmpties = List.from([null, 1, 'foo', {}, Nil.of(), None.of(), true]);
 
             expect(withEmpties.compact()).toEqual(List.from([1, 'foo', {}, true]));

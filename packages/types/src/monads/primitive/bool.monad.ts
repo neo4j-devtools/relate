@@ -3,6 +3,7 @@ import Monad from '../monad';
 // @ts-ignore
 export default class Bool extends Monad<boolean> {
     static TRUE = new Bool(true);
+
     static FALSE = new Bool(false);
 
     constructor(value = false) {

@@ -1,7 +1,7 @@
 {
   "**/*.+(ts)": [
     "prettier --write",
-    "eslint -c .eslintrc.stage.json",
+    "eslint -c",
     "git add"
   ]
 }

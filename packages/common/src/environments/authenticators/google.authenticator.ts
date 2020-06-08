@@ -24,7 +24,7 @@ export function googleAuthenticatorFactory(options: IGoogleAuthenticatorOptions)
     });
 
     const authenticator: IAuthenticator = {
-        async login(redirectTo?: string) {
+        login(redirectTo?: string) {
             let redirectUri = redirectUrl;
 
             try {
@@ -49,7 +49,7 @@ export function googleAuthenticatorFactory(options: IGoogleAuthenticatorOptions)
                   });
             /* eslint-enable indent */
 
-            return {
+            return Promise.resolve({
                 authUrl,
                 // not used in web environments
                 async getToken(): Promise<{authToken: string; redirectTo?: string}> {
@@ -64,7 +64,7 @@ export function googleAuthenticatorFactory(options: IGoogleAuthenticatorOptions)
                         redirectTo,
                     };
                 },
-            };
+            });
         },
         async generateAuthToken(code: string): Promise<string> {
             const {tokens} = await oAuth2Client.getToken({code});
