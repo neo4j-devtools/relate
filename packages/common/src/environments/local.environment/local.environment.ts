@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import * as rxjs from 'rxjs/operators';
-import {Driver, DRIVER_RESULT_TYPE, IAuthToken, Result} from '@huboneo/tapestry';
+import {Driver, DRIVER_RESULT_TYPE, IAuthToken} from '@huboneo/tapestry';
 import {promisify} from 'util';
 import {List, None, Maybe, Str, Dict} from '@relate/types';
 
@@ -276,7 +276,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || LOCALHOST_IP_ADDRESS;
         const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
         try {
-            const driver = new Driver<Result>({
+            const driver = new Driver({
                 connectionConfig: {
                     authToken,
                     host,
@@ -297,7 +297,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
                 throw new InvalidArgumentError('Unable to create access token');
             }
 
-            return token;
+            // @todo: fix this typing when tapestry is using our monads
+            return token as string;
         } catch (e) {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }

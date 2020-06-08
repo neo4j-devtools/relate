@@ -91,7 +91,7 @@ export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
             return {
                 dist: url,
                 edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
-                origin: NEO4J_ORIGIN.ONLINE,
+                origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
                 version: versionStr,
             };
         });

@@ -46,7 +46,7 @@
         "typescript": "3.7.4"
     },
     "dependencies": {
-        "@huboneo/tapestry": "1.0.0",
+        "@huboneo/tapestry": "1.0.1-0",
         "@nestjs/common": "7.0.8",
         "@nestjs/core": "7.0.8",
         "@relate/types": "1.0.0",
