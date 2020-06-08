@@ -42,7 +42,7 @@ export class WindowModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment();
         const httpOrigin = this.getHttpOrigin(environment);
         const appRoot = await this.getAppRoot(httpOrigin);
-        const appPath = await environment.getAppPath(defaultApp, appRoot);
+        const appPath = await environment.extensions.getAppPath(defaultApp, appRoot);
 
         // and load the index.html of the app.
         mainWindow.loadURL(`${httpOrigin}${appPath}`);

@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {Environment, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
+import {Environment, EXTENSION_TYPES, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 import _ from 'lodash';
 import fetch, {Response} from 'node-fetch';
@@ -33,7 +33,9 @@ export class OpenModule implements OnApplicationBootstrap {
         let {appName} = args;
         const {environment: environmentId, user, dbmsId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedApps = (await environment.listInstalledApps()).toArray();
+        const installedApps = (await environment.extensions.list())
+            .filter(({type}) => type === EXTENSION_TYPES.STATIC)
+            .toArray();
 
         if (!installedApps.length) {
             throw new NotFoundError('No apps are installed', [
@@ -57,7 +59,7 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         const appRoot = await this.getServerAppRoot(environment);
-        const appPath = await environment.getAppPath(appName, appRoot);
+        const appPath = await environment.extensions.getAppPath(appName, appRoot);
         const appUrl = `${environment.httpOrigin}${appPath}`;
 
         if (!dbmsId) {
@@ -65,7 +67,7 @@ export class OpenModule implements OnApplicationBootstrap {
             return;
         }
 
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
 
         if (!user) {
             const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);

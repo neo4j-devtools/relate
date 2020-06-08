@@ -31,7 +31,7 @@ export class StartModule implements OnApplicationBootstrap {
             }
         }
 
-        return environment.startDbmss(dbmss).then((res) => {
+        return environment.dbmss.start(dbmss).then((res) => {
             this.utils.log(...res);
         });
     }

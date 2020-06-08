@@ -31,7 +31,7 @@ export class UninstallModule implements OnApplicationBootstrap {
             }
         }
 
-        return environment.uninstallDbms(dbms).then(() => {
+        return environment.dbmss.uninstall(dbms).then(() => {
             this.utils.log(dbms);
         });
     }

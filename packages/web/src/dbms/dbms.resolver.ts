@@ -1,7 +1,7 @@
 import {Resolver, Args, Mutation, Query} from '@nestjs/graphql';
 import {Inject, UseGuards} from '@nestjs/common';
 
-import {SystemProvider, IDbms, IDbmsInfo} from '@relate/common';
+import {SystemProvider, PUBLIC_GRAPHQL_METHODS, IDbms, IDbmsInfo} from '@relate/common';
 import {
     Dbms,
     DbmsInfo,
@@ -20,54 +20,54 @@ export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Mutation(() => String)
-    async installDbms(@Args() {environmentId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
+    async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](@Args() {environmentId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.installDbms(name, credentials, version);
+        return environment.dbmss.install(name, credentials, version);
     }
 
     @Mutation(() => String)
-    async uninstallDbms(@Args() {environmentId, name}: UninstallDbmsArgs): Promise<string> {
+    async [PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS](@Args() {environmentId, name}: UninstallDbmsArgs): Promise<string> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return environment.uninstallDbms(name).then(() => name);
+        return environment.dbmss.uninstall(name).then(() => name);
     }
 
     @Query(() => Dbms)
-    async getDbms(@Args() {environmentId, dbmsId}: DbmsArgs): Promise<IDbms> {
+    async [PUBLIC_GRAPHQL_METHODS.GET_DBMS](@Args() {environmentId, dbmsId}: DbmsArgs): Promise<IDbms> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return environment.getDbms(dbmsId);
+        return environment.dbmss.get(dbmsId);
     }
 
     @Query(() => [Dbms])
-    async listDbmss(@Args() {environmentId}: EnvironmentArgs): Promise<IDbms[]> {
+    async [PUBLIC_GRAPHQL_METHODS.LIST_DBMSS](@Args() {environmentId}: EnvironmentArgs): Promise<IDbms[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.listDbmss()).toArray();
+        return (await environment.dbmss.list()).toArray();
     }
 
     @Query(() => [DbmsInfo])
-    async infoDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<IDbmsInfo[]> {
+    async [PUBLIC_GRAPHQL_METHODS.INFO_DBMSS](@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<IDbmsInfo[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.infoDbmss(dbmsIds)).toArray();
+        return (await environment.dbmss.info(dbmsIds)).toArray();
     }
 
     @Mutation(() => [String])
-    async startDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+    async [PUBLIC_GRAPHQL_METHODS.START_DBMSS](@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.startDbmss(dbmsIds)).toArray();
+        return (await environment.dbmss.start(dbmsIds)).toArray();
     }
 
     @Mutation(() => [String])
-    async stopDbmss(@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
+    async [PUBLIC_GRAPHQL_METHODS.STOP_DBMSS](@Args() {environmentId, dbmsIds}: DbmssArgs): Promise<string[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.stopDbmss(dbmsIds)).toArray();
+        return (await environment.dbmss.stop(dbmsIds)).toArray();
     }
 
     @Mutation(() => String)
-    async createAccessToken(
+    async [PUBLIC_GRAPHQL_METHODS.CREATE_ACCESS_TOKEN](
         @Args() {environmentId, dbmsId, appName, authToken}: CreateAccessTokenArgs,
     ): Promise<string> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        return environment.createAccessToken(appName, dbmsId, authToken);
+        return environment.dbmss.createAccessToken(appName, dbmsId, authToken);
     }
 }

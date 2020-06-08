@@ -1,14 +1,14 @@
 import path from 'path';
 import tar from 'tar';
 
-import {ENVIRONMENT_TYPES} from '../environment.constants';
-import {EnvironmentConfigModel} from '../../models';
-import {envPaths} from '../../utils';
-import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
+import {ENVIRONMENT_TYPES} from './environment.constants';
+import {EnvironmentConfigModel} from '../models';
+import {envPaths} from '../utils';
+import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../errors';
 import {LocalEnvironment} from './local.environment';
-import * as localUtils from '../../utils/environment';
-import {TestDbmss} from '../../utils/system';
-import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
+import * as localUtils from '../utils/environment';
+import {TestDbmss} from '../utils/system';
+import {DBMS_DIR_NAME, DBMS_STATUS} from '../constants';
 import {List, None} from '@relate/types';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
@@ -61,20 +61,20 @@ describe('LocalEnvironment - install', () => {
     afterEach(() => jest.restoreAllMocks());
 
     test('with no version', async () => {
-        await expect(environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, '')).rejects.toThrow(
+        await expect(environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, '')).rejects.toThrow(
             new InvalidArgumentError('Version must be specified'),
         );
     });
 
     test('with invalid version', async () => {
         await expect(
-            environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, 'notAVersionUrlOrFilePath'),
+            environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, 'notAVersionUrlOrFilePath'),
         ).rejects.toThrow(new InvalidArgumentError('Provided version argument is not valid semver, url or path.'));
     });
 
     test('with valid version (URL)', async () => {
         await expect(
-            environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, 'https://valid.url.com'),
+            environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, 'https://valid.url.com'),
         ).rejects.toThrow(new NotSupportedError('fetch and install https://valid.url.com'));
     });
 
@@ -82,15 +82,15 @@ describe('LocalEnvironment - install', () => {
         const message = 'Provided version argument is not valid semver, url or path.';
 
         await expect(
-            environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, path.join('non', 'existing', 'path')),
+            environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, path.join('non', 'existing', 'path')),
         ).rejects.toThrow(new InvalidArgumentError(message));
     });
 
     test('with valid version (file path)', async () => {
-        const dbmsID = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, archiveVersion);
+        const dbmsID = await environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, archiveVersion);
         expect(dbmsID).toMatch(UUID_REGEX);
 
-        const message = (await environment.infoDbmss([dbmsID])).toArray();
+        const message = (await environment.dbmss.info([dbmsID])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
@@ -98,7 +98,7 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with version in unsupported range (semver)', async () => {
-        await expect(environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, '3.1')).rejects.toThrow(
+        await expect(environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, '3.1')).rejects.toThrow(
             new NotSupportedError('version not in range >=4.x'),
         );
     });
@@ -110,11 +110,11 @@ describe('LocalEnvironment - install', () => {
             .mockImplementationOnce(() => Promise.resolve(List.from([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        const dbmsId = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId = await environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
 
-        const message = (await environment.infoDbmss([dbmsId])).toArray();
+        const message = (await environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
@@ -126,23 +126,23 @@ describe('LocalEnvironment - install', () => {
         jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve(List.from([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        await expect(environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION)).rejects.toThrow(
+        await expect(environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION)).rejects.toThrow(
             new NotFoundError(message),
         );
     });
 
     test('with valid version (semver)', async () => {
-        const dbmsId = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId = await environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
 
-        const message = (await environment.infoDbmss([dbmsId])).toArray();
+        const message = (await environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
 
-        const dbmsId2 = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId2 = await environment.dbmss.install(dbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
 
-        const message2 = (await environment.infoDbmss([dbmsId2])).toArray();
+        const message2 = (await environment.dbmss.info([dbmsId2])).toArray();
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
 
         const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));

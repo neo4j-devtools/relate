@@ -1,7 +1,7 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {SystemProvider} from '@relate/common';
+import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS, SystemProvider} from '@relate/common';
 
 import {IWebModuleConfig} from '../web.module';
 
@@ -18,14 +18,14 @@ export class AppsResolver {
     ) {}
 
     @Query(() => AppLaunchData)
-    async appLaunchData(
+    async [PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA](
         @Args('appName') appName: string,
         @Args('launchToken') launchToken: string,
         @Args('environmentId', {nullable: true}) environmentId?: string,
     ): Promise<AppLaunchData> {
         const {dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appName, launchToken);
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
 
         return {
             dbms,
@@ -35,13 +35,13 @@ export class AppsResolver {
     }
 
     @Query(() => [AppData])
-    async installedApps(@Args('environmentId', {nullable: true}) environmentId?: string): Promise<AppData[]> {
+    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](@Args('environmentId', {nullable: true}) environmentId?: string): Promise<AppData[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedApps = await environment.listInstalledApps();
+        const installedApps = (await environment.extensions.list()).filter(({type}) => type === EXTENSION_TYPES.STATIC);
 
         const mapped = await installedApps
             .mapEach(async (app) => {
-                const appPath = await environment.getAppPath(app.name, this.configService.get('appRoot'));
+                const appPath = await environment.extensions.getAppPath(app.name, this.configService.get('appRoot'));
 
                 return {
                     ...app,
@@ -54,7 +54,7 @@ export class AppsResolver {
     }
 
     @Mutation(() => AppLaunchToken)
-    async createAppLaunchToken(
+    async [PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN](
         @Args('appName') appName: string,
         @Args('dbmsId') dbmsId: string,
         @Args('principal', {nullable: true}) principal?: string,
@@ -69,7 +69,7 @@ export class AppsResolver {
             principal,
             accessToken,
         );
-        const appBasePath = await environment.getAppPath(appName, this.configService.get('appRoot'));
+        const appBasePath = await environment.extensions.getAppPath(appName, this.configService.get('appRoot'));
 
         return {
             path: createAppLaunchUrl(appBasePath, token),

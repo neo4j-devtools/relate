@@ -46,7 +46,7 @@ export class TestDbmss {
     async createDbms(): Promise<IDbms> {
         const name = this.createName();
 
-        await this.environment.installDbms(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
+        await this.environment.dbmss.install(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
 
         const shortUUID = uuid().slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
@@ -64,16 +64,16 @@ export class TestDbmss {
         properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
         properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
-        await this.environment.updateDbmsConfig(name, properties);
+        await this.environment.dbmss.updateConfig(name, properties);
 
-        return this.environment.getDbms(name);
+        return this.environment.dbmss.get(name);
     }
 
     async teardown(): Promise<void> {
         const uninstallAll = this.dbmsNames.map(async (name) => {
             try {
-                await this.environment.stopDbmss([name]);
-                await this.environment.uninstallDbms(name);
+                await this.environment.dbmss.stop([name]);
+                await this.environment.dbmss.uninstall(name);
             } catch (e) {
                 if (e instanceof NotFoundError) {
                     return;

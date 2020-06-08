@@ -93,7 +93,7 @@ export class SystemProvider implements OnModuleInit {
 
     async getAccessToken(environmentId: string, dbmsId: string, dbmsUser: string): Promise<string> {
         const environment = await this.getEnvironment(environmentId);
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
         const token = await getSystemAccessToken(this.filePaths.knownConnections, environment.id, dbms.id, dbmsUser);
 
         if (!token) {

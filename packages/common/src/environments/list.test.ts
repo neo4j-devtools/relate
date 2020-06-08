@@ -1,12 +1,12 @@
 import fse from 'fs-extra';
 import path from 'path';
 
-import {ENVIRONMENT_TYPES} from '../environment.constants';
-import {EnvironmentConfigModel} from '../../models';
-import {envPaths} from '../../utils';
+import {ENVIRONMENT_TYPES} from './environment.constants';
+import {EnvironmentConfigModel} from '../models';
+import {envPaths} from '../utils';
 import {LocalEnvironment} from './local.environment';
-import {PropertiesFile} from '../../system/files';
-import {DBMS_DIR_NAME} from '../../constants';
+import {PropertiesFile} from '../system/files';
+import {DBMS_DIR_NAME} from '../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
@@ -58,7 +58,7 @@ describe('LocalEnvironment - list', () => {
     afterAll(() => fse.remove(TMP_HOME));
 
     test('list no dbmss installed', async () => {
-        const dbmss = await environment.listDbmss();
+        const dbmss = await environment.dbmss.list();
         expect(dbmss.toArray()).toEqual([]);
     });
 
@@ -98,7 +98,7 @@ describe('LocalEnvironment - list', () => {
         const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(INSTALLATION_ROOT, dbms)));
         await Promise.all(createDirs);
 
-        const actual = await environment.listDbmss();
+        const actual = await environment.dbmss.list();
         const sortedActual = actual.sort((a, b) => {
             if (a.name > b.name) {
                 return -1;
@@ -125,7 +125,7 @@ describe('LocalEnvironment - list', () => {
             },
         ];
 
-        const actual = await environment.listDbmss();
+        const actual = await environment.dbmss.list();
         expect(actual.toArray()).toEqual(expected);
     });
 });

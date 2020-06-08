@@ -21,7 +21,7 @@ export class ListModule implements OnApplicationBootstrap {
         const {environment: environmentId} = flags;
 
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installed = await environment.listInstalledExtensions();
+        const installed = await environment.extensions.list();
 
         cli.table(
             installed.toArray(),
