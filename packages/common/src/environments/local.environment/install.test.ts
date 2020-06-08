@@ -1,4 +1,5 @@
 import path from 'path';
+import tar from 'tar';
 
 import {ENVIRONMENT_TYPES} from '../environment.constants';
 import {EnvironmentConfigModel} from '../../models';
@@ -8,7 +9,7 @@ import {LocalEnvironment} from './local.environment';
 import * as localUtils from '../../utils/environment';
 import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
-import {List} from '@relate/types';
+import {List, None} from '@relate/types';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const DATA_HOME = envPaths().data;
@@ -17,6 +18,7 @@ const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, DBMS_DIR_NAME);
 const {DBMS_CREDENTIALS, NEO4J_VERSION} = TestDbmss;
 
 describe('LocalEnvironment - install', () => {
+    let archiveVersion: string;
     let environment: LocalEnvironment;
     let dbmss: TestDbmss;
 
@@ -29,7 +31,26 @@ describe('LocalEnvironment - install', () => {
             user: 'test',
         });
 
-        await localUtils.downloadNeo4j(NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME));
+        await localUtils.downloadNeo4j(NEO4J_VERSION, DISTRIBUTIONS_ROOT);
+
+        // Create archive for "install from file" test
+        const versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
+        const version = versions.first.flatMap((v) => {
+            if (None.isNone(v)) {
+                throw new Error("Couldn't find cached distribution");
+            }
+
+            return v;
+        });
+        archiveVersion = path.join(DISTRIBUTIONS_ROOT, `neo4j-${version.edition}-${version.version}.tgz`);
+        await tar.c(
+            {
+                gzip: true,
+                file: archiveVersion,
+                cwd: DISTRIBUTIONS_ROOT,
+            },
+            [path.basename(version.dist)],
+        );
 
         environment = new LocalEnvironment(config, 'nowhere');
         dbmss = new TestDbmss(__filename, environment);
@@ -66,12 +87,7 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with valid version (file path)', async () => {
-        const archive = `neo4j-enterprise-${NEO4J_VERSION}${
-            process.platform === 'win32' ? '-windows.zip' : '-unix.tar.gz'
-        }`;
-        const archivePath = path.join(DISTRIBUTIONS_ROOT, archive);
-
-        const dbmsID = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, archivePath);
+        const dbmsID = await environment.installDbms(dbmss.createName(), DBMS_CREDENTIALS, archiveVersion);
         expect(dbmsID).toMatch(UUID_REGEX);
 
         const message = (await environment.infoDbmss([dbmsID])).toArray();

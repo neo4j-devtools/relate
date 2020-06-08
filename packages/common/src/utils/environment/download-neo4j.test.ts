@@ -18,7 +18,6 @@ import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
 jest.mock('uuid');
 
-const TEST_VERSION = process.env.TEST_NEO4j_VERSION || '4.0.4';
 const TEST_DIST = 'http://dist.neo4j.org';
 const TMP_NEO4J_DIST_PATH = path.join(envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
@@ -55,7 +54,10 @@ describe('Download Neo4j (to local cache)', () => {
         const extractFromArchiveSpy = jest.spyOn(extractNeo4j, 'extractNeo4j').mockImplementation(() =>
             Promise.resolve({
                 ...DBMS_VERSION,
-                extractedDistPath: path.join(TMP_NEO4J_DIST_PATH, `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TEST_VERSION}`),
+                extractedDistPath: path.join(
+                    TMP_NEO4J_DIST_PATH,
+                    `neo4j-${NEO4J_EDITION.ENTERPRISE}-${TestDbmss.NEO4J_VERSION}`,
+                ),
             }),
         );
 
@@ -67,7 +69,7 @@ describe('Download Neo4j (to local cache)', () => {
         );
 
         // call downloadNeo4j
-        await downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH);
+        await downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH);
 
         // tests
         expect(getCheckSumSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`);
@@ -79,7 +81,7 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('downloadNeo4j: no requested distributions found online', async () => {
-        const message = `Unable to find the requested version: ${TEST_VERSION} online`;
+        const message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online`;
 
         const dbmsVersion = {
             ...DBMS_VERSION,
@@ -90,7 +92,7 @@ describe('Download Neo4j (to local cache)', () => {
             Promise.resolve(List.from([dbmsVersion])),
         );
 
-        await expect(downloadNeo4j.downloadNeo4j(TEST_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
+        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),
         );
     });

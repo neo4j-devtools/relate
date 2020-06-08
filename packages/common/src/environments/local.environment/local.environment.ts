@@ -124,7 +124,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
                             return version;
                         }
 
-                        return None;
+                        return None.EMPTY;
                     });
             })
             .compact();
@@ -219,7 +219,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             .unwindPromises();
     }
 
-    async infoDbmss(nameOrIds: string[] | List<string>): Promise<List<IDbmsInfo>> {
+    infoDbmss(nameOrIds: string[] | List<string>): Promise<List<IDbmsInfo>> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
             .mapEach(async (dbms) => {
@@ -609,7 +609,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
             const dists = List.from(await discoverExtensionDistributions(extensionsCache));
             const requestedDistribution = await dists
                 .find((dist) => dist.name === name && dist.version === coercedVersion)
-                .flatMap(async (requested) => {
+                .flatMap((requested) => {
                     if (None.isNone(requested)) {
                         try {
                             return downloadExtension(name, coercedVersion, extensionsCache);

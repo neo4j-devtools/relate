@@ -20,6 +20,7 @@ export interface IMonad<T> extends Iterable<T> {
 
 export default class Monad<T> implements IMonad<T> {
     protected alreadyIterable = false;
+
     protected readonly iterableValue: Iterable<T>;
 
     constructor(protected readonly original: T) {
