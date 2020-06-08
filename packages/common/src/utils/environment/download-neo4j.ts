@@ -46,7 +46,7 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
             .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
             .mapEach((dist) => dist.version)
             .join(', ');
-        let messages = [];
+        const messages = [];
         if (!onlineEnterpriseVersions.isEmpty) {
             messages.push(
                 `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`,
