@@ -5,6 +5,8 @@ import Num from './num.monad';
 import Maybe from './maybe.monad';
 import Str from './str.monad';
 import Dict from './dict.monad';
+import Nil from './nil.monad';
+import None from './none.monad';
 
 describe('List', () => {
     describe('from', () => {
@@ -294,6 +296,12 @@ describe('List', () => {
     describe('compact', () => {
         test('removes "empty" values', () => {
             const withEmpties = List.from([null, 1, 'foo', {}, true]);
+
+            expect(withEmpties.compact()).toEqual(List.from([1, 'foo', {}, true]));
+        });
+
+        test('removes "empty" values', () => {
+            const withEmpties = List.from([null, 1, 'foo', {}, Nil.of(), None.of(), true]);
 
             expect(withEmpties.compact()).toEqual(List.from([1, 'foo', {}, true]));
         });
