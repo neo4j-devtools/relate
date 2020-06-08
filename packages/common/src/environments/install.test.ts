@@ -68,12 +68,20 @@ describe('LocalEnvironment - install', () => {
         const message = 'Provided version argument is not valid semver, url or path.';
 
         await expect(
-            testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, path.join('non', 'existing', 'path')),
+            testDbmss.environment.dbmss.install(
+                testDbmss.createName(),
+                DBMS_CREDENTIALS,
+                path.join('non', 'existing', 'path'),
+            ),
         ).rejects.toThrow(new InvalidArgumentError(message));
     });
 
     test('with valid version (file path)', async () => {
-        const dbmsID = await testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, archiveVersion);
+        const dbmsID = await testDbmss.environment.dbmss.install(
+            testDbmss.createName(),
+            DBMS_CREDENTIALS,
+            archiveVersion,
+        );
         expect(dbmsID).toMatch(UUID_REGEX);
 
         const message = (await testDbmss.environment.dbmss.info([dbmsID])).toArray();
@@ -84,9 +92,9 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with version in unsupported range (semver)', async () => {
-        await expect(testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, '3.1')).rejects.toThrow(
-            new NotSupportedError('version not in range >=4.x'),
-        );
+        await expect(
+            testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, '3.1'),
+        ).rejects.toThrow(new NotSupportedError('version not in range >=4.x'));
     });
 
     test('with valid, non cached version (semver)', async () => {
@@ -96,7 +104,11 @@ describe('LocalEnvironment - install', () => {
             .mockImplementationOnce(() => Promise.resolve(List.from([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        const dbmsId = await testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId = await testDbmss.environment.dbmss.install(
+            testDbmss.createName(),
+            DBMS_CREDENTIALS,
+            NEO4J_VERSION,
+        );
 
         expect(discoverNeo4jDistributionsSpy).toHaveBeenCalledTimes(2);
 
@@ -112,13 +124,17 @@ describe('LocalEnvironment - install', () => {
         jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve(List.from([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        await expect(testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION)).rejects.toThrow(
-            new NotFoundError(message),
-        );
+        await expect(
+            testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION),
+        ).rejects.toThrow(new NotFoundError(message));
     });
 
     test('with valid version (semver)', async () => {
-        const dbmsId = await testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId = await testDbmss.environment.dbmss.install(
+            testDbmss.createName(),
+            DBMS_CREDENTIALS,
+            NEO4J_VERSION,
+        );
 
         const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
@@ -126,7 +142,11 @@ describe('LocalEnvironment - install', () => {
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
 
-        const dbmsId2 = await testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, NEO4J_VERSION);
+        const dbmsId2 = await testDbmss.environment.dbmss.install(
+            testDbmss.createName(),
+            DBMS_CREDENTIALS,
+            NEO4J_VERSION,
+        );
 
         const message2 = (await testDbmss.environment.dbmss.info([dbmsId2])).toArray();
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);

@@ -1,4 +1,4 @@
-import {entries, merge, reduce} from 'lodash';
+import {entries, merge} from 'lodash';
 
 import List from './list.monad';
 import Maybe from './maybe.monad';
@@ -132,15 +132,6 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     }
 
     toJSON(): any {
-        const asObj = reduce(
-            [...this],
-            (agg, [key, val]) => ({
-                ...agg,
-                [`${key}`]: val,
-            }),
-            {},
-        );
-
-        return JSON.parse(JSON.stringify(asObj));
+        return JSON.parse(JSON.stringify(this.toObject()));
     }
 }

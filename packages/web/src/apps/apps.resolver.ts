@@ -35,7 +35,9 @@ export class AppsResolver {
     }
 
     @Query(() => [AppData])
-    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](@Args('environmentId', {nullable: true}) environmentId?: string): Promise<AppData[]> {
+    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](
+        @Args('environmentId', {nullable: true}) environmentId?: string,
+    ): Promise<AppData[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = (await environment.extensions.list()).filter(({type}) => type === EXTENSION_TYPES.STATIC);
 

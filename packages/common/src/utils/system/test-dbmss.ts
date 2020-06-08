@@ -28,6 +28,7 @@ export class TestDbmss {
         }
 
         const configFilePath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
+        // eslint-disable-next-line no-sync
         const config = new EnvironmentConfigModel(fse.readJSONSync(configFilePath));
 
         this.environment = new LocalEnvironment(config, configFilePath);
@@ -44,9 +45,9 @@ export class TestDbmss {
     async createDbms(): Promise<IDbms> {
         const name = this.createName();
 
-        await this.environment.dbmss.install(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
+        const dbmsId = await this.environment.dbmss.install(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
 
-        const shortUUID = uuid().slice(0, 8);
+        const shortUUID = dbmsId.slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
             // Weight char codes before summing them, to avoid collisions when
             // strings contain the same characters.
@@ -57,12 +58,12 @@ export class TestDbmss {
         // and max offset of 30k.
         const portOffset = (numUUID * 10) % 30000;
 
-        const properties = new Map<string, string>();
+        const properties = await this.environment.dbmss.getDbmsConfig(dbmsId);
         properties.set('dbms.connector.bolt.listen_address', `:${7687 + portOffset}`);
         properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
         properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
-        await this.environment.dbmss.updateConfig(name, properties);
+        await properties.flush();
 
         return this.environment.dbmss.get(name);
     }

@@ -4,6 +4,7 @@ import {IAuthToken} from '@huboneo/tapestry';
 import {IDbms, IDbmsInfo, IDbmsVersion} from '../models';
 
 import {EnvironmentAbstract} from '../environments';
+import {PropertiesFile} from '../system/files';
 
 export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     public dbmss: {[id: string]: IDbms} = {};
@@ -28,5 +29,5 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract createAccessToken(appName: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
-    abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
+    abstract getDbmsConfig(dbmsId: string): Promise<PropertiesFile>;
 }

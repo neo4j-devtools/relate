@@ -14,6 +14,7 @@ import {NotSupportedError} from '../errors';
 import {arrayHasItems} from '../utils/generic';
 import {DbmssAbstract} from '../dbmss';
 import {ExtensionsAbstract} from '../extensions';
+import {envPaths} from '../utils';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
@@ -46,8 +47,8 @@ export abstract class EnvironmentAbstract {
         return this.config.relateEnvironment;
     }
 
-    public get neo4jDataPath(): string | undefined {
-        return this.config.neo4jDataPath;
+    public get neo4jDataPath(): string {
+        return this.config.neo4jDataPath || envPaths().data;
     }
 
     private authenticator?: IAuthenticator;
@@ -112,8 +113,8 @@ export abstract class EnvironmentAbstract {
         return List.from(allowedMethods).includes(methodName);
     }
 
-    async getConfigValue<K extends keyof EnvironmentConfigModel>(key: K): Promise<EnvironmentConfigModel[K]> {
-        return this.config[key];
+    getConfigValue<K extends keyof EnvironmentConfigModel>(key: K): Promise<EnvironmentConfigModel[K]> {
+        return Promise.resolve(this.config[key]);
     }
 
     async reloadConfig(): Promise<void> {

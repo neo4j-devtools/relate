@@ -7,7 +7,8 @@ import {IDbms, IDbmsInfo, IDbmsVersion} from '../models';
 import {DbmssAbstract} from './dbmss.abstract';
 import {RemoteEnvironment} from '../environments';
 import {PUBLIC_GRAPHQL_METHODS} from '../constants';
-import {GraphqlError, InvalidConfigError} from '../errors';
+import {GraphqlError, InvalidConfigError, NotSupportedError} from '../errors';
+import {PropertiesFile} from '../system/files';
 
 export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {
@@ -290,5 +291,9 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         }
 
         return data.createAccessToken;
+    }
+
+    getDbmsConfig(_dbmsId: string): Promise<PropertiesFile> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support getting DBMS config`);
     }
 }

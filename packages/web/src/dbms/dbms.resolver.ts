@@ -20,7 +20,9 @@ export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Mutation(() => String)
-    async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](@Args() {environmentId, name, credentials, version}: InstallDbmsArgs): Promise<string> {
+    async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](
+        @Args() {environmentId, name, credentials, version}: InstallDbmsArgs,
+    ): Promise<string> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         return environment.dbmss.install(name, credentials, version);
     }
@@ -41,7 +43,10 @@ export class DBMSResolver {
     @Query(() => [Dbms])
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMSS](@Args() {environmentId}: EnvironmentArgs): Promise<IDbms[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.dbmss.list()).toArray();
+
+        const dbmss = (await environment.dbmss.list()).toArray();
+
+        return dbmss;
     }
 
     @Query(() => [DbmsInfo])

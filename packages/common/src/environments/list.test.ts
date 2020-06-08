@@ -26,26 +26,20 @@ describe('LocalEnvironment - list', () => {
 
     beforeAll(async () => {
         await fse.ensureDir(INSTALLATION_ROOT);
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-6bb553ba.json`), {
+            description: 'DBMS with metadata',
+            id: '6bb553ba',
+            name: 'Name',
+            rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+        });
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-e0aef2ad.json`), {
+            description: '',
+            id: '998f936e',
+            name: '',
+            rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
+        });
 
         const config = new EnvironmentConfigModel({
-            dbmss: {
-                '6bb553ba': {
-                    config: generateDummyConf('6bb553ba'),
-                    connectionUri: 'neo4j://127.0.0.1:7687',
-                    description: 'DBMS with metadata',
-                    id: '6bb553ba',
-                    name: 'Name',
-                    rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
-                },
-                e0aef2ad: {
-                    config: generateDummyConf('e0aef2ad'),
-                    connectionUri: 'neo4j://127.0.0.1:7687',
-                    description: 'DBMS present in the config but not in the DBMS dir.',
-                    id: 'e0aef2ad',
-                    name: "Shouldn't be listed",
-                    rootPath: path.join(INSTALLATION_ROOT, 'dbms-e0aef2ad'),
-                },
-            },
             id: 'test',
             neo4jDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
