@@ -46,8 +46,13 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
             .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
             .mapEach((dist) => dist.version)
             .join(', ');
-        const messages = `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`;
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [messages]);
+        let messages = [];
+        if (!onlineEnterpriseVersions.isEmpty) {
+            messages.push(
+                `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${onlineEnterpriseVersions}`,
+            );
+        }
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, messages);
     };
 
     return requestedDistribution
