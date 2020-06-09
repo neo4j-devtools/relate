@@ -20,7 +20,7 @@
         "test": "jest",
         "build": "tsc",
         "build:clean": "run-s clean build",
-        "start": "tsc -w",
+        "watch": "tsc -w",
         "dev": "run-s clean-build start"
     },
     "devDependencies": {

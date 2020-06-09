@@ -110,6 +110,7 @@
         "clean": "rimraf dist",
         "test": "jest",
         "add:readme": "git add README.md",
-        "version": "run-s build:readme add:readme"
+        "version": "run-s build:readme add:readme",
+        "watch": "tsc -w"
     }
 }

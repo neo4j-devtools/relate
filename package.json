@@ -22,7 +22,8 @@
         "lerna:clean": "lerna clean -y",
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap",
-        "generate:licenses": "node scripts/licenses/index.js"
+        "generate:licenses": "node scripts/licenses/index.js",
+        "watch": "lerna run watch --stream --parallel"
     },
     "devDependencies": {
         "@types/node-fetch": "2.5.7",
