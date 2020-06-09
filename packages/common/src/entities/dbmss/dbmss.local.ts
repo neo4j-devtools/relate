@@ -180,14 +180,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     : DBMS_STATUS.STOPPED;
 
                 return {
+                    connectionUri: dbms.connectionUri,
+                    description: dbms.description,
+                    edition: v?.edition,
                     id: dbms.id,
                     name: dbms.name,
-                    description: dbms.description,
                     rootPath: dbms.rootPath,
-                    connectionUri: dbms.connectionUri,
                     status,
                     version: v?.version,
-                    edition: v?.edition,
                 };
             })
             .unwindPromises();
@@ -529,7 +529,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return this.discoverDbmss();
     }
 
-    async dbDump(dbms: IDbms, db: string, dir: string): Promise<string> {
+    async dbDump(dbms: IDbmsInfo, db: string, dir: string): Promise<string> {
         const dateISO = new Date().toISOString();
         const [date] = dateISO.split('.');
         const filename = `${dbms.name}-${db}-${date}.dump`;
