@@ -16,6 +16,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     public readonly dirPaths = {
         ...envPaths(),
+        dbmssData: path.join(this.config.neo4jDataPath || envPaths().data, DBMS_DIR_NAME),
         dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),
@@ -24,6 +25,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
+
         await this.dbmss.list();
 
         // @todo: this needs to be done proper

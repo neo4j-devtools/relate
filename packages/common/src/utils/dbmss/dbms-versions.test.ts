@@ -14,7 +14,14 @@ import {TestDbmss} from '../system';
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
 describe('DBMS versions (local environment)', () => {
-    beforeAll(() => downloadNeo4j(TestDbmss.NEO4J_VERSION, path.join(envPaths().cache, DBMS_DIR_NAME)));
+    beforeAll(async () => {
+        const distributionsRoot = path.join(envPaths().cache, DBMS_DIR_NAME);
+        const versions = await discoverNeo4jDistributions(distributionsRoot);
+
+        if (versions.isEmpty) {
+            await downloadNeo4j(TestDbmss.NEO4J_VERSION, distributionsRoot);
+        }
+    });
 
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
