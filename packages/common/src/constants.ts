@@ -12,7 +12,7 @@ export const DBMS_DIR_NAME = 'dbmss';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing daedalus instance
-export const JWT_INSTANCE_TOKEN_SALT = 'hello world!';
+export const RELATE_TOKEN_SALT_FILE_NAME = 'relate.secret.key';
 export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
 
 export const EXTENSION_DIR_NAME = 'extensions';
