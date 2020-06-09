@@ -47,7 +47,7 @@ You will be presented with several prompts, enter the following values:
 - `Type`: "Local"
 - `Name`: "dev"
 - `Authentication`: "No"
-- `Restrict GraphQL API: "No"
+- `Restrict GraphQL API`: "No"
 
 Then set the newly created environment as the current environment:
 
