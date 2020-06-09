@@ -20,9 +20,10 @@ export default class AccessTokenCommand extends BaseCommand {
             default: 'neo4j',
             description: 'Neo4j DBMS user to create the token for',
         }),
+        // @todo: change before merge
         credentials: flags.string({
             char: 'c',
-            required: REQUIRED_FOR_SCRIPTS
+            required: REQUIRED_FOR_SCRIPTS,
         }),
     };
 }

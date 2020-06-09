@@ -6,14 +6,11 @@ import {PropertyEntries} from './read-properties-file';
 
 export function writePropertiesFile(path: string, properties: PropertyEntries): Promise<void> {
     const asText = join(
-        map(
-            properties,
-            ([key, val]) => {
-                const nowhitespace = trim(val);
+        map(properties, ([key, val]) => {
+            const nowhitespace = trim(val);
 
-                return nowhitespace ? join([key, val], PROPERTIES_SEPARATOR) : key;
-            },
-        ),
+            return nowhitespace ? join([key, val], PROPERTIES_SEPARATOR) : key;
+        }),
         NEW_LINE,
     );
 

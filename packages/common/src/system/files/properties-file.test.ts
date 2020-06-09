@@ -9,7 +9,7 @@ jest.mock('./properties-file.constants.ts', () => ({
 
 describe('PropertiesFile', () => {
     const path = '/path/to/config/file';
-    let configProperties: Map<string, string>;
+    let configProperties: utils.PropertyEntries;
     let readPropertiesFileSpy: jest.SpyInstance;
     let writePropertiesFileSpy: jest.SpyInstance;
 
@@ -19,7 +19,7 @@ describe('PropertiesFile', () => {
     });
 
     test('readFile', async () => {
-        configProperties = new Map([['foo1', 'bar1']]);
+        configProperties = [['foo1', 'bar1']];
         const spy = readPropertiesFileSpy.mockResolvedValue(configProperties);
         const config = await PropertiesFile.readFile(path);
 
@@ -31,10 +31,10 @@ describe('PropertiesFile', () => {
     });
 
     test('set', async () => {
-        configProperties = new Map([
+        configProperties = [
             ['foo1', 'bar1'],
             ['#foo2', 'bar2'],
-        ]);
+        ];
         readPropertiesFileSpy.mockResolvedValue(configProperties);
         const spy = writePropertiesFileSpy.mockResolvedValue(Promise.resolve());
         const config = await PropertiesFile.readFile(path);
@@ -42,28 +42,22 @@ describe('PropertiesFile', () => {
         config.set('foo1', 'foobar1');
         await config.flush();
 
-        expect(spy).toHaveBeenCalledWith(
-            path,
-            new Map([
-                ['foo1', 'foobar1'],
-                ['#foo2', 'bar2'],
-            ]),
-        );
+        expect(spy).toHaveBeenCalledWith(path, [
+            ['foo1', 'foobar1'],
+            ['#foo2', 'bar2'],
+        ]);
 
         config.set('foo2', 'foobar2');
         await config.flush();
 
-        expect(spy).toHaveBeenCalledWith(
-            path,
-            new Map([
-                ['foo1', 'foobar1'],
-                ['foo2', 'foobar2'],
-            ]),
-        );
+        expect(spy).toHaveBeenCalledWith(path, [
+            ['foo1', 'foobar1'],
+            ['foo2', 'foobar2'],
+        ]);
     });
 
     test('get', async () => {
-        configProperties = new Map([['a.key.that.exists', 'value1']]);
+        configProperties = [['a.key.that.exists', 'value1']];
         readPropertiesFileSpy.mockResolvedValue(configProperties);
         const config = await PropertiesFile.readFile(path);
 

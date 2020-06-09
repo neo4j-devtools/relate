@@ -136,15 +136,19 @@ export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>>
         repo: {$eq: EXTENSION_REPO_NAME},
     };
 
-    const {results} = await got(EXTENSION_SEARCH_PATH, {
-        // @todo: handle env vars
-        body: `items.find(${JSON.stringify(search)})`,
-        method: 'POST',
-        password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-        username: JFROG_PRIVATE_REGISTRY_USERNAME,
-    }).json();
+    try {
+        const {results} = await got(EXTENSION_SEARCH_PATH, {
+            // @todo: handle env vars
+            body: `items.find(${JSON.stringify(search)})`,
+            method: 'POST',
+            password: JFROG_PRIVATE_REGISTRY_PASSWORD,
+            username: JFROG_PRIVATE_REGISTRY_USERNAME,
+        }).json();
 
-    return cached.concat(mapArtifactoryResponse(List.from(results)));
+        return cached.concat(mapArtifactoryResponse(List.from(results)));
+    } catch (e) {
+        return List.from();
+    }
 }
 
 function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {

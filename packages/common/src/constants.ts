@@ -104,5 +104,5 @@ export enum PUBLIC_GRAPHQL_METHODS {
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 }
 
-export const CONNECTION_RETRY_STEP = 4;
+export const CONNECTION_RETRY_STEP = 6;
 export const MAX_CONNECTION_RETRIES = 5;

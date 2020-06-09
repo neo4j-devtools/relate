@@ -32,15 +32,13 @@ describe('$relate extension', () => {
         expect(ctx.stdout).toContain(testExtension.name);
     });
 
-    test.skip()
-        .stderr()
-        .it('throws when extension not in cache', async () => {
-            try {
-                await InstallCommand.run(['missing-extension', '-V', '1.0.0', '--environment', TEST_ENVIRONMENT_NAME]);
-            } catch (e) {
-                expect(e).toEqual(new NotFoundError('fetch and install missing-extension@1.0.0'));
-            }
-        });
+    test.stderr().it('throws when extension not in cache', async () => {
+        try {
+            await InstallCommand.run(['missing-extension', '-V', '1.0.0', '--environment', TEST_ENVIRONMENT_NAME]);
+        } catch (e) {
+            expect(e).toEqual(new NotFoundError(`Unable to find the requested extension: missing-extension online`));
+        }
+    });
 
     test.stdout().it('uninstalls extension', async (ctx) => {
         await UninstallCommand.run([testExtension.name, '--environment', TEST_ENVIRONMENT_NAME]);

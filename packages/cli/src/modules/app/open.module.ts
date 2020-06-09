@@ -92,6 +92,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
     private async getServerAppRoot(environment: Environment): Promise<string> {
         let res: Response;
+
         const error = new NotFoundError(`Could not connect to the @relate/web server`, [
             'If you are connecting locally, run "relate-web start" and try again.',
             'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
@@ -99,6 +100,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         try {
             res = await fetch(`${environment.httpOrigin}/health`);
+
             if (!res.ok) {
                 throw error;
             }

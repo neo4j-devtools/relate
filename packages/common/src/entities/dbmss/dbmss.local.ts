@@ -217,7 +217,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
-        const dbms = await this.get(dbmsNameOrId)
+        const dbms = await this.get(dbmsNameOrId);
         const driver = await this.getJSONDriverInstance(dbms.id, authToken);
 
         const token = await this.runQuery<string>(driver, 'CALL jwt.security.requestAccess($appName)', {appName})

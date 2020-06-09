@@ -26,7 +26,7 @@ describe('$relate dbms', () => {
         TEST_DB_NAME = name;
     });
 
-    //afterAll(() => dbmss.teardown());
+    afterAll(() => dbmss.teardown());
 
     test.stdout().it('logs start message', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
@@ -52,7 +52,14 @@ describe('$relate dbms', () => {
     test.stdout()
         .stdin(TestDbmss.DBMS_CREDENTIALS)
         .it('logs access token', async (ctx) => {
-            await AccessTokenCommand.run([TEST_DB_NAME, '--user=neo4j', '--environment', TEST_ENVIRONMENT_ID, '--credentials', TestDbmss.DBMS_CREDENTIALS]);
+            await AccessTokenCommand.run([
+                TEST_DB_NAME,
+                '--user=neo4j',
+                '--environment',
+                TEST_ENVIRONMENT_ID,
+                '--credentials',
+                TestDbmss.DBMS_CREDENTIALS,
+            ]);
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 

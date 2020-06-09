@@ -64,7 +64,7 @@ describe('writePropertiesFile', () => {
             ['', ''],
             ['bom', 'true'],
         ];
-        const expected = 'bar.bam=baz\n\nbom=true'
+        const expected = 'bar.bam=baz\n\nbom=true';
 
         const properties = await writePropertiesFile('emptyKey', emptyKey);
 
