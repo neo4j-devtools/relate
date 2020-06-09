@@ -35,17 +35,25 @@ npm i -g @relate/web
 ```
 We strongly recommend that you install both packages.
 
-## Creating default environment
-You have to create a "default" environment to use `@relate`.
+## Creating a local environment
+
+All `@relate` operations happen within an "environment" that manages Neo4j resources. You could configure separate environments for development, testing, staging and production. Start wih initializing a local environment then setting it as the current environment.
+
 To do so run:
 ```shell script
 relate env:init
 ```
 You will be presented with several prompts, enter the following values:
 - `Type`: "Local"
-- `Name`: "default"
+- `Name`: "dev"
+- `Authentication`: "No"
+- `Restrict GraphQL API: "No"
 
-You can create more environments if you want, but you must have at least one called "default" for the alpha to work as intended.
+Then set the newly created environment as the current environment:
+
+```shell script
+relate env:use dev
+```
 
 ## Installing a DBMS
 Currently we only support Neo4j 4.X enterprise. To install a DBMS, run:
