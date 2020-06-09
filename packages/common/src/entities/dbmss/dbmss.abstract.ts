@@ -134,4 +134,6 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     }
 
     abstract dbDump(dbms: IDbmsInfo, db: string, dir: string): Promise<string>;
+
+    abstract dbLoad(dbms: IDbmsInfo, db: string, from: string, force?: boolean): Promise<string>;
 }

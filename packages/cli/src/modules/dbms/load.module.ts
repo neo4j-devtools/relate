@@ -4,7 +4,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
 
 import {isInteractive, readStdin} from '../../stdin';
-import DumpCommand from '../../commands/dbms/dump';
+import LoadCommand from '../../commands/dbms/load';
 import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
@@ -12,22 +12,22 @@ import {selectDbmsPrompt} from '../../prompts';
     imports: [SystemModule],
     providers: [],
 })
-export class DumpModule implements OnApplicationBootstrap {
+export class LoadModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof DumpCommand>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof LoadCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const {outputDir, database} = flags;
+        const {from, database, force} = flags;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
         if (!dbmsId) {
             if (isInteractive()) {
-                dbmsId = await selectDbmsPrompt('Select a DBMS to dump DB data from', environment);
+                dbmsId = await selectDbmsPrompt('Select a DBMS to load data to', environment);
             } else {
                 dbmsId = await readStdin();
             }
@@ -44,8 +44,8 @@ export class DumpModule implements OnApplicationBootstrap {
             cli.action.stop(chalk.green('done'));
         }
 
-        cli.action.start(`Dumping ${database} from ${dbms.name}`);
-        return environment.dbmss.dbDump(dbms, database, outputDir).then((res: string) => {
+        cli.action.start(`Loading data from dump into ${dbms.name}`);
+        return environment.dbmss.dbLoad(dbms, database, from, force).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];
@@ -53,15 +53,16 @@ export class DumpModule implements OnApplicationBootstrap {
                 const done = res.split('\n').reverse();
                 message.push(chalk.green(done[1]));
                 message.push(
-                    `Successfully dumped ${chalk.cyan(database)} ` +
-                        `from ${chalk.cyan(dbms.name)} to ${chalk.cyan(outputDir)}`,
+                    `Successfully loaded data from ${chalk.cyan(from)} ` +
+                        `into ${chalk.cyan(`${dbms.name}->${database}`)}`,
                 );
             } else {
                 result = chalk.red('failed');
-                if (res.includes('Database does not exist')) {
-                    message.push(`Database does not exist: ${chalk.cyan(database)}`);
+                if (res.includes('Database already exists')) {
+                    message.push(`Database already exists: ${chalk.cyan(database)}`);
+                    message.push(`Select another database or use flag '--force' to overwrite existing database.`);
                 }
-                message.push(chalk.red(`Failed to dump data.`));
+                message.push(chalk.red(`Failed to load dump.`));
             }
 
             cli.action.stop(result);

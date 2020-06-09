@@ -17,7 +17,7 @@ export default class DumpCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        db: flags.string({
+        database: flags.string({
             char: 'd',
             default: 'neo4j',
             description: 'Database',

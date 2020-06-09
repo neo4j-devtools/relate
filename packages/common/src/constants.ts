@@ -124,6 +124,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
 
     // dump / import
     DB_DUMP = 'dbDump',
+    DB_LOAD = 'dbLoad',
 }
 
 // seconds

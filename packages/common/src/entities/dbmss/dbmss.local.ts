@@ -538,4 +538,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const result = await neo4jAdminCmd(this.getDbmsRootPath(dbms.id), params);
         return result;
     }
+
+    async dbLoad(dbms: IDbmsInfo, db: string, from: string, force?: boolean): Promise<string> {
+        const params = ['load', `--database=${db}`, `--from=${from}`, ...(force ? ['--force'] : [])];
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbms.id), params);
+        return result;
+    }
 }

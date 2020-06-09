@@ -330,6 +330,10 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`Not implemented yet. ${dbms.id} ${db}`);
     }
 
+    async dbLoad(dbms: IDbmsInfo, db: string): Promise<string> {
+        throw new NotSupportedError(`Not implemented yet. ${dbms.id} ${db}`);
+    }
+
     dbList(_dbmsId: string, _dbmsUser: string, _accessToken: string): Promise<List<IDb>> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support listing databases`);
     }
