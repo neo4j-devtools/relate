@@ -262,3 +262,38 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     return fse.remove(downloadFilePath);
 }
 ```
+
+
+Read all environment config JSONs and convert them into validated models
+
+```TypeScript
+import path from 'path';
+import fse from 'fs-extra';
+import {List, None} from '@relate/types';
+
+import {EnvironmentConfigModel, IEnvironmentConfig} from '<internal>';
+
+class Env {
+    private dirPaths: any;
+
+...
+
+    async list(): Promise<List<IEnvironmentConfig>> {
+        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
+            .filter((name) => name.endsWith('.json'))
+            .mapEach((name) =>
+                fse
+                    .readJSON(path.join(this.dirPaths.environmentsConfig, name))
+                    .then((config) => new EnvironmentConfigModel(config))
+                    .catch(() => None.EMPTY),
+            )
+            .unwindPromises();
+​
+        return configs.compact();
+    }
+
+...
+
+}
+```
+

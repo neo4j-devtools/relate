@@ -27,11 +27,15 @@ export class TestDbmss {
             return;
         }
 
-        const configFilePath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
+        const configPath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
         // eslint-disable-next-line no-sync
-        const config = new EnvironmentConfigModel(fse.readJSONSync(configFilePath));
+        const configJson = fse.readJSONSync(configPath);
+        const config = new EnvironmentConfigModel({
+            ...configJson,
+            configPath,
+        });
 
-        this.environment = new LocalEnvironment(config, configFilePath);
+        this.environment = new LocalEnvironment(config);
     }
 
     createName(): string {

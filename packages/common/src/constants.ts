@@ -81,6 +81,7 @@ export enum DBMS_STATUS {
     STARTED = 'started',
     STOPPED = 'stopped',
 }
+
 export enum PUBLIC_GRAPHQL_METHODS {
     INSTALL_DBMS = 'installDbms',
     UNINSTALL_DBMS = 'uninstallDbms',

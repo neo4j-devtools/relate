@@ -1,4 +1,4 @@
-import {join, filter, find, map} from 'lodash';
+import {join, filter, find, map, forEach} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
@@ -156,6 +156,12 @@ export default class List<T> extends Monad<Iterable<T>> {
 
     mapEach<M = T>(project: (val: T) => M): List<M> {
         return List.from(map([...this], project));
+    }
+
+    forEach(project: (val: T) => void): this {
+        forEach([...this], project);
+
+        return this;
     }
 
     indexOf(val: T): Num {

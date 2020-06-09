@@ -27,13 +27,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
     };
 
-    async init(): Promise<void> {
-        await ensureDirs(this.dirPaths);
-        await this.dbmss.list();
-    }
-
-    constructor(config: EnvironmentConfigModel, configPath: string) {
-        super(config, configPath);
+    constructor(config: EnvironmentConfigModel) {
+        super(config);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
@@ -56,6 +51,10 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             },
             uri: this.relateUrl,
         });
+    }
+
+    async init(): Promise<void> {
+        await ensureDirs(this.dirPaths);
     }
 
     public async graphql(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>> {

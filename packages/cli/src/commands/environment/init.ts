@@ -17,7 +17,6 @@ export default class InitCommand extends BaseCommand {
     static flags = {
         httpOrigin: flags.string({
             description: `URL of the hosted instance of relate (only applies to --type=${ENVIRONMENT_TYPES.REMOTE})`,
-            required: REQUIRED_FOR_SCRIPTS,
         }),
         name: flags.string({
             description: 'Name of the environment to initialize',

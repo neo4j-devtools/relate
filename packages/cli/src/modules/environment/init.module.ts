@@ -10,6 +10,7 @@ import {
 
 import InitCommand from '../../commands/environment/init';
 import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
+import {isInteractive} from '../../stdin';
 
 @Module({
     exports: [],
@@ -38,16 +39,29 @@ export class InitModule implements OnApplicationBootstrap {
             httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
         }
 
-        const authenticator: GoogleAuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
-        const allowedMethods: string[] = await selectAllowedMethodsPrompt();
+        if (isInteractive()) {
+            const authenticator: GoogleAuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
+            const allowedMethods: string[] = await selectAllowedMethodsPrompt();
+
+            const config: IEnvironmentConfig = {
+                type: type as ENVIRONMENT_TYPES,
+                id: name,
+                httpOrigin: httpOrigin && new URL(httpOrigin).origin,
+                relateEnvironment: 'default',
+                authenticator,
+                allowedMethods,
+                user: 'foo',
+            };
+
+            cli.action.start('Creating environment');
+            return this.systemProvider.createEnvironment(config).then(() => cli.action.stop());
+        }
 
         const config: IEnvironmentConfig = {
             type: type as ENVIRONMENT_TYPES,
             id: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             relateEnvironment: 'default',
-            authenticator,
-            allowedMethods,
             user: 'foo',
         };
 

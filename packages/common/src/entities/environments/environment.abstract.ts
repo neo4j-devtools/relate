@@ -40,7 +40,7 @@ export abstract class EnvironmentAbstract {
     }
 
     get configPath(): string {
-        return this.configFilePath;
+        return this.config.configPath;
     }
 
     get relateEnvironment(): string | undefined {
@@ -53,7 +53,7 @@ export abstract class EnvironmentAbstract {
 
     private authenticator?: IAuthenticator;
 
-    constructor(protected config: EnvironmentConfigModel, protected readonly configFilePath: string) {
+    constructor(protected config: EnvironmentConfigModel) {
         if (config.authenticator) {
             // @todo: move to init?
             this.setupAuthenticator({
@@ -118,17 +118,20 @@ export abstract class EnvironmentAbstract {
     }
 
     async reloadConfig(): Promise<void> {
-        const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
+        const config = await fse.readJSON(this.configPath, {encoding: 'utf8'});
 
-        this.config = new EnvironmentConfigModel(config);
+        this.config = new EnvironmentConfigModel({
+            ...config,
+            configPath: this.configPath,
+        });
     }
 
     async updateConfig(key: string, value: any): Promise<void> {
-        const config = await fse.readJSON(this.configFilePath, {encoding: 'utf8'});
+        const config = await fse.readJSON(this.configPath, {encoding: 'utf8'});
 
         config[key] = value;
 
-        await fse.writeJSON(this.configFilePath, config, {encoding: 'utf8'});
+        await fse.writeJSON(this.configPath, config, {encoding: 'utf8'});
         await this.reloadConfig();
     }
 }
