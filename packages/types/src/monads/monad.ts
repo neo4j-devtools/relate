@@ -63,7 +63,6 @@ export default class Monad<T> implements IMonad<T> {
         if (!this.isEmpty) {
             return this.get();
         }
-
         // @ts-ignore
         return typeof other === 'function' ? other() : other;
     }
@@ -84,7 +83,6 @@ export default class Monad<T> implements IMonad<T> {
         if (this.isEmpty) {
             return this;
         }
-
         // @ts-ignore
         return new this.constructor(project(this.original));
     }

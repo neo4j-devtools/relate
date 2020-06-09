@@ -4,6 +4,7 @@ import nock from 'nock';
 import hasha from 'hasha';
 import * as uuid from 'uuid';
 import {List} from '@relate/types';
+import {inc} from 'semver';
 
 import * as downloadNeo4j from './download-neo4j';
 import * as dbmsVersions from './dbms-versions';
@@ -81,9 +82,10 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('downloadNeo4j: no requested distributions found online', async () => {
-        const message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online`;
+        // eslint-disable-next-line max-len
+        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`;
 
-        const dbmsVersion = {
+        let dbmsVersion = {
             ...DBMS_VERSION,
             edition: NEO4J_EDITION.COMMUNITY,
         };
@@ -91,6 +93,19 @@ describe('Download Neo4j (to local cache)', () => {
         jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
             Promise.resolve(List.from([dbmsVersion])),
         );
+
+        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
+            new NotFoundError(message),
+        );
+
+        const majorVersionIncrement = inc(TestDbmss.NEO4J_VERSION, 'major');
+        dbmsVersion = {
+            ...DBMS_VERSION,
+            version: majorVersionIncrement!,
+        };
+
+        // eslint-disable-next-line max-len
+        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${majorVersionIncrement}`;
 
         await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
             new NotFoundError(message),
