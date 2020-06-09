@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import fse from 'fs-extra';
 import got from 'got';
 import hasha from 'hasha';
@@ -37,16 +36,23 @@ export const verifyHash = async (
 };
 
 export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    const onlineVersions = (await fetchNeo4jVersions()).toArray();
-    const requestedDistribution = _.find(
-        onlineVersions,
+    const onlineVersions = await fetchNeo4jVersions();
+    const requestedDistribution = onlineVersions.find(
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
     );
+    const errorMessage = () => {
+        const onlineEnterpriseVersions = onlineVersions
+            .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
+            .mapEach((dist) => dist.version)
+            .join(', ')
+            .map((versions) => `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${versions}`)
+            .getOrElse(`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`);
 
-    if (!requestedDistribution) {
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`);
-    }
-    const requestedDistributionUrl = requestedDistribution.dist;
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [onlineEnterpriseVersions]);
+    };
+
+    const dist = requestedDistribution.getOrElse(errorMessage);
+    const requestedDistributionUrl = dist.dist;
     const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
 
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
@@ -55,5 +61,5 @@ export const downloadNeo4j = async (version: string, neo4jDistributionPath: stri
     await verifyHash(shaSum, downloadFilePath);
 
     await extractNeo4j(downloadFilePath, neo4jDistributionPath);
-    await fse.remove(downloadFilePath);
+    return fse.remove(downloadFilePath);
 };

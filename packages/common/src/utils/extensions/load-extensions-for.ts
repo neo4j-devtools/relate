@@ -9,7 +9,7 @@ const INSTALLED_EXTENSIONS = getInstalledExtensions();
 
 export function loadExtensionsFor(targetType: EXTENSION_TYPES): Promise<DynamicModule>[] {
     if (targetType === EXTENSION_TYPES.STATIC) {
-        throw new InvalidArgumentError('STATIC extensions are not modules');
+        throw new InvalidArgumentError(`${EXTENSION_TYPES.STATIC} extensions are not modules`);
     }
 
     return _.map(
