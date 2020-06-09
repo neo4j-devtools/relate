@@ -18,10 +18,14 @@ describe('LocalEnvironment - install', () => {
     let testDbmss: TestDbmss;
 
     beforeAll(async () => {
-        await localUtils.downloadNeo4j(NEO4J_VERSION, DISTRIBUTIONS_ROOT);
+        // @todo: move this stuff to TestDbmss
+        let versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
+        if (versions.isEmpty) {
+            await localUtils.downloadNeo4j(NEO4J_VERSION, DISTRIBUTIONS_ROOT);
+        }
 
         // Create archive for "install from file" test
-        const versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
+        versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
         const version = versions.first.flatMap((v) => {
             if (None.isNone(v)) {
                 throw new Error("Couldn't find cached distribution");
@@ -39,7 +43,7 @@ describe('LocalEnvironment - install', () => {
             [path.basename(version.dist)],
         );
 
-        testDbmss = new TestDbmss(__filename);
+        testDbmss = await TestDbmss.init(__filename);
     });
 
     afterAll(() => testDbmss.teardown());
