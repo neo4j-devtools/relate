@@ -60,7 +60,7 @@ export class InstallModule implements OnApplicationBootstrap {
         this.registerHookListeners();
 
         if (!(name && version)) {
-            const versions = (await environment.listExtensionVersions()).toArray();
+            const versions = (await environment.extensions.versions()).toArray();
             const cached = _.filter(versions, ({origin}) => origin === EXTENSION_ORIGIN.CACHED);
             const onlineNotCached = _.filter(versions, (v) => {
                 if (v.origin !== EXTENSION_ORIGIN.ONLINE) {
@@ -99,7 +99,7 @@ export class InstallModule implements OnApplicationBootstrap {
             version = pathVersion;
         }
 
-        return environment.installExtension(name, version).then((res: {name: string | undefined}) => {
+        return environment.extensions.install(name, version).then((res: {name: string | undefined}) => {
             this.utils.log(`${res.name} successfully installed`);
         });
     }

@@ -3,7 +3,7 @@ import {Dict} from '@relate/types';
 import {EnvironmentConfigModel} from '../../models';
 import {InvalidConfigError} from '../../errors';
 
-import {EnvironmentAbstract, RemoteEnvironment, LocalEnvironment, ENVIRONMENT_TYPES} from '../../environments';
+import {EnvironmentAbstract, RemoteEnvironment, LocalEnvironment, ENVIRONMENT_TYPES} from '../../entities/environments';
 
 export async function createEnvironmentInstance(
     config: EnvironmentConfigModel,

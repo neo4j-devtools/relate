@@ -1,7 +1,1 @@
-{
-    "active": true,
-    "type": "LOCAL",
-    "id": "test",
-    "user": "bar",
-    "dbmss": {}
-}
+{"active":true,"type":"LOCAL","id":"test","user":"bar"}

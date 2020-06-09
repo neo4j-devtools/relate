@@ -29,7 +29,7 @@ export class LinkModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment();
         const resolvedPath = path.resolve(filePath);
 
-        return environment.linkExtension(resolvedPath).then((res) => {
+        return environment.extensions.link(resolvedPath).then((res) => {
             this.utils.log(res.name);
         });
     }

@@ -37,7 +37,7 @@ export class OpenModule implements OnApplicationBootstrap {
             dbmsId = selectedDbms;
         }
 
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
 
         if (!dbms || !dbms.rootPath) {
             throw new Error(`DBMS ${dbmsId} could not be opened`);

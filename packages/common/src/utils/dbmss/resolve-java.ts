@@ -3,7 +3,11 @@ import path from 'path';
 
 import {NotSupportedError} from '../../errors';
 import {download, envPaths, extract, emitHookEvent} from '..';
-import {RUNTIME_DIR_NAME, ZULU_JAVA_DOWNLOAD_URL, ZULU_JAVA_VERSION} from '../../environments/environment.constants';
+import {
+    RUNTIME_DIR_NAME,
+    ZULU_JAVA_DOWNLOAD_URL,
+    ZULU_JAVA_VERSION,
+} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
 
 interface IJavaName {

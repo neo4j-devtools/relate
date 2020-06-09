@@ -10,7 +10,7 @@ import {discoverExtension, IExtensionMeta} from './extension-versions';
 import {
     JFROG_PRIVATE_REGISTRY_PASSWORD,
     JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../environments/environment.constants';
+} from '../../entities/environments/environment.constants';
 import {download} from '../download';
 import {emitHookEvent} from '../event-hooks';
 

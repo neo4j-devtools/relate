@@ -2,7 +2,7 @@ import fse from 'fs-extra';
 import got from 'got';
 import hasha from 'hasha';
 
-import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../environments/environment.constants';
+import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
 import {FetchError, IntegrityError, NotFoundError} from '../../errors';
 import {download} from '../download';

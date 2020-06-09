@@ -6,7 +6,7 @@ import {
     GoogleAuthenticatorOptions,
     IExtensionMeta,
     NotFoundError,
-    PUBLIC_ENVIRONMENT_METHODS,
+    PUBLIC_GRAPHQL_METHODS,
     DBMS_STATUS,
 } from '@relate/common';
 
@@ -47,13 +47,13 @@ export const selectDbmsPrompt = async (
     environment: Environment,
     filter?: DBMS_STATUS,
 ): Promise<string> => {
-    let dbmss = (await environment.listDbmss()).toArray();
+    let dbmss = (await environment.dbmss.list()).toArray();
     if (!dbmss.length) {
         throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
     }
 
     if (filter) {
-        const infoDbmss = (await environment.infoDbmss(_.map(dbmss, (dbms) => dbms.id))).toArray();
+        const infoDbmss = (await environment.dbmss.info(_.map(dbmss, (dbms) => dbms.id))).toArray();
         dbmss = _.compact(
             _.map(dbmss, (dbms, index) => {
                 if (infoDbmss[index].status === filter) {
@@ -116,7 +116,7 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
 
     return selectMultiplePrompt(
         'Select allowed GraphQL API methods',
-        _.map(_.values(PUBLIC_ENVIRONMENT_METHODS), (name) => ({name})),
+        _.map(_.values(PUBLIC_GRAPHQL_METHODS), (name) => ({name})),
     );
 };
 

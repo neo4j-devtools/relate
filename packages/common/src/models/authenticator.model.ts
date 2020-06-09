@@ -1,7 +1,7 @@
 import {IsEnum, IsString, IsOptional} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
-import {AUTHENTICATOR_TYPES, IGoogleAuthenticatorOptions} from '../environments/authenticators';
+import {AUTHENTICATOR_TYPES, IGoogleAuthenticatorOptions} from '../entities/environments/authenticators';
 import {IsValidUrl} from './custom-validators';
 
 export type GoogleAuthenticatorOptions = Omit<IGoogleAuthenticatorOptions, 'httpOrigin'>;

@@ -13,7 +13,7 @@ import * as extractNeo4j from './extract-neo4j';
 
 import {TestDbmss} from '../system';
 import {envPaths} from '../env-paths';
-import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../environments';
+import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../entities/environments';
 import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
@@ -82,7 +82,8 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('downloadNeo4j: no requested distributions found online', async () => {
-        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online`;
+        // eslint-disable-next-line max-len
+        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`;
 
         let dbmsVersion = {
             ...DBMS_VERSION,

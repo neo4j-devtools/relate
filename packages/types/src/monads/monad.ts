@@ -99,7 +99,7 @@ export default class Monad<T> implements IMonad<T> {
         return `${this.original}`;
     }
 
-    toJSON(): string {
+    toJSON(): any {
         return JSON.parse(JSON.stringify(this.original));
     }
 

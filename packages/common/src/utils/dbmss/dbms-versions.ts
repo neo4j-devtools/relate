@@ -7,7 +7,12 @@ import {Dict, List, None} from '@relate/types';
 
 import {DependencyError, InvalidArgumentError} from '../../errors';
 import {IDbmsVersion} from '../../models';
-import {NEO4J_DIST_VERSIONS_URL, NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SUPPORTED_VERSION_RANGE} from '../../environments';
+import {
+    NEO4J_DIST_VERSIONS_URL,
+    NEO4J_EDITION,
+    NEO4J_ORIGIN,
+    NEO4J_SUPPORTED_VERSION_RANGE,
+} from '../../entities/environments';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {

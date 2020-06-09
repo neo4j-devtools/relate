@@ -20,7 +20,7 @@ import {
     EXTENSION_SEARCH_PATH,
     JFROG_PRIVATE_REGISTRY_PASSWORD,
     JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../environments';
+} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {ExtensionModel, IInstalledExtension} from '../../models';
 import {envPaths} from '../env-paths';

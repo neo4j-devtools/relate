@@ -21,13 +21,13 @@ export class InfoModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(flags.environment);
         const namesOrIds = this.parsed.argv;
 
-        let dbmss = await Promise.all(namesOrIds.map((n) => environment.getDbms(n)));
+        let dbmss = await Promise.all(namesOrIds.map((n) => environment.dbmss.get(n)));
         if (!namesOrIds.length) {
-            dbmss = (await environment.listDbmss()).toArray();
+            dbmss = (await environment.dbmss.list()).toArray();
         }
         const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        return environment.infoDbmss(dbmsIds).then((res) => {
+        return environment.dbmss.info(dbmsIds).then((res) => {
             const table = res
                 .mapEach((dbms) => {
                     return {

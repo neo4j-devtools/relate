@@ -21,7 +21,7 @@ export class ListModule implements OnApplicationBootstrap {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
-        return environment.listDbmss().then((dbmss) => {
+        return environment.dbmss.list().then((dbmss) => {
             cli.table(
                 dbmss.toArray(),
                 {

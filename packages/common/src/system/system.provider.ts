@@ -9,7 +9,7 @@ import {
     DBMS_DIR_NAME,
     RELATE_KNOWN_CONNECTIONS_FILE,
 } from '../constants';
-import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../environments';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
@@ -93,7 +93,7 @@ export class SystemProvider implements OnModuleInit {
 
     async getAccessToken(environmentId: string, dbmsId: string, dbmsUser: string): Promise<string> {
         const environment = await this.getEnvironment(environmentId);
-        const dbms = await environment.getDbms(dbmsId);
+        const dbms = await environment.dbmss.get(dbmsId);
         const token = await getSystemAccessToken(this.filePaths.knownConnections, environment.id, dbms.id, dbmsUser);
 
         if (!token) {
