@@ -5,15 +5,16 @@ import {envPaths, EXTENSION_DIR_NAME, NotFoundError, TestExtensions, IInstalledE
 import InstallCommand from '../../commands/extension/install';
 import UninstallCommand from '../../commands/extension/uninstall';
 
-const TEST_EXTENSION_NAME = 'neo4j-insight';
 const TEST_ENVIRONMENT_NAME = 'test';
 
 describe('$relate extension', () => {
     const extensions = new TestExtensions(__filename);
     let testExtension: IInstalledExtension;
+    let testArchive: IInstalledExtension;
 
     beforeAll(async () => {
         testExtension = await extensions.cacheNew();
+        testArchive = await extensions.cacheArchive();
     });
 
     afterAll(async () => {
@@ -49,21 +50,21 @@ describe('$relate extension', () => {
     });
 
     test.stdout().it('installs extension from file', async (ctx) => {
-        const extensionPath = path.join(envPaths().cache, EXTENSION_DIR_NAME, `${TEST_EXTENSION_NAME}.zip`);
+        const extensionPath = path.join(envPaths().cache, EXTENSION_DIR_NAME, `${testArchive.name}.tgz`);
         await InstallCommand.run([
-            TEST_EXTENSION_NAME,
+            testArchive.name,
             '--version',
             extensionPath,
             '--environment',
             TEST_ENVIRONMENT_NAME,
         ]);
 
-        expect(ctx.stdout).toContain(TEST_EXTENSION_NAME);
+        expect(ctx.stdout).toContain(testArchive.name);
     });
 
     test.stdout().it('uninstalls extension', async (ctx) => {
-        await UninstallCommand.run([TEST_EXTENSION_NAME, '--environment', TEST_ENVIRONMENT_NAME]);
+        await UninstallCommand.run([testArchive.name, '--environment', TEST_ENVIRONMENT_NAME]);
 
-        expect(ctx.stdout).toContain(`Uninstalled ${TEST_EXTENSION_NAME}@`);
+        expect(ctx.stdout).toContain(`Uninstalled ${testArchive.name}@`);
     });
 });
