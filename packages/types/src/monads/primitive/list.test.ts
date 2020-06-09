@@ -313,6 +313,7 @@ describe('List', () => {
         test('handles empty', () => {
             expect(
                 List.from([]).reduce(
+                    // @ts-ignore
                     (agg, [key, val]) => ({
                         ...agg,
                         [key]: val,
