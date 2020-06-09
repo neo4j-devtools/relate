@@ -60,10 +60,11 @@ export default class Monad<T> implements IMonad<T> {
     }
 
     getOrElse(other: T | (() => T)): T {
+        if (!this.isEmpty) {
+            return this.get();
+        }
         // @ts-ignore
-        const otherToUse = typeof other === 'function' ? other() : other;
-
-        return this.isEmpty ? otherToUse : this.get();
+        return typeof other === 'function' ? other() : other;
     }
 
     equals(other: any): boolean {
@@ -79,6 +80,9 @@ export default class Monad<T> implements IMonad<T> {
     }
 
     map(project: (value: T) => T): this {
+        if (this.isEmpty) {
+            return this;
+        }
         // @ts-ignore
         return new this.constructor(project(this.original));
     }
