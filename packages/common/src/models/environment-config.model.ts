@@ -15,6 +15,7 @@ export interface IEnvironmentAuth {
 
 export interface IEnvironmentConfig {
     id: string;
+    configPath?: string;
     active?: boolean;
     type: ENVIRONMENT_TYPES;
     user: any;
@@ -26,10 +27,18 @@ export interface IEnvironmentConfig {
     allowedMethods?: string[];
 }
 
-export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
+export interface IEnvironmentConfigInput extends IEnvironmentConfig {
+    configPath: string;
+}
+
+export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInput> implements IEnvironmentConfigInput {
     // @todo: should be uuid
     @IsString()
     public id!: string;
+
+    // @todo: should be uuid
+    @IsString()
+    public configPath!: string;
 
     @IsBoolean()
     @IsOptional()

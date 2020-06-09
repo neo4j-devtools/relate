@@ -4,6 +4,7 @@
 Manage relate environments
 
 * [`relate environment:init`](#relate-environmentinit)
+* [`relate environment:list`](#relate-environmentlist)
 * [`relate environment:login`](#relate-environmentlogin)
 * [`relate environment:open`](#relate-environmentopen)
 * [`relate environment:use ENVIRONMENT`](#relate-environmentuse-environment)
@@ -17,7 +18,7 @@ USAGE
   $ relate environment:init
 
 OPTIONS
-  --httpOrigin=httpOrigin  (required) URL of the hosted instance of relate (only applies to --type=REMOTE)
+  --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
   --name=name              (required) Name of the environment to initialize
   --type=(LOCAL|REMOTE)    (required) Type of environment
 
@@ -26,6 +27,20 @@ ALIASES
 ```
 
 _See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/init.ts)_
+
+## `relate environment:list`
+
+Lists all available environments
+
+```
+USAGE
+  $ relate environment:list
+
+ALIASES
+  $ relate env:list
+```
+
+_See code: [dist/commands/environment/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/list.ts)_
 
 ## `relate environment:login`
 

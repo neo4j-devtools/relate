@@ -44,9 +44,10 @@ describe('LocalEnvironment - list', () => {
             neo4jDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
+            configPath: 'nowhere',
         });
 
-        environment = new LocalEnvironment(config, 'nowhere');
+        environment = new LocalEnvironment(config);
     });
 
     afterAll(() => fse.remove(TMP_HOME));

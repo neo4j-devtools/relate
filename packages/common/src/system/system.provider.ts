@@ -1,7 +1,7 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
-import _ from 'lodash';
+import {List, Dict, None, Maybe} from '@relate/types';
 
 import {
     DEFAULT_ENVIRONMENT_NAME,
@@ -16,7 +16,6 @@ import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../util
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
-import {List, Dict, None, Maybe} from '@relate/types';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -36,7 +35,7 @@ export class SystemProvider implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
-        await this.discoverEnvironments();
+        await this.reloadEnvironments();
     }
 
     async useEnvironment(uuid: string): Promise<EnvironmentAbstract> {
@@ -55,7 +54,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     async getEnvironment(uuid?: string): Promise<EnvironmentAbstract> {
-        await this.discoverEnvironments();
+        await this.reloadEnvironments();
 
         const environments = Dict.of(this.allEnvironments);
 
@@ -112,8 +111,11 @@ export class SystemProvider implements OnModuleInit {
             throw new TargetExistsError(`Environment "${DEFAULT_ENVIRONMENT_NAME}" exists, will not overwrite`);
         }
 
-        const configModel = new EnvironmentConfigModel(config);
-        const environment = await createEnvironmentInstance(configModel, filePath);
+        const configModel = new EnvironmentConfigModel({
+            ...config,
+            configPath: filePath,
+        });
+        const environment = await createEnvironmentInstance(configModel);
 
         await fse.writeJSON(filePath, config, {spaces: 2});
         this.allEnvironments.set(environment.id, environment);
@@ -121,31 +123,14 @@ export class SystemProvider implements OnModuleInit {
         return environment;
     }
 
-    private async discoverEnvironments(): Promise<void> {
-        this.allEnvironments.clear();
-        const environmentsDir = this.dirPaths.environmentsConfig;
-        const availableFiles = await fse.readdir(environmentsDir);
-        const availableEnvironments = _.filter(
-            availableFiles,
-            (environment) => path.extname(environment).toLocaleLowerCase() === JSON_FILE_EXTENSION,
-        );
+    private async reloadEnvironments(): Promise<void> {
+        const configs = await this.listEnvironments();
 
-        await Promise.all(
-            _.map(availableEnvironments, async (envFilename) => {
-                const configPath = path.join(environmentsDir, envFilename);
-                const config = await fse.readJSON(configPath);
-                const environmentConfig: EnvironmentConfigModel = new EnvironmentConfigModel({
-                    ...config,
-                    id: path.basename(envFilename, JSON_FILE_EXTENSION),
-                    neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
-                });
-
-                this.allEnvironments.set(
-                    `${environmentConfig.id}`,
-                    await createEnvironmentInstance(environmentConfig, configPath),
-                );
-            }),
-        );
+        await configs
+            .mapEach(async (environmentConfig) => {
+                this.allEnvironments.set(`${environmentConfig.id}`, await createEnvironmentInstance(environmentConfig));
+            })
+            .unwindPromises();
     }
 
     createAppLaunchToken(
@@ -192,5 +177,29 @@ export class SystemProvider implements OnModuleInit {
 
                 throw new ValidationFailureError('Invalid App Launch Token');
             });
+    }
+
+    async listEnvironments(): Promise<List<EnvironmentConfigModel>> {
+        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
+            .filter((name) => name.endsWith('.json'))
+            .mapEach((name) => {
+                const configPath = path.join(this.dirPaths.environmentsConfig, name);
+
+                return fse
+                    .readJSON(configPath)
+                    .then(
+                        (config) =>
+                            new EnvironmentConfigModel({
+                                ...config,
+                                configPath,
+                                id: path.basename(name, JSON_FILE_EXTENSION),
+                                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
+                            }),
+                    )
+                    .catch(() => None.EMPTY);
+            })
+            .unwindPromises();
+
+        return configs.compact();
     }
 }
