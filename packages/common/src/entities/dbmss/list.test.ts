@@ -18,7 +18,7 @@ jest.mock('../../utils/files/read-properties-file', () => ({
 function generateDummyConf(dbms: string): PropertiesFile {
     const configPath = path.join(INSTALLATION_ROOT, `dbms-${dbms}`, 'conf/neo4j.conf');
 
-    return new PropertiesFile(new Map(), configPath);
+    return new PropertiesFile([], configPath);
 }
 
 describe('LocalEnvironment - list', () => {

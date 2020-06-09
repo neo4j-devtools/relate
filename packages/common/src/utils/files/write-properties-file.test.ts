@@ -1,6 +1,7 @@
 import {replace, trim} from 'lodash';
 
 import {writePropertiesFile} from './write-properties-file';
+import {PropertyEntries} from './read-properties-file';
 
 jest.mock('fs-extra', () => {
     return {
@@ -12,10 +13,10 @@ const WHITESPACE = / {2,}/g;
 
 describe('writePropertiesFile', () => {
     test('Writes properties to file', async () => {
-        const plain = new Map([
+        const plain: PropertyEntries = [
             ['bar.bam', 'baz'],
             ['bom.boz', 'true'],
-        ]);
+        ];
         const expected = trim(
             replace(
                 `
@@ -33,12 +34,12 @@ describe('writePropertiesFile', () => {
     });
 
     test('Adds comments (without separator)', async () => {
-        const comments = new Map([
+        const comments: PropertyEntries = [
             ['# hurr', ''],
             ['bar.bam', 'baz'],
             ['# durr', ''],
             ['bom.boz', 'true'],
-        ]);
+        ];
         const expected = trim(
             replace(
                 `
@@ -57,20 +58,13 @@ describe('writePropertiesFile', () => {
         expect(properties).toEqual(expected);
     });
 
-    test('Omits empty keys', async () => {
-        const emptyKey = new Map([
+    test('preserves whitespace', async () => {
+        const emptyKey: PropertyEntries = [
             ['bar.bam', 'baz'],
-            ['', 'true'],
-        ]);
-        const expected = trim(
-            replace(
-                `
-                bar.bam=baz
-            `,
-                WHITESPACE,
-                '',
-            ),
-        );
+            ['', ''],
+            ['bom', 'true'],
+        ];
+        const expected = 'bar.bam=baz\n\nbom=true'
 
         const properties = await writePropertiesFile('emptyKey', emptyKey);
 

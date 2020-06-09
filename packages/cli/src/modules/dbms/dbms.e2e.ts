@@ -26,7 +26,7 @@ describe('$relate dbms', () => {
         TEST_DB_NAME = name;
     });
 
-    afterAll(() => dbmss.teardown());
+    //afterAll(() => dbmss.teardown());
 
     test.stdout().it('logs start message', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
@@ -49,13 +49,10 @@ describe('$relate dbms', () => {
         expect(ctx.stdout).toContain(DBMS_STATUS.STARTED);
     });
 
-    test.skip()
-        .stdout()
-        // arbitrary wait for Neo4j to come online
-        .do(() => new Promise((resolve) => setTimeout(resolve, 25000)))
+    test.stdout()
         .stdin(TestDbmss.DBMS_CREDENTIALS)
         .it('logs access token', async (ctx) => {
-            await AccessTokenCommand.run([TEST_DB_NAME, '--principal=neo4j', '--environment', TEST_ENVIRONMENT_ID]);
+            await AccessTokenCommand.run([TEST_DB_NAME, '--user=neo4j', '--environment', TEST_ENVIRONMENT_ID, '--credentials', TestDbmss.DBMS_CREDENTIALS]);
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 

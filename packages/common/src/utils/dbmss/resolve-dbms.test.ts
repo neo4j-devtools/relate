@@ -2,7 +2,7 @@ import {resolveDbms} from './resolve-dbms';
 import {PropertiesFile} from '../../system/files';
 
 describe('resolveDbms', () => {
-    const dummyConf = new PropertiesFile(new Map(), 'nowhere');
+    const dummyConf = new PropertiesFile([], 'nowhere');
     const dbmss = {
         c9992c2f: {
             config: dummyConf,

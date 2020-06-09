@@ -24,6 +24,7 @@ ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
+  -c, --credentials=credentials  (required)
   -e, --environment=environment  Name of the environment to run the command against
   -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
 ```

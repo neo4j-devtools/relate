@@ -1,5 +1,7 @@
 import {SignOptions} from 'jsonwebtoken';
 
+export const RELATE_IS_DEBUG = Boolean(process.env.DEBUG);
+
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 
@@ -101,3 +103,6 @@ export enum PUBLIC_GRAPHQL_METHODS {
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 }
+
+export const CONNECTION_RETRY_STEP = 4;
+export const MAX_CONNECTION_RETRIES = 5;
