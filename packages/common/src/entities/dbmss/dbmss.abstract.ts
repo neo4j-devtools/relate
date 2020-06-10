@@ -8,7 +8,8 @@ import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 import {EnvironmentAbstract} from '../environments';
 import {PropertiesFile} from '../../system/files';
 import {DbmsQueryError, ErrorAbstract, InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
-import {CONNECTION_RETRY_STEP, DBMS_STATUS, MAX_CONNECTION_RETRIES, RELATE_IS_DEBUG} from '../../constants';
+import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
+import {emitHookEvent} from '../../utils';
 
 export type TapestryJSONResponse<Res = any> = {
     header: {fields: string[]};
@@ -55,7 +56,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             }),
             rxjsOps.filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
             rxjsOps.catchError((e) => {
-                if (e instanceof ErrorAbstract) {
+                if (typeof retry !== 'number' || e instanceof ErrorAbstract) {
                     throw e;
                 }
 
@@ -68,15 +69,18 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
                 if (retry < MAX_CONNECTION_RETRIES) {
                     const seconds = CONNECTION_RETRY_STEP * retry;
 
-                    // @todo: use proper logger
-                    if (RELATE_IS_DEBUG) {
-                        // eslint-disable-next-line no-console
-                        console.log(`Failed to establish connection to DBMS, retrying in ${seconds} seconds...`);
-                    }
-
                     return rxjs.from([1]).pipe(
+                        rxjsOps.flatMap(() =>
+                            rxjs.from(
+                                emitHookEvent(HOOK_EVENTS.RUN_QUERY_RETRY, {
+                                    query,
+                                    params,
+                                    retry: retry + 1,
+                                }),
+                            ),
+                        ),
                         rxjsOps.delay(1000 * seconds),
-                        rxjsOps.flatMap(() => this.runQuery(driver, query, params, retry + 1)),
+                        rxjsOps.flatMap((update) => this.runQuery(driver, update.query, update.params, update.retry)),
                     );
                 }
 

@@ -1,6 +1,5 @@
 import {SignOptions} from 'jsonwebtoken';
 
-export const RELATE_IS_DEBUG = Boolean(process.env.DEBUG);
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
 
 export const JSON_FILE_EXTENSION = '.json';
@@ -46,9 +45,6 @@ export enum DBMS_TLS_LEVEL {
     ENABLED = 'ENABLED',
 }
 
-export type Listener<T = any> = (eventData: T) => void | Promise<void>;
-export type Actor<T = any> = (eventData: T) => T | Promise<T>;
-
 export enum HOOK_EVENTS {
     ELECTRON_WINDOW_OPTIONS = 'ELECTRON_WINDOW_OPTIONS',
     ELECTRON_WINDOW_CREATED = 'ELECTRON_WINDOW_CREATED',
@@ -69,7 +65,15 @@ export enum HOOK_EVENTS {
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_START = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_START',
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP',
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
+    RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
 }
+
+export interface IHookEventPayloads {
+    [HOOK_EVENTS.RUN_QUERY_RETRY]: {query: string; params: any; retry: number};
+    [key: string]: any;
+}
+export type Listener<E extends HOOK_EVENTS> = (eventData: IHookEventPayloads[E]) => void | Promise<void>;
+export type Actor<E extends HOOK_EVENTS, T = IHookEventPayloads[E]> = (eventData: T) => T | Promise<T>;
 
 export const DEFAULT_JWT_SIGN_OPTIONS: SignOptions = {expiresIn: TWENTY_FOUR_HOURS_SECONDS};
 

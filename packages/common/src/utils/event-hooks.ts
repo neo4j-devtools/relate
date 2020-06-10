@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import {HOOK_EVENTS, Actor, Listener} from '../constants';
+import {Actor, HOOK_EVENTS, Listener} from '../constants';
 
-const REGISTERED_LISTENERS = new Map<HOOK_EVENTS, Set<Listener>>();
-const REGISTERED_ACTORS = new Map<HOOK_EVENTS, Set<Actor>>();
+const REGISTERED_LISTENERS = new Map<HOOK_EVENTS, Set<Listener<any>>>();
+const REGISTERED_ACTORS = new Map<HOOK_EVENTS, Set<Actor<any>>>();
 
 export async function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: T): Promise<T> {
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
@@ -25,25 +25,25 @@ export async function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: 
 
 // To be used only when we want to listen to an event and modify its data.
 // The return value of the actor is the new data for the event.
-export function registerHookActor(eventName: HOOK_EVENTS, actor: Actor): void {
+export function registerHookActor<E extends HOOK_EVENTS>(eventName: E, actor: Actor<E>): void {
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
 
     REGISTERED_ACTORS.set(eventName, new Set([...eventActors, actor]));
 }
 
-export function registerHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
+export function registerHookListener<E extends HOOK_EVENTS>(eventName: E, listener: Listener<E>): void {
     const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
 
     REGISTERED_LISTENERS.set(eventName, new Set([...eventListeners, listener]));
 }
 
-export function deregisterHookActor(eventName: HOOK_EVENTS, actor: Actor): void {
+export function deregisterHookActor<E extends HOOK_EVENTS>(eventName: E, actor: Actor<E>): void {
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
 
     REGISTERED_ACTORS.set(eventName, new Set(_.without([...eventActors], actor)));
 }
 
-export function deregisterHookListener(eventName: HOOK_EVENTS, listener: Listener): void {
+export function deregisterHookListener<E extends HOOK_EVENTS>(eventName: E, listener: Listener<E>): void {
     const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
 
     REGISTERED_LISTENERS.set(eventName, new Set(_.without([...eventListeners], listener)));
