@@ -47,7 +47,7 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
 } from '../environments';
-import {BOLT_DEFAULT_PORT, DBMS_DIR_NAME, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
+import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
@@ -255,7 +255,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.environment.neo4jDataPath, DBMS_DIR_NAME);
+        const dbmssDir = path.join(this.environment.dirPaths.dbmssData);
 
         if (dbmsId) {
             return path.join(dbmssDir, `dbms-${dbmsId}`);
@@ -428,8 +428,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     public getDbmsConfig(dbmsId: string): Promise<PropertiesFile> {
         const configFileName = path.join(
-            this.environment.neo4jDataPath,
-            DBMS_DIR_NAME,
+            this.environment.dirPaths.dbmssData,
             `dbms-${dbmsId}`,
             NEO4J_CONF_DIR,
             NEO4J_CONF_FILE,
@@ -439,7 +438,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async getDbmsManifest(dbmsId: string): Promise<Dict<IDbmsConfig>> {
-        const configFileName = path.join(this.environment.neo4jDataPath, DBMS_DIR_NAME, `dbms-${dbmsId}.json`);
+        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const defaultValues = {
             description: '',
             name: '',
@@ -469,7 +468,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async setDbmsManifest(dbmsId: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
-        const configFileName = path.join(this.environment.neo4jDataPath, DBMS_DIR_NAME, `dbms-${dbmsId}.json`);
+        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const config = await this.getDbmsManifest(dbmsId);
         const updated = {
             ...config.toObject(),
@@ -482,7 +481,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async deleteDbmsManifest(dbmsId: string): Promise<void> {
-        const configFileName = path.join(this.environment.neo4jDataPath, DBMS_DIR_NAME, `dbms-${dbmsId}.json`);
+        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
 
         await fse.unlink(configFileName);
 

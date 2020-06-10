@@ -16,11 +16,12 @@ const TEST_ENVIRONMENT_ID = 'test';
 let TEST_DB_NAME: string;
 
 describe('$relate app', () => {
-    const dbmss = new TestDbmss(__filename);
+    let dbmss: TestDbmss;
     const extensions = new TestExtensions(__filename);
     let testExtension: IInstalledExtension;
 
     beforeAll(async () => {
+        dbmss = await TestDbmss.init(__filename);
         const {name} = await dbmss.createDbms();
         testExtension = await extensions.installNew();
 

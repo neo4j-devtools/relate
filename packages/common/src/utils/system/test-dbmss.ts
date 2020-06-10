@@ -17,6 +17,13 @@ export class TestDbmss {
 
     environment: EnvironmentAbstract;
 
+    static async init(filename: string, environment?: EnvironmentAbstract): Promise<TestDbmss> {
+        // eslint-disable-next-line no-restricted-syntax
+        const dbmss = new TestDbmss(filename, environment);
+        await dbmss.environment.init();
+        return dbmss;
+    }
+
     constructor(private filename: string, environment?: EnvironmentAbstract) {
         if (process.env.NODE_ENV !== 'test') {
             throw new NotSupportedError('Cannot use TestDbmss outside of testing environment');
