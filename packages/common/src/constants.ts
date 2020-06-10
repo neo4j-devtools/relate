@@ -103,8 +103,8 @@ export enum PUBLIC_GRAPHQL_METHODS {
     LIST_DBMS_VERSIONS = 'listDbmsVersions',
     LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
-    INSTALLED_APPS = 'listInstalledApps',
-    INSTALLED_EXTENSIONS = 'listInstalledExtensions',
+    INSTALLED_APPS = 'listApps',
+    INSTALLED_EXTENSIONS = 'listExtensions',
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 }

@@ -90,3 +90,36 @@ export class CreateAccessTokenArgs {
     @Field(() => AuthTokenInput)
     authToken: AuthTokenInput;
 }
+
+@ArgsType()
+export class DbmsVersionArgs {
+    @Field(() => String, {nullable: true})
+    environmentId?: string;
+}
+
+@ObjectType()
+export class DbmsVersion {
+    @Field(() => String)
+    edition: string;
+
+    @Field(() => String)
+    version: string;
+
+    @Field(() => String)
+    origin: string;
+
+    @Field(() => String)
+    dist: string;
+}
+
+@ArgsType()
+export class UpdateDbmsConfigArgs {
+    @Field(() => String, {nullable: true})
+    environmentId?: string;
+
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [[String, String]])
+    properties: [string, string][];
+}

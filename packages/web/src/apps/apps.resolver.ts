@@ -5,7 +5,7 @@ import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS, SystemProvider} from '@relate/c
 
 import {IWebModuleConfig} from '../web.module';
 
-import {AppData, AppLaunchData, AppLaunchToken} from './models';
+import {AppData, AppLaunchData, AppLaunchToken, ExtensionData, ExtensionVersion} from './models';
 import {createAppLaunchUrl} from './apps.utils';
 import {EnvironmentMethodGuard} from '../guards/environment-method.guard';
 
@@ -77,5 +77,61 @@ export class AppsResolver {
             path: createAppLaunchUrl(appBasePath, token),
             token,
         };
+    }
+
+    @Mutation(() => AppData)
+    async [PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION](
+        @Args('name') name: string,
+        @Args('version') version: string,
+        @Args('environmentId', {nullable: true}) environmentId?: string,
+    ): Promise<AppData> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const installedApp = await environment.extensions.install(name, version);
+
+        return {
+            ...installedApp,
+            path: await environment.extensions.getAppPath(installedApp.name, this.configService.get('appRoot')),
+        };
+    }
+
+    @Mutation(() => [ExtensionData])
+    async [PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION](
+        @Args('name') name: string,
+        @Args('environmentId', {nullable: true}) environmentId?: string,
+    ): Promise<ExtensionData[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return (await environment.extensions.uninstall(name)).toArray();
+    }
+
+    @Query(() => [ExtensionVersion])
+    async [PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS](
+        @Args('environmentId', {nullable: true}) environmentId?: string,
+    ): Promise<ExtensionVersion[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        return (await environment.extensions.list()).toArray();
+    }
+
+    @Query(() => [AppData])
+    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS](
+        @Args('environmentId', {nullable: true}) environmentId?: string,
+    ): Promise<AppData[]> {
+        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const installedExtensions = await environment.extensions.list();
+
+        const mapped = await installedExtensions
+            .mapEach(async (extension) => {
+                const extensionPath = await environment.extensions.getAppPath(
+                    extension.name,
+                    this.configService.get('appRoot'),
+                );
+
+                return {
+                    ...extension,
+                    path: extensionPath,
+                };
+            })
+            .unwindPromises();
+
+        return mapped.toArray();
     }
 }

@@ -14,12 +14,21 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                mutation UpdateDbmsConfig($dbmsId: String!, $properties: [[String!, String!]]!) {
-                    ${PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG}(dbmsId: $dbmsId, properties: $properties)
+                mutation UpdateDbmsConfig(
+                    $environmentId: String!,
+                    $dbmsId: String!,
+                    $properties: [[String!, String!]]!
+                ) {
+                    ${PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG}(
+                        environmentId: $environmentId,
+                        dbmsId: $dbmsId,
+                        properties: $properties
+                    )
                 }
             `,
             variables: {
                 dbmsId,
+                environmentId: this.environment.relateEnvironment,
                 properties: properties.entries(),
             },
         });
@@ -37,15 +46,19 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async versions(): Promise<List<IDbmsVersion>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ListDbmsVersions {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} {
+                query ListDbmsVersions (
+                    $environmentId: String!
+                ) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} (environmentId: $environmentId) {
                         edition
                         version
                         origin
                     }
                 }
             `,
-            variables: {},
+            variables: {
+                environmentId: this.environment.relateEnvironment,
+            },
         });
 
         if (errors) {
