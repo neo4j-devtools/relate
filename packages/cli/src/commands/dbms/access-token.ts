@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {ARGS, FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
+import {ARGS, FLAGS} from '../../constants';
 import {AccessTokenModule} from '../../modules/dbms/access-token.module';
 
 export default class AccessTokenCommand extends BaseCommand {
@@ -19,11 +19,6 @@ export default class AccessTokenCommand extends BaseCommand {
             char: 'u',
             default: 'neo4j',
             description: 'Neo4j DBMS user to create the token for',
-        }),
-        // @todo: change before merge
-        credentials: flags.string({
-            char: 'c',
-            required: REQUIRED_FOR_SCRIPTS,
         }),
     };
 }

@@ -110,5 +110,5 @@ export enum PUBLIC_GRAPHQL_METHODS {
 }
 
 // seconds
-export const CONNECTION_RETRY_STEP = RELATE_IS_TESTING ? 10 : 4;
+export const CONNECTION_RETRY_STEP = RELATE_IS_TESTING ? 12 : 4;
 export const MAX_CONNECTION_RETRIES = 5;

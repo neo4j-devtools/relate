@@ -21,6 +21,12 @@ jest.mock('node-fetch', () => {
         });
 });
 
+jest.mock('../../prompts', () => {
+    return {
+        passwordPrompt: (): Promise<string> => Promise.resolve(TestDbmss.DBMS_CREDENTIALS),
+    };
+});
+
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const TEST_ENVIRONMENT_ID = 'test';
 let TEST_DB_NAME: string;
@@ -44,12 +50,7 @@ describe('$relate app', () => {
     test.stdout().it('logs app launch token', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
 
-        await AccessTokenCommand.run([
-            TEST_DB_NAME,
-            '--user=neo4j',
-            `--credentials=${TestDbmss.DBMS_CREDENTIALS}`,
-            `--environment=${TEST_ENVIRONMENT_ID}`,
-        ]);
+        await AccessTokenCommand.run([TEST_DB_NAME, '--user=neo4j', `--environment=${TEST_ENVIRONMENT_ID}`]);
 
         await OpenCommand.run([
             testExtension.name,
