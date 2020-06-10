@@ -1,12 +1,12 @@
 import {copy} from 'fs-extra';
-import {find, includes} from 'lodash';
+import {findIndex, includes} from 'lodash';
 
-import {readPropertiesFile, writePropertiesFile} from '../../utils/files';
+import {PropertyEntries, readPropertiesFile, writePropertiesFile} from '../../utils/files';
 import {IPropertiesFile, INeo4jConfigDefaults, NEO4J_CONFIG_DEFAULTS} from './properties-file.constants';
 
 export class PropertiesFile implements IPropertiesFile {
     constructor(
-        public config: Map<string, string>,
+        public config: PropertyEntries,
         public path: string,
         private defaults: INeo4jConfigDefaults = NEO4J_CONFIG_DEFAULTS,
     ) {}
@@ -17,33 +17,38 @@ export class PropertiesFile implements IPropertiesFile {
     }
 
     public set(key: string, value: string | boolean): void {
-        let configEntries = this.getEntries(this.config);
-        configEntries = this.setEntry(configEntries, key, value);
-        this.config = new Map(configEntries);
+        this.setEntry(key, value);
     }
 
-    private getEntries(config: Map<string, string>): [string, string][] {
-        return [...config.entries()];
-    }
+    private setEntry(key: string, val: string | boolean): void {
+        const configEntries: PropertyEntries = [...this.config];
+        const entryIndex = findIndex(configEntries, (configEntry) => includes([`#${key}`, key], configEntry[0]));
 
-    private setEntry(configEntries: [string, string][], key: string, val: string | boolean): [string, string][] {
-        const entry = find(configEntries, (configEntry) => includes(configEntry[0], key));
-        if (entry) {
+        if (entryIndex >= 0) {
+            const entry = configEntries[entryIndex];
+
             if (includes(entry[0], '#')) {
                 entry[0] = key;
             }
-            entry[1] = val.toString();
 
-            return configEntries;
+            entry[1] = `${val}`;
+
+            this.config = configEntries;
+
+            return;
         }
 
-        this.config.set(key, val.toString());
-
-        return [...this.config];
+        this.config = [...configEntries, [key, `${val}`]];
     }
 
-    public get(key: string): string {
-        return this.config.get(key) || this.defaults[key];
+    public get(key: string): string | undefined {
+        const entryIndex = findIndex(this.config, (configEntry) => key === configEntry[0]);
+
+        if (entryIndex >= 0) {
+            return this.config[entryIndex][1];
+        }
+
+        return this.defaults[key];
     }
 
     flush(): Promise<void> {

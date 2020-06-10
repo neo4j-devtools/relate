@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {AuthTokenModel, SystemModule, SystemProvider} from '@relate/common';
+import {AuthTokenModel, HOOK_EVENTS, registerHookListener, SystemModule, SystemProvider} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import {selectDbmsPrompt, passwordPrompt, inputPrompt} from '../../prompts';
@@ -32,6 +32,19 @@ export class AccessTokenModule implements OnApplicationBootstrap {
             credentials,
             principal,
             scheme: 'basic',
+        });
+
+        registerHookListener(HOOK_EVENTS.RUN_QUERY_RETRY, ({retry}) => {
+            if (retry < 1) {
+                return;
+            }
+
+            if (retry === 1) {
+                this.utils.log('DBMS connection not available, retrying...');
+                return;
+            }
+
+            this.utils.log('still retrying...');
         });
 
         return environment.dbmss

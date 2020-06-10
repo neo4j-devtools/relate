@@ -1,18 +1,16 @@
 import {writeFile} from 'fs-extra';
-import {filter, join, map, trim} from 'lodash';
+import {join, map, trim} from 'lodash';
 
 import {NEW_LINE, PROPERTIES_SEPARATOR} from '../../constants';
+import {PropertyEntries} from './read-properties-file';
 
-export function writePropertiesFile(path: string, properties: Map<string, string>): Promise<void> {
+export function writePropertiesFile(path: string, properties: PropertyEntries): Promise<void> {
     const asText = join(
-        map(
-            filter([...properties], ([key]) => Boolean(trim(key))),
-            ([key, val]) => {
-                const nowhitespace = trim(val);
+        map(properties, ([key, val]) => {
+            const nowhitespace = trim(val);
 
-                return nowhitespace ? join([key, val], PROPERTIES_SEPARATOR) : key;
-            },
-        ),
+            return nowhitespace ? join([key, val], PROPERTIES_SEPARATOR) : key;
+        }),
         NEW_LINE,
     );
 

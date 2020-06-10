@@ -45,7 +45,7 @@ const fetchExtensionInfo = async (extensionName: string, version: string): Promi
             username: JFROG_PRIVATE_REGISTRY_USERNAME,
         }).json();
     } catch (_error) {
-        throw new FetchError(`Invalid response from "${EXTENSION_URL_PATH}${extensionName}"`);
+        throw new FetchError(`Unable to find the requested extension: ${extensionName} online`);
     }
 
     if (!res.versions[version]) {

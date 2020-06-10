@@ -1,5 +1,7 @@
 import {SignOptions} from 'jsonwebtoken';
 
+export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
+
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 
@@ -10,7 +12,7 @@ export const DBMS_DIR_NAME = 'dbmss';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing daedalus instance
-export const JWT_INSTANCE_TOKEN_SALT = 'hello world!';
+export const RELATE_TOKEN_SALT_FILE_NAME = 'relate.secret.key';
 export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
 
 export const EXTENSION_DIR_NAME = 'extensions';
@@ -43,9 +45,6 @@ export enum DBMS_TLS_LEVEL {
     ENABLED = 'ENABLED',
 }
 
-export type Listener<T = any> = (eventData: T) => void | Promise<void>;
-export type Actor<T = any> = (eventData: T) => T | Promise<T>;
-
 export enum HOOK_EVENTS {
     ELECTRON_WINDOW_OPTIONS = 'ELECTRON_WINDOW_OPTIONS',
     ELECTRON_WINDOW_CREATED = 'ELECTRON_WINDOW_CREATED',
@@ -66,7 +65,15 @@ export enum HOOK_EVENTS {
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_START = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_START',
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP',
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
+    RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
 }
+
+export interface IHookEventPayloads {
+    [HOOK_EVENTS.RUN_QUERY_RETRY]: {query: string; params: any; retry: number};
+    [key: string]: any;
+}
+export type Listener<E extends HOOK_EVENTS> = (eventData: IHookEventPayloads[E]) => void | Promise<void>;
+export type Actor<E extends HOOK_EVENTS, T = IHookEventPayloads[E]> = (eventData: T) => T | Promise<T>;
 
 export const DEFAULT_JWT_SIGN_OPTIONS: SignOptions = {expiresIn: TWENTY_FOUR_HOURS_SECONDS};
 
@@ -101,3 +108,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 }
+
+// seconds
+export const CONNECTION_RETRY_STEP = RELATE_IS_TESTING ? 12 : 4;
+export const MAX_CONNECTION_RETRIES = 5;

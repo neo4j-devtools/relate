@@ -2,7 +2,7 @@ import {Dict, List, Maybe, None, Str} from '@relate/types';
 import fse from 'fs-extra';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
-import {Driver, DRIVER_RESULT_TYPE, IAuthToken} from '@huboneo/tapestry';
+import {IAuthToken} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
@@ -19,13 +19,11 @@ import {
     neo4jAdminCmd,
     neo4jCmd,
     resolveDbms,
-    parseNeo4jConfigPort,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
     InvalidArgumentError,
-    InvalidConfigError,
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
@@ -33,13 +31,11 @@ import {
 import {isValidUrl} from '../../utils/generic';
 import {
     LocalEnvironment,
-    DEFAULT_NEO4J_BOLT_PORT,
     LOCALHOST_IP_ADDRESS,
     NEO4J_CERT_DIR,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
     NEO4J_CONF_FILE_BACKUP,
-    NEO4J_CONFIG_KEYS,
     NEO4J_EDITION,
     NEO4J_JWT_ADDON_NAME,
     NEO4J_JWT_ADDON_VERSION,
@@ -221,37 +217,22 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
-        const dbmsRootPath = this.getDbmsRootPath(resolveDbms(this.dbmss, dbmsNameOrId).id);
-        const config = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
-        const host = config.get(NEO4J_CONFIG_KEYS.DEFAULT_LISTEN_ADDRESS) || LOCALHOST_IP_ADDRESS;
-        const port = parseNeo4jConfigPort(config.get(NEO4J_CONFIG_KEYS.BOLT_LISTEN_ADDRESS) || DEFAULT_NEO4J_BOLT_PORT);
-        try {
-            const driver = new Driver({
-                connectionConfig: {
-                    authToken,
-                    host,
-                    port,
-                },
-            });
+        const dbms = await this.get(dbmsNameOrId);
+        const driver = await this.getJSONDriverInstance(dbms.id, authToken);
 
-            const token = await driver
-                .query('CALL jwt.security.requestAccess($appName)', {appName})
-                .pipe(
-                    rxjs.first(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
-                    rxjs.flatMap((rec) => rec.getFieldData('token').getOrElse(Str.EMPTY)),
-                )
-                .toPromise()
-                .finally(() => driver.shutDown().toPromise());
+        const token = await this.runQuery<string>(driver, 'CALL jwt.security.requestAccess($appName)', {appName})
+            .pipe(
+                rxjs.first(),
+                rxjs.flatMap((rec) => rec.data),
+            )
+            .toPromise()
+            .finally(() => driver.shutDown().toPromise());
 
-            if (!token) {
-                throw new InvalidArgumentError('Unable to create access token');
-            }
-
-            // @todo: fix this typing when tapestry is using our monads
-            return token as string;
-        } catch (e) {
-            throw new InvalidConfigError('Unable to connect to DBMS');
+        if (!token) {
+            throw new InvalidArgumentError('Unable to create access token');
         }
+
+        return token;
     }
 
     private getDbmsRootPath(dbmsId?: string): string {
@@ -383,9 +364,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     private async ensureDbmsStructure(dbmsID: string, config: PropertiesFile): Promise<void> {
         const dbmsRoot = this.getDbmsRootPath(dbmsID);
 
-        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.run')));
-        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.logs')));
-        await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs'), 'neo4j.log'));
+        // @todo: can we make these more guaranteed?
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.run')!));
+        await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.logs')!));
+        await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs')!, 'neo4j.log'));
     }
 
     private async discoverDbmss(): Promise<void> {

@@ -1,13 +1,22 @@
 import jwt, {SignOptions} from 'jsonwebtoken';
+import path from 'path';
+import fse from 'fs-extra';
+import {v4 as uuidv4} from 'uuid';
 import _ from 'lodash';
 
-import {DEFAULT_JWT_SIGN_OPTIONS, JWT_INSTANCE_TOKEN_SALT} from './constants';
-import {ValidationFailureError} from './errors';
+import {DEFAULT_JWT_SIGN_OPTIONS, RELATE_TOKEN_SALT_FILE_NAME} from './constants';
+import {InvalidArgumentError, ValidationFailureError} from './errors';
+import {envPaths} from './utils';
 
 // @todo: find a better home
 export class TokenService {
-    static sign(data: any, salt = '', options: SignOptions = {}): Promise<string> {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${salt}`;
+    static INSTANCE_SALT_PATH = path.join(envPaths().data, RELATE_TOKEN_SALT_FILE_NAME);
+
+    static UUID_V4_REGEX = /^[a-z0-9]{8}-[a-z0-9]{4}-4[a-z0-9]{3}-[a-z0-9]{4}-[a-z0-9]{12}$/;
+
+    static async sign(data: any, salt = '', options: SignOptions = {}): Promise<string> {
+        const instanceSalt = await TokenService.getInstanceSalt();
+        const jwtTokenSalt = `${instanceSalt}-${salt}`;
         const optionsToUse = _.merge({}, DEFAULT_JWT_SIGN_OPTIONS, options);
 
         return new Promise((resolve, reject) => {
@@ -22,8 +31,9 @@ export class TokenService {
         });
     }
 
-    static verify<T = any>(token: string, salt = ''): Promise<T> {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${salt}`;
+    static async verify<T = any>(token: string, salt = ''): Promise<T> {
+        const instanceSalt = await TokenService.getInstanceSalt();
+        const jwtTokenSalt = `${instanceSalt}-${salt}`;
 
         return new Promise((resolve, reject) => {
             jwt.verify(token, jwtTokenSalt, (err: any, decoded: any) => {
@@ -37,9 +47,21 @@ export class TokenService {
         });
     }
 
-    static verifySync<T = any>(token: string, salt = ''): T {
-        const jwtTokenSalt = `${JWT_INSTANCE_TOKEN_SALT}-${salt}`;
+    static async getInstanceSalt() {
+        try {
+            const salt = await fse.readFile(TokenService.INSTANCE_SALT_PATH, 'utf8');
 
-        return jwt.verify(token, jwtTokenSalt) as any;
+            if (!TokenService.UUID_V4_REGEX.test(salt)) {
+                throw new InvalidArgumentError(`Invalid secred key provided`);
+            }
+
+            return salt;
+        } catch (_e) {
+            const salt = uuidv4();
+
+            await fse.writeFile(TokenService.INSTANCE_SALT_PATH, salt, 'utf8');
+
+            return salt;
+        }
     }
 }
