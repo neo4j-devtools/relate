@@ -12,8 +12,8 @@ describe('Nil', () => {
         const one = Nil.from('test');
         const two = Nil.from('');
 
-        expect(one.isEmpty).toBe(false);
-        expect(two.isEmpty).toBe(false);
+        expect(one.isEmpty).toBe(true);
+        expect(two.isEmpty).toBe(true);
     });
 
     test('isNil', () => {

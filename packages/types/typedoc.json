@@ -1,0 +1,14 @@
+{
+    "inputFiles": ["./src/monads"],
+    "exclude": "**/*+(index|.test|.utils).ts",
+    "mode": "file",
+    "out": "documentation",
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "gitRemote": "upstream",
+    "readme": "none",
+    "plugins": [
+        "typedoc-plugin-no-inherit",
+        "typedoc-plugin-markdown"
+    ]
+}

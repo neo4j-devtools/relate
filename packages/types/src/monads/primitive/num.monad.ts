@@ -1,23 +1,43 @@
 import Monad from '../monad';
 
+/**
+ * @noInheritDoc
+ * @description
+ * Represents a Number value
+ *
+ * If you just want to access the plain JS value, use `.get()`:
+ * ```ts
+ * const num: Num = Num.from('100');
+ * const plain: 100 = num.get();
+ * ```
+ */
 // @ts-ignore
 export default class Num extends Monad<number> {
+    static readonly ZERO = new Num(0);
+
+    static readonly ONE = new Num(1);
+
+    static readonly NEG_ONE = new Num(-1);
+
+    static readonly MAX_VALUE = new Num(Number.MAX_SAFE_INTEGER);
+
+    static readonly MIN_VALUE = new Num(Number.MIN_SAFE_INTEGER);
+
+    /**
+     * @hidden
+     */
     static readonly INT_CACHE = new Map();
 
-    static readonly ZERO = Num.from(0);
-
-    static readonly ONE = Num.from(1);
-
-    static readonly NEG_ONE = Num.from(-1);
-
-    static readonly MAX_VALUE = Num.from(Number.MAX_SAFE_INTEGER);
-
-    static readonly MIN_VALUE = Num.from(Number.MIN_SAFE_INTEGER);
-
+    /**
+     * @hidden
+     */
     static isCacheable(value: number) {
         return value >= -128 && value < 128;
     }
 
+    /**
+     * Num is empty if value is not a number
+     */
     get isEmpty(): boolean {
         return typeof this.original !== 'number' || isNaN(this.original);
     }
@@ -46,14 +66,41 @@ export default class Num extends Monad<number> {
         return Number.isInteger(this.original);
     }
 
+    /**
+     * Indicates if passed value is an instance of `Num`
+     * ```ts
+     * if (Num.isNum(val)) {
+     *     // is a Num
+     * }
+     * ```
+     */
     static isNum(val: any): val is Num {
         return val instanceof Num;
     }
 
+    /**
+     * Returns Num representation of the passed value.
+     *
+     * ```ts
+     * const strBool: Num<0> = Num.of(0);
+     * const strBool: Num<1> = Num.of(true);
+     *
+     * const strMonad: Num<10> = Num.from('10');
+     * const strMonad: Num<NaN> = Num.from('foo');
+     *
+     * const arrBool: Num<2> = Num.of([2]);
+     *
+     * const arrBool: Num<NaN> = Num.of([1,2,3]);
+     * ```
+     */
     static of(val: any): Num {
         return new Num(Number(val));
     }
 
+    /**
+     * Coerces anything into a Num
+     * @see {@link Num.of}
+     */
     static from(val?: any): Num {
         if (val === undefined) {
             return Num.ZERO;
@@ -74,6 +121,9 @@ export default class Num extends Monad<number> {
         return `${this.original.toString(radix)}`;
     }
 
+    /**
+     * Math.trunc()
+     */
     toInt(): Num {
         return this.flatMap((v) => Num.from(Math.trunc(v)));
     }

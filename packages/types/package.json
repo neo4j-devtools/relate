@@ -19,17 +19,21 @@
         "clean": "rimraf dist",
         "build": "tsc",
         "build:clean": "run-s clean build",
+        "generate:docs": "typedoc",
         "start": "tsc -w",
         "test": "jest"
     },
     "dependencies": {
-        "lodash": "4.17.15"
+        "lodash": "4.17.15",
+        "typedoc": "0.17.7",
+        "typedoc-plugin-no-inherit": "1.1.10"
     },
     "devDependencies": {
         "@types/jest": "25.2.3",
         "@types/lodash": "4.14.153",
         "jest": "26.0.1",
         "ts-jest": "26.0.0",
+        "typedoc-plugin-markdown": "2.3.1",
         "typescript": "3.9.3"
     }
 }

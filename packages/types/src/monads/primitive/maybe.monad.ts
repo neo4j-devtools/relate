@@ -2,15 +2,35 @@ import Monad from '../monad';
 import None from './none.monad';
 import Nil from './nil.monad';
 
+/**
+ * @noInheritDoc
+ * @description
+ * Represents a potentially "empty" value
+ */
 // @ts-ignore
 export default class Maybe<T> extends Monad<T | None<T>> {
     static EMPTY = new Maybe(None.EMPTY);
 
+    /**
+     * @hidden
+     */
     constructor(val?: T | None) {
         // @ts-ignore
         super(val);
     }
 
+    /**
+     * Indicates if wrapped value considers itself empty
+     *
+     * ```ts
+     * Maybe.of('').isEmpty // true
+     * Maybe.of(Bool.FALSE).isEmpty // false
+     * Maybe.of(false).isEmpty // false
+     * Maybe.of([]).isEmpty // false
+     * Maybe.of(List.from()).isEmpty // true
+     * Maybe.of(List.from([1)).isEmpty // false
+     * ```
+     */
     get isEmpty() {
         return (
             this.original === undefined ||
@@ -24,13 +44,41 @@ export default class Maybe<T> extends Monad<T | None<T>> {
         return val instanceof Maybe;
     }
 
-    static of<T>(val?: T | None): Maybe<T> {
-        // @ts-ignore
-        return val !== undefined && val !== null && !None.isNone(val) && !Nil.isNil(val)
-            ? new Maybe<T>(val)
-            : Maybe.EMPTY;
+    /**
+     * Wraps passed value in Maybe regardless of what it is
+     *
+     * ```ts
+     * const maybeString: Maybe<'foo'> = Maybe.of('foo');
+     * maybeString.isEmpty // false
+     * maybeString.get() // 'foo'
+     *
+     * const maybeEmptyList: Maybe<List<string>> = Maybe.of(List.from([]));
+     * maybeEmptyList.isEmpty // false
+     * maybeEmptyList.get() // List<never>
+     *
+     * const maybeEmptyList: Maybe<Maybe<string>> = Maybe.of(maybeString);
+     * maybeEmptyList.isEmpty // false
+     * maybeEmptyList.get() // Maybe<string>
+     * ```
+     */
+    static of<T>(val?: T | None | Nil): Maybe<T> {
+        if (None.isNone(val) || Nil.isNil(val)) {
+            // @ts-ignore
+            return Maybe.EMPTY;
+        }
+
+        if (val === undefined || val === null) {
+            // @ts-ignore
+            return Maybe.EMPTY;
+        }
+
+        return new Maybe(val);
     }
 
+    /**
+     * Wraps passed value in Maybe, if not already a Maybe
+     * @see {@link Maybe.of}
+     */
     static from<T>(val?: T): Maybe<T> {
         return Maybe.isMaybe<T>(val) ? val : Maybe.of<T>(val);
     }
