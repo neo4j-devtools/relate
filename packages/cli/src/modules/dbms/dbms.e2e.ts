@@ -24,9 +24,10 @@ const TEST_ENVIRONMENT_ID = 'test';
 let TEST_DB_NAME: string;
 
 describe('$relate dbms', () => {
-    const dbmss = new TestDbmss(__filename);
+    let dbmss: TestDbmss;
 
     beforeAll(async () => {
+        dbmss = await TestDbmss.init(__filename);
         const {name} = await dbmss.createDbms();
 
         TEST_DB_NAME = name;

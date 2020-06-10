@@ -25,9 +25,10 @@ const queryBody = (query: string, variables?: {[key: string]: any}): {[key: stri
 
 describe('DBMSModule', () => {
     let app: INestApplication;
-    const dbmss: TestDbmss = new TestDbmss(__filename);
+    let dbmss: TestDbmss;
 
     beforeAll(async () => {
+        dbmss = await TestDbmss.init(__filename);
         const {name} = await dbmss.createDbms();
 
         TEST_DB_NAME = name;

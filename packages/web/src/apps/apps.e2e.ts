@@ -66,11 +66,12 @@ const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 
 describe('AppsModule', () => {
     let app: INestApplication;
-    const dbmss = new TestDbmss(__filename);
+    let dbmss: TestDbmss;
     const extensions = new TestExtensions(__filename);
     let testExtension: IInstalledExtension;
 
     beforeAll(async () => {
+        dbmss = await TestDbmss.init(__filename);
         const {id} = await dbmss.createDbms();
         TEST_DB_ID = id;
         testExtension = await extensions.installNew();

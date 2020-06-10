@@ -172,6 +172,13 @@
         ],
         "no-proto": "error",
         "no-restricted-globals": "error",
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "NewExpression[callee.name='TestDbmss']",
+                "message": "Do not use 'new TestDbmss()', use 'TestDbmss.init()' instead."
+            }
+        ],
         "no-restricted-properties": [
             "error",
             {

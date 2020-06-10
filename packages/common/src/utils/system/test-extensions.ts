@@ -1,13 +1,14 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 import fse from 'fs-extra';
+import tar from 'tar';
 
 import {envPaths} from '../env-paths';
 import {IInstalledExtension} from '../../models';
 import {EXTENSION_DIR_NAME, EXTENSION_TYPES, EXTENSION_MANIFEST} from '../../constants';
 
 export class TestExtensions {
-    extensions: IInstalledExtension[] = [];
+    extensions: Array<IInstalledExtension | string> = [];
 
     constructor(private filename: string) {}
 
@@ -38,6 +39,26 @@ export class TestExtensions {
         return manifest;
     }
 
+    async cacheArchive(type: EXTENSION_TYPES = EXTENSION_TYPES.STATIC): Promise<IInstalledExtension> {
+        const cachePath = path.join(envPaths().cache, EXTENSION_DIR_NAME);
+        const manifest = await this.createExtension(type, cachePath);
+        const archivePath = path.join(cachePath, `${manifest.name}.tgz`);
+
+        await tar.c(
+            {
+                gzip: true,
+                file: archivePath,
+                cwd: cachePath,
+            },
+            [manifest.name],
+        );
+
+        await fse.remove(path.join(cachePath, manifest.name));
+        this.extensions.push(archivePath);
+
+        return manifest;
+    }
+
     cacheNew(type: EXTENSION_TYPES = EXTENSION_TYPES.STATIC): Promise<IInstalledExtension> {
         const cachePath = path.join(envPaths().cache, EXTENSION_DIR_NAME);
 
@@ -52,11 +73,19 @@ export class TestExtensions {
 
     async teardown(): Promise<void> {
         const deleteAll = this.extensions.map(async (ext) => {
-            const cachePath = path.join(envPaths().cache, EXTENSION_DIR_NAME, ext.name);
-            const dataPath = path.join(envPaths().data, EXTENSION_DIR_NAME, ext.type, ext.name);
+            if (typeof ext === 'string') {
+                await fse.remove(ext);
+                return;
+            }
 
-            await fse.remove(cachePath);
-            await fse.remove(dataPath);
+            await Promise.all(
+                [
+                    path.join(envPaths().cache, EXTENSION_DIR_NAME, ext.name),
+                    path.join(envPaths().cache, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
+                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.type, ext.name),
+                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.type, `${ext.name}@${ext.version}`),
+                ].map((p) => fse.remove(p)),
+            );
         });
 
         await Promise.all(deleteAll);
