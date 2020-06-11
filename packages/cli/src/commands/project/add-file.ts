@@ -24,7 +24,7 @@ export default class AddFileCommand extends BaseCommand {
         ...FLAGS.PROJECT,
         destination: flags.string({
             char: 'd',
-            description: 'The relative path (directory) to add the file to in the project',
+            description: 'The relative path of the file (including name) in the project',
         }),
     };
 }

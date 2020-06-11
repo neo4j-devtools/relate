@@ -34,7 +34,7 @@ export class AddFileModule implements OnApplicationBootstrap {
         }
 
         return environment.projects.addFile(projectId, path.resolve(source), destination).then((added) => {
-            this.utils.log(`Added "${added.name}" to "${added.directory || '.'}" in project`);
+            this.utils.log(`Added "${added.name}" to "${added.directory}" in project`);
         });
     }
 }

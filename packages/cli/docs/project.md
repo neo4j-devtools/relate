@@ -43,7 +43,7 @@ USAGE
   $ relate project:add-file SOURCE
 
 OPTIONS
-  -d, --destination=destination  The relative path (directory) to add the file to in the project
+  -d, --destination=destination  The relative path of the file (including name) in the project
   -e, --environment=environment  Name of the environment to run the command against
   -p, --project=project          (required) Name of the project to run the command against
 ```

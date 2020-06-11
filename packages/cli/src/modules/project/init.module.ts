@@ -31,6 +31,9 @@ export class InitModule implements OnApplicationBootstrap {
         };
 
         cli.action.start('Creating project');
-        return projects.create(config).then((created) => this.utils.log(getEntityDisplayName(created)));
+        return projects.create(config).then((created) => {
+            cli.action.stop();
+            this.utils.log(getEntityDisplayName(created));
+        });
     }
 }
