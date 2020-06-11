@@ -30,6 +30,8 @@ Helpful Resources
 
 We have our own monadic type system which is continuously under development. The aim of this system is to ensure type-safety, reduce complexity of logic and control-flows, improve legibility of code, and improve TypeScripts ability to do type-inference et al.
 
+**[Read the docs](./documentation/README.md)**
+
 We currently have the main data types of JS represented
 -   [None (`undefined`)](./src/monads/primitive/none.monad.ts)
 -   [Nil (`null`)](./src/monads/primitive/nil.monad.ts)
@@ -39,7 +41,7 @@ We currently have the main data types of JS represented
 -   [List (`Array`)](./src/monads/primitive/list.monad.ts)
 -   [Dict (`Object || Map`)](./src/monads/primitive/dict.monad.ts)
 
-### Some example
+### Some examples
 
 Create a number, divide it, check if it's modulo is 2
 

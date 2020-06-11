@@ -18,47 +18,110 @@ export interface IMonad<T> extends Iterable<T> {
     flatMap<M>(project: (value: T) => M): M;
 }
 
+/**
+ * @description
+ * The base implementation for all Monadic types.
+ *
+ * If you just want to access the plain JS value, use `.get()`:
+ * ```ts
+ * const monad: Monad<number> = Monad.from(10);
+ * const plain: number | undefined = monad.get();
+ * ```
+ */
 export default class Monad<T> implements IMonad<T> {
     protected alreadyIterable = false;
 
     protected readonly iterableValue: Iterable<T>;
 
+    /**
+     * @hidden
+     */
     constructor(protected readonly original: T) {
         this.alreadyIterable = isIterable(original);
         // @ts-ignore
         this.iterableValue = this.alreadyIterable ? original : [original];
     }
 
-    isThis(other?: any): other is this {
-        return other instanceof this.constructor;
+    /**
+     * Indicates if passed value is an instance of `this`
+     * ```ts
+     * if (ours.isThis(other)) {
+     *     // is instance of same constructor
+     * }
+     * ```
+     */
+    isThis(val?: any): val is this {
+        return val instanceof this.constructor;
     }
 
+    /**
+     * Indicates if Monad lacks a value
+     */
     get isEmpty(): boolean {
         return !this.original;
     }
 
+    /**
+     * Indicates if passed value is an instance of `Monad`
+     * ```ts
+     * if (Monad.isMonad(val)) {
+     *     // is a monad
+     * }
+     * ```
+     */
     static isMonad<T>(val: any): val is Monad<T> {
         return val instanceof Monad;
     }
 
+    /**
+     * Wraps passed value in monad regardless of what it is
+     * ```ts
+     * const strMonad: Monad<'foo'> = Monad.of('foo');
+     * const strMonadMonad: Monad<Monad<'foo'>> = Monad.of(Monad.of('foo'));
+     * ```
+     */
     static of<T>(val: T): Monad<T> {
         return new Monad<T>(val);
     }
 
-    static from<T>(val: T): Monad<T> {
-        return Monad.isMonad<T>(val) ? val : Monad.of<T>(val);
+    /**
+     * Wraps passed value in monad, if not already a Monad
+     * ```ts
+     * const strMonad: Monad<'foo'> = Monad.from('foo');
+     * const strMonadAgain: Monad<'foo'> = Monad.from(Monad.of('foo'));
+     * ```
+     */
+    static from<T, R = T extends Monad<infer I> ? I : T>(val: T): Monad<R> {
+        // @ts-ignore
+        return Monad.isMonad<T>(val) ? val : Monad.of<R>(val);
     }
 
+    /**
+     * @hidden
+     */
     *[Symbol.iterator](): Iterator<T> {
         for (const val of this.iterableValue) {
             yield val;
         }
     }
 
+    /**
+     * Get raw value of monad
+     */
     get() {
         return this.original;
     }
 
+    /**
+     * Get raw value of monad if not empty, else use other
+     * ```ts
+     * const otherWhenNotEmpty: 'foo' = Monad.of('foo').getOrElse('bar');
+     * const otherWhenEmpty: 'bar' = Monad.of('').getOrElse('bar');
+     * const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
+     *     throw new Error('empty');
+     * });
+     * ```
+     */
     getOrElse(other: T | (() => T)): T {
         if (!this.isEmpty) {
             return this.get();
@@ -67,18 +130,35 @@ export default class Monad<T> implements IMonad<T> {
         return typeof other === 'function' ? other() : other;
     }
 
+    /**
+     * Checks if other has the same raw value
+     */
     equals(other: any): boolean {
         const toCompare = Monad.from(other);
 
         return toCompare.get() === this.get();
     }
 
+    /**
+     * Access value without modifying it. Useful when all you need is to log etc.
+     * ```ts
+     * const foo: Monad<'foo'> = Monad.from('foo');
+     * const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
+     * ```
+     */
     tap(project: (value: T) => void): this {
         project(this.original);
 
         return this;
     }
 
+    /**
+     * Modify monad value without changing the type.
+     * ```ts
+     * const foo: Monad<'foo'> = Monad.from('foo');
+     * const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
+     * ```
+     */
     map(project: (value: T) => T): this {
         if (this.isEmpty) {
             return this;
@@ -87,22 +167,45 @@ export default class Monad<T> implements IMonad<T> {
         return new this.constructor(project(this.original));
     }
 
+    /**
+     * Unpack monad value and return anything.
+     * ```ts
+     * const foo: Monad<'foo'> = Monad.from('foo');
+     * const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
+     * ```
+     */
     flatMap<M>(project: (value: T) => M): M {
         return project(this.original);
     }
 
+    /**
+     * Unpack monad value and return new Monad (of any type).
+     * ```ts
+     * const foo: Monad<'foo'> = Monad.from('foo');
+     * const fooBar: Num<7> = foo.switchMap((val) => Num.from(val.length));
+     * ```
+     */
     switchMap<M extends IMonad<any> = Monad<any>>(project: (value: this) => M): M {
         return project(this);
     }
 
+    /**
+     * When calling `.toString()`
+     */
     toString(): string {
         return `${this.original}`;
     }
 
+    /**
+     * When calling `.toJSON()`
+     */
     toJSON(): any {
         return JSON.parse(JSON.stringify(this.original));
     }
 
+    /**
+     * When calling `.valueOf()`
+     */
     valueOf(): T {
         return this.original;
     }

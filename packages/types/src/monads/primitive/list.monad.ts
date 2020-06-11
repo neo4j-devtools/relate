@@ -19,6 +19,22 @@ type Compactable<T> = T extends null
     ? never
     : T;
 
+/**
+ * @noInheritDoc
+ * @description
+ * Represents any Iterable value (i.e Array, String, Map, Set, etc.)
+ *
+ * If you just want to access the plain JS value, use `.get()` or `.toArray()`:
+ * ```ts
+ * const list: List<string> = List.from('foo');
+ * const plain: 'foo' = list.get();
+ * const asArr: ['f', 'o', 'o'] = list.toArray();
+ *
+ * const list: List<number> = List.from([1,2,3]);
+ * const plain: [1,2,3] = list.get();
+ * const asArr: [1,2,3] = list.toArray();
+ * ```
+ */
 export default class List<T> extends Monad<Iterable<T>> {
     // @ts-ignore
     protected iterableValue: Iterable<T>;
@@ -37,6 +53,9 @@ export default class List<T> extends Monad<Iterable<T>> {
         return this.ourPrivateLength.getOrElse(Num.ZERO);
     }
 
+    /**
+     * List are empty if length is zero
+     */
     get isEmpty(): boolean {
         return this.ourLength.equals(Num.ZERO);
     }
@@ -45,6 +64,9 @@ export default class List<T> extends Monad<Iterable<T>> {
         return this.ourLength;
     }
 
+    /**
+     * Returns a {@link Maybe} of the first element in the sequence
+     */
     get first(): Maybe<T> {
         if (this.ourFirst) {
             return this.ourFirst;
@@ -57,6 +79,9 @@ export default class List<T> extends Monad<Iterable<T>> {
         return this.ourFirst!;
     }
 
+    /**
+     * Returns a {@link Maybe} of the nth element in the sequence
+     */
     nth(index: number | string | Num): Maybe<T> {
         const indexToUse = Num.from(index);
         let i = 0;
@@ -72,6 +97,9 @@ export default class List<T> extends Monad<Iterable<T>> {
         return Maybe.of<T>();
     }
 
+    /**
+     * Returns a {@link Maybe} of the last element in the sequence
+     */
     get last(): Maybe<T> {
         if (this.ourLast) {
             return this.ourLast;
@@ -84,16 +112,45 @@ export default class List<T> extends Monad<Iterable<T>> {
         return this.ourLast!;
     }
 
+    /**
+     * Indicates if passed value is an instance of `List`
+     * ```ts
+     * if (List.isList(val)) {
+     *     // is a List
+     * }
+     * ```
+     */
     static isList<T = any>(val: any): val is List<T> {
         return val instanceof List;
     }
 
+    /**
+     * Returns a List representing the passed value as an Iterable.
+     *
+     * ```ts
+     * const strList: List<string> = List.of('foo');
+     * List.get(); // ['f', 'o', 'o']
+     *
+     * const boolList: List<boolean> = List.of(true);
+     * List.get(); // [true]
+     *
+     * const listMonad: List<string> = List.from(['']);
+     * List.get(); // ['']
+     *
+     * const listMonad: List<string> = List.from([]);
+     * const listList: List<false> = List.of(listMonad);
+     * ```
+     */
     static of<T>(val: Iterable<T>): List<T> {
         const sane: Iterable<T> = isIterable(val) ? val : Array.of(val);
 
         return new List(sane);
     }
 
+    /**
+     * Coerces any value to a List, if not one already
+     * @see {@link List.of}
+     */
     static from<T>(val?: Iterable<T> | null): List<T> {
         if (!val) {
             return List.of<T>([]);
@@ -102,6 +159,9 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.isList<T>(val) ? val : List.of(Array.from(val));
     }
 
+    /**
+     * @hidden
+     */
     // @ts-ignore
     *[Symbol.iterator](): Iterator<T> {
         for (const val of this.iterableValue) {
@@ -134,7 +194,14 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of<T>(found);
     }
 
-    // @todo: extend typing for empty monads?
+    /**
+     * Remove all null, undefined, None, or Nil values (shallow)
+     * ```ts
+     * const listOfEmpties = List.from([[], 'foo', null, None])
+     * const compacted = listOfEmpties.compact()
+     * compacted.toArray() // [[], 'foo']
+     * ```
+     */
     compact<R = Compactable<T>>(): List<R> {
         // @ts-ignore
         return this.filter((val) => {
@@ -154,10 +221,28 @@ export default class List<T> extends Monad<Iterable<T>> {
         return result;
     }
 
+    /**
+     * Map over each item in the List, modifying each value
+     * @param   project   callback invoked for each item
+     * ```ts
+     * const start = List.from([1,2,3])
+     * const end = start.mapEach((v) => v+1);
+     * end.toArray() // [2,3,4]
+     * ```
+     */
     mapEach<M = T>(project: (val: T) => M): List<M> {
         return List.from(map([...this], project));
     }
 
+    /**
+     * Iterate over each item in the List, without modifying value
+     * @param   project   callback invoked for each item
+     * ```ts
+     * const start = List.from([1,2,3])
+     * const end = start.forEach((v) => v+1);
+     * end.toArray() // [1,2,3]
+     * ```
+     */
     forEach(project: (val: T) => void): this {
         forEach([...this], project);
 
@@ -212,7 +297,6 @@ export default class List<T> extends Monad<Iterable<T>> {
             return List.of([...this, ...other]);
         }
 
-        // @todo: does not handle Dict et al due to circulars
         if (isIterable(other) && !Monad.isMonad(other)) {
             return List.of([...this, ...other]);
         }
@@ -220,6 +304,15 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of([...this, other]);
     }
 
+    // @todo: discuss if this is desired
+    /**
+     * Flattens all iterable items (shallow)
+     * ```ts
+     * const listOfLists = List.from([[], 'foo', [2], List.from(true)])
+     * const flat = listOfLists.flatten()
+     * flat.toArray() // ['f', 'o', 'o', 2, true]
+     * ```
+     */
     flatten<R = T extends List<List<infer I>> ? I : T>(): List<R> {
         return this.reduce((agg, next) => agg.concat(next), List.from<R>([]));
     }
@@ -240,6 +333,15 @@ export default class List<T> extends Monad<Iterable<T>> {
         return [...this];
     }
 
+    /**
+     * Unwinds any promises in list (shallow), using Promise.all()
+     *
+     * ```ts
+     * const listOfPromises = List.from(['foo', Promise.resolve(2), Promise.resolve([])])
+     * const unwound = await listOfPromises.unwindPromises()
+     * unwound.toArray() // ['foo', 2, []]
+     * ```
+     */
     async unwindPromises<R = T extends PromiseLike<infer V> ? V : T>(): Promise<List<R>> {
         // @ts-ignore
         return List.of<R>(await Promise.all(this));
