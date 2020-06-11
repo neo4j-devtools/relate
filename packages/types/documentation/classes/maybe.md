@@ -3,7 +3,17 @@
 # Class: Maybe ‹**T**›
 
 **`description`** 
-Represents a potentially "empty" value
+Represents a potentially "empty" value (if value is null | undefined | Nil | None)
+```ts
+Maybe.of('').isEmpty // false
+Maybe.of(Bool.FALSE).isEmpty // false
+Maybe.of(false).isEmpty // false
+Maybe.of(null).isEmpty // true
+Maybe.of(Nil).isEmpty // true
+Maybe.of(None).isEmpty // true
+Maybe.of(List.from()).isEmpty // false
+Maybe.of(List.from([1)).isEmpty // false
+```
 
 ## Type parameters
 
@@ -43,7 +53,7 @@ Represents a potentially "empty" value
 
 ▪ **EMPTY**: *[Maybe](maybe.md)‹[None](none.md)‹any››* = new Maybe(None.EMPTY)
 
-*Defined in [src/monads/primitive/maybe.monad.ts:12](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L12)*
+*Defined in [src/monads/primitive/maybe.monad.ts:22](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L22)*
 
 ## Accessors
 
@@ -53,16 +63,19 @@ Represents a potentially "empty" value
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:34](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L34)*
+*Defined in [src/monads/primitive/maybe.monad.ts:47](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L47)*
 
-Indicates if wrapped value considers itself empty
+Indicates if wrapped value is null | undefined | Nil | None
 
 ```ts
-Maybe.of('').isEmpty // true
+Maybe.of('').isEmpty // false
 Maybe.of(Bool.FALSE).isEmpty // false
 Maybe.of(false).isEmpty // false
 Maybe.of([]).isEmpty // false
-Maybe.of(List.from()).isEmpty // true
+Maybe.of(null).isEmpty // true
+Maybe.of(Nil).isEmpty // true
+Maybe.of(None).isEmpty // true
+Maybe.of(List.from()).isEmpty // false
 Maybe.of(List.from([1)).isEmpty // false
 ```
 
@@ -78,7 +91,7 @@ Maybe.of(List.from([1)).isEmpty // false
 
 *Overrides [Monad](monad.md).[getOrElse](monad.md#getorelse)*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:86](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L86)*
+*Defined in [src/monads/primitive/maybe.monad.ts:99](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L99)*
 
 **Type parameters:**
 
@@ -102,7 +115,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:91](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L91)*
+*Defined in [src/monads/primitive/maybe.monad.ts:104](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L104)*
 
 **Returns:** *string*
 
@@ -114,7 +127,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:82](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L82)*
+*Defined in [src/monads/primitive/maybe.monad.ts:95](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L95)*
 
 Wraps passed value in Maybe, if not already a Maybe
 
@@ -138,7 +151,7 @@ ___
 
 ▸ **isMaybe**‹**T**›(`val`: any): *val is Maybe<T>*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:43](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L43)*
+*Defined in [src/monads/primitive/maybe.monad.ts:56](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L56)*
 
 **Type parameters:**
 
@@ -160,7 +173,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/maybe.monad.ts:64](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/maybe.monad.ts#L64)*
+*Defined in [src/monads/primitive/maybe.monad.ts:77](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L77)*
 
 Wraps passed value in Maybe regardless of what it is
 

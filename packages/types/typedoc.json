@@ -5,6 +5,7 @@
     "out": "documentation",
     "excludePrivate": true,
     "excludeProtected": true,
+    "gitRevision": "master",
     "gitRemote": "upstream",
     "readme": "none",
     "plugins": [

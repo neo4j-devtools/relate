@@ -66,7 +66,7 @@ const plain: number | undefined = monad.get();
 
 • **get isEmpty**(): *boolean*
 
-*Defined in [src/monads/monad.ts:60](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L60)*
+*Defined in [src/monads/monad.ts:60](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L60)*
 
 Indicates if Monad lacks a value
 
@@ -78,7 +78,7 @@ Indicates if Monad lacks a value
 
 ▸ **equals**(`other`: any): *boolean*
 
-*Defined in [src/monads/monad.ts:136](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L136)*
+*Defined in [src/monads/monad.ts:136](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L136)*
 
 Checks if other has the same raw value
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:177](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L177)*
+*Defined in [src/monads/monad.ts:177](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L177)*
 
 Unpack monad value and return anything.
 ```ts
@@ -130,7 +130,7 @@ ___
 
 *Implementation of [IMonad](../interfaces/imonad.md)*
 
-*Defined in [src/monads/monad.ts:111](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L111)*
+*Defined in [src/monads/monad.ts:111](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L111)*
 
 Get raw value of monad
 
@@ -142,7 +142,7 @@ ___
 
 ▸ **getOrElse**(`other`: T | function): *T*
 
-*Defined in [src/monads/monad.ts:125](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L125)*
+*Defined in [src/monads/monad.ts:125](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L125)*
 
 Get raw value of monad if not empty, else use other
 ```ts
@@ -169,7 +169,7 @@ ___
 
 *Implementation of [IMonad](../interfaces/imonad.md)*
 
-*Defined in [src/monads/monad.ts:53](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L53)*
+*Defined in [src/monads/monad.ts:53](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L53)*
 
 Indicates if passed value is an instance of `this`
 ```ts
@@ -192,7 +192,7 @@ ___
 
 ▸ **map**(`project`: function): *this*
 
-*Defined in [src/monads/monad.ts:162](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L162)*
+*Defined in [src/monads/monad.ts:162](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L162)*
 
 Modify monad value without changing the type.
 ```ts
@@ -220,12 +220,12 @@ ___
 
 ▸ **switchMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:188](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L188)*
+*Defined in [src/monads/monad.ts:188](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L188)*
 
 Unpack monad value and return new Monad (of any type).
 ```ts
 const foo: Monad<'foo'> = Monad.from('foo');
-const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
+const fooBar: Num<7> = foo.switchMap((val) => Num.from(val.length));
 ```
 
 **Type parameters:**
@@ -252,7 +252,7 @@ ___
 
 ▸ **tap**(`project`: function): *this*
 
-*Defined in [src/monads/monad.ts:149](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L149)*
+*Defined in [src/monads/monad.ts:149](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L149)*
 
 Access value without modifying it. Useful when all you need is to log etc.
 ```ts
@@ -280,7 +280,7 @@ ___
 
 ▸ **toJSON**(): *any*
 
-*Defined in [src/monads/monad.ts:202](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L202)*
+*Defined in [src/monads/monad.ts:202](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L202)*
 
 When calling `.toJSON()`
 
@@ -292,7 +292,7 @@ ___
 
 ▸ **toString**(): *string*
 
-*Defined in [src/monads/monad.ts:195](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L195)*
+*Defined in [src/monads/monad.ts:195](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L195)*
 
 When calling `.toString()`
 
@@ -304,7 +304,7 @@ ___
 
 ▸ **valueOf**(): *T*
 
-*Defined in [src/monads/monad.ts:209](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L209)*
+*Defined in [src/monads/monad.ts:209](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L209)*
 
 When calling `.valueOf()`
 
@@ -316,7 +316,7 @@ ___
 
 ▸ **from**‹**T**, **R**›(`val`: T): *[Monad](monad.md)‹R›*
 
-*Defined in [src/monads/monad.ts:94](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L94)*
+*Defined in [src/monads/monad.ts:94](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L94)*
 
 Wraps passed value in monad, if not already a Monad
 ```ts
@@ -344,7 +344,7 @@ ___
 
 ▸ **isMonad**‹**T**›(`val`: any): *val is Monad<T>*
 
-*Defined in [src/monads/monad.ts:72](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L72)*
+*Defined in [src/monads/monad.ts:72](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L72)*
 
 Indicates if passed value is an instance of `Monad`
 ```ts
@@ -371,7 +371,7 @@ ___
 
 ▸ **of**‹**T**›(`val`: T): *[Monad](monad.md)‹T›*
 
-*Defined in [src/monads/monad.ts:83](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L83)*
+*Defined in [src/monads/monad.ts:83](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L83)*
 
 Wraps passed value in monad regardless of what it is
 ```ts

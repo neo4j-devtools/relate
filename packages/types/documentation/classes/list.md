@@ -71,7 +71,7 @@ const asArr: [1,2,3] = list.toArray();
 
 • **get first**(): *[Maybe](maybe.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:70](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L70)*
+*Defined in [src/monads/primitive/list.monad.ts:70](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L70)*
 
 Returns a [Maybe](maybe.md) of the first element in the sequence
 
@@ -85,7 +85,7 @@ ___
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/list.monad.ts:59](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L59)*
+*Defined in [src/monads/primitive/list.monad.ts:59](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L59)*
 
 List are empty if length is zero
 
@@ -97,7 +97,7 @@ ___
 
 • **get last**(): *[Maybe](maybe.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:103](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L103)*
+*Defined in [src/monads/primitive/list.monad.ts:103](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L103)*
 
 Returns a [Maybe](maybe.md) of the last element in the sequence
 
@@ -109,7 +109,7 @@ ___
 
 • **get length**(): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/list.monad.ts:63](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L63)*
+*Defined in [src/monads/primitive/list.monad.ts:63](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L63)*
 
 **Returns:** *[Num](num.md)*
 
@@ -119,7 +119,7 @@ ___
 
 ▸ **compact**‹**R**›(): *[List](list.md)‹R›*
 
-*Defined in [src/monads/primitive/list.monad.ts:205](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L205)*
+*Defined in [src/monads/primitive/list.monad.ts:205](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L205)*
 
 Remove all null, undefined, None, or Nil values (shallow)
 ```ts
@@ -140,7 +140,7 @@ ___
 
 ▸ **concat**‹**O**›(`other`: O): *[List](list.md)‹T | O›*
 
-*Defined in [src/monads/primitive/list.monad.ts:289](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L289)*
+*Defined in [src/monads/primitive/list.monad.ts:289](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L289)*
 
 **Type parameters:**
 
@@ -156,7 +156,7 @@ Name | Type |
 
 ▸ **concat**‹**O**›(`other`: O): *[List](list.md)‹T | O›*
 
-*Defined in [src/monads/primitive/list.monad.ts:291](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L291)*
+*Defined in [src/monads/primitive/list.monad.ts:291](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L291)*
 
 **Type parameters:**
 
@@ -172,7 +172,7 @@ Name | Type |
 
 ▸ **concat**‹**O**, **I**›(`other`: O): *[List](list.md)‹T | I›*
 
-*Defined in [src/monads/primitive/list.monad.ts:293](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L293)*
+*Defined in [src/monads/primitive/list.monad.ts:293](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L293)*
 
 **Type parameters:**
 
@@ -194,7 +194,7 @@ ___
 
 ▸ **filter**(`predicate`: function): *[List](list.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:191](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L191)*
+*Defined in [src/monads/primitive/list.monad.ts:191](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L191)*
 
 **Parameters:**
 
@@ -216,7 +216,7 @@ ___
 
 ▸ **find**(`predicate`: function): *[Maybe](maybe.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:178](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L178)*
+*Defined in [src/monads/primitive/list.monad.ts:178](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L178)*
 
 **Parameters:**
 
@@ -238,7 +238,7 @@ ___
 
 ▸ **flatten**‹**R**›(): *[List](list.md)‹R›*
 
-*Defined in [src/monads/primitive/list.monad.ts:316](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L316)*
+*Defined in [src/monads/primitive/list.monad.ts:316](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L316)*
 
 Flattens all iterable items (shallow)
 ```ts
@@ -259,7 +259,7 @@ ___
 
 ▸ **forEach**(`project`: function): *this*
 
-*Defined in [src/monads/primitive/list.monad.ts:246](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L246)*
+*Defined in [src/monads/primitive/list.monad.ts:246](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L246)*
 
 Iterate over each item in the List, without modifying value
 
@@ -290,7 +290,7 @@ ___
 
 ▸ **hasIndex**(`index`: [Num](num.md) | number): *boolean*
 
-*Defined in [src/monads/primitive/list.monad.ts:172](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L172)*
+*Defined in [src/monads/primitive/list.monad.ts:172](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L172)*
 
 **Parameters:**
 
@@ -306,7 +306,7 @@ ___
 
 ▸ **includes**(`other`: T): *boolean*
 
-*Defined in [src/monads/primitive/list.monad.ts:184](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L184)*
+*Defined in [src/monads/primitive/list.monad.ts:184](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L184)*
 
 **Parameters:**
 
@@ -322,7 +322,7 @@ ___
 
 ▸ **indexOf**(`val`: T): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/list.monad.ts:252](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L252)*
+*Defined in [src/monads/primitive/list.monad.ts:252](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L252)*
 
 **Parameters:**
 
@@ -338,7 +338,7 @@ ___
 
 ▸ **join**(`separator?`: string | [Str](str.md)): *[Str](str.md)*
 
-*Defined in [src/monads/primitive/list.monad.ts:324](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L324)*
+*Defined in [src/monads/primitive/list.monad.ts:324](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L324)*
 
 **Parameters:**
 
@@ -354,7 +354,7 @@ ___
 
 ▸ **mapEach**‹**M**›(`project`: function): *[List](list.md)‹M›*
 
-*Defined in [src/monads/primitive/list.monad.ts:233](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L233)*
+*Defined in [src/monads/primitive/list.monad.ts:233](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L233)*
 
 Map over each item in the List, modifying each value
 
@@ -389,7 +389,7 @@ ___
 
 ▸ **nth**(`index`: number | string | [Num](num.md)): *[Maybe](maybe.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:85](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L85)*
+*Defined in [src/monads/primitive/list.monad.ts:85](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L85)*
 
 Returns a [Maybe](maybe.md) of the nth element in the sequence
 
@@ -407,7 +407,7 @@ ___
 
 ▸ **reduce**‹**R**›(`cb`: function, `seed`: R): *R*
 
-*Defined in [src/monads/primitive/list.monad.ts:212](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L212)*
+*Defined in [src/monads/primitive/list.monad.ts:212](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L212)*
 
 **Type parameters:**
 
@@ -437,7 +437,7 @@ ___
 
 ▸ **slice**(`from`: [Num](num.md) | number, `to?`: [Num](num.md) | number): *[List](list.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:267](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L267)*
+*Defined in [src/monads/primitive/list.monad.ts:267](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L267)*
 
 **Parameters:**
 
@@ -454,7 +454,7 @@ ___
 
 ▸ **sort**(`compareFn?`: undefined | function): *[List](list.md)‹T›*
 
-*Defined in [src/monads/primitive/list.monad.ts:320](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L320)*
+*Defined in [src/monads/primitive/list.monad.ts:320](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L320)*
 
 **Parameters:**
 
@@ -470,7 +470,7 @@ ___
 
 ▸ **toArray**(): *T[]*
 
-*Defined in [src/monads/primitive/list.monad.ts:332](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L332)*
+*Defined in [src/monads/primitive/list.monad.ts:332](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L332)*
 
 **Returns:** *T[]*
 
@@ -482,7 +482,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-*Defined in [src/monads/primitive/list.monad.ts:328](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L328)*
+*Defined in [src/monads/primitive/list.monad.ts:328](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L328)*
 
 **Returns:** *string*
 
@@ -492,7 +492,7 @@ ___
 
 ▸ **unwindPromises**‹**R**›(): *Promise‹[List](list.md)‹R››*
 
-*Defined in [src/monads/primitive/list.monad.ts:345](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L345)*
+*Defined in [src/monads/primitive/list.monad.ts:345](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L345)*
 
 Unwinds any promises in list (shallow), using Promise.all()
 
@@ -516,7 +516,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/list.monad.ts:154](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L154)*
+*Defined in [src/monads/primitive/list.monad.ts:154](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L154)*
 
 Coerces any value to a List, if not one already
 
@@ -540,7 +540,7 @@ ___
 
 ▸ **isList**‹**T**›(`val`: any): *val is List<T>*
 
-*Defined in [src/monads/primitive/list.monad.ts:123](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L123)*
+*Defined in [src/monads/primitive/list.monad.ts:123](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L123)*
 
 Indicates if passed value is an instance of `List`
 ```ts
@@ -569,7 +569,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/list.monad.ts:144](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/list.monad.ts#L144)*
+*Defined in [src/monads/primitive/list.monad.ts:144](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L144)*
 
 Returns a List representing the passed value as an Iterable.
 

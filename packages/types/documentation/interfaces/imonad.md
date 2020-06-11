@@ -47,7 +47,7 @@
 
 • **isEmpty**: *boolean*
 
-*Defined in [src/monads/monad.ts:4](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L4)*
+*Defined in [src/monads/monad.ts:4](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L4)*
 
 ## Methods
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **equals**(`other`: [IMonad](imonad.md)‹any›): *boolean*
 
-*Defined in [src/monads/monad.ts:8](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L8)*
+*Defined in [src/monads/monad.ts:8](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L8)*
 
 **Parameters:**
 
@@ -83,7 +83,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:18](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L18)*
+*Defined in [src/monads/monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L18)*
 
 **Type parameters:**
 
@@ -109,7 +109,7 @@ ___
 
 ▸ **get**(): *T | undefined*
 
-*Defined in [src/monads/monad.ts:10](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L10)*
+*Defined in [src/monads/monad.ts:10](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L10)*
 
 **Returns:** *T | undefined*
 
@@ -119,7 +119,7 @@ ___
 
 ▸ **getOrElse**(`other`: T): *T*
 
-*Defined in [src/monads/monad.ts:12](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L12)*
+*Defined in [src/monads/monad.ts:12](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L12)*
 
 **Parameters:**
 
@@ -135,7 +135,7 @@ ___
 
 ▸ **isThis**(`other?`: any): *other is this*
 
-*Defined in [src/monads/monad.ts:6](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L6)*
+*Defined in [src/monads/monad.ts:6](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L6)*
 
 **Parameters:**
 
@@ -151,7 +151,7 @@ ___
 
 ▸ **map**(`project`: function): *[IMonad](imonad.md)‹T›*
 
-*Defined in [src/monads/monad.ts:16](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L16)*
+*Defined in [src/monads/monad.ts:16](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L16)*
 
 **Parameters:**
 
@@ -173,7 +173,7 @@ ___
 
 ▸ **toString**(`formatter?`: undefined | function): *string*
 
-*Defined in [src/monads/monad.ts:14](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/monad.ts#L14)*
+*Defined in [src/monads/monad.ts:14](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L14)*
 
 **Parameters:**
 

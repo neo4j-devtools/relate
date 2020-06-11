@@ -182,7 +182,7 @@ export default class Monad<T> implements IMonad<T> {
      * Unpack monad value and return new Monad (of any type).
      * ```ts
      * const foo: Monad<'foo'> = Monad.from('foo');
-     * const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
+     * const fooBar: Num<7> = foo.switchMap((val) => Num.from(val.length));
      * ```
      */
     switchMap<M extends IMonad<any> = Monad<any>>(project: (value: this) => M): M {

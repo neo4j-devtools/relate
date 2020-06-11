@@ -66,7 +66,7 @@ const plain: 100 = num.get();
 
 ▪ **MAX_VALUE**: *[Num](num.md)‹›* = new Num(Number.MAX_SAFE_INTEGER)
 
-*Defined in [src/monads/primitive/num.monad.ts:22](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L22)*
+*Defined in [src/monads/primitive/num.monad.ts:22](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L22)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 ▪ **MIN_VALUE**: *[Num](num.md)‹›* = new Num(Number.MIN_SAFE_INTEGER)
 
-*Defined in [src/monads/primitive/num.monad.ts:24](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L24)*
+*Defined in [src/monads/primitive/num.monad.ts:24](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L24)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 ▪ **NEG_ONE**: *[Num](num.md)‹›* = new Num(-1)
 
-*Defined in [src/monads/primitive/num.monad.ts:20](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L20)*
+*Defined in [src/monads/primitive/num.monad.ts:20](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L20)*
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 ▪ **ONE**: *[Num](num.md)‹›* = new Num(1)
 
-*Defined in [src/monads/primitive/num.monad.ts:18](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L18)*
+*Defined in [src/monads/primitive/num.monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L18)*
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 ▪ **ZERO**: *[Num](num.md)‹›* = new Num(0)
 
-*Defined in [src/monads/primitive/num.monad.ts:16](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L16)*
+*Defined in [src/monads/primitive/num.monad.ts:16](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L16)*
 
 ## Accessors
 
@@ -108,7 +108,7 @@ ___
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/num.monad.ts:41](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L41)*
+*Defined in [src/monads/primitive/num.monad.ts:41](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L41)*
 
 Num is empty if value is not a number
 
@@ -120,7 +120,7 @@ ___
 
 • **get isEven**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:53](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L53)*
+*Defined in [src/monads/primitive/num.monad.ts:53](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L53)*
 
 **Returns:** *boolean*
 
@@ -130,7 +130,7 @@ ___
 
 • **get isInteger**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:65](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L65)*
+*Defined in [src/monads/primitive/num.monad.ts:65](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L65)*
 
 **Returns:** *boolean*
 
@@ -140,7 +140,7 @@ ___
 
 • **get isNegative**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:57](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L57)*
+*Defined in [src/monads/primitive/num.monad.ts:57](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L57)*
 
 **Returns:** *boolean*
 
@@ -150,7 +150,7 @@ ___
 
 • **get isOdd**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:49](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L49)*
+*Defined in [src/monads/primitive/num.monad.ts:49](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L49)*
 
 **Returns:** *boolean*
 
@@ -160,7 +160,7 @@ ___
 
 • **get isPositive**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:61](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L61)*
+*Defined in [src/monads/primitive/num.monad.ts:61](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L61)*
 
 **Returns:** *boolean*
 
@@ -170,7 +170,7 @@ ___
 
 • **get isZero**(): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:45](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L45)*
+*Defined in [src/monads/primitive/num.monad.ts:45](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L45)*
 
 **Returns:** *boolean*
 
@@ -180,7 +180,7 @@ ___
 
 ▸ **add**(`other`: number | string | [Num](num.md)): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:157](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L157)*
+*Defined in [src/monads/primitive/num.monad.ts:157](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L157)*
 
 **Parameters:**
 
@@ -196,7 +196,7 @@ ___
 
 ▸ **divide**(`divisor`: number | string | [Num](num.md)): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:175](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L175)*
+*Defined in [src/monads/primitive/num.monad.ts:175](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L175)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 *Overrides [Monad](monad.md).[equals](monad.md#equals)*
 
-*Defined in [src/monads/primitive/num.monad.ts:131](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L131)*
+*Defined in [src/monads/primitive/num.monad.ts:131](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L131)*
 
 **Parameters:**
 
@@ -230,7 +230,7 @@ ___
 
 ▸ **greaterThan**(`other`: number | string | [Num](num.md)): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:145](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L145)*
+*Defined in [src/monads/primitive/num.monad.ts:145](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L145)*
 
 **Parameters:**
 
@@ -246,7 +246,7 @@ ___
 
 ▸ **greaterThanOrEqual**(`other`: number | string | [Num](num.md)): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:149](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L149)*
+*Defined in [src/monads/primitive/num.monad.ts:149](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L149)*
 
 **Parameters:**
 
@@ -262,7 +262,7 @@ ___
 
 ▸ **lessThan**(`other`: number | string | [Num](num.md)): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:137](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L137)*
+*Defined in [src/monads/primitive/num.monad.ts:137](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L137)*
 
 **Parameters:**
 
@@ -278,7 +278,7 @@ ___
 
 ▸ **lessThanOrEqual**(`other`: number | string | [Num](num.md)): *boolean*
 
-*Defined in [src/monads/primitive/num.monad.ts:141](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L141)*
+*Defined in [src/monads/primitive/num.monad.ts:141](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L141)*
 
 **Parameters:**
 
@@ -294,7 +294,7 @@ ___
 
 ▸ **modulo**(`divisor`: number | string | [Num](num.md)): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:181](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L181)*
+*Defined in [src/monads/primitive/num.monad.ts:181](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L181)*
 
 **Parameters:**
 
@@ -310,7 +310,7 @@ ___
 
 ▸ **multiply**(`multiplier`: number | string | [Num](num.md)): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:169](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L169)*
+*Defined in [src/monads/primitive/num.monad.ts:169](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L169)*
 
 **Parameters:**
 
@@ -326,7 +326,7 @@ ___
 
 ▸ **negate**(): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:153](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L153)*
+*Defined in [src/monads/primitive/num.monad.ts:153](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L153)*
 
 **Returns:** *[Num](num.md)*
 
@@ -336,7 +336,7 @@ ___
 
 ▸ **subtract**(`other`: number | string | [Num](num.md)): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:163](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L163)*
+*Defined in [src/monads/primitive/num.monad.ts:163](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L163)*
 
 **Parameters:**
 
@@ -352,7 +352,7 @@ ___
 
 ▸ **toInt**(): *[Num](num.md)*
 
-*Defined in [src/monads/primitive/num.monad.ts:127](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L127)*
+*Defined in [src/monads/primitive/num.monad.ts:127](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L127)*
 
 Math.trunc()
 
@@ -366,7 +366,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-*Defined in [src/monads/primitive/num.monad.ts:120](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L120)*
+*Defined in [src/monads/primitive/num.monad.ts:120](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L120)*
 
 **Parameters:**
 
@@ -384,7 +384,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/num.monad.ts:104](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L104)*
+*Defined in [src/monads/primitive/num.monad.ts:104](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L104)*
 
 Coerces anything into a Num
 
@@ -404,7 +404,7 @@ ___
 
 ▸ **isNum**(`val`: any): *val is Num*
 
-*Defined in [src/monads/primitive/num.monad.ts:77](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L77)*
+*Defined in [src/monads/primitive/num.monad.ts:77](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L77)*
 
 Indicates if passed value is an instance of `Num`
 ```ts
@@ -429,7 +429,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/num.monad.ts:96](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/num.monad.ts#L96)*
+*Defined in [src/monads/primitive/num.monad.ts:96](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L96)*
 
 Returns Num representation of the passed value.
 

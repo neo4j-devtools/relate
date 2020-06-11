@@ -43,7 +43,7 @@ const plain: null = nil.get();
 
 ▪ **NULL**: *[Nil](nil.md)‹›* = new Nil()
 
-*Defined in [src/monads/primitive/nil.monad.ts:16](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/nil.monad.ts#L16)*
+*Defined in [src/monads/primitive/nil.monad.ts:16](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L16)*
 
 ## Accessors
 
@@ -53,7 +53,7 @@ const plain: null = nil.get();
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:28](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/nil.monad.ts#L28)*
+*Defined in [src/monads/primitive/nil.monad.ts:28](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L28)*
 
 Nil is always empty
 
@@ -67,7 +67,7 @@ Nil is always empty
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:62](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/nil.monad.ts#L62)*
+*Defined in [src/monads/primitive/nil.monad.ts:62](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L62)*
 
 **`see`** [Nil.of](nil.md#static-of)
 
@@ -85,7 +85,7 @@ ___
 
 ▸ **isNil**(`val`: any): *val is Nil*
 
-*Defined in [src/monads/primitive/nil.monad.ts:40](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/nil.monad.ts#L40)*
+*Defined in [src/monads/primitive/nil.monad.ts:40](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L40)*
 
 Indicates if passed value is an instance of `Nil`
 ```ts
@@ -110,7 +110,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:55](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/nil.monad.ts#L55)*
+*Defined in [src/monads/primitive/nil.monad.ts:55](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L55)*
 
 Returns a Nil, regardless of value.
 

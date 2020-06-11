@@ -51,7 +51,7 @@ const plain: 'true' = str.get();
 
 ▪ **EMPTY**: *[Str](str.md)‹string›* = new Str('')
 
-*Defined in [src/monads/primitive/str.monad.ts:19](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L19)*
+*Defined in [src/monads/primitive/str.monad.ts:19](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L19)*
 
 ## Accessors
 
@@ -61,7 +61,7 @@ const plain: 'true' = str.get();
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/str.monad.ts:32](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L32)*
+*Defined in [src/monads/primitive/str.monad.ts:32](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L32)*
 
 Returns true if value is empty string
 
@@ -73,7 +73,7 @@ Returns true if value is empty string
 
 ▸ **includes**(`other`: string | [Str](str.md)): *boolean*
 
-*Defined in [src/monads/primitive/str.monad.ts:80](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L80)*
+*Defined in [src/monads/primitive/str.monad.ts:80](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L80)*
 
 **Parameters:**
 
@@ -89,7 +89,7 @@ ___
 
 ▸ **replace**(`pattern`: string | RegExp | [Str](str.md), `replacement`: string | [Str](str.md)): *[Str](str.md)*
 
-*Defined in [src/monads/primitive/str.monad.ts:88](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L88)*
+*Defined in [src/monads/primitive/str.monad.ts:88](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L88)*
 
 **Parameters:**
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **split**(`sep`: string | [Str](str.md)): *[List](list.md)‹[Str](str.md)›*
 
-*Defined in [src/monads/primitive/str.monad.ts:84](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L84)*
+*Defined in [src/monads/primitive/str.monad.ts:84](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L84)*
 
 **Parameters:**
 
@@ -122,7 +122,7 @@ ___
 
 ▸ **test**(`regex`: RegExp): *boolean*
 
-*Defined in [src/monads/primitive/str.monad.ts:76](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L76)*
+*Defined in [src/monads/primitive/str.monad.ts:76](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L76)*
 
 **Parameters:**
 
@@ -140,7 +140,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/str.monad.ts:72](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L72)*
+*Defined in [src/monads/primitive/str.monad.ts:72](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L72)*
 
 Coerces anything into a Str
 
@@ -164,7 +164,7 @@ ___
 
 ▸ **isStr**‹**T**›(`val`: any): *val is Str<T>*
 
-*Defined in [src/monads/primitive/str.monad.ts:44](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L44)*
+*Defined in [src/monads/primitive/str.monad.ts:44](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L44)*
 
 Indicates if passed value is an instance of `Str`
 ```ts
@@ -193,7 +193,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/str.monad.ts:63](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/str.monad.ts#L63)*
+*Defined in [src/monads/primitive/str.monad.ts:63](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L63)*
 
 Returns Str representation of the passed value.
 

@@ -5,7 +5,17 @@ import Nil from './nil.monad';
 /**
  * @noInheritDoc
  * @description
- * Represents a potentially "empty" value
+ * Represents a potentially "empty" value (if value is null | undefined | Nil | None)
+ * ```ts
+ * Maybe.of('').isEmpty // false
+ * Maybe.of(Bool.FALSE).isEmpty // false
+ * Maybe.of(false).isEmpty // false
+ * Maybe.of(null).isEmpty // true
+ * Maybe.of(Nil).isEmpty // true
+ * Maybe.of(None).isEmpty // true
+ * Maybe.of(List.from()).isEmpty // false
+ * Maybe.of(List.from([1)).isEmpty // false
+ * ```
  */
 // @ts-ignore
 export default class Maybe<T> extends Monad<T | None<T>> {
@@ -20,14 +30,17 @@ export default class Maybe<T> extends Monad<T | None<T>> {
     }
 
     /**
-     * Indicates if wrapped value considers itself empty
+     * Indicates if wrapped value is null | undefined | Nil | None
      *
      * ```ts
-     * Maybe.of('').isEmpty // true
+     * Maybe.of('').isEmpty // false
      * Maybe.of(Bool.FALSE).isEmpty // false
      * Maybe.of(false).isEmpty // false
      * Maybe.of([]).isEmpty // false
-     * Maybe.of(List.from()).isEmpty // true
+     * Maybe.of(null).isEmpty // true
+     * Maybe.of(Nil).isEmpty // true
+     * Maybe.of(None).isEmpty // true
+     * Maybe.of(List.from()).isEmpty // false
      * Maybe.of(List.from([1)).isEmpty // false
      * ```
      */

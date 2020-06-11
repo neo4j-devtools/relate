@@ -44,7 +44,7 @@ const plain: boolean = bool.get();
 
 ▪ **FALSE**: *[Bool](bool.md)‹›* = new Bool(false)
 
-*Defined in [src/monads/primitive/bool.monad.ts:18](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L18)*
+*Defined in [src/monads/primitive/bool.monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L18)*
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 ▪ **TRUE**: *[Bool](bool.md)‹›* = new Bool(true)
 
-*Defined in [src/monads/primitive/bool.monad.ts:16](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L16)*
+*Defined in [src/monads/primitive/bool.monad.ts:16](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L16)*
 
 ## Accessors
 
@@ -62,7 +62,7 @@ ___
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:30](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L30)*
+*Defined in [src/monads/primitive/bool.monad.ts:30](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L30)*
 
 Bool is never empty
 
@@ -76,7 +76,7 @@ Bool is never empty
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:76](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L76)*
+*Defined in [src/monads/primitive/bool.monad.ts:76](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L76)*
 
 Coerces anything into a Bool
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **isBool**(`val`: any): *val is Bool*
 
-*Defined in [src/monads/primitive/bool.monad.ts:42](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L42)*
+*Defined in [src/monads/primitive/bool.monad.ts:42](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L42)*
 
 Indicates if passed value is an instance of `Bool`
 ```ts
@@ -121,7 +121,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:66](https://github.com/neo-technology/relate/blob/8cad01f/packages/types/src/monads/primitive/bool.monad.ts#L66)*
+*Defined in [src/monads/primitive/bool.monad.ts:66](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L66)*
 
 Returns a Bool representing if passed value is "empty".
 
