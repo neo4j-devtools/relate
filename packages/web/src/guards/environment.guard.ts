@@ -4,7 +4,7 @@ import {GqlExecutionContext} from '@nestjs/graphql';
 import {SystemProvider} from '@relate/common';
 
 @Injectable()
-export class EnvironmentMethodGuard implements CanActivate {
+export class EnvironmentGuard implements CanActivate {
     constructor(@Inject(SystemProvider) private readonly systemProvider: SystemProvider) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -1,0 +1,10 @@
+{
+    "overrides": [
+        {
+            "files": ["**/*.resolver.ts"],
+            "rules": {
+                "require-await": "off"
+            }
+        }
+    ]
+}
