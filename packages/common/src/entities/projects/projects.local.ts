@@ -9,8 +9,8 @@ import {IFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms} fr
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {PROJECTS_MANIFEST_FILE, PROJECTS_PREFIX} from '../../constants';
-import {AmbiguousTargetError, ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
-import {mapFileToModel} from '../../utils/files';
+import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
+import {getNormalizedProjectPath, mapFileToModel} from '../../utils/files';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async create(manifest: IProjectManifest): Promise<IProject> {
@@ -83,43 +83,44 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 throw e;
             }
 
-            throw new AmbiguousTargetError(`Failed to link ${projectPath}`);
+            throw new InvalidArgumentError(`Failed to link ${projectPath}`);
         }
     }
 
     async addFile(nameOrId: string, source: string, destination?: string): Promise<IFile> {
         const project = await this.get(nameOrId);
-        const fileName = path.basename(source);
-        const projectDir = destination || '.';
+        const fileName = path.basename(destination || source);
+        const projectDestination = destination || fileName;
+        const projectDir = getNormalizedProjectPath(path.dirname(projectDestination));
         const existingFiles = await this.listFiles(project.id);
         const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
         if (!existingFiles.find(filePredicate).isEmpty) {
-            throw new AmbiguousTargetError(`File ${fileName} already exists at that destination`);
+            throw new InvalidArgumentError(`File ${fileName} already exists at that destination`);
         }
 
-        const target = path.join(project.root, projectDir);
+        const target = path.join(project.root, projectDestination);
 
-        await fse.ensureDir(target);
-        await fse.copyFile(source, path.join(target, fileName));
+        await fse.ensureDir(path.dirname(target));
+        await fse.copyFile(source, target);
 
         const afterCopy = await this.listFiles(project.id);
 
         return afterCopy.find(filePredicate).getOrElse(() => {
-            throw new NotFoundError(`Unable to add ${source} to project`);
+            throw new NotFoundError(`Unable to add ${fileName} to project`);
         });
     }
 
     async removeFile(nameOrId: string, relativePath: string): Promise<IFile> {
         const project = await this.get(nameOrId);
         const fileName = path.basename(relativePath);
-        const projectDir = path.dirname(relativePath);
+        const projectDir = getNormalizedProjectPath(path.dirname(relativePath));
         const existingFiles = await this.listFiles(project.id);
         const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
         return existingFiles.find(filePredicate).flatMap(async (found) => {
             if (None.isNone(found)) {
-                throw new AmbiguousTargetError(`File ${relativePath} does not exists`);
+                throw new InvalidArgumentError(`File ${relativePath} does not exists`);
             }
 
             await fse.unlink(path.join(project.root, relativePath));

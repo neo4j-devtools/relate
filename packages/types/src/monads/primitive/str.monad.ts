@@ -71,7 +71,7 @@ export default class Str<T extends string = string> extends Monad<T> {
     // @ts-ignore
     static from<T = string>(val?: T): Str<T> {
         // @ts-ignore
-        return val instanceof Str ? val : Str.of(val);
+        return val instanceof Str ? val : Str.of(val !== undefined ? val : '');
     }
 
     test(regex: RegExp): boolean {
