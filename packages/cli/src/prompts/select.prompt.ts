@@ -5,12 +5,14 @@ import {
     Environment,
     GoogleAuthenticatorOptions,
     IExtensionMeta,
+    IProjectDbms,
     NotFoundError,
     PUBLIC_GRAPHQL_METHODS,
     DBMS_STATUS,
 } from '@relate/common';
 
 import {inputPrompt} from './input.prompt';
+import {getEntityDisplayName} from '../utils/display.utils';
 
 interface IChoice {
     name: string;
@@ -72,7 +74,37 @@ export const selectDbmsPrompt = async (
         message,
         dbmss.map((dbms) => ({
             name: dbms.id,
-            message: `[${dbms.id.slice(0, 8)}] ${dbms.name}`,
+            message: getEntityDisplayName(dbms),
+        })),
+    );
+};
+
+export const selectProjectPrompt = async (message: string, environment: Environment): Promise<string> => {
+    const projects = (await environment.projects.list()).toArray();
+
+    if (!projects.length) {
+        throw new NotFoundError('No projects found', ['Run "relate project:init" and try again']);
+    }
+
+    return selectPrompt(
+        message,
+        projects.map((project) => ({
+            name: project.name,
+            message: getEntityDisplayName(project),
+        })),
+    );
+};
+
+export const selectProjectDbmsPrompt = (message: string, projectDbmss: IProjectDbms[]): Promise<string> => {
+    if (!projectDbmss.length) {
+        throw new NotFoundError('No project dbmss found');
+    }
+
+    return selectPrompt(
+        message,
+        projectDbmss.map((dbms) => ({
+            name: dbms.name,
+            message: dbms.name,
         })),
     );
 };

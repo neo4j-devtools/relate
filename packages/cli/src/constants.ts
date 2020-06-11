@@ -30,6 +30,13 @@ export const FLAGS = {
             required: false,
         }),
     },
+    PROJECT: {
+        project: flags.string({
+            char: 'p',
+            description: 'Name of the project to run the command against',
+            required: REQUIRED_FOR_SCRIPTS,
+        }),
+    },
 };
 
 export interface IInputPromptOptions {
