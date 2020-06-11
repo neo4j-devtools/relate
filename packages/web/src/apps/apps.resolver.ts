@@ -17,7 +17,7 @@ import {
 } from './app.types';
 import {createAppLaunchUrl} from './apps.utils';
 import {EnvironmentGuard} from '../guards/environment.guard';
-import {EnvironmentInterceptor} from '../interceptors/environment.inteceptor';
+import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
 import {EnvironmentArgs} from '../global.types';
 
 @Resolver(() => String)

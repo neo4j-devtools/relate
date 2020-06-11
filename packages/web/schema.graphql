@@ -68,7 +68,7 @@ type ExtensionVersion {
 }
 
 type Mutation {
-  createAppLaunchToken(environmentId: String, accessToken: String, principal: String, dbmsId: String!, appName: String!): AppLaunchToken!
+  createAppLaunchToken(appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
   installExtension(environmentId: String, version: String!, name: String!): AppData!
   uninstallExtension(environmentId: String, name: String!): [ExtensionData!]!
   installDbms(environmentId: String, name: String!, credentials: String!, version: String!): String!
@@ -79,13 +79,28 @@ type Mutation {
   updateDbmsConfig(environmentId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
 }
 
+type Project {
+  id: ID!
+  name: String
+  dbmss: [ProjectDbms!]
+  files: [ProjectDbms!]
+}
+
+type ProjectDbms {
+  name: String!
+  connectionUri: String!
+  user: String
+  accessToken: String
+}
+
 type Query {
-  appLaunchData(environmentId: String, launchToken: String!, appName: String!): AppLaunchData!
+  appLaunchData(environmentId: String, appName: String!, launchToken: String!): AppLaunchData!
   listApps(environmentId: String): [AppData!]!
   listExtensionVersions(environmentId: String): [ExtensionVersion!]!
-  listExtensions(environmentId: String): [AppData!]!
+  listInstalledExtensions(environmentId: String): [AppData!]!
   getDbms(environmentId: String, dbmsId: String!): Dbms!
   listDbmss(environmentId: String): [Dbms!]!
   infoDbmss(environmentId: String, dbmsIds: [String!]!): [DbmsInfo!]!
   listDbmsVersions(environmentId: String): [DbmsVersion!]!
+  listProjects(environmentId: String): [Project!]!
 }

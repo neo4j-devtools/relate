@@ -42,8 +42,8 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         _nameOrId: string,
         _dbmsName: string,
         _dbms: IDbms,
-        _principal: string,
-        _accessToken: string,
+        _principal?: string,
+        _accessToken?: string,
     ): Promise<IProjectDbms> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project dbms`);
     }

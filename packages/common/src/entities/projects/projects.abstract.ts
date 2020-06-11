@@ -28,8 +28,8 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
         projectId: string,
         dbmsName: string,
         dbms: IDbms,
-        principal: string,
-        accessToken: string,
+        principal?: string,
+        accessToken?: string,
     ): Promise<IProjectDbms>;
 
     abstract removeDbms(projectId: string, dbmsName: string): Promise<IProjectDbms>;

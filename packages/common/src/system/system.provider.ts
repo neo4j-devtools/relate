@@ -1,7 +1,8 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import fse from 'fs-extra';
+import fse, {ReadStream, createWriteStream} from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
+import {v4 as uuidv4} from 'uuid';
 
 import {
     DEFAULT_ENVIRONMENT_NAME,
@@ -10,7 +11,7 @@ import {
     RELATE_KNOWN_CONNECTIONS_FILE,
 } from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
-import {NotFoundError, ValidationFailureError, TargetExistsError} from '../errors';
+import {NotFoundError, ValidationFailureError, TargetExistsError, FileUploadError} from '../errors';
 import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
@@ -201,5 +202,29 @@ export class SystemProvider implements OnModuleInit {
             .unwindPromises();
 
         return configs.compact();
+    }
+
+    async handleFileUpload(fileName: string, readStream: ReadStream): Promise<string> {
+        const tmpDir = path.join(envPaths().tmp, uuidv4());
+        const tmpFileName = path.join(tmpDir, `${path.basename(fileName)}.rdownload`);
+
+        try {
+            const uploadPromise = new Promise((resolve, reject) =>
+                readStream
+                    .pipe(createWriteStream(tmpFileName))
+                    .on('finish', () => resolve())
+                    .on('error', (err) => reject(err)),
+            );
+
+            await uploadPromise;
+
+            const uploadedFileName = path.join(tmpDir, fileName);
+
+            await fse.move(tmpFileName, uploadedFileName);
+
+            return uploadedFileName;
+        } catch (_e) {
+            throw new FileUploadError(`Failed to upload file ${fileName}`);
+        }
     }
 }
