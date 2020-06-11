@@ -114,8 +114,12 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
      * Coerces any value to a Dict, if not one already
      * @see {@link Dict.of}
      */
-    static from<T, R = Map<KeyVal<T>['key'], KeyVal<T>['value']>>(val?: T): Dict<R> {
-        return Dict.isDict<R>(val) ? val : Dict.of(val || {});
+    static from<T extends object, R = T>(val?: T): Dict<R>;
+    static from<T extends Map<any, any>, R = Map<KeyVal<T>['key'], KeyVal<T>['value']>>(val?: T): Dict<R>;
+    static from<T extends Iterable<[any, any]>>(val?: T): Dict<T>;
+    static from<T extends List<[any, any]>>(val?: T): Dict<T>;
+    static from<T = any>(val?: T): Dict<T> {
+        return Dict.isDict<T>(val) ? val : Dict.of(val || {});
     }
 
     /**
@@ -161,7 +165,7 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     /**
      * Converts original value to it's Object representation
      */
-    toObject<O extends T, R = O extends IAsObject<T> ? O : never>(): R {
+    toObject<O extends T = T, R = O extends IAsObject<T> ? O : never>(): R {
         // @ts-ignore
         return this.toList().reduce(
             (agg, [key, val]) => ({
@@ -173,7 +177,8 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     }
 
     // @todo: these types can probably be done better
-    omit<K2 extends keyof T, I = T extends object ? T : never, R = Dict<Omit<I, K2>>>(other: K2): R;
+    // @ts-ignore
+    omit<K2 extends K = K, R = T extends object ? Omit<T, K2> : never>(other: K2): Dict<R>;
 
     omit<K2 extends KeyVal<T>['key'], I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(
         other: K2,
