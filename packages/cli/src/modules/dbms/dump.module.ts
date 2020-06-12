@@ -1,5 +1,6 @@
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
+import path from 'path';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
 
@@ -22,6 +23,7 @@ export class DumpModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const {outputDir, database} = flags;
+        const filePath = path.resolve(process.cwd(), outputDir);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
@@ -45,7 +47,7 @@ export class DumpModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Dumping ${database} from ${dbms.name}`);
-        return environment.dbmss.dbDump(dbms, database, outputDir).then((res: string) => {
+        return environment.dbmss.dbDump(dbms, database, filePath).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];
@@ -54,7 +56,7 @@ export class DumpModule implements OnApplicationBootstrap {
                 message.push(chalk.green(done[1]));
                 message.push(
                     `Successfully dumped ${chalk.cyan(database)} ` +
-                        `from ${chalk.cyan(dbms.name)} to ${chalk.cyan(outputDir)}`,
+                        `from ${chalk.cyan(dbms.name)} to ${chalk.cyan(filePath)}`,
                 );
             } else {
                 result = chalk.red('failed');

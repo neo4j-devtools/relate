@@ -1,5 +1,6 @@
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
+import path from 'path';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
 
@@ -22,6 +23,7 @@ export class LoadModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const {from, database, force} = flags;
+        const filePath = path.resolve(process.cwd(), from);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
@@ -45,7 +47,7 @@ export class LoadModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Loading data from dump into ${dbms.name}`);
-        return environment.dbmss.dbLoad(dbms, database, from, force).then((res: string) => {
+        return environment.dbmss.dbLoad(dbms, database, filePath, force).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];
@@ -53,7 +55,7 @@ export class LoadModule implements OnApplicationBootstrap {
                 const done = res.split('\n').reverse();
                 message.push(chalk.green(done[1]));
                 message.push(
-                    `Successfully loaded data from ${chalk.cyan(from)} ` +
+                    `Successfully loaded data from ${chalk.cyan(filePath)} ` +
                         `into ${chalk.cyan(`${dbms.name}->${database}`)}`,
                 );
             } else {
