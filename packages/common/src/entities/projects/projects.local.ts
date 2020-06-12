@@ -93,7 +93,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
 
         const project = await this.get(nameOrId);
-        const fileName = path.basename(destination || source);
+        const fileName = path.basename(destination || source).replace(project.root, '');
         const projectDestination = destination || fileName;
         const projectDir = getNormalizedProjectPath(path.dirname(projectDestination));
         const existingFiles = await this.listFiles(project.id);
