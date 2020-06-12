@@ -84,7 +84,7 @@ export class ProjectResolver {
         @Context('environment') environment: Environment,
         @Args() {projectId, fileUpload, destination}: AddProjectFileArgs,
     ): Promise<RelateFile> {
-        const {filename, createReadStream} = fileUpload;
+        const {filename, createReadStream} = await fileUpload;
         const uploadedPath = await this.systemProvider.handleFileUpload(filename, createReadStream());
 
         return environment.projects.addFile(projectId, uploadedPath, destination);

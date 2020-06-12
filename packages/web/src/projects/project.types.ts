@@ -1,8 +1,8 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
 import {IProject, IProjectDbms} from '@relate/common';
+import {IFileUpload, GraphQLUpload} from './graphql-upload';
 
 import {EnvironmentArgs, RelateFile} from '../global.types';
-import {FileUpload, GraphQLUpload} from 'graphql-upload';
 
 @ObjectType()
 export class Project implements Omit<IProject, 'root'> {
@@ -73,7 +73,7 @@ export class AddProjectFileArgs extends ProjectArgs {
     destination?: string;
 
     @Field(() => GraphQLUpload)
-    fileUpload: FileUpload;
+    fileUpload: Promise<IFileUpload>;
 }
 
 @ArgsType()

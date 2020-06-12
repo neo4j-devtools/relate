@@ -1,6 +1,7 @@
 import path from 'path';
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import fse, {ReadStream, createWriteStream} from 'fs-extra';
+import {Readable} from 'stream';
+import fse, {createWriteStream, ensureDir} from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 
@@ -204,9 +205,11 @@ export class SystemProvider implements OnModuleInit {
         return configs.compact();
     }
 
-    async handleFileUpload(fileName: string, readStream: ReadStream): Promise<string> {
+    async handleFileUpload(fileName: string, readStream: Readable): Promise<string> {
         const tmpDir = path.join(envPaths().tmp, uuidv4());
-        const tmpFileName = path.join(tmpDir, `${path.basename(fileName)}.rdownload`);
+        const tmpFileName = path.join(tmpDir, `${uuidv4()}.rdownload`);
+
+        await ensureDir(tmpDir);
 
         try {
             const uploadPromise = new Promise((resolve, reject) =>
