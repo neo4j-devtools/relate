@@ -6,6 +6,7 @@ import ListCommand from '../../commands/dbms/list';
 import StartCommand from '../../commands/dbms/start';
 import InfoCommand from '../../commands/dbms/info';
 import StopCommand from '../../commands/dbms/stop';
+import DumpCommand from '../../commands/dbms/dump';
 
 jest.mock('fs-extra', () => {
     return {
@@ -81,5 +82,10 @@ describe('$relate dbms', () => {
         const command = InfoCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
         const expectedError = new Error('DBMS "non-existent" not found');
         await expect(command).rejects.toThrow(expectedError);
+    });
+
+    test.stdout().it('should log failed dump', async (ctx) => {
+        await DumpCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await expect(ctx.stdout).toContain('Failed to dump data.');
     });
 });

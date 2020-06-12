@@ -46,7 +46,7 @@ ARGUMENTS
 OPTIONS
   -d, --database=database        [default: neo4j] Database
   -e, --environment=environment  Name of the environment to run the command against
-  -f, --from=from                [default: /Users/linus/Projects/neo4j/relate/packages/cli] From
+  -o, --outputDir=outputDir      [default: /Users/linus/Projects/neo4j/relate/packages/cli] Output dir
 ```
 
 _See code: [dist/commands/dbms/dump.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/dump.ts)_
@@ -125,9 +125,10 @@ ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
 
 OPTIONS
-  -d, --database=database        [default: neo4j] Database
+  -d, --database=database        [default: neo4j] Database to load data into
   -e, --environment=environment  Name of the environment to run the command against
-  -o, --outputDir=outputDir      [default: /Users/linus/Projects/neo4j/relate/packages/cli] Output dir
+  -f, --from=from                [default: /Users/linus/Projects/neo4j/relate/packages/cli] Dump to load data from
+  -s, --force                    Force load data (WARNING! this will erase any existing data)
 ```
 
 _See code: [dist/commands/dbms/load.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/load.ts)_
