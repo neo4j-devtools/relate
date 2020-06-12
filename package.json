@@ -17,7 +17,10 @@
     "scripts": {
         "prettify": "prettier --write 'packages/**/*.ts'",
         "lint": "eslint . --ext .ts",
-        "test": "lerna run test",
+        "test:teardown": "node scripts/tests/teardown.js",
+        "test:setup": "node scripts/tests/setup.js",
+        "lerna:test": "lerna run test",
+        "test": "run-s --continue-on-error test:setup lerna:test test:teardown",
         "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
         "lerna:bootstrap": "lerna bootstrap",
