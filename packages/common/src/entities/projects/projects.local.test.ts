@@ -27,8 +27,9 @@ const TEST_CREATED: IProject = {
 const testFileName = 'test.txt';
 const testOtherFileName = 'test.pem';
 const testFile = path.join(envPaths().tmp, testFileName);
-const testProjectDir = './foo/bar/baz';
-const testDestination = `./foo/bar/baz/${testOtherFileName}`;
+const testProjectDir = path.normalize('./foo/bar/baz');
+const testDestination = path.normalize(`./foo/bar/baz/${testOtherFileName}`);
+const testDestinationOutside = path.normalize(`../foo/bar/baz/${testOtherFileName}`);
 
 describe('LocalProjects - list', () => {
     let environment: EnvironmentAbstract;
@@ -80,6 +81,12 @@ describe('LocalProjects - list', () => {
         });
     });
 
+    test('projects.addFile() - destination outside project', () => {
+        return expect(environment.projects.addFile(testId, testFile, testDestinationOutside)).rejects.toEqual(
+            new InvalidArgumentError('Project files cannot be added outside of project'),
+        );
+    });
+
     test('projects.addFile() - duplicate', () => {
         return expect(environment.projects.addFile(testId, testFile, testDestination)).rejects.toEqual(
             new InvalidArgumentError(`File ${testOtherFileName} already exists at that destination`),
@@ -97,6 +104,12 @@ describe('LocalProjects - list', () => {
     test('projects.removeFile() - not exists', () => {
         return expect(environment.projects.removeFile(testId, testFileName)).rejects.toEqual(
             new InvalidArgumentError(`File ${testFileName} does not exists`),
+        );
+    });
+
+    test('projects.removeFile() - with dir but not provided', () => {
+        return expect(environment.projects.removeFile(testId, testOtherFileName)).rejects.toEqual(
+            new InvalidArgumentError(`File ${testOtherFileName} does not exists`),
         );
     });
 

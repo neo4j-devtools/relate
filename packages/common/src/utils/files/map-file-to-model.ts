@@ -16,5 +16,5 @@ export function mapFileToModel(file: string, baseDir: string): IFile | null {
 export function getNormalizedProjectPath(projectPath: string): string {
     const dirname = path.normalize(projectPath);
 
-    return dirname !== '.' ? `./${dirname}` : dirname;
+    return path.normalize(dirname !== '.' ? `./${dirname}` : dirname);
 }

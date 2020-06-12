@@ -88,6 +88,10 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async addFile(nameOrId: string, source: string, destination?: string): Promise<IFile> {
+        if (Str.from(destination).includes('..')) {
+            throw new InvalidArgumentError('Project files cannot be added outside of project');
+        }
+
         const project = await this.get(nameOrId);
         const fileName = path.basename(destination || source);
         const projectDestination = destination || fileName;
