@@ -68,7 +68,7 @@ type ExtensionVersion {
 }
 
 type Mutation {
-  createAppLaunchToken(appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
+  createAppLaunchToken(environmentId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
   installExtension(environmentId: String, version: String!, name: String!): AppData!
   uninstallExtension(environmentId: String, name: String!): [ExtensionData!]!
   installDbms(environmentId: String, name: String!, credentials: String!, version: String!): String!
@@ -77,13 +77,18 @@ type Mutation {
   stopDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
   updateDbmsConfig(environmentId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
+  initProject(environmentId: String, name: String!): Project!
+  addProjectDbms(projectId: String!, environmentId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): Project!
+  removeProjectDbms(projectId: String!, environmentId: String, dbmsName: String!): Project!
+  addProjectFile(projectId: String!, environmentId: String, destination: String, fileUpload: Upload!): RelateFile!
+  removeProjectFile(projectId: String!, environmentId: String, filePath: String!): RelateFile!
 }
 
 type Project {
   id: ID!
   name: String
-  dbmss: [ProjectDbms!]
-  files: [ProjectDbms!]
+  dbmss: [ProjectDbms!]!
+  files: [RelateFile!]!
 }
 
 type ProjectDbms {
@@ -104,3 +109,12 @@ type Query {
   listDbmsVersions(environmentId: String): [DbmsVersion!]!
   listProjects(environmentId: String): [Project!]!
 }
+
+type RelateFile {
+  name: String!
+  directory: String!
+  extension: String!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

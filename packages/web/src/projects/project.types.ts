@@ -1,5 +1,5 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
-import {IProject, IProjectDbms, IProjectManifest} from '@relate/common';
+import {IProject, IProjectDbms} from '@relate/common';
 
 import {EnvironmentArgs, RelateFile} from '../global.types';
 import {FileUpload, GraphQLUpload} from 'graphql-upload';
@@ -12,10 +12,10 @@ export class Project implements Omit<IProject, 'root'> {
     @Field(() => String, {nullable: true})
     name: string;
 
-    @Field(() => [ProjectDbms], {nullable: true})
+    @Field(() => [ProjectDbms])
     dbmss: ProjectDbms[];
 
-    @Field(() => [ProjectDbms], {nullable: true})
+    @Field(() => [RelateFile])
     files: RelateFile[];
 }
 
@@ -41,12 +41,9 @@ export class ProjectArgs extends EnvironmentArgs {
 }
 
 @ArgsType()
-export class InitProjectArgs extends EnvironmentArgs implements IProjectManifest {
+export class InitProjectArgs extends EnvironmentArgs {
     @Field(() => String)
     name: string;
-
-    @Field(() => [ProjectDbms])
-    dbmss: IProjectDbms[];
 }
 
 @ArgsType()

@@ -40,6 +40,11 @@ export class ProjectResolver {
         return environment.projects.listFiles(project.id);
     }
 
+    @ResolveField()
+    dbmss(@Context('environment') environment: Environment, @Parent() project: Project): Promise<List<ProjectDbms>> {
+        return environment.projects.listDbmss(project.id);
+    }
+
     @Mutation(() => Project)
     async [PUBLIC_GRAPHQL_METHODS.INIT_PROJECT](
         @Context('environment') environment: Environment,
@@ -74,7 +79,7 @@ export class ProjectResolver {
         return environment.projects.removeDbms(projectId, dbmsName);
     }
 
-    @Mutation(() => Project)
+    @Mutation(() => RelateFile)
     async [PUBLIC_GRAPHQL_METHODS.ADD_PROJECT_FILE](
         @Context('environment') environment: Environment,
         @Args() {projectId, fileUpload, destination}: AddProjectFileArgs,
@@ -85,7 +90,7 @@ export class ProjectResolver {
         return environment.projects.addFile(projectId, uploadedPath, destination);
     }
 
-    @Mutation(() => Project)
+    @Mutation(() => RelateFile)
     async [PUBLIC_GRAPHQL_METHODS.REMOVE_PROJECT_FILE](
         @Context('environment') environment: Environment,
         @Args() {projectId, filePath}: RemoveProjectFileArgs,

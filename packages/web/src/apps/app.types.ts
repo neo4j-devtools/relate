@@ -55,7 +55,7 @@ export class LaunchDataArgs extends EnvironmentArgs {
 }
 
 @ArgsType()
-export class CreateLaunchTokenArgs {
+export class CreateLaunchTokenArgs extends EnvironmentArgs {
     @Field(() => String)
     appName: string;
 
