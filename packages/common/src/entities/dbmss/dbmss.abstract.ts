@@ -42,6 +42,8 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract getDbmsConfig(dbmsId: string): Promise<PropertiesFile>;
 
+    abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
+
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
         query: string,
