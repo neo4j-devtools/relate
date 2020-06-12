@@ -1,49 +1,21 @@
 import path from 'path';
-import tar from 'tar';
 
 import {envPaths} from '../../utils';
 import {InvalidArgumentError, NotSupportedError, NotFoundError} from '../../errors';
 import * as localUtils from '../../utils/dbmss';
 import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
-import {List, None} from '@relate/types';
+import {List} from '@relate/types';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
-const DISTRIBUTIONS_ROOT = path.join(envPaths().cache, DBMS_DIR_NAME);
-const {DBMS_CREDENTIALS, NEO4J_VERSION} = TestDbmss;
+const {ARCHIVE_PATH, DBMS_CREDENTIALS, NEO4J_VERSION} = TestDbmss;
 
 describe('LocalEnvironment - install', () => {
-    let archiveVersion: string;
     let testDbmss: TestDbmss;
 
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
-
-        // @todo: move this stuff to TestDbmss
-        let versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
-        if (versions.isEmpty) {
-            await localUtils.downloadNeo4j(NEO4J_VERSION, DISTRIBUTIONS_ROOT);
-            versions = await localUtils.discoverNeo4jDistributions(DISTRIBUTIONS_ROOT);
-        }
-
-        // Create archive for "install from file" test
-        const version = versions.first.flatMap((v) => {
-            if (None.isNone(v)) {
-                throw new Error("Couldn't find cached distribution");
-            }
-
-            return v;
-        });
-        archiveVersion = path.join(DISTRIBUTIONS_ROOT, `neo4j-${version.edition}-${version.version}.tgz`);
-        await tar.c(
-            {
-                gzip: true,
-                file: archiveVersion,
-                cwd: DISTRIBUTIONS_ROOT,
-            },
-            [path.basename(version.dist)],
-        );
     });
 
     afterAll(() => testDbmss.teardown());
@@ -84,7 +56,7 @@ describe('LocalEnvironment - install', () => {
         const dbmsID = await testDbmss.environment.dbmss.install(
             testDbmss.createName(),
             DBMS_CREDENTIALS,
-            archiveVersion,
+            ARCHIVE_PATH,
         );
         expect(dbmsID).toMatch(UUID_REGEX);
 

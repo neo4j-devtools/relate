@@ -7,11 +7,14 @@ import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../.
 
 import {NotSupportedError, NotFoundError} from '../../errors';
 import {envPaths} from '../env-paths';
+import {DBMS_DIR_NAME} from '../../constants';
 
 export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';
 
     static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
+
+    static ARCHIVE_PATH = path.join(envPaths().cache, DBMS_DIR_NAME, `neo4j-enterprise-${TestDbmss.NEO4J_VERSION}.tgz`);
 
     dbmsNames: string[] = [];
 
