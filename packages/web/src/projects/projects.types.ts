@@ -37,7 +37,7 @@ export class ProjectDbms implements IProjectDbms {
 @ArgsType()
 export class ProjectArgs extends EnvironmentArgs {
     @Field(() => String)
-    projectId: string;
+    nameOrId: string;
 }
 
 @ArgsType()

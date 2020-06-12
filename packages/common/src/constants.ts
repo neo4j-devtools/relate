@@ -114,6 +114,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     INSTALLED_EXTENSIONS = 'listInstalledExtensions',
 
     // projects
+    GET_PROJECT = 'getProject',
     LIST_PROJECTS = 'listProjects',
     INIT_PROJECT = 'initProject',
     ADD_PROJECT_DBMS = 'addProjectDbms',
