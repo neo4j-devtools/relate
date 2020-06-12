@@ -16,6 +16,7 @@ describe('Dict', () => {
             expect(Dict.from().toObject()).toEqual({});
             // @ts-ignore
             expect(Dict.from([]).toObject()).toEqual({});
+            // @ts-ignore
             expect(Dict.from(null).toObject()).toEqual({});
             // @ts-ignore
             expect(Dict.from(1).toObject()).toEqual({});

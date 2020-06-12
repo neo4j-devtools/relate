@@ -7,16 +7,20 @@ import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../../utils';
 import {ensureDirs} from '../../system/files';
 import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} from './environment.constants';
-import {DBMS_DIR_NAME, EXTENSION_DIR_NAME} from '../../constants';
+import {DBMS_DIR_NAME, EXTENSION_DIR_NAME, PROJECTS_DIR_NAME} from '../../constants';
+import {LocalProjects} from '../projects';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
 
     public readonly extensions = new LocalExtensions(this);
 
+    public readonly projects = new LocalProjects(this);
+
     public readonly dirPaths = {
         ...envPaths(),
         dbmssData: path.join(this.config.neo4jDataPath || envPaths().data, DBMS_DIR_NAME),
+        projectsData: path.join(this.config.neo4jDataPath || envPaths().data, PROJECTS_DIR_NAME),
         dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),

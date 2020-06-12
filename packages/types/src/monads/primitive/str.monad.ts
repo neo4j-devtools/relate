@@ -1,4 +1,4 @@
-import {includes, replace, split} from 'lodash';
+import {includes, replace, split, startsWith, endsWith} from 'lodash';
 
 import Monad from '../monad';
 import List from './list.monad';
@@ -69,7 +69,8 @@ export default class Str<T extends string = string> extends Monad<T> {
      * @see {@link Str.of}
      */
     // @ts-ignore
-    static from<T = any>(val?: any): Str<T> {
+    static from<T = string>(val?: T): Str<T> {
+        // @ts-ignore
         return val instanceof Str ? val : Str.of(val !== undefined ? val : '');
     }
 
@@ -79,6 +80,14 @@ export default class Str<T extends string = string> extends Monad<T> {
 
     includes(other: string | Str): boolean {
         return includes(`${this}`, `${other}`);
+    }
+
+    startsWith(other: string | Str): boolean {
+        return startsWith(`${this}`, `${other}`);
+    }
+
+    endsWith(other: string | Str): boolean {
+        return endsWith(`${this}`, `${other}`);
     }
 
     split(sep: string | Str): List<Str> {

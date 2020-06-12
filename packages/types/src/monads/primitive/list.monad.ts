@@ -1,4 +1,4 @@
-import {join, filter, find, map, forEach} from 'lodash';
+import {join, filter, find, map, forEach, without} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
@@ -8,16 +8,6 @@ import None from './none.monad';
 import {isIterable} from '../../utils/iterable.utils';
 import Nil from './nil.monad';
 import Str from './str.monad';
-
-type Compactable<T> = T extends null
-    ? never
-    : T extends undefined
-    ? never
-    : T extends Nil
-    ? never
-    : T | T extends None<any>
-    ? never
-    : T;
 
 /**
  * @noInheritDoc
@@ -194,6 +184,10 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of<T>(found);
     }
 
+    without(other: T): List<T> {
+        return List.of<T>(without([...this], other));
+    }
+
     /**
      * Remove all null, undefined, None, or Nil values (shallow)
      * ```ts
@@ -202,7 +196,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * compacted.toArray() // [[], 'foo']
      * ```
      */
-    compact<R = Compactable<T>>(): List<R> {
+    compact<R extends Exclude<T, null | undefined | None<any> | Nil>>(): List<R> {
         // @ts-ignore
         return this.filter((val) => {
             return val !== null && val !== undefined && !Nil.isNil(val) && !None.isNone(val);
@@ -304,7 +298,6 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of([...this, other]);
     }
 
-    // @todo: discuss if this is desired
     /**
      * Flattens all iterable items (shallow)
      * ```ts
@@ -313,7 +306,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * flat.toArray() // ['f', 'o', 'o', 2, true]
      * ```
      */
-    flatten<R = T extends List<List<infer I>> ? I : T>(): List<R> {
+    flatten<R = T extends List<infer I> ? I : T>(): List<R> {
         return this.reduce((agg, next) => agg.concat(next), List.from<R>([]));
     }
 

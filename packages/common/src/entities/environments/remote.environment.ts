@@ -13,11 +13,14 @@ import {envPaths} from '../../utils';
 import {AUTH_TOKEN_KEY} from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../../system/files';
+import {RemoteProjects} from '../projects';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
 
     public readonly extensions = new RemoteExtensions(this);
+
+    public readonly projects = new RemoteProjects(this);
 
     private client: ApolloLink;
 
