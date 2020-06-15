@@ -8,5 +8,12 @@ export * from './errors';
 export * from './utils';
 export * from './utils/generic';
 export * from './constants';
-export {EnvironmentAbstract as Environment, ENVIRONMENT_TYPES, ENVIRONMENTS_DIR_NAME} from './entities/environments';
+export {
+    EnvironmentAbstract as Environment,
+    ENVIRONMENT_TYPES,
+    ENVIRONMENTS_DIR_NAME,
+    NEO4J_DIST_VERSIONS_URL,
+    NEO4J_EDITION,
+    NEO4J_ORIGIN,
+} from './entities/environments';
 export * from './entities/environments/authenticators';

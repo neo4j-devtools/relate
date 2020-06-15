@@ -2,11 +2,19 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
-import {TestDbmss, IDbms, DBMS_STATUS} from '@relate/common';
+import {
+    TestDbmss,
+    IDbms,
+    DBMS_STATUS,
+    NEO4J_DIST_VERSIONS_URL,
+    NEO4J_EDITION,
+    NEO4J_ORIGIN,
+    IDbmsVersion,
+} from '@relate/common';
+import nock from 'nock';
 
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
-
 let TEST_DB_NAME: string;
 const TEST_APP_ID = 'foo';
 
@@ -22,6 +30,8 @@ const queryBody = (query: string, variables?: {[key: string]: any}): {[key: stri
         ...variables,
     },
 });
+
+const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
 describe('DBMSModule', () => {
     let app: INestApplication;
@@ -233,6 +243,67 @@ describe('DBMSModule', () => {
                 const {errors} = res.body;
                 expect(errors).toHaveLength(1);
                 expect(errors[0].message).toBe('DBMS "non-existent" not found');
+            });
+    });
+
+    test('/graphql listDbmsVersions', () => {
+        nock(neo4jVersionsUrl.origin)
+            .get(neo4jVersionsUrl.pathname)
+            .reply(200, {
+                tags: {latest: '4.0.1'},
+                versions: {
+                    '3.5.17': {
+                        dist: {
+                            linux: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
+                            win: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-windows.zip',
+                        },
+                    },
+                    '4.0.0': {
+                        dist: {
+                            linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-unix.tar.gz',
+                            win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.0-windows.zip',
+                        },
+                    },
+                    '4.0.1': {
+                        dist: {
+                            linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-unix.tar.gz',
+                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-unix.tar.gz',
+                            win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.1-windows.zip',
+                        },
+                    },
+                },
+            });
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(
+                queryBody(
+                    `query ListDbmsVersions ($environmentId: String!) {
+                        listDbmsVersions(environmentId: $environmentId) {
+                            edition
+                            version
+                            origin
+                            dist
+                        }
+                    }`,
+                ),
+            )
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {listDbmsVersions} = res.body.data;
+
+                expect(listDbmsVersions.length).toEqual(3);
+                listDbmsVersions.forEach((v: IDbmsVersion) => {
+                    if (v.origin === NEO4J_ORIGIN.CACHED) {
+                        expect(v.version).toEqual(TestDbmss.NEO4J_VERSION);
+                    } else {
+                        expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
+                        expect(v.dist).toContain('https://dist.neo4j.org/');
+                    }
+                    expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
+                    expect(v.version).not.toEqual('3.5.17');
+                });
             });
     });
 });
