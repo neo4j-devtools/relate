@@ -70,6 +70,9 @@
             "app": {
                 "description": "Manage Graph Apps"
             },
+            "db": {
+                "description": "Manage Neo4j Databases"
+            },
             "dbms": {
                 "description": "Manage Neo4j DBMSs"
             },

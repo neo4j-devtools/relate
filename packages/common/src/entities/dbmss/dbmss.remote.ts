@@ -309,4 +309,8 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     getDbmsConfig(_dbmsId: string): Promise<PropertiesFile> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support getting DBMS config`);
     }
+
+    createDb(_dbmsId: string, _dbmsUser: string, _name: string, _accessToken: string): Promise<void> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support creating databases`);
+    }
 }
