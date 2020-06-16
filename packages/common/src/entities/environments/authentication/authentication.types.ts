@@ -1,16 +1,12 @@
 import {IEnvironmentAuth} from '../../../models';
-import {AUTHENTICATOR_TYPES} from './authenticators.constants';
+import {AUTHENTICATOR_TYPES} from './authentication.constants';
 
-export interface IAuthenticator {
+export interface IAuthentication {
     login(redirectTo?: string): Promise<IEnvironmentAuth>;
     generateAuthToken(token: string): Promise<string>;
     verifyAuthToken(token: string): Promise<void>;
 }
 
-export interface IAuthenticatorOptions {
+export interface IAuthenticationOptions {
     type: AUTHENTICATOR_TYPES;
-    httpOrigin: string;
-    authenticationUrl?: string;
-    redirectUrl: string;
-    verificationUrl?: string;
 }

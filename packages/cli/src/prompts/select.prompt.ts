@@ -3,9 +3,10 @@ import {prompt} from 'enquirer';
 import {
     AUTHENTICATOR_TYPES,
     Environment,
-    GoogleAuthenticatorOptions,
+    IAuthenticationOptions,
     IExtensionMeta,
     IProjectDbms,
+    IGoogleAuthenticationOptions,
     NotFoundError,
     PUBLIC_GRAPHQL_METHODS,
     DBMS_STATUS,
@@ -119,18 +120,12 @@ export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]
     );
 };
 
-export const googleAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOptions> => {
-    const authenticationUrl = await inputPrompt('Authentication request URL (optional)');
-    const redirectUrl = await inputPrompt('Authentication redirect URL (must match OAuth credentials)');
-    const verificationUrl = await inputPrompt('Authentication verification URL (optional)');
+export const googleAuthenticatorPrompt = async (): Promise<IGoogleAuthenticationOptions> => {
     const clientId = await inputPrompt('OAuth Client ID');
     const clientSecret = await inputPrompt('OAuth Client Secret');
 
     return {
         type: AUTHENTICATOR_TYPES.GOOGLE_OAUTH2,
-        authenticationUrl: authenticationUrl || undefined,
-        redirectUrl,
-        verificationUrl: verificationUrl || undefined,
         clientId,
         clientSecret,
     };
@@ -152,7 +147,7 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
     );
 };
 
-export const selectAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOptions | undefined> => {
+export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {
     const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
 
     if (needsWhitelist === 'No') {
@@ -167,6 +162,8 @@ export const selectAuthenticatorPrompt = async (): Promise<GoogleAuthenticatorOp
     switch (type) {
         case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2:
             return googleAuthenticatorPrompt();
+        case AUTHENTICATOR_TYPES.CLIENT:
+            return {type};
         default:
             return undefined;
     }

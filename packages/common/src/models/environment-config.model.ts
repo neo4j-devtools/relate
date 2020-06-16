@@ -2,15 +2,12 @@ import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validat
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
-import {GoogleAuthenticatorOptions} from './authenticator.model';
 import {IsValidUrl} from './custom-validators';
+import {IAuthenticationOptions} from '../entities/environments/authentication';
 
 export interface IEnvironmentAuth {
     authUrl: string;
-    getToken: () => Promise<{
-        authToken: string;
-        redirectTo?: string;
-    }>;
+    getToken: () => Promise<string>;
 }
 
 export interface IEnvironmentConfig {
@@ -23,7 +20,7 @@ export interface IEnvironmentConfig {
     httpOrigin?: string;
     relateEnvironment?: string;
     authToken?: string;
-    authenticator?: GoogleAuthenticatorOptions;
+    authentication?: IAuthenticationOptions;
     allowedMethods?: string[];
 }
 
@@ -66,7 +63,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInpu
     public relateEnvironment?: string;
 
     @IsOptional()
-    public authenticator?: GoogleAuthenticatorOptions;
+    public authentication?: IAuthenticationOptions;
 
     @IsOptional()
     @IsString({each: true})

@@ -1,10 +1,17 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
-import {AUTH_TOKEN_KEY, SystemProvider} from '@relate/common';
 import {Application, Request} from 'express';
 import cookieParser from 'cookie-parser';
 import _ from 'lodash';
+import {
+    AUTH_TOKEN_KEY,
+    SystemProvider,
+    AUTHENTICATION_BASE_ENDPOINT,
+    AUTHENTICATION_ENDPOINT,
+    VALIDATION_ENDPOINT,
+    VERIFICATION_ENDPOINT,
+} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
 
@@ -28,12 +35,6 @@ const getRequestAuthToken = (req: Request): string | undefined => {
 
 @Injectable()
 export class AuthService {
-    static AUTHENTICATION_ENDPOINT = '/authenticate';
-
-    static REDIRECT_ENDPOINT = '/validate';
-
-    static VERIFICATION_ENDPOINT = '/verify';
-
     get healthUrl(): string {
         const protocol = this.configService.get('protocol');
         const host = this.configService.get('host');
@@ -55,11 +56,10 @@ export class AuthService {
 
         const app: Application = httpAdapter.getInstance();
         const healthEndpoint = this.configService.get('healthCheckEndpoint');
-        const authenticationEndpoint = this.configService.get('authenticationEndpoint');
 
         app.use(cookieParser());
         app.use(async (req, res, next) => {
-            if (_.startsWith(req.path, authenticationEndpoint) || _.startsWith(req.path, healthEndpoint)) {
+            if (_.startsWith(req.path, AUTHENTICATION_BASE_ENDPOINT) || _.startsWith(req.path, healthEndpoint)) {
                 next();
                 return;
             }
@@ -78,12 +78,14 @@ export class AuthService {
                     return;
                 }
 
-                res.redirect(`${authenticationEndpoint}${AuthService.AUTHENTICATION_ENDPOINT}?redirectTo=${req.url}`);
+                const {authUrl} = await environment.login(req.url);
+
+                res.redirect(authUrl);
             }
         });
 
         app.get(
-            `${authenticationEndpoint}${AuthService.AUTHENTICATION_ENDPOINT}`,
+            AUTHENTICATION_ENDPOINT,
             async (req, res): Promise<void> => {
                 const environment = await this.systemProvider.getEnvironment();
                 const {redirectTo} = req.query;
@@ -100,7 +102,7 @@ export class AuthService {
         );
 
         app.get(
-            `${authenticationEndpoint}${AuthService.REDIRECT_ENDPOINT}`,
+            VALIDATION_ENDPOINT,
             async (req, res): Promise<void> => {
                 const queryObject = req.query;
                 // @todo: this is Google OAuth specific
@@ -121,7 +123,7 @@ export class AuthService {
                     res.header(AUTH_TOKEN_KEY, authToken);
 
                     if (state) {
-                        res.redirect(state);
+                        res.redirect(getAuthRedirect(environment.httpOrigin, state, authToken));
                         return;
                     }
 
@@ -135,7 +137,7 @@ export class AuthService {
         );
 
         app.get(
-            `${authenticationEndpoint}${AuthService.VERIFICATION_ENDPOINT}`,
+            VERIFICATION_ENDPOINT,
             async (req, res): Promise<void> => {
                 const authToken = getRequestAuthToken(req);
                 const environment = await this.systemProvider.getEnvironment();
@@ -149,5 +151,15 @@ export class AuthService {
                 }
             },
         );
+    }
+}
+
+function getAuthRedirect(httpOrigin: string, redirectTo: string, authToken: string): string {
+    try {
+        const {origin} = new URL(redirectTo);
+
+        return origin === httpOrigin ? redirectTo : `${redirectTo}?authToken=${authToken}`;
+    } catch (_e) {
+        return redirectTo;
     }
 }

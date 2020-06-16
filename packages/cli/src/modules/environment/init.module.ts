@@ -1,7 +1,7 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {
-    GoogleAuthenticatorOptions,
+    IAuthenticationOptions,
     ENVIRONMENT_TYPES,
     IEnvironmentConfig,
     SystemModule,
@@ -40,15 +40,14 @@ export class InitModule implements OnApplicationBootstrap {
         }
 
         if (isInteractive()) {
-            const authenticator: GoogleAuthenticatorOptions | undefined = await selectAuthenticatorPrompt();
+            const authentication: IAuthenticationOptions | undefined = await selectAuthenticatorPrompt();
             const allowedMethods: string[] = await selectAllowedMethodsPrompt();
-
             const config: IEnvironmentConfig = {
                 type: type as ENVIRONMENT_TYPES,
                 id: name,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
                 relateEnvironment: 'default',
-                authenticator,
+                authentication,
                 allowedMethods,
                 user: 'foo',
             };
