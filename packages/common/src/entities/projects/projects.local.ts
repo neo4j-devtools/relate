@@ -230,10 +230,10 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     private async resolveProject(projectName: string | Str): Promise<Maybe<IProject>> {
-        const nameOrIdToUse = Str.from(projectName);
+        const nameToUse = Str.from(projectName);
         const allProjects = await this.list();
 
-        return allProjects.find(({name}) => nameOrIdToUse.equals(name));
+        return allProjects.find(({name}) => nameToUse.equals(name));
     }
 
     private findAllFilesRecursive(root: string): Promise<List<string>> {

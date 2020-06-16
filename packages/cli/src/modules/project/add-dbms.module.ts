@@ -1,3 +1,4 @@
+import cli from 'cli-ux';
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {AuthTokenModel, HOOK_EVENTS, registerHookListener, SystemModule, SystemProvider} from '@relate/common';
 
@@ -19,8 +20,8 @@ export class AddDbmsModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        const projectId = flags.project || (await selectProjectPrompt('Select a Project', environment));
-        const project = await environment.projects.get(projectId);
+        const projectName = flags.project || (await selectProjectPrompt('Select a Project', environment));
+        const project = await environment.projects.get(projectName);
 
         const dbmsId =
             args.dbms || (await selectDbmsPrompt('Select a DBMS to create an access token for', environment));
@@ -35,18 +36,20 @@ export class AddDbmsModule implements OnApplicationBootstrap {
             scheme: 'basic',
         });
 
+        cli.action.start('Creating access token');
         registerHookListener(HOOK_EVENTS.RUN_QUERY_RETRY, ({retry}) => {
-            if (retry < 1) {
+            if (retry < 2) {
                 return;
             }
 
-            if (retry === 1) {
+            if (retry === 2) {
                 this.utils.log('DBMS connection not available, retrying...');
                 return;
             }
 
             this.utils.log('still retrying...');
         });
+        cli.action.stop();
 
         return environment.dbmss
             .createAccessToken(project.name, dbms.id, authToken)

@@ -55,7 +55,7 @@ describe('AppsModule', () => {
     });
 
     afterAll(async () => {
-        await fse.emptyDir(path.join(envPaths().data, PROJECTS_DIR_NAME));
+        await fse.remove(path.join(envPaths().data, PROJECTS_DIR_NAME, TEST_PROJECT_NAME));
         await dbmss.teardown();
     });
 
@@ -76,9 +76,9 @@ describe('AppsModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {listProjects} = res.body.data;
-                const expected: any[] = [];
+                const expected: any = {name: TEST_PROJECT_NAME};
 
-                expect(listProjects).toEqual(expected);
+                expect(listProjects).not.toContainEqual(expected);
             });
     });
 
@@ -88,13 +88,13 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -138,13 +138,13 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -197,9 +197,9 @@ describe('AppsModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const {listProjects} = res.body.data;
-                const expected: any[] = [{name: TEST_PROJECT_NAME}];
+                const expected: any = {name: TEST_PROJECT_NAME};
 
-                expect(listProjects).toEqual(expected);
+                expect(listProjects).toContainEqual(expected);
             });
     });
 
@@ -209,8 +209,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query list($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -218,7 +218,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -239,14 +239,14 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!, $dbmsId: String!) {
-                            addProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName, dbmsId: $dbmsId) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
+                            addProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
                                 name
                             }
                         }
                     `,
                     {
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         dbmsName: TEST_PROJECT_DBMS_NAME,
                         dbmsId: TEST_DB_ID,
                     },
@@ -269,14 +269,14 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!, $dbmsId: String!) {
-                            addProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName, dbmsId: $dbmsId) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
+                            addProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
                                 name
                             }
                         }
                     `,
                     {
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         dbmsName: TEST_PROJECT_DBMS_NAME,
                         dbmsId: TEST_DB_ID,
                     },
@@ -297,8 +297,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -306,7 +306,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -327,14 +327,14 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!) {
-                            removeProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName) {
                                 name
                             }
                         }
                     `,
                     {
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         dbmsName: TEST_PROJECT_DBMS_NAME,
                     },
                 ),
@@ -356,14 +356,14 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!) {
-                            removeProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName) {
                                 name
                             }
                         }
                     `,
                     {
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         dbmsName: TEST_PROJECT_DBMS_NAME,
                     },
                 ),
@@ -383,8 +383,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -392,7 +392,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -413,8 +413,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!, $dbmsId: String!, $user: String, $accessToken: String) {
-                            addProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName, dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!, $user: String, $accessToken: String) {
+                            addProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
                                 name
                                 user
                                 accessToken
@@ -425,7 +425,7 @@ describe('AppsModule', () => {
                         accessToken: TEST_ACCESS_TOKEN,
                         dbmsId: TEST_DB_ID,
                         dbmsName: TEST_PROJECT_DBMS_OTHER_NAME,
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         user: TEST_PROJECT_DBMS_USER,
                     },
                 ),
@@ -449,8 +449,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -459,7 +459,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -485,15 +485,15 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $nameOrId: String!) {
-                            removeProjectDbms(environmentId: $environmentId, nameOrId: $nameOrId, dbmsName: $dbmsName) {
+                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentId: $environmentId, name: $name, dbmsName: $dbmsName) {
                                 name
                                 accessToken
                             }
                         }
                     `,
                     {
-                        nameOrId: TEST_PROJECT_NAME,
+                        name: TEST_PROJECT_NAME,
                         dbmsName: TEST_PROJECT_DBMS_OTHER_NAME,
                     },
                 ),
@@ -516,8 +516,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query get($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -525,7 +525,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)
@@ -546,8 +546,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String, $nameOrId: String!) {
-                            getProject(environmentId: $environmentId, nameOrId: $nameOrId) {
+                        query list($environmentId: String, $name: String!) {
+                            getProject(environmentId: $environmentId, name: $name) {
                                 name
                                 files {
                                     name
@@ -555,7 +555,7 @@ describe('AppsModule', () => {
                             }
                         }
                     `,
-                    {nameOrId: TEST_PROJECT_NAME},
+                    {name: TEST_PROJECT_NAME},
                 ),
             )
             .expect(HTTP_OK)

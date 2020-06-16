@@ -46,7 +46,7 @@ describe('$relate project', () => {
 
     afterAll(async () => {
         await dbmss.teardown();
-        await fse.emptyDir(path.join(envPaths().data, PROJECTS_DIR_NAME));
+        await fse.remove(path.join(envPaths().data, PROJECTS_DIR_NAME, TEST_PROJECT_NAME));
     });
 
     test.stdout().it('lists no projects when none created', async (ctx) => {
