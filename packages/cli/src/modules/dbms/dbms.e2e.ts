@@ -7,12 +7,8 @@ import StartCommand from '../../commands/dbms/start';
 import InfoCommand from '../../commands/dbms/info';
 import StopCommand from '../../commands/dbms/stop';
 import DumpCommand from '../../commands/dbms/dump';
-
-jest.mock('fs-extra', () => {
-    return {
-        writeFile: (_path: string, data: string): Promise<string> => Promise.resolve(data),
-    };
-});
+import LoadCommand from '../../commands/dbms/load';
+import QueryFileCommand from '../../commands/dbms/query-file';
 
 jest.mock('../../prompts', () => {
     return {
@@ -23,19 +19,26 @@ jest.mock('../../prompts', () => {
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 let TEST_ENVIRONMENT_ID: string;
 let TEST_DB_NAME: string;
+let TEST_DB_ID: string;
 
 describe('$relate dbms', () => {
     let dbmss: TestDbmss;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
-        const {name} = await dbmss.createDbms();
+        const {id, name} = await dbmss.createDbms();
 
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
         TEST_DB_NAME = name;
+        TEST_DB_ID = id;
     });
 
     afterAll(() => dbmss.teardown());
+
+    test.stdout().it('should log failed dump', async (ctx) => {
+        await DumpCommand.run([TEST_DB_ID, '--environment', TEST_ENVIRONMENT_ID]);
+        await expect(ctx.stdout).toContain('Failed to dump data.');
+    });
 
     test.stdout().it('logs start message', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
@@ -65,6 +68,17 @@ describe('$relate dbms', () => {
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
+    test.stdout().it('should import cypher', async (ctx) => {
+        await QueryFileCommand.run([
+            TEST_DB_ID,
+            `--from=${process.env.NEO4J_RELATE_CONFIG_HOME}/movies.cypher`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(ctx.stdout).toContain('Successfully imported');
+    });
+
     test.stdout()
         .stderr()
         .it('logs stop message', async (ctx) => {
@@ -72,6 +86,26 @@ describe('$relate dbms', () => {
             expect(ctx.stdout).toBe('');
             expect(ctx.stderr).toContain('done');
         });
+
+    test.stdout().it('should log successful dump', async (ctx) => {
+        await DumpCommand.run([
+            TEST_DB_ID,
+            `--to=${process.env.NEO4J_RELATE_DATA_HOME}/test-db.dump`,
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(ctx.stdout).toContain('Done');
+    });
+
+    test.stdout().it('should log successful load', async (ctx) => {
+        await LoadCommand.run([
+            TEST_DB_ID,
+            `--from=${process.env.NEO4J_RELATE_DATA_HOME}/test-db.dump`,
+            '--database=neo4j',
+            '--force',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(ctx.stdout).toContain('Done');
+    });
 
     test.stdout().it('logs stopped status', async (ctx) => {
         await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
@@ -82,10 +116,5 @@ describe('$relate dbms', () => {
         const command = InfoCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
         const expectedError = new Error('DBMS "non-existent" not found');
         await expect(command).rejects.toThrow(expectedError);
-    });
-
-    test.stdout().it('should log failed dump', async (ctx) => {
-        await DumpCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
-        await expect(ctx.stdout).toContain('Failed to dump data.');
     });
 });

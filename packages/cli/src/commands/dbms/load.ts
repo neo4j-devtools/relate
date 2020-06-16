@@ -29,7 +29,7 @@ export default class LoadCommand extends BaseCommand {
         }),
         from: flags.string({
             char: 'f',
-            default: process.cwd(),
+            default: '',
             description: 'Dump to load data from',
         }),
     };

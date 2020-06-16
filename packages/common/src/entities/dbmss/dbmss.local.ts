@@ -48,6 +48,7 @@ import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} fro
 import {PropertiesFile} from '../../system/files';
 import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
 import {systemDbQuery} from '../../utils/dbmss/system-db-query';
+import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -529,19 +530,34 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return this.discoverDbmss();
     }
 
-    async dbDump(dbms: IDbmsInfo, db: string, dir: string): Promise<string> {
-        const dateISO = new Date().toISOString();
-        const [date] = dateISO.split('.');
-        const filename = `${dbms.name}-${db}-${date}.dump`;
-        const params = ['dump', `--database=${db}`, `--to=${path.join(dir, filename)}`];
-
-        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbms.id), params);
+    async dbDump(dbmsId: string, database: string, to: string): Promise<string> {
+        // const dateISO = new Date().toISOString();
+        // const [date] = dateISO.split('.');
+        // const to = path.join(outputDir, filename || `${dbmsId}-${database}-${date.replace(':', '')}.dump`);
+        const params = ['dump', `--database=${database}`, `--to=${to}`];
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
         return result;
     }
 
-    async dbLoad(dbms: IDbmsInfo, db: string, from: string, force?: boolean): Promise<string> {
-        const params = ['load', `--database=${db}`, `--from=${from}`, ...(force ? ['--force'] : [])];
-        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbms.id), params);
+    async dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string> {
+        const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
+        return result;
+    }
+
+    async dbQueryFile(
+        dbmsId: string,
+        from: string,
+        args: {
+            database: string;
+            user: string;
+            password: string;
+        },
+    ): Promise<string> {
+        const dbms = await this.get(dbmsId);
+        const params = ['--format=plain', `--address=${dbms.connectionUri}`];
+        Object.keys(args).forEach((key: string) => params.push(`--${key}=${(args as {[key: string]: string})[key]}`));
+        const result = await cypherShellCmd(this.getDbmsRootPath(dbmsId), params, from);
         return result;
     }
 }

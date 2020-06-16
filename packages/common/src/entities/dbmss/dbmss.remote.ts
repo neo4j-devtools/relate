@@ -326,12 +326,16 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support dropping databases`);
     }
 
-    async dbDump(dbms: IDbmsInfo, db: string): Promise<string> {
-        throw new NotSupportedError(`Not implemented yet. ${dbms.id} ${db}`);
+    dbDump(dbmsId: string, db: string): Promise<string> {
+        throw new NotSupportedError(`Not implemented yet. ${dbmsId} ${db}`);
     }
 
-    async dbLoad(dbms: IDbmsInfo, db: string): Promise<string> {
-        throw new NotSupportedError(`Not implemented yet. ${dbms.id} ${db}`);
+    dbLoad(dbmsId: string, db: string): Promise<string> {
+        throw new NotSupportedError(`Not implemented yet. ${dbmsId} ${db}`);
+    }
+
+    dbQueryFile(dbmsId: string, db: string): Promise<string> {
+        throw new NotSupportedError(`Not implemented yet. ${dbmsId} ${db}`);
     }
 
     dbList(_dbmsId: string, _dbmsUser: string, _accessToken: string): Promise<List<IDb>> {

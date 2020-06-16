@@ -37,6 +37,7 @@ export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const DEFAULT_ENVIRONMENT_HTTP_ORIGIN = `http://${LOCALHOST_IP_ADDRESS}:3000`;
 export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
+export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=4.x';

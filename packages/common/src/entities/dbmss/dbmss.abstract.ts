@@ -133,7 +133,13 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         }
     }
 
-    abstract dbDump(dbms: IDbmsInfo, db: string, dir: string): Promise<string>;
+    abstract dbDump(dbmsId: string, database: string, to: string): Promise<string>;
 
-    abstract dbLoad(dbms: IDbmsInfo, db: string, from: string, force?: boolean): Promise<string>;
+    abstract dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string>;
+
+    abstract dbQueryFile(
+        dbmsId: string,
+        from: string,
+        args: {database: string; user: string; password: string},
+    ): Promise<string>;
 }

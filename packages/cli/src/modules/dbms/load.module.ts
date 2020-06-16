@@ -1,3 +1,4 @@
+import fse from 'fs-extra';
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
 import path from 'path';
@@ -23,7 +24,14 @@ export class LoadModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const {from, database, force} = flags;
-        const filePath = path.resolve(process.cwd(), from);
+
+        try {
+            await fse.ensureFile(from);
+        } catch (e) {
+            throw new NotFoundError(`File not found (${from})`);
+        }
+
+        const filePath = path.resolve(from);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
@@ -47,7 +55,7 @@ export class LoadModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Loading data from dump into ${dbms.name}`);
-        return environment.dbmss.dbLoad(dbms, database, filePath, force).then((res: string) => {
+        return environment.dbmss.dbLoad(dbms.id, database, filePath, force).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];

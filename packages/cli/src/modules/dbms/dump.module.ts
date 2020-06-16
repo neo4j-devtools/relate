@@ -22,8 +22,8 @@ export class DumpModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const {outputDir, database} = flags;
-        const filePath = path.resolve(process.cwd(), outputDir);
+        const {to, database} = flags;
+        const filePath = path.resolve(to);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
@@ -47,7 +47,7 @@ export class DumpModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Dumping ${database} from ${dbms.name}`);
-        return environment.dbmss.dbDump(dbms, database, filePath).then((res: string) => {
+        return environment.dbmss.dbDump(dbms.id, database, filePath).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];
