@@ -90,7 +90,7 @@ export const selectProjectPrompt = async (message: string, environment: Environm
         message,
         projects.map((project) => ({
             name: project.name,
-            message: getEntityDisplayName(project),
+            message: project.name,
         })),
     );
 };

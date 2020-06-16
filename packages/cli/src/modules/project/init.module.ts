@@ -1,10 +1,10 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {IProjectManifest, SystemModule, SystemProvider} from '@relate/common';
+import path from 'path';
 
 import InitCommand from '../../commands/project/init';
 import {inputPrompt} from '../../prompts';
-import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -19,9 +19,12 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        let {name} = this.parsed.flags;
-        const {environment} = this.parsed.flags;
+        const {args, flags} = this.parsed;
+        let {name} = flags;
+        const {environment} = flags;
+        const {targetDir} = args;
         const {projects} = await this.systemProvider.getEnvironment(environment);
+        const resolvedDir = path.resolve(targetDir);
 
         name = name || (await inputPrompt('Enter project name'));
 
@@ -31,9 +34,10 @@ export class InitModule implements OnApplicationBootstrap {
         };
 
         cli.action.start('Creating project');
-        return projects.create(config).then((created) => {
+
+        return projects.create(config, resolvedDir).then((created) => {
             cli.action.stop();
-            this.utils.log(getEntityDisplayName(created));
+            this.utils.log(created.name);
         });
     }
 }

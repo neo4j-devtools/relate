@@ -4,7 +4,6 @@ import path from 'path';
 
 import LinkCommand from '../../commands/project/link';
 import {RequiredArgsError} from '../../errors';
-import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -31,7 +30,7 @@ export class LinkModule implements OnApplicationBootstrap {
         const resolvedPath = path.resolve(filePath);
 
         return projects.link(resolvedPath).then((res) => {
-            this.utils.log(getEntityDisplayName(res));
+            this.utils.log(res.name);
         });
     }
 }

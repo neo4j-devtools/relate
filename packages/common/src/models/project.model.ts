@@ -7,7 +7,6 @@ export interface IProjectManifest {
 }
 
 export interface IProject {
-    id: string;
     name: string;
     dbmss: IProjectDbms[];
     root: string;
@@ -21,10 +20,6 @@ export interface IProjectDbms {
 }
 
 export class ProjectModel extends ModelAbstract<IProject> implements IProject {
-    // @todo: should be uuid
-    @IsString()
-    public id!: string;
-
     @IsString()
     public name!: string;
 

@@ -8,9 +8,9 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     constructor(protected readonly environment: Env) {}
 
-    abstract create(manifest: IProjectManifest): Promise<IProject>;
+    abstract create(manifest: IProjectManifest, path?: string): Promise<IProject>;
 
-    abstract get(projectId: string): Promise<IProject>;
+    abstract get(name: string): Promise<IProject>;
 
     abstract list(): Promise<List<IProject>>;
 
@@ -18,19 +18,19 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     abstract listFiles(projectId: string): Promise<List<IFile>>;
 
-    abstract addFile(nameOrId: string, source: string, destination?: string): Promise<IFile>;
+    abstract addFile(name: string, source: string, destination?: string): Promise<IFile>;
 
-    abstract removeFile(nameOrId: string, relativePath: string): Promise<IFile>;
+    abstract removeFile(name: string, relativePath: string): Promise<IFile>;
 
     abstract listDbmss(projectId: string): Promise<List<IProjectDbms>>;
 
     abstract addDbms(
-        projectId: string,
+        projectName: string,
         dbmsName: string,
         dbms: IDbms,
         principal?: string,
         accessToken?: string,
     ): Promise<IProjectDbms>;
 
-    abstract removeDbms(projectId: string, dbmsName: string): Promise<IProjectDbms>;
+    abstract removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms>;
 }

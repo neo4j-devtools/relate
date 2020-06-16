@@ -1,5 +1,5 @@
 import {test} from '@oclif/test';
-import {InvalidArgumentError, envPaths, PROJECTS_DIR_NAME, TestDbmss} from '@relate/common';
+import {InvalidArgumentError, envPaths, TestDbmss, PROJECTS_DIR_NAME} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 
@@ -14,9 +14,9 @@ import AddDbmsCommand from '../../commands/project/add-dbms';
 import RemoveDbmsCommand from '../../commands/project/remove-dbms';
 
 const TEST_PROJECT_NAME = 'Cli Project';
-const TEST_PROJECT_ID = 'cliProject';
 const TEST_FILE_NAME = 'cliProject.tmp';
-const TEST_FILE_LOC = path.join(envPaths().tmp, TEST_FILE_NAME);
+const TEST_PROJECT_DIR = path.join(envPaths().tmp, TEST_PROJECT_NAME);
+const TEST_PROJECT_FILE = path.join(envPaths().tmp, TEST_FILE_NAME);
 const TEST_FILE_OTHER_NAME = 'cliProject.pem';
 const TEST_FILE_DESTINATION_DIR = path.normalize('foo/bar');
 const TEST_FILE_DESTINATION = path.normalize(path.join(TEST_FILE_DESTINATION_DIR, TEST_FILE_OTHER_NAME));
@@ -24,12 +24,6 @@ const TEST_FILE_DESTINATION = path.normalize(path.join(TEST_FILE_DESTINATION_DIR
 jest.mock('../../prompts', () => {
     return {
         passwordPrompt: (): Promise<string> => Promise.resolve(TestDbmss.DBMS_CREDENTIALS),
-    };
-});
-
-jest.mock('uuid', () => {
-    return {
-        v4: () => TEST_PROJECT_ID,
     };
 });
 
@@ -46,7 +40,7 @@ describe('$relate project', () => {
         TEST_DB_NAME = name;
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
 
-        await fse.ensureFile(TEST_FILE_LOC);
+        await fse.ensureFile(TEST_PROJECT_FILE);
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
     });
 
@@ -61,7 +55,7 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('inits a new project', async (ctx) => {
-        await InitCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--name="${TEST_PROJECT_NAME}"`]);
+        await InitCommand.run([TEST_PROJECT_DIR, '--environment', TEST_ENVIRONMENT_ID, '--name', TEST_PROJECT_NAME]);
         expect(ctx.stdout).toContain(TEST_PROJECT_NAME);
     });
 
@@ -71,17 +65,18 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('lists no files when none added', async (ctx) => {
-        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).not.toContain(TEST_FILE_NAME);
         expect(ctx.stdout).not.toContain(TEST_FILE_OTHER_NAME);
     });
 
     test.stdout().it('adds file without destination', async (ctx) => {
         await AddFileCommand.run([
-            TEST_FILE_LOC,
+            TEST_PROJECT_FILE,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
         ]);
         expect(ctx.stdout).toContain(TEST_FILE_NAME);
         expect(ctx.stdout).not.toContain(TEST_FILE_OTHER_NAME);
@@ -90,20 +85,22 @@ describe('$relate project', () => {
     test.stderr().it('does not duplicate', () => {
         return expect(
             AddFileCommand.run([
-                TEST_FILE_LOC,
+                TEST_PROJECT_FILE,
                 '--environment',
                 TEST_ENVIRONMENT_ID,
-                `--project="${TEST_PROJECT_NAME}"`,
+                '--project',
+                TEST_PROJECT_NAME,
             ]),
         ).rejects.toEqual(new InvalidArgumentError(`File ${TEST_FILE_NAME} already exists at that destination`));
     });
 
     test.stdout().it('adds file with destination', async (ctx) => {
         await AddFileCommand.run([
-            TEST_FILE_LOC,
+            TEST_PROJECT_FILE,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
             `--destination=${TEST_FILE_DESTINATION}`,
         ]);
         expect(ctx.stdout).not.toContain(TEST_FILE_NAME);
@@ -112,7 +109,7 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('lists files when added', async (ctx) => {
-        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).toContain(TEST_FILE_NAME);
         expect(ctx.stdout).toContain(TEST_FILE_OTHER_NAME);
     });
@@ -122,7 +119,8 @@ describe('$relate project', () => {
             TEST_FILE_NAME,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
         ]);
         expect(ctx.stdout).toContain(TEST_FILE_NAME);
         expect(ctx.stdout).not.toContain(TEST_FILE_OTHER_NAME);
@@ -133,7 +131,8 @@ describe('$relate project', () => {
             TEST_FILE_DESTINATION,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
         ]);
         expect(ctx.stdout).not.toContain(TEST_FILE_NAME);
         expect(ctx.stdout).toContain(TEST_FILE_OTHER_NAME);
@@ -141,13 +140,13 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('lists no files when all removed', async (ctx) => {
-        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListFilesCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).not.toContain(TEST_FILE_NAME);
         expect(ctx.stdout).not.toContain(TEST_FILE_OTHER_NAME);
     });
 
     test.stdout().it('lists no dbmss when none added', async (ctx) => {
-        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).not.toContain(TEST_DB_NAME);
     });
 
@@ -156,7 +155,8 @@ describe('$relate project', () => {
             TEST_DB_NAME,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
             `--name=${TEST_DB_NAME}`,
             `--user=neo4j`,
         ]);
@@ -164,7 +164,7 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('lists dbmss when added', async (ctx) => {
-        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).toContain(TEST_DB_NAME);
     });
 
@@ -174,7 +174,8 @@ describe('$relate project', () => {
                 TEST_DB_NAME,
                 '--environment',
                 TEST_ENVIRONMENT_ID,
-                `--project="${TEST_PROJECT_NAME}"`,
+                '--project',
+                TEST_PROJECT_NAME,
                 `--name=${TEST_DB_NAME}`,
                 `--user=neo4j`,
             ]),
@@ -186,13 +187,14 @@ describe('$relate project', () => {
             TEST_DB_NAME,
             '--environment',
             TEST_ENVIRONMENT_ID,
-            `--project="${TEST_PROJECT_NAME}"`,
+            '--project',
+            TEST_PROJECT_NAME,
         ]);
         expect(ctx.stdout).toContain(TEST_DB_NAME);
     });
 
     test.stdout().it('lists no dbmss when removed', async (ctx) => {
-        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, `--project="${TEST_PROJECT_NAME}"`]);
+        await ListDbmssCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--project', TEST_PROJECT_NAME]);
         expect(ctx.stdout).not.toContain(TEST_DB_NAME);
     });
 });

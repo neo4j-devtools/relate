@@ -1,4 +1,4 @@
-import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
+import {ObjectType, ArgsType, Field} from '@nestjs/graphql';
 import {IProject, IProjectDbms} from '@relate/common';
 import {IFileUpload, GraphQLUpload} from './graphql-upload';
 
@@ -6,9 +6,6 @@ import {EnvironmentArgs, RelateFile} from '../global.types';
 
 @ObjectType()
 export class Project implements Omit<IProject, 'root'> {
-    @Field(() => ID)
-    id: string;
-
     @Field(() => String, {nullable: true})
     name: string;
 
@@ -37,7 +34,7 @@ export class ProjectDbms implements IProjectDbms {
 @ArgsType()
 export class ProjectArgs extends EnvironmentArgs {
     @Field(() => String)
-    nameOrId: string;
+    name: string;
 }
 
 @ArgsType()

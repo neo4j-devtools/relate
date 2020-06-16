@@ -10,7 +10,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support creating projects`);
     }
 
-    get(_nameOrId: string): Promise<IProject> {
+    get(_name: string): Promise<IProject> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support getting projects`);
     }
 
@@ -22,24 +22,24 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support linking projects`);
     }
 
-    listFiles(_nameOrId: string): Promise<List<IFile>> {
+    listFiles(_name: string): Promise<List<IFile>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project files`);
     }
 
-    addFile(_nameOrId: string, _source: string, _destination?: string): Promise<IFile> {
+    addFile(_name: string, _source: string, _destination?: string): Promise<IFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project files`);
     }
 
-    removeFile(_nameOrId: string, _relativePath: string): Promise<IFile> {
+    removeFile(_name: string, _relativePath: string): Promise<IFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project files`);
     }
 
-    listDbmss(_nameOrId: string): Promise<List<IProjectDbms>> {
+    listDbmss(_name: string): Promise<List<IProjectDbms>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project dbmss`);
     }
 
     addDbms(
-        _nameOrId: string,
+        _name: string,
         _dbmsName: string,
         _dbms: IDbms,
         _principal?: string,
@@ -48,7 +48,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project dbms`);
     }
 
-    removeDbms(_nameOrId: string, _dbmsName: string): Promise<IProjectDbms> {
+    removeDbms(_name: string, _dbmsName: string): Promise<IProjectDbms> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project dbms`);
     }
 }

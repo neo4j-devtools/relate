@@ -1,11 +1,11 @@
 `relate project`
 ================
 
-Adds a dbms to a project
+Manage relate projects
 
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
-* [`relate project:init`](#relate-projectinit)
+* [`relate project:init TARGETDIR`](#relate-projectinit-targetdir)
 * [`relate project:link [FILEPATH]`](#relate-projectlink-filepath)
 * [`relate project:list`](#relate-projectlist)
 * [`relate project:list-dbmss`](#relate-projectlist-dbmss)
@@ -50,13 +50,13 @@ OPTIONS
 
 _See code: [dist/commands/project/add-file.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/add-file.ts)_
 
-## `relate project:init`
+## `relate project:init TARGETDIR`
 
 Create a new project
 
 ```
 USAGE
-  $ relate project:init
+  $ relate project:init TARGETDIR
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against

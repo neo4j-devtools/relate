@@ -78,6 +78,9 @@
             },
             "extension": {
                 "description": "Manage relate extensions"
+            },
+            "project": {
+                "description": "Manage relate projects"
             }
         },
         "hooks": {

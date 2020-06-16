@@ -11,6 +11,13 @@ export default class InitCommand extends BaseCommand {
 
     static description = 'Create a new project';
 
+    static args = [
+        {
+            name: 'targetDir',
+            required: true,
+        },
+    ];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
         name: flags.string({

@@ -78,14 +78,13 @@ type Mutation {
   createAccessToken(environmentId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
   updateDbmsConfig(environmentId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
   initProject(environmentId: String, name: String!): Project!
-  addProjectDbms(nameOrId: String!, environmentId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
-  removeProjectDbms(nameOrId: String!, environmentId: String, dbmsName: String!): ProjectDbms!
-  addProjectFile(nameOrId: String!, environmentId: String, destination: String, fileUpload: Upload!): RelateFile!
-  removeProjectFile(nameOrId: String!, environmentId: String, filePath: String!): RelateFile!
+  addProjectDbms(name: String!, environmentId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
+  removeProjectDbms(name: String!, environmentId: String, dbmsName: String!): ProjectDbms!
+  addProjectFile(name: String!, environmentId: String, destination: String, fileUpload: Upload!): RelateFile!
+  removeProjectFile(name: String!, environmentId: String, filePath: String!): RelateFile!
 }
 
 type Project {
-  id: ID!
   name: String
   dbmss: [ProjectDbms!]!
   files: [RelateFile!]!
@@ -108,7 +107,7 @@ type Query {
   infoDbmss(environmentId: String, dbmsIds: [String!]!): [DbmsInfo!]!
   listDbmsVersions(environmentId: String): [DbmsVersion!]!
   listProjects(environmentId: String): [Project!]!
-  getProject(environmentId: String, nameOrId: String!): Project!
+  getProject(environmentId: String, name: String!): Project!
 }
 
 type RelateFile {

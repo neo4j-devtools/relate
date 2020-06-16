@@ -49,8 +49,8 @@ export class AddDbmsModule implements OnApplicationBootstrap {
         });
 
         return environment.dbmss
-            .createAccessToken(project.id, dbms.id, authToken)
-            .then((accessToken) => environment.projects.addDbms(project.id, dbmsName, dbms, principal, accessToken))
+            .createAccessToken(project.name, dbms.id, authToken)
+            .then((accessToken) => environment.projects.addDbms(project.name, dbmsName, dbms, principal, accessToken))
             .then(({name}) => this.utils.log(`Dbms ${name} added to project`));
     }
 }

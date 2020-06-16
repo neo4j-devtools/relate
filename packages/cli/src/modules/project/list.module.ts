@@ -3,7 +3,6 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import ListCommand from '../../commands/project/list';
-import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -26,7 +25,7 @@ export class ListModule implements OnApplicationBootstrap {
         cli.table(
             allProjects.toArray(),
             {
-                name: {get: getEntityDisplayName},
+                name: {},
             },
             {
                 printLine: this.utils.log,
