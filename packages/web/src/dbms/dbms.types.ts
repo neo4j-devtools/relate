@@ -1,5 +1,6 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
 import {AuthTokenInput} from './dto/auth-token.input';
+import {EnvironmentArgs} from '../global.types';
 
 @ObjectType()
 export class Dbms {
@@ -29,34 +30,19 @@ export class DbmsInfo extends Dbms {
 }
 
 @ArgsType()
-export class EnvironmentArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-}
-
-@ArgsType()
-export class DbmsArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-
+export class DbmsArgs extends EnvironmentArgs {
     @Field(() => String)
     dbmsId: string;
 }
 
 @ArgsType()
-export class DbmssArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-
+export class DbmssArgs extends EnvironmentArgs {
     @Field(() => [String])
     dbmsIds: string[];
 }
 
 @ArgsType()
-export class InstallDbmsArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-
+export class InstallDbmsArgs extends EnvironmentArgs {
     @Field(() => String)
     name: string;
 
@@ -68,19 +54,13 @@ export class InstallDbmsArgs {
 }
 
 @ArgsType()
-export class UninstallDbmsArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-
+export class UninstallDbmsArgs extends EnvironmentArgs {
     @Field(() => String)
     name: string;
 }
 
 @ArgsType()
-export class CreateAccessTokenArgs {
-    @Field(() => String, {nullable: true})
-    environmentId?: string;
-
+export class CreateAccessTokenArgs extends EnvironmentArgs {
     @Field(() => String)
     dbmsId: string;
 

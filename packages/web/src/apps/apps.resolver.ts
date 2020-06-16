@@ -1,16 +1,28 @@
-import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
-import {Inject, UseGuards} from '@nestjs/common';
+import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
+import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS, SystemProvider} from '@relate/common';
+import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS, SystemProvider, Environment} from '@relate/common';
+import {List} from '@relate/types';
 
 import {IWebModuleConfig} from '../web.module';
 
-import {AppData, AppLaunchData, AppLaunchToken, ExtensionData, ExtensionVersion} from './models';
+import {
+    AppData,
+    AppLaunchData,
+    AppLaunchToken,
+    ExtensionData,
+    ExtensionVersion,
+    CreateLaunchTokenArgs,
+    LaunchDataArgs,
+} from './app.types';
 import {createAppLaunchUrl} from './apps.utils';
-import {EnvironmentMethodGuard} from '../guards/environment-method.guard';
+import {EnvironmentGuard} from '../guards/environment.guard';
+import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
+import {EnvironmentArgs} from '../global.types';
 
 @Resolver(() => String)
-@UseGuards(EnvironmentMethodGuard)
+@UseGuards(EnvironmentGuard)
+@UseInterceptors(EnvironmentInterceptor)
 export class AppsResolver {
     constructor(
         @Inject(ConfigService) protected readonly configService: ConfigService<IWebModuleConfig>,
@@ -19,12 +31,10 @@ export class AppsResolver {
 
     @Query(() => AppLaunchData)
     async [PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA](
-        @Args('appName') appName: string,
-        @Args('launchToken') launchToken: string,
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Context('environment') environment: Environment,
+        @Args() {appName, launchToken}: LaunchDataArgs,
     ): Promise<AppLaunchData> {
         const {dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appName, launchToken);
-        const environment = await this.systemProvider.getEnvironment(environmentId);
         const dbms = await environment.dbmss.get(dbmsId);
 
         return {
@@ -36,12 +46,12 @@ export class AppsResolver {
 
     @Query(() => [AppData])
     async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](
-        @Args('environmentId', {nullable: true}) environmentId?: string,
-    ): Promise<AppData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        @Context('environment') environment: Environment,
+        @Args() _env: EnvironmentArgs,
+    ): Promise<List<AppData>> {
         const installedApps = (await environment.extensions.list()).filter(({type}) => type === EXTENSION_TYPES.STATIC);
 
-        const mapped = await installedApps
+        return installedApps
             .mapEach(async (app) => {
                 const appPath = await environment.extensions.getAppPath(app.name, this.configService.get('appRoot'));
 
@@ -51,19 +61,13 @@ export class AppsResolver {
                 };
             })
             .unwindPromises();
-
-        return mapped.toArray();
     }
 
     @Mutation(() => AppLaunchToken)
     async [PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN](
-        @Args('appName') appName: string,
-        @Args('dbmsId') dbmsId: string,
-        @Args('principal', {nullable: true}) principal?: string,
-        @Args('accessToken', {nullable: true}) accessToken?: string,
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Context('environment') environment: Environment,
+        @Args() {appName, dbmsId, principal, accessToken}: CreateLaunchTokenArgs,
     ): Promise<AppLaunchToken> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
         const token = await this.systemProvider.createAppLaunchToken(
             environment.id,
             appName,

@@ -90,6 +90,7 @@ export enum DBMS_STATUS {
 }
 
 export enum PUBLIC_GRAPHQL_METHODS {
+    // dbmss
     INSTALL_DBMS = 'installDbms',
     UNINSTALL_DBMS = 'uninstallDbms',
     INSTALL_EXTENSION = 'installExtension',
@@ -101,12 +102,25 @@ export enum PUBLIC_GRAPHQL_METHODS {
     INFO_DBMSS = 'infoDbmss',
     LIST_DBMSS = 'listDbmss',
     LIST_DBMS_VERSIONS = 'listDbmsVersions',
-    LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
+
+    // apps
     INSTALLED_APPS = 'listApps',
-    INSTALLED_EXTENSIONS = 'listExtensions',
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
+
+    // extensions
+    LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
+    INSTALLED_EXTENSIONS = 'listInstalledExtensions',
+
+    // projects
+    GET_PROJECT = 'getProject',
+    LIST_PROJECTS = 'listProjects',
+    INIT_PROJECT = 'initProject',
+    ADD_PROJECT_DBMS = 'addProjectDbms',
+    REMOVE_PROJECT_DBMS = 'removeProjectDbms',
+    ADD_PROJECT_FILE = 'addProjectFile',
+    REMOVE_PROJECT_FILE = 'removeProjectFile',
 }
 
 // seconds

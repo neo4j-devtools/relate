@@ -152,8 +152,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         nameOrId: string,
         dbmsName: string,
         dbms: IDbms,
-        principal: string,
-        accessToken: string,
+        principal?: string,
+        accessToken?: string,
     ): Promise<IProjectDbms> {
         const project = await this.get(nameOrId);
         const manifest = await this.getManifest(project.root);
