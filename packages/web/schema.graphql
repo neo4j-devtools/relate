@@ -67,6 +67,18 @@ type ExtensionVersion {
   origin: String!
 }
 
+enum FILTER_COMPARATORS {
+  EQUALS
+  NOT_EQUALS
+  CONTAINS
+  NOT_CONTAINS
+}
+
+enum FILTER_CONNECTORS {
+  AND
+  OR
+}
+
 type Mutation {
   createAppLaunchToken(environmentId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
   installExtension(environmentId: String, version: String!, name: String!): AppData!
@@ -86,8 +98,8 @@ type Mutation {
 
 type Project {
   name: String
-  dbmss: [ProjectDbms!]!
-  files: [RelateFile!]!
+  dbmss(filters: [RelateSimpleFilter!]): [ProjectDbms!]!
+  files(filters: [RelateSimpleFilter!]): [RelateFile!]!
 }
 
 type ProjectDbms {
@@ -99,14 +111,14 @@ type ProjectDbms {
 
 type Query {
   appLaunchData(environmentId: String, appName: String!, launchToken: String!): AppLaunchData!
-  listApps(environmentId: String): [AppData!]!
-  listExtensionVersions(environmentId: String): [ExtensionVersion!]!
+  listApps(filters: [RelateSimpleFilter!], environmentId: String): [AppData!]!
+  listExtensionVersions(environmentId: String, filters: [RelateSimpleFilter!]): [ExtensionVersion!]!
   listInstalledExtensions(environmentId: String): [AppData!]!
   getDbms(environmentId: String, dbmsId: String!): Dbms!
-  listDbmss(environmentId: String): [Dbms!]!
+  listDbmss(filters: [RelateSimpleFilter!], environmentId: String): [Dbms!]!
   infoDbmss(environmentId: String, dbmsIds: [String!]!): [DbmsInfo!]!
-  listDbmsVersions(environmentId: String): [DbmsVersion!]!
-  listProjects(environmentId: String): [Project!]!
+  listDbmsVersions(filters: [RelateSimpleFilter!], environmentId: String): [DbmsVersion!]!
+  listProjects(filters: [RelateSimpleFilter!], environmentId: String): [Project!]!
   getProject(environmentId: String, name: String!): Project!
 }
 
@@ -114,6 +126,13 @@ type RelateFile {
   name: String!
   directory: String!
   extension: String!
+}
+
+input RelateSimpleFilter {
+  field: String!
+  type: FILTER_COMPARATORS
+  connector: FILTER_CONNECTORS
+  value: String!
 }
 
 """The `Upload` scalar type represents a file upload."""

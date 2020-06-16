@@ -45,6 +45,8 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
 
     protected ourValues: Maybe<List<V>> = Maybe.of();
 
+    protected asObject?: IAsObject<T>;
+
     /**
      * @hidden
      */
@@ -151,7 +153,7 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
      * Gets value of named key
      */
     // @ts-ignore
-    getValue<O extends K = K, R = KeyVal<T, O>['value']>(key: O): Maybe<R> {
+    getValue<O extends string = K, R = KeyVal<T, O>['value']>(key: O): Maybe<R> {
         // @ts-ignore
         return Maybe.from<R>(this.ourOriginal.get(key));
     }
@@ -166,14 +168,21 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
      * Converts original value to it's Object representation
      */
     toObject<O extends T = T, R = O extends IAsObject<T> ? O : never>(): R {
-        // @ts-ignore
-        return this.toList().reduce(
+        if (this.asObject) {
+            // @ts-ignore
+            return this.asObject;
+        }
+
+        this.asObject = this.toList().reduce(
             (agg, [key, val]) => ({
                 ...agg,
                 [`${key}`]: val,
             }),
             {},
         );
+
+        // @ts-ignore
+        return this.asObject;
     }
 
     // @todo: these types can probably be done better

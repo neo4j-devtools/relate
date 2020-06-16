@@ -10,6 +10,7 @@ import {PropertiesFile} from '../../system/files';
 import {DbmsQueryError, ErrorAbstract, InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
 import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
 import {emitHookEvent} from '../../utils';
+import {IRelateFilter} from '../../utils/generic';
 
 export type TapestryJSONResponse<Res = any> = {
     header: {fields: string[]};
@@ -22,13 +23,13 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     constructor(protected readonly environment: Env) {}
 
-    abstract versions(): Promise<List<IDbmsVersion>>;
+    abstract versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
 
     abstract install(name: string, credentials: string, version: string): Promise<string>;
 
     abstract uninstall(dbmsId: string): Promise<void>;
 
-    abstract list(): Promise<List<IDbms>>;
+    abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>>;
 
     abstract get(nameOrId: string): Promise<IDbms>;
 

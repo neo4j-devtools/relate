@@ -14,7 +14,7 @@ import {
 } from '../../errors';
 import {EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
 import {emitHookEvent} from '../../utils';
-import {isValidUrl} from '../../utils/generic';
+import {isValidUrl, IRelateFilter, applyEntityFilters} from '../../utils/generic';
 import {
     getAppBasePath,
     discoverExtension,
@@ -35,18 +35,18 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return `${appRoot}${appBase}`;
     }
 
-    versions(): Promise<List<IExtensionVersion>> {
-        return fetchExtensionVersions();
+    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
+        return applyEntityFilters(await fetchExtensionVersions(), filters);
     }
 
-    async list(): Promise<List<IExtensionMeta>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
         const allInstalledExtensions = await Dict.from(EXTENSION_TYPES)
             .values.mapEach((type) =>
                 discoverExtensionDistributions(path.join(this.environment.dirPaths.extensionsData, type)),
             )
             .unwindPromises();
 
-        return allInstalledExtensions.flatten();
+        return applyEntityFilters(allInstalledExtensions.flatten(), filters);
     }
 
     async link(filePath: string): Promise<IExtensionMeta> {

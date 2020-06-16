@@ -11,6 +11,7 @@ import {PROJECTS_MANIFEST_FILE, PROJECTS_DIR_NAME} from '../../constants';
 import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getNormalizedProjectPath, mapFileToModel} from '../../utils/files';
 import {envPaths} from '../../utils/env-paths';
+import {IRelateFilter, applyEntityFilters} from '../../utils/generic';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async create(manifest: IProjectManifest, targetDir?: string): Promise<IProject> {
@@ -42,7 +43,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async list(): Promise<List<IProject>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
         const projects = await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
             .mapEach(Str.from)
             .mapEach((projectDir) =>
@@ -62,7 +63,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             )
             .unwindPromises();
 
-        return projects.compact();
+        return applyEntityFilters(projects.compact(), filters);
     }
 
     async link(projectPath: string): Promise<IProject> {
@@ -134,17 +135,18 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async listFiles(name: string): Promise<List<IFile>> {
-        const project = await this.get(name);
+    async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
+        const project = await this.get(nameOrId);
         const allFiles = await this.findAllFilesRecursive(project.root);
+        const mapped = allFiles.mapEach((file) => mapFileToModel(file, project.root)).compact();
 
-        return allFiles.mapEach((file) => mapFileToModel(file, project.root)).compact();
+        return applyEntityFilters(mapped, filters);
     }
 
-    async listDbmss(name: string): Promise<List<IProjectDbms>> {
-        const project = await this.get(name);
+    async listDbmss(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>> {
+        const project = await this.get(nameOrId);
 
-        return List.from(project.dbmss);
+        return applyEntityFilters(List.from(project.dbmss), filters);
     }
 
     async addDbms(

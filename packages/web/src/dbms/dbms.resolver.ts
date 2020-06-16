@@ -17,7 +17,7 @@ import {
 } from './dbms.types';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
-import {EnvironmentArgs} from '../global.types';
+import {EnvironmentArgs, FilterArgs} from '../global.types';
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)
@@ -53,8 +53,9 @@ export class DBMSResolver {
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMSS](
         @Context('environment') environment: Environment,
         @Args() _env: EnvironmentArgs,
+        @Args() {filters}: FilterArgs,
     ): Promise<List<IDbms>> {
-        return environment.dbmss.list();
+        return environment.dbmss.list(filters);
     }
 
     @Query(() => [DbmsInfo])
@@ -92,9 +93,11 @@ export class DBMSResolver {
     @Query(() => [DbmsVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS](
         @Args() {environmentId}: DbmsVersionArgs,
-    ): Promise<IDbmsVersion[]> {
+        @Args() {filters}: FilterArgs,
+    ): Promise<List<IDbmsVersion>> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.dbmss.versions()).toArray();
+
+        return environment.dbmss.versions(filters);
     }
 
     // @todo: do we want to allow updating dbms config here?
