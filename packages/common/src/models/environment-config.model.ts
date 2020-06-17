@@ -1,4 +1,4 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validator';
+import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
@@ -10,28 +10,30 @@ export interface IEnvironmentAuth {
     getToken: () => Promise<string>;
 }
 
-export interface IEnvironmentConfig {
+export interface IEnvironmentConfig extends IEnvironmentConfigInput {
     id: string;
-    configPath?: string;
+    configPath: string;
+}
+
+export interface IEnvironmentConfigInput {
+    name: string;
     active?: boolean;
     type: ENVIRONMENT_TYPES;
     user: any;
     neo4jDataPath?: string;
     httpOrigin?: string;
-    relateEnvironment?: string;
+    remoteEnvironmentId?: string;
     authToken?: string;
     authentication?: IAuthenticationOptions;
     allowedMethods?: string[];
 }
 
-export interface IEnvironmentConfigInput extends IEnvironmentConfig {
-    configPath: string;
-}
-
-export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInput> implements IEnvironmentConfigInput {
-    // @todo: should be uuid
-    @IsString()
+export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
+    @IsUUID()
     public id!: string;
+
+    @IsString()
+    public name!: string;
 
     // @todo: should be uuid
     @IsString()
@@ -60,7 +62,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInpu
     // @todo: this is RemoteEnvironment specific
     @IsString()
     @IsOptional()
-    public relateEnvironment?: string;
+    public remoteEnvironmentId?: string;
 
     @IsOptional()
     public authentication?: IAuthenticationOptions;

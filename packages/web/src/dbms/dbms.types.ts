@@ -74,7 +74,7 @@ export class CreateAccessTokenArgs extends EnvironmentArgs {
 @ArgsType()
 export class DbmsVersionArgs {
     @Field(() => String, {nullable: true})
-    environmentId?: string;
+    environmentNameOrId?: string;
 }
 
 @ObjectType()
@@ -95,7 +95,7 @@ export class DbmsVersion {
 @ArgsType()
 export class UpdateDbmsConfigArgs {
     @Field(() => String, {nullable: true})
-    environmentId?: string;
+    environmentNameOrId?: string;
 
     @Field(() => String)
     dbmsId: string;

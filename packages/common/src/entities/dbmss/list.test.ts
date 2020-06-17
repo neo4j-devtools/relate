@@ -41,6 +41,7 @@ describe('LocalEnvironment - list', () => {
 
         const config = new EnvironmentConfigModel({
             id: 'test',
+            name: 'test',
             neo4jDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',

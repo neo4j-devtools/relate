@@ -39,7 +39,7 @@ export class AppsResolver {
 
         return {
             dbms,
-            environmentId: environment.id,
+            environmentNameOrId: environment.id,
             ...rest,
         };
     }
@@ -92,9 +92,9 @@ export class AppsResolver {
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION](
         @Args('name') name: string,
         @Args('version') version: string,
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
     ): Promise<AppData> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         const installedApp = await environment.extensions.install(name, version);
 
         return {
@@ -106,27 +106,28 @@ export class AppsResolver {
     @Mutation(() => [ExtensionData])
     async [PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION](
         @Args('name') name: string,
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
     ): Promise<ExtensionData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         return (await environment.extensions.uninstall(name)).toArray();
     }
 
     @Query(() => [ExtensionVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS](
         @Args() {filters}: FilterArgs,
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
     ): Promise<ExtensionVersion[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         return (await environment.extensions.list(filters)).toArray();
     }
 
     @Query(() => [AppData])
     async [PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS](
-        @Args('environmentId', {nullable: true}) environmentId?: string,
+        @Args() {filters}: FilterArgs,
+        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
     ): Promise<AppData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedExtensions = await environment.extensions.list();
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
+        const installedExtensions = await environment.extensions.list(filters);
 
         const mapped = await installedExtensions
             .mapEach(async (extension) => {

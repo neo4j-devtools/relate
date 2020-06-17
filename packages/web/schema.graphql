@@ -10,7 +10,7 @@ type AppData {
 }
 
 type AppLaunchData {
-  environmentId: String!
+  environmentNameOrId: String!
   appName: String!
   dbms: Dbms!
   principal: String
@@ -80,20 +80,20 @@ enum FILTER_CONNECTORS {
 }
 
 type Mutation {
-  createAppLaunchToken(environmentId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
-  installExtension(environmentId: String, version: String!, name: String!): AppData!
-  uninstallExtension(environmentId: String, name: String!): [ExtensionData!]!
-  installDbms(environmentId: String, name: String!, credentials: String!, version: String!): String!
-  uninstallDbms(environmentId: String, name: String!): String!
-  startDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
-  stopDbmss(environmentId: String, dbmsIds: [String!]!): [String!]!
-  createAccessToken(environmentId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
-  updateDbmsConfig(environmentId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
-  initProject(environmentId: String, name: String!): Project!
-  addProjectDbms(name: String!, environmentId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
-  removeProjectDbms(name: String!, environmentId: String, dbmsName: String!): ProjectDbms!
-  addProjectFile(name: String!, environmentId: String, destination: String, fileUpload: Upload!): RelateFile!
-  removeProjectFile(name: String!, environmentId: String, filePath: String!): RelateFile!
+  createAppLaunchToken(environmentNameOrId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
+  installExtension(environmentNameOrId: String, version: String!, name: String!): AppData!
+  uninstallExtension(environmentNameOrId: String, name: String!): [ExtensionData!]!
+  installDbms(environmentNameOrId: String, name: String!, credentials: String!, version: String!): String!
+  uninstallDbms(environmentNameOrId: String, name: String!): String!
+  startDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
+  stopDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
+  createAccessToken(environmentNameOrId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
+  updateDbmsConfig(environmentNameOrId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
+  initProject(environmentNameOrId: String, name: String!): Project!
+  addProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
+  removeProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!): ProjectDbms!
+  addProjectFile(name: String!, environmentNameOrId: String, destination: String, fileUpload: Upload!): RelateFile!
+  removeProjectFile(name: String!, environmentNameOrId: String, filePath: String!): RelateFile!
 }
 
 type Project {
@@ -110,16 +110,16 @@ type ProjectDbms {
 }
 
 type Query {
-  appLaunchData(environmentId: String, appName: String!, launchToken: String!): AppLaunchData!
-  listApps(filters: [RelateSimpleFilter!], environmentId: String): [AppData!]!
-  listExtensionVersions(environmentId: String, filters: [RelateSimpleFilter!]): [ExtensionVersion!]!
-  listInstalledExtensions(environmentId: String): [AppData!]!
-  getDbms(environmentId: String, dbmsId: String!): Dbms!
-  listDbmss(filters: [RelateSimpleFilter!], environmentId: String): [Dbms!]!
-  infoDbmss(environmentId: String, dbmsIds: [String!]!): [DbmsInfo!]!
-  listDbmsVersions(filters: [RelateSimpleFilter!], environmentId: String): [DbmsVersion!]!
-  listProjects(filters: [RelateSimpleFilter!], environmentId: String): [Project!]!
-  getProject(environmentId: String, name: String!): Project!
+  appLaunchData(environmentNameOrId: String, appName: String!, launchToken: String!): AppLaunchData!
+  listApps(filters: [RelateSimpleFilter!], environmentNameOrId: String): [AppData!]!
+  listExtensionVersions(environmentNameOrId: String, filters: [RelateSimpleFilter!]): [ExtensionVersion!]!
+  listInstalledExtensions(environmentNameOrId: String, filters: [RelateSimpleFilter!]): [AppData!]!
+  getDbms(environmentNameOrId: String, dbmsId: String!): Dbms!
+  listDbmss(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Dbms!]!
+  infoDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [DbmsInfo!]!
+  listDbmsVersions(filters: [RelateSimpleFilter!], environmentNameOrId: String): [DbmsVersion!]!
+  listProjects(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Project!]!
+  getProject(environmentNameOrId: String, name: String!): Project!
 }
 
 type RelateFile {

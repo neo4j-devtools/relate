@@ -23,7 +23,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
             $accessToken: String!
         ) {
             createAppLaunchToken(
-                environmentId: $environmentId,
+                environmentNameOrId: $environmentId,
                 dbmsId: $dbmsId,
                 appName: $appName,
                 principal: $principal,
@@ -36,7 +36,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
     `,
     variables: {
         accessToken: TEST_ACCESS_TOKEN,
-        environmentId: 'test',
+        environmentNameOrId: 'test',
         principal: 'bam',
         // dbmsId: 'bar', // added in test
     },
@@ -45,8 +45,8 @@ const CREATE_APP_LAUNCH_TOKEN = {
 const APP_LAUNCH_DATA = {
     query: `
         query appLaunchData($environmentId: String, $appName: String!, $launchToken: String!) {
-            appLaunchData(environmentId: $environmentId, appName: $appName, launchToken: $launchToken) {
-                environmentId
+            appLaunchData(environmentNameOrId: $environmentId, appName: $appName, launchToken: $launchToken) {
+                environmentNameOrId
                 appName
                 dbms {
                     id
@@ -57,7 +57,7 @@ const APP_LAUNCH_DATA = {
         }
     `,
     variables: {
-        environmentId: 'test',
+        environmentNameOrId: 'test',
         // launchToken: "" // added in test
     },
 };
@@ -119,10 +119,10 @@ describe('AppsModule', () => {
     });
 
     test('/graphql appLaunchData', async () => {
-        const {environmentId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
+        const {environmentNameOrId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
         const systemProvider = app.get(SystemProvider);
         const launchToken = await systemProvider.createAppLaunchToken(
-            environmentId,
+            environmentNameOrId,
             testExtension.name,
             TEST_DB_ID,
             principal,
@@ -150,7 +150,7 @@ describe('AppsModule', () => {
                         dbms: {
                             id: TEST_DB_ID,
                         },
-                        environmentId: CREATE_APP_LAUNCH_TOKEN.variables.environmentId,
+                        environmentNameOrId: CREATE_APP_LAUNCH_TOKEN.variables.environmentNameOrId,
                         principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
                     });
                 })

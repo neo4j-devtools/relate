@@ -4,7 +4,7 @@ import {FILTER_COMPARATORS, FILTER_CONNECTORS, IFile, IRelateFilter} from '@rela
 @ArgsType()
 export class EnvironmentArgs {
     @Field(() => String, {nullable: true})
-    environmentId?: string;
+    environmentNameOrId?: string;
 }
 
 @ObjectType()

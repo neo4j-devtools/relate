@@ -10,8 +10,8 @@ export class EnvironmentGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const ctx = GqlExecutionContext.create(context);
         const {fieldName} = ctx.getInfo();
-        const {environmentId} = ctx.getArgs();
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const {environmentNameOrId} = ctx.getArgs();
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
 
         return environment.supports(fieldName);
     }

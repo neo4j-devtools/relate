@@ -1,4 +1,9 @@
-export {EnvironmentConfigModel, IEnvironmentAuth, IEnvironmentConfig} from './environment-config.model';
+export {
+    EnvironmentConfigModel,
+    IEnvironmentAuth,
+    IEnvironmentConfig,
+    IEnvironmentConfigInput,
+} from './environment-config.model';
 export * from './dbms-config.model';
 export {AuthTokenModel} from './auth-token.model';
 export {AppLaunchTokenModel, IAppLaunchToken} from './app-launch-token.model';

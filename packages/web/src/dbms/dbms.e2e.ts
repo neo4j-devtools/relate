@@ -26,7 +26,7 @@ const queryBody = (query: string, variables?: {[key: string]: any}): {[key: stri
     variables: {
         dbmsName: TEST_DB_NAME,
         dbmsNames: [TEST_DB_NAME],
-        environmentId: 'test',
+        environmentNameOrId: 'test',
         ...variables,
     },
 });
@@ -65,7 +65,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query ListDBMSSs($environmentId: String) {
-                        listDbmss(environmentId: $environmentId) {
+                        listDbmss(environmentNameOrId: $environmentId) {
                             id,
                             name,
                             description
@@ -86,7 +86,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `mutation StartDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
-                        startDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                        startDbmss(environmentNameOrId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -110,7 +110,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs($environmentId: String, $dbmsNames: [String!]!) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
+                        infoDbmss(environmentNameOrId: $environmentId, dbmsIds: $dbmsNames) {
                             name
                             status
                         }
@@ -137,7 +137,7 @@ describe('DBMSModule', () => {
                         $appName: String!
                     ) {
                         createAccessToken(
-                            environmentId: $environmentId,
+                            environmentNameOrId: $environmentId,
                             dbmsId: $dbmsName,
                             appName: $appName,
                             authToken: $authToken
@@ -166,7 +166,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `mutation StopDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
-                        stopDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
+                        stopDbmss(environmentNameOrId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
             )
@@ -189,7 +189,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
+                        infoDbmss(environmentNameOrId: $environmentId, dbmsIds: $dbmsNames) {
                             name
                             status
                         }
@@ -210,7 +210,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs {
-                        infoDbmss(environmentId: "non-existent", dbmsIds: ["test"]) {
+                        infoDbmss(environmentNameOrId: "non-existent", dbmsIds: ["test"]) {
                             name
                             status
                         }
@@ -231,7 +231,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query InfoDBMSs($environmentId: String) {
-                        infoDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"]) {
+                        infoDbmss(environmentNameOrId: $environmentId, dbmsIds: ["non-existent"]) {
                             name
                             status
                         }
@@ -280,7 +280,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `query ListDbmsVersions ($environmentId: String) {
-                        listDbmsVersions(environmentId: $environmentId) {
+                        listDbmsVersions(environmentNameOrId: $environmentId) {
                             edition
                             version
                             origin

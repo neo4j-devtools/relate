@@ -32,6 +32,10 @@ export abstract class EnvironmentAbstract {
         return this.config.id;
     }
 
+    get name(): string {
+        return this.config.name;
+    }
+
     get active(): boolean {
         return Boolean(this.config.active);
     }
@@ -48,8 +52,8 @@ export abstract class EnvironmentAbstract {
         return this.config.configPath;
     }
 
-    get relateEnvironment(): string | undefined {
-        return this.config.relateEnvironment;
+    get remoteEnvironmentId(): string | undefined {
+        return this.config.remoteEnvironmentId;
     }
 
     public get neo4jDataPath(): string {

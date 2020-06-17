@@ -20,7 +20,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $properties: [[String!, String!]]!
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG}(
-                        environmentId: $environmentId,
+                        environmentNameOrId: $environmentId,
                         dbmsId: $dbmsId,
                         properties: $properties
                     )
@@ -28,7 +28,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             `,
             variables: {
                 dbmsId,
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 properties: properties.entries(),
             },
         });
@@ -49,7 +49,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 query ListDbmsVersions (
                     $environmentId: String
                 ) {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} (environmentId: $environmentId) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} (environmentNameOrId: $environmentId) {
                         edition
                         version
                         origin
@@ -57,7 +57,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
             },
         });
 
@@ -81,7 +81,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $version: String!
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS}(
-                        environmentId: $environmentId
+                        environmentNameOrId: $environmentId
                         name: $name
                         credentials: $credentials
                         version: $version
@@ -90,7 +90,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             `,
             variables: {
                 credentials,
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 name,
                 version,
             },
@@ -110,11 +110,11 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation UninstallDbms($environmentId: String, $name: String!) {
-                    ${PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS}(environmentId: $environmentId, name: $name)
+                    ${PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS}(environmentNameOrId: $environmentId, name: $name)
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 name,
             },
         });
@@ -133,7 +133,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query GetDbms($environmentId: String, $nameOrId: String!) {
-                    ${PUBLIC_GRAPHQL_METHODS.GET_DBMS}(environmentId: $environmentId, dbmsId: $nameOrId) {
+                    ${PUBLIC_GRAPHQL_METHODS.GET_DBMS}(environmentNameOrId: $environmentId, dbmsId: $nameOrId) {
                         id
                         name
                         description
@@ -142,7 +142,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 nameOrId,
             },
         });
@@ -174,7 +174,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query ListDbmss($environmentId: String) {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMSS}(environmentId: $environmentId) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMSS}(environmentNameOrId: $environmentId) {
                         id
                         name
                         description
@@ -182,7 +182,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     }
                 }
             `,
-            variables: {environmentId: this.environment.relateEnvironment},
+            variables: {environmentNameOrId: this.environment.remoteEnvironmentId},
         });
 
         if (errors) {
@@ -199,11 +199,11 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation StartDBMSSs($environmentId: String, $namesOrIds: [String!]!) {
-                    ${PUBLIC_GRAPHQL_METHODS.START_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    ${PUBLIC_GRAPHQL_METHODS.START_DBMSS}(environmentNameOrId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 namesOrIds,
             },
         });
@@ -222,11 +222,11 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation StopDBMSSs($environmentId: String, $namesOrIds: [String!]!) {
-                    ${PUBLIC_GRAPHQL_METHODS.STOP_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
+                    ${PUBLIC_GRAPHQL_METHODS.STOP_DBMSS}(environmentNameOrId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 namesOrIds,
             },
         });
@@ -245,7 +245,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query InfoDBMSs($environmentId: String, $namesOrIds: [String!]!) {
-                    ${PUBLIC_GRAPHQL_METHODS.INFO_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds) {
+                    ${PUBLIC_GRAPHQL_METHODS.INFO_DBMSS}(environmentNameOrId: $environmentId, dbmsIds: $namesOrIds) {
                         id
                         name
                         connectionUri
@@ -256,7 +256,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 }
             `,
             variables: {
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
                 namesOrIds,
             },
         });
@@ -281,7 +281,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $appName: String!
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.CREATE_ACCESS_TOKEN}(
-                        environmentId: $environmentId
+                        environmentNameOrId: $environmentId
                         dbmsId: $dbmsNameOrId
                         appName: $appName
                         authToken: $authToken
@@ -292,7 +292,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 appName,
                 authToken,
                 dbmsNameOrId,
-                environmentId: this.environment.relateEnvironment,
+                environmentNameOrId: this.environment.remoteEnvironmentId,
             },
         });
 

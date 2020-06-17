@@ -1,17 +1,17 @@
 import {PropertiesFile} from '../system/files';
 
-export function getAccessTokenRCKey(environmentId: string, dbmsId: string, dbmsUser: string): string {
-    return `//${environmentId}/${dbmsId}/${dbmsUser}/:_accessToken`;
+export function getAccessTokenRCKey(environmentNameOrId: string, dbmsId: string, dbmsUser: string): string {
+    return `//${environmentNameOrId}/${dbmsId}/${dbmsUser}/:_accessToken`;
 }
 
 export async function registerSystemAccessToken(
     knownConnectionsPath: string,
-    environmentId: string,
+    environmentNameOrId: string,
     dbmsId: string,
     dbmsUser: string,
     accessToken: string,
 ): Promise<void> {
-    const key = getAccessTokenRCKey(environmentId, dbmsId, dbmsUser);
+    const key = getAccessTokenRCKey(environmentNameOrId, dbmsId, dbmsUser);
     const properties = await PropertiesFile.readFile(knownConnectionsPath);
 
     properties.set(key, accessToken);
@@ -21,11 +21,11 @@ export async function registerSystemAccessToken(
 
 export async function getSystemAccessToken(
     knownConnectionsPath: string,
-    environmentId: string,
+    environmentNameOrId: string,
     dbmsId: string,
     dbmsUser: string,
 ): Promise<string | undefined> {
-    const key = getAccessTokenRCKey(environmentId, dbmsId, dbmsUser);
+    const key = getAccessTokenRCKey(environmentNameOrId, dbmsId, dbmsUser);
     const properties = await PropertiesFile.readFile(knownConnectionsPath);
 
     return properties.get(key);

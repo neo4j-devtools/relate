@@ -3,10 +3,13 @@ import cli from 'cli-ux';
 import {
     IAuthenticationOptions,
     ENVIRONMENT_TYPES,
-    IEnvironmentConfig,
+    HEALTH_BASE_ENDPOINT,
+    InvalidArgumentError,
+    IEnvironmentConfigInput,
     SystemModule,
     SystemProvider,
 } from '@relate/common';
+import fetch from 'node-fetch';
 
 import InitCommand from '../../commands/environment/init';
 import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
@@ -26,6 +29,7 @@ export class InitModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         let {type, name, httpOrigin} = this.parsed.flags;
+        let remoteEnvironmentId: string | undefined = undefined;
 
         const envChoices = Object.values(ENVIRONMENT_TYPES).map((envType) => ({
             name: envType,
@@ -36,17 +40,28 @@ export class InitModule implements OnApplicationBootstrap {
         name = name || (await inputPrompt('Enter environment name'));
 
         if (type === ENVIRONMENT_TYPES.REMOTE) {
-            httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL'));
+            httpOrigin = httpOrigin || (await inputPrompt('Enter remote origin (without trailing slash)'));
+            try {
+                remoteEnvironmentId = await fetch(`${httpOrigin}${HEALTH_BASE_ENDPOINT}`)
+                    .then((res) => res.json())
+                    .then(({relateEnvironmentId}) => relateEnvironmentId);
+            } catch (_e) {
+                throw new InvalidArgumentError(`${httpOrigin} does not seem to be a valid @relate/web server instance`);
+            }
+
+            if (!remoteEnvironmentId) {
+                throw new InvalidArgumentError(`${httpOrigin} does not seem to be a valid @relate/web server instance`);
+            }
         }
 
         if (isInteractive()) {
             const authentication: IAuthenticationOptions | undefined = await selectAuthenticatorPrompt();
             const allowedMethods: string[] = await selectAllowedMethodsPrompt();
-            const config: IEnvironmentConfig = {
+            const config: IEnvironmentConfigInput = {
                 type: type as ENVIRONMENT_TYPES,
-                id: name,
+                name: name,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
-                relateEnvironment: 'default',
+                remoteEnvironmentId,
                 authentication,
                 allowedMethods,
                 user: 'foo',
@@ -56,10 +71,11 @@ export class InitModule implements OnApplicationBootstrap {
             return this.systemProvider.createEnvironment(config).then(() => cli.action.stop());
         }
 
-        const config: IEnvironmentConfig = {
+        const config: IEnvironmentConfigInput = {
             type: type as ENVIRONMENT_TYPES,
-            id: name,
+            name: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
+            remoteEnvironmentId,
             user: 'foo',
         };
 

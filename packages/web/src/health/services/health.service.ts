@@ -2,6 +2,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import {Request, Response} from 'express';
+import {HEALTH_BASE_ENDPOINT, SystemProvider} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
 
@@ -16,23 +17,26 @@ export class HealthService {
         const protocol = this.configService.get('protocol');
         const host = this.configService.get('host');
         const port = this.configService.get('port');
-        const healthCheckEndpoint = this.configService.get('healthCheckEndpoint');
 
-        return `${protocol}${host}:${port}${healthCheckEndpoint}`;
+        return `${protocol}${host}:${port}${HEALTH_BASE_ENDPOINT}`;
     }
 
-    constructor(@Inject(ConfigService) private readonly configService: ConfigService<IWebModuleConfig>) {}
+    constructor(
+        @Inject(ConfigService) private readonly configService: ConfigService<IWebModuleConfig>,
+        @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
+    ) {}
 
-    register(httpAdapter: AbstractHttpAdapter): void {
+    async register(httpAdapter: AbstractHttpAdapter): Promise<void> {
         if (!httpAdapter) {
             return;
         }
 
         const app = httpAdapter.getInstance();
-        const healthCheckEndpoint = this.configService.get('healthCheckEndpoint');
+        const environment = await this.systemProvider.getEnvironment();
 
-        app.get(healthCheckEndpoint, (_: Request, res: Response) =>
+        app.get(HEALTH_BASE_ENDPOINT, (_: Request, res: Response) =>
             res.json({
+                relateEnvironmentId: environment.id,
                 appRoot: this.configService.get('appRoot'),
                 pid: process.pid,
             }),
