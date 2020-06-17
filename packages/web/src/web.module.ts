@@ -15,9 +15,6 @@ export interface IWebModuleConfig {
     protocol: string;
     host: string;
     port: number;
-    appRoot: string;
-    healthCheckEndpoint: string;
-    authenticationEndpoint: string;
 }
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);

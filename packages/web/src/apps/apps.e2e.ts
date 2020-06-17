@@ -2,7 +2,7 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
-import {SystemProvider, TestDbmss, TestExtensions, IInstalledExtension} from '@relate/common';
+import {SystemProvider, TestDbmss, TestExtensions, IInstalledExtension, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
 
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
@@ -111,7 +111,7 @@ describe('AppsModule', () => {
             .expect((res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
                 const {token, path: tokenPath} = createAppLaunchToken;
-                const expectedPath = createAppLaunchUrl(`/static/${testExtension.name}/`, token);
+                const expectedPath = createAppLaunchUrl(`${STATIC_APP_BASE_ENDPOINT}/${testExtension.name}/`, token);
 
                 expect(token).toEqual(expect.stringMatching(JWT_REGEX));
                 expect(tokenPath).toEqual(expectedPath);

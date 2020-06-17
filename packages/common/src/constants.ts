@@ -144,3 +144,4 @@ export enum FILTER_CONNECTORS {
 }
 
 export const HEALTH_BASE_ENDPOINT = '/health';
+export const STATIC_APP_BASE_ENDPOINT = '/static';
