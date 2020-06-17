@@ -238,9 +238,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return token;
     }
 
-    async createDb(dbmsId: string, dbmsUser: string, name: string, accessToken: string): Promise<void> {
-        if (!name.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${name}" as a Cypher parameter`);
+    async createDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
+            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
         await systemDbQuery(
@@ -250,7 +250,23 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 dbmsUser,
                 environment: this.environment,
             },
-            `CREATE DATABASE ${name}`,
+            `CREATE DATABASE ${dbName}`,
+        );
+    }
+
+    async dropDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
+            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
+        }
+
+        await systemDbQuery(
+            {
+                accessToken,
+                dbmsId,
+                dbmsUser,
+                environment: this.environment,
+            },
+            `DROP DATABASE ${dbName}`,
         );
     }
 
