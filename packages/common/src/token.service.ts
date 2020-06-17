@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import {DEFAULT_JWT_SIGN_OPTIONS, RELATE_TOKEN_SALT_FILE_NAME} from './constants';
 import {InvalidArgumentError, ValidationFailureError} from './errors';
-import {envPaths} from './utils';
+import {envPaths} from './utils/env-paths';
 
 // @todo: find a better home
 export class TokenService {
