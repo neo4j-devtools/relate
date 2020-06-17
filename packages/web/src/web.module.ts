@@ -9,14 +9,12 @@ import {HealthModule} from './health';
 import {PATH_TO_EXECUTABLE_ROOT} from './constants';
 import {AuthModule} from './auth';
 import {ProjectsModule} from './projects/projects.module';
+import {FilesModule} from './files';
 
 export interface IWebModuleConfig {
     protocol: string;
     host: string;
     port: number;
-    appRoot: string;
-    healthCheckEndpoint: string;
-    authenticationEndpoint: string;
 }
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
@@ -27,6 +25,7 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         DBMSModule,
         AppsModule,
         ProjectsModule,
+        FilesModule,
         HealthModule,
         ...dynamicModules,
         GraphQLModule.forRoot({

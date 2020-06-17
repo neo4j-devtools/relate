@@ -1,10 +1,13 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS, SystemProvider, Environment} from '@relate/common';
+import {
+    EXTENSION_TYPES,
+    PUBLIC_GRAPHQL_METHODS,
+    SystemProvider,
+    Environment,
+    STATIC_APP_BASE_ENDPOINT,
+} from '@relate/common';
 import {List} from '@relate/types';
-
-import {IWebModuleConfig} from '../web.module';
 
 import {
     AppData,
@@ -24,10 +27,7 @@ import {EnvironmentArgs, FilterArgs} from '../global.types';
 @UseGuards(EnvironmentGuard)
 @UseInterceptors(EnvironmentInterceptor)
 export class AppsResolver {
-    constructor(
-        @Inject(ConfigService) protected readonly configService: ConfigService<IWebModuleConfig>,
-        @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
-    ) {}
+    constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => AppLaunchData)
     async [PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA](
@@ -56,7 +56,7 @@ export class AppsResolver {
 
         return installedApps
             .mapEach(async (app) => {
-                const appPath = await environment.extensions.getAppPath(app.name, this.configService.get('appRoot'));
+                const appPath = await environment.extensions.getAppPath(app.name, STATIC_APP_BASE_ENDPOINT);
 
                 return {
                     ...app,
@@ -78,7 +78,7 @@ export class AppsResolver {
             principal,
             accessToken,
         );
-        const appBasePath = await environment.extensions.getAppPath(appName, this.configService.get('appRoot'));
+        const appBasePath = await environment.extensions.getAppPath(appName, STATIC_APP_BASE_ENDPOINT);
 
         return {
             path: createAppLaunchUrl(appBasePath, token),
@@ -99,7 +99,7 @@ export class AppsResolver {
 
         return {
             ...installedApp,
-            path: await environment.extensions.getAppPath(installedApp.name, this.configService.get('appRoot')),
+            path: await environment.extensions.getAppPath(installedApp.name, STATIC_APP_BASE_ENDPOINT),
         };
     }
 
@@ -131,10 +131,7 @@ export class AppsResolver {
 
         const mapped = await installedExtensions
             .mapEach(async (extension) => {
-                const extensionPath = await environment.extensions.getAppPath(
-                    extension.name,
-                    this.configService.get('appRoot'),
-                );
+                const extensionPath = await environment.extensions.getAppPath(extension.name, STATIC_APP_BASE_ENDPOINT);
 
                 return {
                     ...extension,

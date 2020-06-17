@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import {Request, Response} from 'express';
-import {HEALTH_BASE_ENDPOINT, SystemProvider} from '@relate/common';
+import {HEALTH_BASE_ENDPOINT, SystemProvider, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
 
@@ -37,7 +37,7 @@ export class HealthService {
         app.get(HEALTH_BASE_ENDPOINT, (_: Request, res: Response) =>
             res.json({
                 relateEnvironmentId: environment.id,
-                appRoot: this.configService.get('appRoot'),
+                appRoot: STATIC_APP_BASE_ENDPOINT,
                 pid: process.pid,
             }),
         );

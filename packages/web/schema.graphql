@@ -126,6 +126,7 @@ type RelateFile {
   name: String!
   directory: String!
   extension: String!
+  downloadToken: String!
 }
 
 input RelateSimpleFilter {

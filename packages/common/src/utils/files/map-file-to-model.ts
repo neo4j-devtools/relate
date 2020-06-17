@@ -1,12 +1,21 @@
-import {IFile} from '../../models';
+import {IFile, IProject} from '../../models';
 import path from 'path';
+import {TokenService} from '../../token.service';
 
-export function mapFileToModel(file: string, baseDir: string): IFile | null {
+export async function mapFileToModel(file: string, project: IProject): Promise<IFile | null> {
     try {
-        return {
+        const fileObj = {
             name: path.basename(file),
             extension: path.extname(file),
-            directory: getNormalizedProjectPath(path.dirname(path.relative(baseDir, file))),
+            directory: getNormalizedProjectPath(path.dirname(path.relative(project.root, file))),
+        };
+
+        return {
+            ...fileObj,
+            downloadToken: await TokenService.sign({
+                ...fileObj,
+                projectName: project.name,
+            }),
         };
     } catch (_e) {
         return null;

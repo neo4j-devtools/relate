@@ -1,4 +1,4 @@
-import {includes, replace, split, startsWith, endsWith} from 'lodash';
+import {includes, replace, split, startsWith, trim, endsWith} from 'lodash';
 
 import Monad from '../monad';
 import List from './list.monad';
@@ -96,5 +96,9 @@ export default class Str<T extends string = string> extends Monad<T> {
 
     replace(pattern: string | RegExp | Str, replacement: string | Str): Str {
         return Str.from(replace(`${this}`, Str.isStr(pattern) ? `${pattern}` : pattern, `${replacement}`));
+    }
+
+    trim(): Str {
+        return Str.from(trim(`${this}`));
     }
 }

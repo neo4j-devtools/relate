@@ -64,6 +64,7 @@ describe('LocalProjects - list', () => {
         expect(await environment.projects.addFile(testId, testFile)).toEqual({
             name: 'test.txt',
             extension: '.txt',
+            downloadToken: expect.any(String),
             directory: '.',
         });
     });
@@ -72,6 +73,7 @@ describe('LocalProjects - list', () => {
         expect(await environment.projects.addFile(testId, testFile, testDestination)).toEqual({
             name: testOtherFileName,
             extension: '.pem',
+            downloadToken: expect.any(String),
             directory: testProjectDir,
         });
     });
@@ -92,6 +94,7 @@ describe('LocalProjects - list', () => {
         expect(await environment.projects.removeFile(testId, testFileName)).toEqual({
             name: 'test.txt',
             extension: '.txt',
+            downloadToken: expect.any(String),
             directory: '.',
         });
     });
@@ -112,6 +115,7 @@ describe('LocalProjects - list', () => {
         expect(await environment.projects.removeFile(testId, path.join(testProjectDir, testOtherFileName))).toEqual({
             name: testOtherFileName,
             extension: '.pem',
+            downloadToken: expect.any(String),
             directory: testProjectDir,
         });
     });
