@@ -43,13 +43,13 @@ describe('$relate environment', () => {
         test.stdout().it('uses new environment', async (ctx) => {
             await UseCommand.run([ENV_NAME]);
 
-            expect(ctx.stdout).toContain(`Environment "${ENV_NAME}" is now set as default.`);
+            expect(ctx.stdout).toContain(`Environment "${ENV_NAME}" is now set as active.`);
         });
 
         test.stdout().it('switches back', async (ctx) => {
             await UseCommand.run([TEST_ENV_NAME]);
 
-            expect(ctx.stdout).toContain(`Environment "${TEST_ENV_NAME}" is now set as default.`);
+            expect(ctx.stdout).toContain(`Environment "${TEST_ENV_NAME}" is now set as active.`);
         });
     });
 });

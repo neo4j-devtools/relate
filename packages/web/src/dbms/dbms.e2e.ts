@@ -64,7 +64,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query ListDBMSSs($environmentId: String!) {
+                    `query ListDBMSSs($environmentId: String) {
                         listDbmss(environmentId: $environmentId) {
                             id,
                             name,
@@ -85,7 +85,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `mutation StartDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                    `mutation StartDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
                         startDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
@@ -109,7 +109,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query InfoDBMSs($environmentId: String!, $dbmsNames: [String!]!) {
+                    `query InfoDBMSs($environmentId: String, $dbmsNames: [String!]!) {
                         infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
                             name
                             status
@@ -131,7 +131,7 @@ describe('DBMSModule', () => {
             .send(
                 queryBody(
                     `mutation AccessDBMS(
-                        $environmentId: String!,
+                        $environmentId: String,
                         $dbmsName: String!,
                         $authToken: AuthTokenInput!,
                         $appName: String!
@@ -165,7 +165,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `mutation StopDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                    `mutation StopDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
                         stopDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames)
                     }`,
                 ),
@@ -188,7 +188,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query InfoDBMSSs($environmentId: String!, $dbmsNames: [String!]!) {
+                    `query InfoDBMSSs($environmentId: String, $dbmsNames: [String!]!) {
                         infoDbmss(environmentId: $environmentId, dbmsIds: $dbmsNames) {
                             name
                             status
@@ -230,7 +230,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query InfoDBMSs($environmentId: String!) {
+                    `query InfoDBMSs($environmentId: String) {
                         infoDbmss(environmentId: $environmentId, dbmsIds: ["non-existent"]) {
                             name
                             status
@@ -279,7 +279,7 @@ describe('DBMSModule', () => {
             .post('/graphql')
             .send(
                 queryBody(
-                    `query ListDbmsVersions ($environmentId: String!) {
+                    `query ListDbmsVersions ($environmentId: String) {
                         listDbmsVersions(environmentId: $environmentId) {
                             edition
                             version

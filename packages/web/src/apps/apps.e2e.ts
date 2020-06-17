@@ -16,7 +16,7 @@ const TEST_ACCESS_TOKEN =
 const CREATE_APP_LAUNCH_TOKEN = {
     query: `
         mutation CreateAppLaunchToken(
-            $environmentId: String!,
+            $environmentId: String,
             $dbmsId: String!,
             $appName: String!,
             $principal: String!,
@@ -44,7 +44,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
 
 const APP_LAUNCH_DATA = {
     query: `
-        query appLaunchData($environmentId: String!, $appName: String!, $launchToken: String!) {
+        query appLaunchData($environmentId: String, $appName: String!, $launchToken: String!) {
             appLaunchData(environmentId: $environmentId, appName: $appName, launchToken: $launchToken) {
                 environmentId
                 appName

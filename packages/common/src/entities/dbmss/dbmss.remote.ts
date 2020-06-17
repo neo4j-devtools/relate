@@ -15,7 +15,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation UpdateDbmsConfig(
-                    $environmentId: String!,
+                    $environmentId: String,
                     $dbmsId: String!,
                     $properties: [[String!, String!]]!
                 ) {
@@ -47,7 +47,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query ListDbmsVersions (
-                    $environmentId: String!
+                    $environmentId: String
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} (environmentId: $environmentId) {
                         edition
@@ -75,7 +75,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation InstallDbms(
-                    $environmentId: String!
+                    $environmentId: String
                     $name: String!
                     $credentials: String!
                     $version: String!
@@ -109,7 +109,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async uninstall(name: string): Promise<void> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                mutation UninstallDbms($environmentId: String!, $name: String!) {
+                mutation UninstallDbms($environmentId: String, $name: String!) {
                     ${PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS}(environmentId: $environmentId, name: $name)
                 }
             `,
@@ -132,7 +132,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async get(nameOrId: string): Promise<IDbms> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query GetDbms($environmentId: String!, $nameOrId: String!) {
+                query GetDbms($environmentId: String, $nameOrId: String!) {
                     ${PUBLIC_GRAPHQL_METHODS.GET_DBMS}(environmentId: $environmentId, dbmsId: $nameOrId) {
                         id
                         name
@@ -173,7 +173,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async list(): Promise<List<IDbms>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ListDbmss($environmentId: String!) {
+                query ListDbmss($environmentId: String) {
                     ${PUBLIC_GRAPHQL_METHODS.LIST_DBMSS}(environmentId: $environmentId) {
                         id
                         name
@@ -198,7 +198,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async start(namesOrIds: string[]): Promise<List<string>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                mutation StartDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
+                mutation StartDBMSSs($environmentId: String, $namesOrIds: [String!]!) {
                     ${PUBLIC_GRAPHQL_METHODS.START_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
@@ -221,7 +221,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async stop(namesOrIds: string[]): Promise<List<string>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                mutation StopDBMSSs($environmentId: String!, $namesOrIds: [String!]!) {
+                mutation StopDBMSSs($environmentId: String, $namesOrIds: [String!]!) {
                     ${PUBLIC_GRAPHQL_METHODS.STOP_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds)
                 }
             `,
@@ -244,7 +244,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async info(namesOrIds: string[]): Promise<List<IDbmsInfo>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query InfoDBMSs($environmentId: String!, $namesOrIds: [String!]!) {
+                query InfoDBMSs($environmentId: String, $namesOrIds: [String!]!) {
                     ${PUBLIC_GRAPHQL_METHODS.INFO_DBMSS}(environmentId: $environmentId, dbmsIds: $namesOrIds) {
                         id
                         name
@@ -275,7 +275,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation AccessDBMS(
-                    $environmentId: String!
+                    $environmentId: String
                     $dbmsNameOrId: String!
                     $authToken: AuthTokenInput!
                     $appName: String!

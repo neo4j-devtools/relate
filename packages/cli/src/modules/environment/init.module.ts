@@ -60,7 +60,6 @@ export class InitModule implements OnApplicationBootstrap {
             type: type as ENVIRONMENT_TYPES,
             id: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
-            relateEnvironment: 'default',
             user: 'foo',
         };
 
