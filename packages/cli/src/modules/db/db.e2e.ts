@@ -1,7 +1,6 @@
 import {test} from '@oclif/test';
-import {CypherParameterError} from '@relate/common';
 
-import {TestDbmss, IDbms} from '@relate/common';
+import {CypherParameterError, TestDbmss, IDbms} from '@relate/common';
 import CreateCommand from '../../commands/db/create';
 import DropCommand from '../../commands/db/drop';
 import AccessTokenCommand from '../../commands/dbms/access-token';
@@ -33,7 +32,13 @@ describe('$relate db', () => {
             await StartCommand.run([testDbms.id, '--environment', testEnvironmentId]);
             await AccessTokenCommand.run([testDbms.id, '--environment', testEnvironmentId, '--user=neo4j']);
 
-            expect(ctx.stdout).toContain('Started');
+            if (process.platform === 'win32') {
+                expect(ctx.stdout).toContain('Neo4j service started');
+            } else {
+                expect(ctx.stdout).toContain('Directories in use');
+                expect(ctx.stdout).toContain('Starting Neo4j');
+                expect(ctx.stdout).toContain('Started neo4j (pid');
+            }
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
 
             await CreateCommand.run([
@@ -58,7 +63,7 @@ describe('$relate db', () => {
             '--user=neo4j',
         ]);
 
-        expect(() => command).rejects.toThrow(
+        await expect(() => command).rejects.toThrow(
             new CypherParameterError('Cannot safely pass "name with spaces" as a Cypher parameter'),
         );
     });
