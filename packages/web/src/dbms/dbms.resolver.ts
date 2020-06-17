@@ -92,7 +92,7 @@ export class DBMSResolver {
 
     @Query(() => [DbmsVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS](
-@Args() {environmentNameOrId}: DbmsVersionArgs,
+        @Args() {environmentNameOrId}: DbmsVersionArgs,
         @Args() {filters}: FilterArgs,
     ): Promise<List<IDbmsVersion>> {
         const environment = await this.systemProvider.getEnvironment(environmentNameOrId);

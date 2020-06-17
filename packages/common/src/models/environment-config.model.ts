@@ -29,7 +29,7 @@ export interface IEnvironmentConfigInput {
 }
 
 export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
-    @IsUUID()
+    @IsUUID('4')
     public id!: string;
 
     @IsString()

@@ -8,7 +8,7 @@ envSetup();
 const dbmssCache = path.join(process.env.NEO4J_RELATE_CACHE_HOME, DBMS_DIR_NAME);
 
 async function globalSetup() {
-    const env = (await TestDbmss.init()).environment;
+    const env = (await TestDbmss.init('relate')).environment;
 
     // This step is to populate the cache with the version we want to test
     // (in case the cache is not already populated). The DBMS is uninstalled

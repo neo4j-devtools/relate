@@ -5,20 +5,14 @@ import fse, {createWriteStream, ensureDir} from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 
-import {
-    DEFAULT_ENVIRONMENT_NAME,
-    JSON_FILE_EXTENSION,
-    DBMS_DIR_NAME,
-    RELATE_KNOWN_CONNECTIONS_FILE,
-} from '../constants';
+import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError, FileUploadError} from '../errors';
-import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken} from '../models';
+import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
-import {IEnvironmentConfigInput} from '../models/environment-config.model';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -114,12 +108,12 @@ export class SystemProvider implements OnModuleInit {
 
     async createEnvironment(config: IEnvironmentConfigInput): Promise<EnvironmentAbstract> {
         const newId = uuidv4();
-        const fileName = `${newId}${JSON_FILE_EXTENSION}`;
+        const fileName = `${config.name}${JSON_FILE_EXTENSION}`;
         const filePath = path.join(this.dirPaths.environmentsConfig, fileName);
         const environmentExists = await this.getEnvironment(config.name).catch(() => null);
 
         if (environmentExists) {
-            throw new TargetExistsError(`Environment "${DEFAULT_ENVIRONMENT_NAME}" exists, will not overwrite`);
+            throw new TargetExistsError(`Environment "${config.name}" exists, will not overwrite`);
         }
 
         const configModel = new EnvironmentConfigModel({

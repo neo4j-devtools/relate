@@ -43,6 +43,7 @@ export class TestDbmss {
         const config = new EnvironmentConfigModel({
             ...configJson,
             configPath,
+            name: filename,
         });
 
         this.environment = new LocalEnvironment(config);

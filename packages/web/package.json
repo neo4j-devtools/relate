@@ -25,7 +25,7 @@
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "watch:all": "run-p watch",
-        "serve:dev": "cross-env NODE_PATH=./node_modules node ./dist/server.js",
+        "serve:dev": "cross-env NODE_PATH=./node_modules nodemon ./dist/server.js",
         "serve:watch": "run-p watch:all serve:dev",
         "start": "run-s build:clean serve:watch"
     },

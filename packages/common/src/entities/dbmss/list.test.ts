@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import path from 'path';
+import {v4 as uuidv4} from 'uuid';
 
 import {ENVIRONMENT_TYPES} from '../environments/environment.constants';
 import {EnvironmentConfigModel} from '../../models';
@@ -40,7 +41,7 @@ describe('LocalEnvironment - list', () => {
         });
 
         const config = new EnvironmentConfigModel({
-            id: 'test',
+            id: uuidv4(),
             name: 'test',
             neo4jDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
