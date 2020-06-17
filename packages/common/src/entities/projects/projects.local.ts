@@ -138,9 +138,9 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
         const project = await this.get(nameOrId);
         const allFiles = await this.findAllFilesRecursive(project.root);
-        const mapped = allFiles.mapEach((file) => mapFileToModel(file, project.root)).compact();
+        const mapped = await allFiles.mapEach((file) => mapFileToModel(file, project)).unwindPromises();
 
-        return applyEntityFilters(mapped, filters);
+        return applyEntityFilters(mapped.compact(), filters);
     }
 
     async listDbmss(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>> {

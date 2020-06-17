@@ -5,6 +5,7 @@ export interface IFile {
     name: string;
     directory: string;
     extension: string;
+    downloadToken: string;
 }
 
 export class FileModel extends ModelAbstract<IFile> implements IFile {
@@ -17,4 +18,7 @@ export class FileModel extends ModelAbstract<IFile> implements IFile {
 
     @IsString()
     public extension!: string;
+
+    @IsString()
+    public downloadToken!: string;
 }

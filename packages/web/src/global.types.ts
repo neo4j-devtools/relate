@@ -17,6 +17,9 @@ export class RelateFile implements IFile {
 
     @Field(() => String)
     extension: string;
+
+    @Field(() => String)
+    downloadToken: string;
 }
 
 registerEnumType(FILTER_COMPARATORS, {

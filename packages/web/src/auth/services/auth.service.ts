@@ -1,6 +1,5 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
-import {ConfigService} from '@nestjs/config';
 import {Application, Request} from 'express';
 import cookieParser from 'cookie-parser';
 import _ from 'lodash';
@@ -9,11 +8,10 @@ import {
     SystemProvider,
     AUTHENTICATION_BASE_ENDPOINT,
     AUTHENTICATION_ENDPOINT,
+    HEALTH_BASE_ENDPOINT,
     VALIDATION_ENDPOINT,
     VERIFICATION_ENDPOINT,
 } from '@relate/common';
-
-import {IWebModuleConfig} from '../../web.module';
 
 const getRequestAuthToken = (req: Request): string | undefined => {
     const lowerCased = AUTH_TOKEN_KEY.toLowerCase();
@@ -35,19 +33,7 @@ const getRequestAuthToken = (req: Request): string | undefined => {
 
 @Injectable()
 export class AuthService {
-    get healthUrl(): string {
-        const protocol = this.configService.get('protocol');
-        const host = this.configService.get('host');
-        const port = this.configService.get('port');
-        const authenticationEndpoint = this.configService.get('authenticationEndpoint');
-
-        return `${protocol}${host}:${port}${authenticationEndpoint}`;
-    }
-
-    constructor(
-        @Inject(ConfigService) private readonly configService: ConfigService<IWebModuleConfig>,
-        @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
-    ) {}
+    constructor(@Inject(SystemProvider) private readonly systemProvider: SystemProvider) {}
 
     register(httpAdapter: AbstractHttpAdapter): void {
         if (!httpAdapter) {
@@ -55,11 +41,10 @@ export class AuthService {
         }
 
         const app: Application = httpAdapter.getInstance();
-        const healthEndpoint = this.configService.get('healthCheckEndpoint');
 
         app.use(cookieParser());
         app.use(async (req, res, next) => {
-            if (_.startsWith(req.path, AUTHENTICATION_BASE_ENDPOINT) || _.startsWith(req.path, healthEndpoint)) {
+            if (_.startsWith(req.path, AUTHENTICATION_BASE_ENDPOINT) || _.startsWith(req.path, HEALTH_BASE_ENDPOINT)) {
                 next();
                 return;
             }

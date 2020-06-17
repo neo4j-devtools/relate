@@ -52,7 +52,7 @@ export class TokenService {
             const salt = await fse.readFile(TokenService.INSTANCE_SALT_PATH, 'utf8');
 
             if (!TokenService.UUID_V4_REGEX.test(salt)) {
-                throw new InvalidArgumentError(`Invalid secred key provided`);
+                throw new InvalidArgumentError(`Invalid secret key provided`);
             }
 
             return salt;
