@@ -10,7 +10,7 @@ const cachePath = process.env.NEO4J_RELATE_CACHE_HOME;
 const dataPath = process.env.NEO4J_RELATE_DATA_HOME;
 
 async function globalTeardown() {
-    const env = (await TestDbmss.init()).environment;
+    const env = (await TestDbmss.init('relate')).environment;
 
     const dbmss = await env.dbmss.list();
     await dbmss

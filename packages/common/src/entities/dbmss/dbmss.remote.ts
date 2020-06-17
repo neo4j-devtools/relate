@@ -9,6 +9,7 @@ import {RemoteEnvironment} from '../environments';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {GraphqlError, InvalidConfigError, NotSupportedError} from '../../errors';
 import {PropertiesFile} from '../../system/files';
+import {IRelateFilter} from '../../utils/generic';
 
 export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {
@@ -40,24 +41,28 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.updateDbmsConfig;
+        return data[PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG];
     }
 
-    async versions(): Promise<List<IDbmsVersion>> {
+    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const {data, errors}: any = await this.environment.graphql({
+            /* eslint-disable max-len */
             query: gql`
                 query ListDbmsVersions (
-                    $environmentId: String
+                    $environmentId: String,
+                    $filters: [RelateSimpleFilter!]
                 ) {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS} (environmentNameOrId: $environmentId) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS}(environmentNameOrId: $environmentId, filters: $filters) {
                         edition
                         version
                         origin
                     }
                 }
             `,
+            /* eslint-enable max-len */
             variables: {
                 environmentNameOrId: this.environment.remoteEnvironmentId,
+                filters,
             },
         });
 
@@ -68,7 +73,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.listDbmsVersions;
+        return data[PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS];
     }
 
     async install(name: string, credentials: string, version: string): Promise<string> {
@@ -103,7 +108,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.installDbms;
+        return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
     async uninstall(name: string): Promise<void> {
@@ -126,7 +131,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.uninstallDbms;
+        return data[PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS];
     }
 
     async get(nameOrId: string): Promise<IDbms> {
@@ -154,7 +159,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        const dbms = data.getDbms;
+        const dbms = data[PUBLIC_GRAPHQL_METHODS.GET_DBMS];
 
         if (!this.environment.httpOrigin) {
             throw new InvalidConfigError('Remote Environments must specify an `httpOrigin`');
@@ -170,11 +175,11 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return dbms;
     }
 
-    async list(): Promise<List<IDbms>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ListDbmss($environmentId: String) {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMSS}(environmentNameOrId: $environmentId) {
+                query ListDbmss($environmentId: String, $filters: [RelateSimpleFilter!]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMSS}(environmentNameOrId: $environmentId, filters: $filters) {
                         id
                         name
                         description
@@ -182,7 +187,10 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     }
                 }
             `,
-            variables: {environmentNameOrId: this.environment.remoteEnvironmentId},
+            variables: {
+                environmentNameOrId: this.environment.remoteEnvironmentId,
+                filters,
+            },
         });
 
         if (errors) {
@@ -192,7 +200,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.listDbmss);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_DBMSS]);
     }
 
     async start(namesOrIds: string[]): Promise<List<string>> {
@@ -215,7 +223,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.startDbmss);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.START_DBMSS]);
     }
 
     async stop(namesOrIds: string[]): Promise<List<string>> {
@@ -238,7 +246,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.stopDbmss);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.STOP_DBMSS]);
     }
 
     async info(namesOrIds: string[]): Promise<List<IDbmsInfo>> {
@@ -268,7 +276,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.infoDbmss);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.INFO_DBMSS]);
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
@@ -303,7 +311,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.createAccessToken;
+        return data[PUBLIC_GRAPHQL_METHODS.CREATE_ACCESS_TOKEN];
     }
 
     getDbmsConfig(_dbmsId: string): Promise<PropertiesFile> {

@@ -3,7 +3,7 @@ import {GraphQLModule} from '@nestjs/graphql';
 import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
 import path from 'path';
 
-import {AppsModule} from './apps';
+import {ExtensionsModule} from './extensions';
 import {DBMSModule} from './dbms';
 import {HealthModule} from './health';
 import {PATH_TO_EXECUTABLE_ROOT} from './constants';
@@ -23,7 +23,7 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
     imports: [
         SystemModule,
         DBMSModule,
-        AppsModule,
+        ExtensionsModule,
         ProjectsModule,
         FilesModule,
         HealthModule,

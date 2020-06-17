@@ -138,20 +138,21 @@ export class SystemProvider implements OnModuleInit {
         this.allEnvironments = Dict.from(instances.mapEach((env): [string, EnvironmentAbstract] => [env.id, env]));
     }
 
-    createAppLaunchToken(
+    async createAppLaunchToken(
         environmentNameOrId: string,
         appName: string,
         dbmsId: string,
         principal?: string,
         accessToken?: string,
     ): Promise<string> {
+        const environment = await this.getEnvironment(environmentNameOrId);
         const validated = JSON.parse(
             JSON.stringify(
                 new AppLaunchTokenModel({
                     accessToken,
                     appName,
                     dbmsId,
-                    environmentNameOrId,
+                    environmentId: environment.id,
                     principal,
                 }),
             ),
@@ -171,7 +172,7 @@ export class SystemProvider implements OnModuleInit {
                     accessToken: decoded.accessToken,
                     appName: decoded.appName,
                     dbmsId: decoded.dbmsId,
-                    environmentNameOrId: decoded.environmentNameOrId,
+                    environmentId: decoded.environmentId,
                     principal: decoded.principal,
                 });
             })

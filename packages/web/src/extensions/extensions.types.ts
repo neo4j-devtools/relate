@@ -4,7 +4,7 @@ import {Dbms} from '../dbms/dbms.types';
 import {EnvironmentArgs} from '../global.types';
 
 @ObjectType()
-export class AppData {
+export class ExtensionData {
     @Field(() => String)
     name!: string;
 
@@ -15,13 +15,19 @@ export class AppData {
     type!: EXTENSION_TYPES;
 
     @Field(() => String)
+    origin!: EXTENSION_ORIGIN;
+}
+
+@ObjectType()
+export class AppData extends ExtensionData {
+    @Field(() => String)
     path!: string;
 }
 
 @ObjectType()
 export class AppLaunchData {
     @Field(() => String)
-    environmentNameOrId: string;
+    environmentId: string;
 
     @Field(() => String)
     appName: string;
@@ -46,12 +52,24 @@ export class AppLaunchToken {
 }
 
 @ArgsType()
-export class LaunchDataArgs extends EnvironmentArgs {
+export class ExtensionArgs extends EnvironmentArgs {
     @Field(() => String)
-    appName: string;
+    name: string;
+}
 
+@ArgsType()
+export class InstallExtensionArgs extends ExtensionArgs {
+    @Field(() => String)
+    version: string;
+}
+
+@ArgsType()
+export class LaunchDataArgs {
     @Field(() => String)
     launchToken: string;
+
+    @Field(() => String)
+    appName: string;
 }
 
 @ArgsType()
@@ -67,24 +85,6 @@ export class CreateLaunchTokenArgs extends EnvironmentArgs {
 
     @Field(() => String, {nullable: true})
     accessToken: string;
-}
-
-@ObjectType()
-export class ExtensionData {
-    @Field(() => String)
-    type!: EXTENSION_TYPES;
-
-    @Field(() => String)
-    name!: string;
-
-    @Field(() => String)
-    version!: string;
-
-    @Field(() => String)
-    dist!: string;
-
-    @Field(() => String)
-    origin!: EXTENSION_ORIGIN;
 }
 
 @ObjectType()

@@ -49,6 +49,12 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return applyEntityFilters(allInstalledExtensions.flatten(), filters);
     }
 
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+        const extensions = await this.list(filters);
+
+        return extensions.filter(({type}) => type === EXTENSION_TYPES.STATIC);
+    }
+
     async link(filePath: string): Promise<IExtensionMeta> {
         const extension = await discoverExtension(filePath);
         const target = path.join(this.environment.dirPaths.extensionsData, extension.type, extension.name);
