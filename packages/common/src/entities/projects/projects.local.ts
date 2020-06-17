@@ -1,6 +1,5 @@
 import path from 'path';
 import fse from 'fs-extra';
-import {v4 as uuidv4} from 'uuid';
 import {from} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 import {List, Maybe, None, Str} from '@relate/types';
@@ -8,43 +7,47 @@ import {List, Maybe, None, Str} from '@relate/types';
 import {IFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
-import {PROJECTS_MANIFEST_FILE, PROJECTS_PREFIX} from '../../constants';
+import {PROJECTS_MANIFEST_FILE, PROJECTS_DIR_NAME} from '../../constants';
 import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getNormalizedProjectPath, mapFileToModel} from '../../utils/files';
+import {envPaths} from '../../utils/env-paths';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
-    async create(manifest: IProjectManifest): Promise<IProject> {
+    async create(manifest: IProjectManifest, targetDir?: string): Promise<IProject> {
+        const defaultDir = path.join(envPaths().data, PROJECTS_DIR_NAME, manifest.name);
+        const projectDir = targetDir || defaultDir;
         const exists = await this.resolveProject(manifest.name);
 
         if (!exists.isEmpty) {
             throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
         }
 
-        const newId = uuidv4();
-        const targetDir = path.join(this.environment.dirPaths.projectsData, `${PROJECTS_PREFIX}${newId}`);
-        const targetManifest = path.join(targetDir, PROJECTS_MANIFEST_FILE);
+        const targetManifest = path.join(projectDir, PROJECTS_MANIFEST_FILE);
 
-        await fse.mkdir(targetDir);
+        await fse.ensureDir(projectDir);
         await fse.writeJSON(targetManifest, manifest);
 
-        return this.get(newId);
+        if (projectDir !== defaultDir) {
+            return this.link(projectDir);
+        }
+
+        return this.get(manifest.name);
     }
 
-    async get(nameOrId: string): Promise<IProject> {
-        const project = await this.resolveProject(nameOrId);
+    async get(name: string): Promise<IProject> {
+        const project = await this.resolveProject(name);
 
         return project.getOrElse(() => {
-            throw new NotFoundError(`Could not find project ${nameOrId}`);
+            throw new NotFoundError(`Could not find project ${name}`);
         });
     }
 
     async list(): Promise<List<IProject>> {
         const projects = await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
             .mapEach(Str.from)
-            .filter((file) => file.startsWith(PROJECTS_PREFIX))
             .mapEach((projectDir) =>
                 projectDir.flatMap((dir) => {
-                    const projectPath = path.join(this.environment.dirPaths.projectsData, projectDir.get());
+                    const projectPath = path.join(this.environment.dirPaths.projectsData, dir);
 
                     return this.getManifest(projectPath)
                         .then(
@@ -52,7 +55,6 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                                 new ProjectModel({
                                     ...manifest,
                                     root: projectPath,
-                                    id: dir.replace(PROJECTS_PREFIX, ''),
                                 }),
                         )
                         .catch(() => null);
@@ -72,12 +74,11 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
             }
 
-            const newId = uuidv4();
-            const target = path.join(this.environment.dirPaths.projectsData, `${PROJECTS_PREFIX}${newId}`);
+            const target = path.join(this.environment.dirPaths.projectsData, manifest.name);
 
             await fse.symlink(projectPath, target);
 
-            return this.get(newId);
+            return this.get(manifest.name);
         } catch (e) {
             if (e instanceof ErrorAbstract) {
                 throw e;
@@ -87,16 +88,16 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
     }
 
-    async addFile(nameOrId: string, source: string, destination?: string): Promise<IFile> {
+    async addFile(projectName: string, source: string, destination?: string): Promise<IFile> {
         if (Str.from(destination).includes('..')) {
             throw new InvalidArgumentError('Project files cannot be added outside of project');
         }
 
-        const project = await this.get(nameOrId);
-        const fileName = path.basename(destination || source);
+        const project = await this.get(projectName);
+        const fileName = path.basename(destination || source).replace(project.root, '');
         const projectDestination = destination || fileName;
         const projectDir = getNormalizedProjectPath(path.dirname(projectDestination));
-        const existingFiles = await this.listFiles(project.id);
+        const existingFiles = await this.listFiles(project.name);
         const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
         if (!existingFiles.find(filePredicate).isEmpty) {
@@ -106,20 +107,20 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const target = path.join(project.root, projectDestination);
 
         await fse.ensureDir(path.dirname(target));
-        await fse.copyFile(source, target);
+        await fse.copy(source, target);
 
-        const afterCopy = await this.listFiles(project.id);
+        const afterCopy = await this.listFiles(project.name);
 
         return afterCopy.find(filePredicate).getOrElse(() => {
             throw new NotFoundError(`Unable to add ${fileName} to project`);
         });
     }
 
-    async removeFile(nameOrId: string, relativePath: string): Promise<IFile> {
-        const project = await this.get(nameOrId);
+    async removeFile(projectName: string, relativePath: string): Promise<IFile> {
+        const project = await this.get(projectName);
         const fileName = path.basename(relativePath);
         const projectDir = getNormalizedProjectPath(path.dirname(relativePath));
-        const existingFiles = await this.listFiles(project.id);
+        const existingFiles = await this.listFiles(project.name);
         const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
         return existingFiles.find(filePredicate).flatMap(async (found) => {
@@ -133,17 +134,15 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async listFiles(nameOrId: string): Promise<List<IFile>> {
-        const project = await this.get(nameOrId);
-        const projectDir = path.join(this.environment.dirPaths.projectsData, `${PROJECTS_PREFIX}${project.id}`);
+    async listFiles(name: string): Promise<List<IFile>> {
+        const project = await this.get(name);
+        const allFiles = await this.findAllFilesRecursive(project.root);
 
-        const allFiles = await this.findAllFilesRecursive(projectDir);
-
-        return allFiles.mapEach((file) => mapFileToModel(file, projectDir)).compact();
+        return allFiles.mapEach((file) => mapFileToModel(file, project.root)).compact();
     }
 
-    async listDbmss(nameOrId: string): Promise<List<IProjectDbms>> {
-        const project = await this.get(nameOrId);
+    async listDbmss(name: string): Promise<List<IProjectDbms>> {
+        const project = await this.get(name);
 
         return List.from(project.dbmss);
     }
@@ -180,8 +179,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return newDbms;
     }
 
-    async removeDbms(nameOrId: string, dbmsName: string): Promise<IProjectDbms> {
-        const project = await this.get(nameOrId);
+    async removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms> {
+        const project = await this.get(projectName);
         const manifest = await this.getManifest(project.root);
         const existing = List.from(manifest.dbmss);
 
@@ -230,11 +229,11 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return updated;
     }
 
-    private async resolveProject(nameOrId: string | Str): Promise<Maybe<IProject>> {
-        const nameOrIdToUse = Str.from(nameOrId);
+    private async resolveProject(projectName: string | Str): Promise<Maybe<IProject>> {
+        const nameToUse = Str.from(projectName);
         const allProjects = await this.list();
 
-        return allProjects.find(({name, id}) => nameOrIdToUse.equals(name) || nameOrIdToUse.equals(id));
+        return allProjects.find(({name}) => nameToUse.equals(name));
     }
 
     private findAllFilesRecursive(root: string): Promise<List<string>> {

@@ -39,9 +39,9 @@ export class ProjectsResolver {
     @Query(() => Project)
     async [PUBLIC_GRAPHQL_METHODS.GET_PROJECT](
         @Context('environment') environment: Environment,
-        @Args() {nameOrId}: ProjectArgs,
+        @Args() {name}: ProjectArgs,
     ): Promise<Project> {
-        const project = await environment.projects.get(nameOrId);
+        const project = await environment.projects.get(name);
 
         return {
             ...project,
@@ -51,12 +51,12 @@ export class ProjectsResolver {
 
     @ResolveField()
     files(@Context('environment') environment: Environment, @Parent() project: Project): Promise<List<RelateFile>> {
-        return environment.projects.listFiles(project.id);
+        return environment.projects.listFiles(project.name);
     }
 
     @ResolveField()
     dbmss(@Context('environment') environment: Environment, @Parent() project: Project): Promise<List<ProjectDbms>> {
-        return environment.projects.listDbmss(project.id);
+        return environment.projects.listDbmss(project.name);
     }
 
     @Mutation(() => Project)
@@ -78,37 +78,37 @@ export class ProjectsResolver {
     @Mutation(() => ProjectDbms)
     async [PUBLIC_GRAPHQL_METHODS.ADD_PROJECT_DBMS](
         @Context('environment') environment: Environment,
-        @Args() {nameOrId, dbmsName, dbmsId, user, accessToken}: AddProjectDbmsArgs,
+        @Args() {name, dbmsName, dbmsId, user, accessToken}: AddProjectDbmsArgs,
     ): Promise<ProjectDbms> {
         const dbms = await environment.dbmss.get(dbmsId);
 
-        return environment.projects.addDbms(nameOrId, dbmsName, dbms, user, accessToken);
+        return environment.projects.addDbms(name, dbmsName, dbms, user, accessToken);
     }
 
     @Mutation(() => ProjectDbms)
     async [PUBLIC_GRAPHQL_METHODS.REMOVE_PROJECT_DBMS](
         @Context('environment') environment: Environment,
-        @Args() {nameOrId, dbmsName}: RemoveProjectDbmsArgs,
+        @Args() {name, dbmsName}: RemoveProjectDbmsArgs,
     ): Promise<ProjectDbms> {
-        return environment.projects.removeDbms(nameOrId, dbmsName);
+        return environment.projects.removeDbms(name, dbmsName);
     }
 
     @Mutation(() => RelateFile)
     async [PUBLIC_GRAPHQL_METHODS.ADD_PROJECT_FILE](
         @Context('environment') environment: Environment,
-        @Args() {nameOrId, fileUpload, destination}: AddProjectFileArgs,
+        @Args() {name, fileUpload, destination}: AddProjectFileArgs,
     ): Promise<RelateFile> {
         const {filename, createReadStream} = await fileUpload;
         const uploadedPath = await this.systemProvider.handleFileUpload(filename, createReadStream());
 
-        return environment.projects.addFile(nameOrId, uploadedPath, destination);
+        return environment.projects.addFile(name, uploadedPath, destination);
     }
 
     @Mutation(() => RelateFile)
     async [PUBLIC_GRAPHQL_METHODS.REMOVE_PROJECT_FILE](
         @Context('environment') environment: Environment,
-        @Args() {nameOrId, filePath}: RemoveProjectFileArgs,
+        @Args() {name, filePath}: RemoveProjectFileArgs,
     ): Promise<RelateFile> {
-        return environment.projects.removeFile(nameOrId, filePath);
+        return environment.projects.removeFile(name, filePath);
     }
 }

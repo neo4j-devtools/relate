@@ -11,17 +11,12 @@ import {PROJECTS_DIR_NAME} from '../../constants';
 
 const testId = 'testId';
 
-jest.mock('uuid', () => ({
-    v4: () => testId,
-}));
-
 const TEST_MANIFEST: IProjectManifest = {
-    name: 'test',
+    name: testId,
     dbmss: [],
 };
 const TEST_CREATED: IProject = {
     ...TEST_MANIFEST,
-    id: testId,
     root: expect.any(String),
 };
 const testFileName = 'test.txt';

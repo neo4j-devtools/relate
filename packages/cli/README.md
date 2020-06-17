@@ -56,5 +56,6 @@ daedalus$ relate --help
 * [`relate environment`](./docs/environment.md) - Manage relate environments
 * [`relate extension`](./docs/extension.md) - Manage relate extensions
 * [`relate help`](./docs/help.md) - display help for relate
+* [`relate project`](./docs/project.md) - Manage relate projects
 
 <!-- commandsstop -->
