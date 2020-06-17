@@ -105,13 +105,13 @@ export enum PUBLIC_GRAPHQL_METHODS {
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
 
     // apps
-    INSTALLED_APPS = 'listApps',
+    LIST_APPS = 'listApps',
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 
     // extensions
     LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
-    INSTALLED_EXTENSIONS = 'listInstalledExtensions',
+    LIST_EXTENSIONS = 'listExtensions',
 
     // projects
     GET_PROJECT = 'getProject',

@@ -6,7 +6,7 @@ import {HealthService, IHealthInfo} from './health';
 import {WebModule, IWebModuleConfig} from './web.module';
 
 export {WebModule, IWebModuleConfig, IHealthInfo};
-export {AppsModule} from './apps';
+export {ExtensionsModule} from './extensions';
 
 export async function bootstrapWebModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);

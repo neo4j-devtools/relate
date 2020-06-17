@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import {List, None} from '@relate/types';
 
 import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
-import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
@@ -11,10 +11,10 @@ import {IRelateFilter} from '../../utils/generic';
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {
         // @todo: listInstalledApps has a bad typing for remote env
-        const installed: List<any> = await this.list();
+        const installed: List<any> = await this.listApps();
 
         return installed
-            .find(({name, type}) => type === EXTENSION_TYPES.STATIC && name === appName)
+            .find(({name}) => name === appName)
             .flatMap((app) => {
                 if (None.isNone(app)) {
                     throw new NotFoundError(`App ${appName} not found`);
@@ -27,7 +27,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ExtensionVersions($filters: [IRelateFilter]) {
+                query ExtensionVersions($filters: [RelateSimpleFilter!]) {
                     ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS}(filters: $filters) {
                         name
                         version
@@ -45,14 +45,39 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.listExtensionVersions);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS]);
     }
 
     async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query InstalledExtensions($filters: [IRelateFilter]) {
-                    ${PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS}(filters: $filters) {
+                query InstalledExtensions($filters: [RelateSimpleFilter!]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS}(filters: $filters) {
+                        type
+                        name
+                        version
+                        origin
+                    }
+                }
+            `,
+            variables: {filters},
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to list installed extensions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS]);
+    }
+
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+                query InstalledExtensions($filters: [RelateSimpleFilter!]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_APPS}(filters: $filters) {
                         name
                         type
                         path
@@ -69,7 +94,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.installedExtensions);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_APPS]);
     }
 
     link(_filePath: string): Promise<IExtensionMeta> {
@@ -100,7 +125,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.installExtension;
+        return data[PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION];
     }
 
     async uninstall(name: string): Promise<List<IExtensionMeta>> {
@@ -124,6 +149,6 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.uninstallExtension);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION]);
     }
 }

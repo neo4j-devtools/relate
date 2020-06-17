@@ -1,12 +1,6 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
-import {
-    EXTENSION_TYPES,
-    PUBLIC_GRAPHQL_METHODS,
-    SystemProvider,
-    Environment,
-    STATIC_APP_BASE_ENDPOINT,
-} from '@relate/common';
+import {PUBLIC_GRAPHQL_METHODS, SystemProvider, Environment, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
 import {List} from '@relate/types';
 
 import {
@@ -17,8 +11,10 @@ import {
     ExtensionVersion,
     CreateLaunchTokenArgs,
     LaunchDataArgs,
-} from './app.types';
-import {createAppLaunchUrl} from './apps.utils';
+    ExtensionArgs,
+    InstallExtensionArgs,
+} from './extensions.types';
+import {createAppLaunchUrl} from './extensions.utils';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
 import {EnvironmentArgs, FilterArgs} from '../global.types';
@@ -26,7 +22,7 @@ import {EnvironmentArgs, FilterArgs} from '../global.types';
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)
 @UseInterceptors(EnvironmentInterceptor)
-export class AppsResolver {
+export class ExtensionsResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => AppLaunchData)
@@ -39,20 +35,18 @@ export class AppsResolver {
 
         return {
             dbms,
-            environmentNameOrId: environment.id,
+            environmentId: environment.id,
             ...rest,
         };
     }
 
     @Query(() => [AppData])
-    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](
+    async [PUBLIC_GRAPHQL_METHODS.LIST_APPS](
         @Context('environment') environment: Environment,
         @Args() _env: EnvironmentArgs,
         @Args() {filters}: FilterArgs,
     ): Promise<List<AppData>> {
-        const installedApps = (await environment.extensions.list(filters)).filter(
-            ({type}) => type === EXTENSION_TYPES.STATIC,
-        );
+        const installedApps = await environment.extensions.listApps(filters);
 
         return installedApps
             .mapEach(async (app) => {
@@ -90,56 +84,35 @@ export class AppsResolver {
     // INSTALL_EXTENSION, UNINSTALL_EXTENSION, LIST_EXTENSION_VERSIONS, INSTALLED_EXTENSIONS
     @Mutation(() => AppData)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION](
-        @Args('name') name: string,
-        @Args('version') version: string,
-        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
-    ): Promise<AppData> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
-        const installedApp = await environment.extensions.install(name, version);
-
-        return {
-            ...installedApp,
-            path: await environment.extensions.getAppPath(installedApp.name, STATIC_APP_BASE_ENDPOINT),
-        };
+        @Context('environment') environment: Environment,
+        @Args() {name, version}: InstallExtensionArgs,
+    ): Promise<ExtensionData> {
+        return environment.extensions.install(name, version);
     }
 
     @Mutation(() => [ExtensionData])
     async [PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION](
-        @Args('name') name: string,
-        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
-    ): Promise<ExtensionData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
-        return (await environment.extensions.uninstall(name)).toArray();
+        @Context('environment') environment: Environment,
+        @Args() {name}: ExtensionArgs,
+    ): Promise<List<ExtensionData>> {
+        return environment.extensions.uninstall(name);
     }
 
     @Query(() => [ExtensionVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS](
+        @Context('environment') environment: Environment,
         @Args() {filters}: FilterArgs,
-        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
-    ): Promise<ExtensionVersion[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
-        return (await environment.extensions.list(filters)).toArray();
+        @Args() _env: EnvironmentArgs,
+    ): Promise<List<ExtensionVersion>> {
+        return environment.extensions.list(filters);
     }
 
     @Query(() => [AppData])
-    async [PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS](
+    async [PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS](
+        @Context('environment') environment: Environment,
         @Args() {filters}: FilterArgs,
-        @Args('environmentNameOrId', {nullable: true}) environmentNameOrId?: string,
-    ): Promise<AppData[]> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
-        const installedExtensions = await environment.extensions.list(filters);
-
-        const mapped = await installedExtensions
-            .mapEach(async (extension) => {
-                const extensionPath = await environment.extensions.getAppPath(extension.name, STATIC_APP_BASE_ENDPOINT);
-
-                return {
-                    ...extension,
-                    path: extensionPath,
-                };
-            })
-            .unwindPromises();
-
-        return mapped.toArray();
+        @Args() _env: EnvironmentArgs,
+    ): Promise<List<ExtensionData>> {
+        return environment.extensions.list(filters);
     }
 }

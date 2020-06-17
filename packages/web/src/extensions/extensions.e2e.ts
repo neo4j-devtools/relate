@@ -6,7 +6,7 @@ import {SystemProvider, TestDbmss, TestExtensions, IInstalledExtension, STATIC_A
 
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
-import {createAppLaunchUrl} from './apps.utils';
+import {createAppLaunchUrl} from './extensions.utils';
 
 let TEST_DB_ID: string;
 const TEST_ACCESS_TOKEN =
@@ -16,14 +16,14 @@ const TEST_ACCESS_TOKEN =
 const CREATE_APP_LAUNCH_TOKEN = {
     query: `
         mutation CreateAppLaunchToken(
-            $environmentId: String,
+            $environmentNameOrId: String,
             $dbmsId: String!,
             $appName: String!,
             $principal: String!,
             $accessToken: String!
         ) {
             createAppLaunchToken(
-                environmentNameOrId: $environmentId,
+                environmentNameOrId: $environmentNameOrId,
                 dbmsId: $dbmsId,
                 appName: $appName,
                 principal: $principal,
@@ -44,9 +44,9 @@ const CREATE_APP_LAUNCH_TOKEN = {
 
 const APP_LAUNCH_DATA = {
     query: `
-        query appLaunchData($environmentId: String, $appName: String!, $launchToken: String!) {
-            appLaunchData(environmentNameOrId: $environmentId, appName: $appName, launchToken: $launchToken) {
-                environmentNameOrId
+        query appLaunchData($appName: String!, $launchToken: String!) {
+            appLaunchData(appName: $appName, launchToken: $launchToken) {
+                environmentId
                 appName
                 dbms {
                     id
@@ -150,7 +150,7 @@ describe('AppsModule', () => {
                         dbms: {
                             id: TEST_DB_ID,
                         },
-                        environmentNameOrId: CREATE_APP_LAUNCH_TOKEN.variables.environmentNameOrId,
+                        environmentId: expect.any(String),
                         principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
                     });
                 })

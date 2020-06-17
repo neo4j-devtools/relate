@@ -11,6 +11,8 @@ export abstract class ExtensionsAbstract<Env extends EnvironmentAbstract> {
 
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>>;
 
+    abstract listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>>;
+
     abstract link(filePath: string): Promise<IExtensionMeta>;
 
     abstract versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>>;
