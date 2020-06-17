@@ -20,7 +20,7 @@ jest.mock('../../prompts', () => {
 });
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
-const TEST_ENVIRONMENT_ID = 'test';
+let TEST_ENVIRONMENT_ID: string;
 let TEST_DB_NAME: string;
 
 describe('$relate dbms', () => {
@@ -30,6 +30,7 @@ describe('$relate dbms', () => {
         dbmss = await TestDbmss.init(__filename);
         const {name} = await dbmss.createDbms();
 
+        TEST_ENVIRONMENT_ID = dbmss.environment.id;
         TEST_DB_NAME = name;
     });
 

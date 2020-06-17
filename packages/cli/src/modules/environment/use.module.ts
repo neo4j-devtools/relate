@@ -19,6 +19,6 @@ export class UseModule implements OnApplicationBootstrap {
         const {environment: environmentId} = this.parsed.args;
         const environment = await this.systemProvider.useEnvironment(environmentId);
 
-        this.utils.log(`Environment "${environment.id}" is now set as default.`);
+        this.utils.log(`Environment "${environment.name}" is now set as active.`);
     }
 }

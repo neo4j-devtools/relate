@@ -1,15 +1,15 @@
 import fse from 'fs-extra';
 import {List} from '@relate/types';
 
-import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticatorModel} from '../../models';
+import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticationModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
 import {
     AUTHENTICATOR_TYPES,
-    googleAuthenticatorFactory,
-    IAuthenticator,
-    IAuthenticatorOptions,
-    IGoogleAuthenticatorOptions,
-} from './authenticators';
+    GoogleAuthentication,
+    ClientAuthentication,
+    IGoogleAuthenticationOptions,
+    IAuthentication,
+} from './authentication';
 import {NotSupportedError} from '../../errors';
 import {arrayHasItems} from '../../utils/generic';
 import {DbmssAbstract} from '../dbmss';
@@ -26,8 +26,14 @@ export abstract class EnvironmentAbstract {
 
     public readonly dirPaths!: {[key: string]: string};
 
+    private readonly authentication = this.getAuthentication();
+
     get id(): string {
         return this.config.id;
+    }
+
+    get name(): string {
+        return this.config.name;
     }
 
     get active(): boolean {
@@ -46,36 +52,36 @@ export abstract class EnvironmentAbstract {
         return this.config.configPath;
     }
 
-    get relateEnvironment(): string | undefined {
-        return this.config.relateEnvironment;
+    get remoteEnvironmentId(): string | undefined {
+        return this.config.remoteEnvironmentId;
     }
 
     public get neo4jDataPath(): string {
         return this.config.neo4jDataPath || envPaths().data;
     }
 
-    private authenticator?: IAuthenticator;
+    constructor(protected config: EnvironmentConfigModel) {}
 
-    constructor(protected config: EnvironmentConfigModel) {
-        if (config.authenticator) {
-            // @todo: move to init?
-            this.setupAuthenticator({
-                httpOrigin: this.httpOrigin,
-                ...config.authenticator,
-            });
+    private getAuthentication(): IAuthentication | undefined {
+        const {authentication} = this.config;
+
+        if (!authentication) {
+            return undefined;
         }
-    }
 
-    private setupAuthenticator(options: IAuthenticatorOptions) {
-        switch (options.type) {
+        switch (authentication.type) {
             case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2: {
-                const googleOptions = new GoogleAuthenticatorModel(options as IGoogleAuthenticatorOptions);
-                this.authenticator = googleAuthenticatorFactory(googleOptions);
-                return;
+                const googleOptions = new GoogleAuthenticationModel(authentication as IGoogleAuthenticationOptions);
+
+                return new GoogleAuthentication(this, googleOptions);
+            }
+
+            case AUTHENTICATOR_TYPES.CLIENT: {
+                return new ClientAuthentication(this);
             }
 
             default: {
-                throw new NotSupportedError(`Authenticator type ${options.type} not supported`);
+                throw new NotSupportedError(`Authenticator type ${authentication.type} not supported`);
             }
         }
     }
@@ -83,27 +89,27 @@ export abstract class EnvironmentAbstract {
     abstract init(): Promise<void>;
 
     login(redirectTo?: string): Promise<IEnvironmentAuth> {
-        if (!this.authenticator) {
+        if (!this.authentication) {
             throw new NotSupportedError(`Environment ${this.id} does not support login.`);
         }
 
-        return this.authenticator.login(redirectTo);
+        return this.authentication.login(redirectTo);
     }
 
     generateAuthToken(code = ''): Promise<string> {
-        if (!this.authenticator) {
+        if (!this.authentication) {
             return Promise.resolve('');
         }
 
-        return this.authenticator.generateAuthToken(code);
+        return this.authentication.generateAuthToken(code);
     }
 
     verifyAuthToken(token = ''): Promise<void> {
-        if (!this.authenticator) {
+        if (!this.authentication) {
             return Promise.resolve();
         }
 
-        return this.authenticator.verifyAuthToken(token);
+        return this.authentication.verifyAuthToken(token);
     }
 
     supports(methodName: string): boolean {

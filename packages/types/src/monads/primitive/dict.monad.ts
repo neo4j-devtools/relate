@@ -158,6 +158,15 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
         return Maybe.from<R>(this.ourOriginal.get(key));
     }
 
+    /**
+     * Sets value of named key
+     */
+    // @ts-ignore
+    setValue<O = K>(key: O, val: V): Dict<T> {
+        // @ts-ignore
+        return Dict.from<T>([...this.ourOriginal, [key, val]]);
+    }
+
     toString(): string {
         return `{${this.toList()
             .mapEach(([key, val]) => `${key}: ${JSON.stringify(val)}`)

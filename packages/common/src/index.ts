@@ -16,4 +16,4 @@ export {
     NEO4J_EDITION,
     NEO4J_ORIGIN,
 } from './entities/environments';
-export * from './entities/environments/authenticators';
+export * from './entities/environments/authentication';

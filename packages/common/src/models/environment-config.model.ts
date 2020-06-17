@@ -1,40 +1,39 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean} from 'class-validator';
+import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
-import {GoogleAuthenticatorOptions} from './authenticator.model';
 import {IsValidUrl} from './custom-validators';
+import {IAuthenticationOptions} from '../entities/environments/authentication';
 
 export interface IEnvironmentAuth {
     authUrl: string;
-    getToken: () => Promise<{
-        authToken: string;
-        redirectTo?: string;
-    }>;
+    getToken: () => Promise<string>;
 }
 
-export interface IEnvironmentConfig {
+export interface IEnvironmentConfig extends IEnvironmentConfigInput {
     id: string;
-    configPath?: string;
+    configPath: string;
+}
+
+export interface IEnvironmentConfigInput {
+    name: string;
     active?: boolean;
     type: ENVIRONMENT_TYPES;
     user: any;
     neo4jDataPath?: string;
     httpOrigin?: string;
-    relateEnvironment?: string;
+    remoteEnvironmentId?: string;
     authToken?: string;
-    authenticator?: GoogleAuthenticatorOptions;
+    authentication?: IAuthenticationOptions;
     allowedMethods?: string[];
 }
 
-export interface IEnvironmentConfigInput extends IEnvironmentConfig {
-    configPath: string;
-}
-
-export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInput> implements IEnvironmentConfigInput {
-    // @todo: should be uuid
-    @IsString()
+export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
+    @IsUUID('4')
     public id!: string;
+
+    @IsString()
+    public name!: string;
 
     // @todo: should be uuid
     @IsString()
@@ -63,10 +62,10 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfigInpu
     // @todo: this is RemoteEnvironment specific
     @IsString()
     @IsOptional()
-    public relateEnvironment?: string;
+    public remoteEnvironmentId?: string;
 
     @IsOptional()
-    public authenticator?: GoogleAuthenticatorOptions;
+    public authentication?: IAuthenticationOptions;
 
     @IsOptional()
     @IsString({each: true})

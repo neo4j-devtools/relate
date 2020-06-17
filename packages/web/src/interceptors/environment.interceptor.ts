@@ -9,8 +9,8 @@ export class EnvironmentInterceptor implements NestInterceptor {
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const ctx = GqlExecutionContext.create(context);
-        const {environmentId} = ctx.getArgs();
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const {environmentNameOrId} = ctx.getArgs();
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         ctx.getContext().environment = environment;
 
         return next.handle();

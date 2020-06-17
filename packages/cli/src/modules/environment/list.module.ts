@@ -3,6 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import ListCommand from '../../commands/extension/list';
+import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -23,9 +24,9 @@ export class ListModule implements OnApplicationBootstrap {
         cli.table(
             environments.toArray(),
             {
-                id: {},
+                name: {get: getEntityDisplayName},
                 type: {},
-                active: {},
+                active: {get: ({active}) => Boolean(active)},
                 httpOrigin: {get: (val) => val.httpOrigin || ''},
             },
             {

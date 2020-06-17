@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {LOCAL_OAUTH_REDIRECT, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import LoginCommand from '../../commands/environment/login';
@@ -20,14 +20,14 @@ export class LoginModule implements OnApplicationBootstrap {
         const {environment: environmentId} = this.parsed.flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        const login = await environment.login();
+        const login = await environment.login(LOCAL_OAUTH_REDIRECT);
 
         // @todo: local server needs time...
         setTimeout(() => cli.open(login.authUrl), 1000);
         this.utils.log('Your browser has been opened to visit:');
         this.utils.log(`\n    ${login.authUrl}\n`);
 
-        const {authToken} = await login.getToken();
+        const authToken = await login.getToken();
 
         await environment.updateConfig('authToken', authToken);
 

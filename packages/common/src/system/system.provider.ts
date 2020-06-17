@@ -5,15 +5,10 @@ import fse, {createWriteStream, ensureDir} from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 
-import {
-    DEFAULT_ENVIRONMENT_NAME,
-    JSON_FILE_EXTENSION,
-    DBMS_DIR_NAME,
-    RELATE_KNOWN_CONNECTIONS_FILE,
-} from '../constants';
+import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {NotFoundError, ValidationFailureError, TargetExistsError, FileUploadError} from '../errors';
-import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfig} from '../models';
+import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
@@ -32,7 +27,7 @@ export class SystemProvider implements OnModuleInit {
         knownConnections: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
     };
 
-    protected readonly allEnvironments: Map<string, EnvironmentAbstract> = new Map<string, EnvironmentAbstract>();
+    protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
 
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
@@ -40,38 +35,39 @@ export class SystemProvider implements OnModuleInit {
         await this.reloadEnvironments();
     }
 
-    async useEnvironment(uuid: string): Promise<EnvironmentAbstract> {
+    async useEnvironment(nameOrId: string): Promise<EnvironmentAbstract> {
         // Get the environment before modifying any config to make sure we don't
         // make any changes in case it doesn't exist.
-        const defaultEnvironment = await this.getEnvironment(uuid);
+        const defaultEnvironment = await this.getEnvironment(nameOrId);
 
-        const environments = List.from(this.allEnvironments.values());
-        await environments
+        await this.allEnvironments.values
             .mapEach(async (env) => {
-                await env.updateConfig('active', env.id === uuid);
+                await env.updateConfig('active', env.id === defaultEnvironment.id);
             })
             .unwindPromises();
 
         return defaultEnvironment;
     }
 
-    async getEnvironment(uuid?: string): Promise<EnvironmentAbstract> {
+    async getEnvironment(nameOrId?: string): Promise<EnvironmentAbstract> {
         await this.reloadEnvironments();
 
-        const environments = Dict.of(this.allEnvironments);
+        if (nameOrId) {
+            const environment: Maybe<EnvironmentAbstract> = this.allEnvironments.values.find(
+                (env) => env.id === nameOrId || env.name === nameOrId,
+            );
 
-        if (uuid) {
-            const environment: Maybe<EnvironmentAbstract> = environments.getValue(uuid);
             return environment.flatMap((env) => {
                 if (None.isNone(env)) {
-                    throw new NotFoundError(`Environment "${uuid}" not found`);
+                    throw new NotFoundError(`Environment "${nameOrId}" not found`);
                 }
 
                 return env;
             });
         }
 
-        const activeEnvironment = environments.values.find((env) => env.active);
+        const activeEnvironment = this.allEnvironments.values.find((env) => env.active);
+
         return activeEnvironment.flatMap((env) => {
             if (None.isNone(env)) {
                 throw new NotFoundError(`No environment in use`);
@@ -82,18 +78,24 @@ export class SystemProvider implements OnModuleInit {
     }
 
     async registerAccessToken(
-        environmentId: string,
+        environmentNameOrId: string,
         dbmsId: string,
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.filePaths.knownConnections, environmentId, dbmsId, dbmsUser, accessToken);
+        await registerSystemAccessToken(
+            this.filePaths.knownConnections,
+            environmentNameOrId,
+            dbmsId,
+            dbmsUser,
+            accessToken,
+        );
 
         return accessToken;
     }
 
-    async getAccessToken(environmentId: string, dbmsId: string, dbmsUser: string): Promise<string> {
-        const environment = await this.getEnvironment(environmentId);
+    async getAccessToken(environmentNameOrId: string, dbmsId: string, dbmsUser: string): Promise<string> {
+        const environment = await this.getEnvironment(environmentNameOrId);
         const dbms = await environment.dbmss.get(dbmsId);
         const token = await getSystemAccessToken(this.filePaths.knownConnections, environment.id, dbms.id, dbmsUser);
 
@@ -104,39 +106,40 @@ export class SystemProvider implements OnModuleInit {
         return token;
     }
 
-    async createEnvironment(config: IEnvironmentConfig): Promise<EnvironmentAbstract> {
-        const fileName = `${config.id}${JSON_FILE_EXTENSION}`;
+    async createEnvironment(config: IEnvironmentConfigInput): Promise<EnvironmentAbstract> {
+        const newId = uuidv4();
+        const fileName = `${config.name}${JSON_FILE_EXTENSION}`;
         const filePath = path.join(this.dirPaths.environmentsConfig, fileName);
+        const environmentExists = await this.getEnvironment(config.name).catch(() => null);
 
-        const environmentExists = await fse.pathExists(filePath);
-        if (environmentExists || this.allEnvironments.get(config.id)) {
-            throw new TargetExistsError(`Environment "${DEFAULT_ENVIRONMENT_NAME}" exists, will not overwrite`);
+        if (environmentExists) {
+            throw new TargetExistsError(`Environment "${config.name}" exists, will not overwrite`);
         }
 
         const configModel = new EnvironmentConfigModel({
             ...config,
             configPath: filePath,
+            id: newId,
         });
         const environment = await createEnvironmentInstance(configModel);
 
-        await fse.writeJSON(filePath, config, {spaces: 2});
-        this.allEnvironments.set(environment.id, environment);
+        await fse.writeJSON(filePath, configModel, {spaces: 2});
+        this.allEnvironments.setValue(environment.id, environment);
 
         return environment;
     }
 
     private async reloadEnvironments(): Promise<void> {
         const configs = await this.listEnvironments();
-
-        await configs
-            .mapEach(async (environmentConfig) => {
-                this.allEnvironments.set(`${environmentConfig.id}`, await createEnvironmentInstance(environmentConfig));
-            })
+        const instances = await configs
+            .mapEach((environmentConfig) => createEnvironmentInstance(environmentConfig))
             .unwindPromises();
+
+        this.allEnvironments = Dict.from(instances.mapEach((env): [string, EnvironmentAbstract] => [env.id, env]));
     }
 
     createAppLaunchToken(
-        environmentId: string,
+        environmentNameOrId: string,
         appName: string,
         dbmsId: string,
         principal?: string,
@@ -148,7 +151,7 @@ export class SystemProvider implements OnModuleInit {
                     accessToken,
                     appName,
                     dbmsId,
-                    environmentId,
+                    environmentNameOrId,
                     principal,
                 }),
             ),
@@ -168,7 +171,7 @@ export class SystemProvider implements OnModuleInit {
                     accessToken: decoded.accessToken,
                     appName: decoded.appName,
                     dbmsId: decoded.dbmsId,
-                    environmentId: decoded.environmentId,
+                    environmentNameOrId: decoded.environmentNameOrId,
                     principal: decoded.principal,
                 });
             })
@@ -194,7 +197,6 @@ export class SystemProvider implements OnModuleInit {
                             new EnvironmentConfigModel({
                                 ...config,
                                 configPath,
-                                id: path.basename(name, JSON_FILE_EXTENSION),
                                 neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
                             }),
                     )

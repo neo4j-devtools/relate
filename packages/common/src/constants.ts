@@ -142,3 +142,5 @@ export enum FILTER_CONNECTORS {
     AND = 'AND',
     OR = 'OR',
 }
+
+export const HEALTH_BASE_ENDPOINT = '/health';

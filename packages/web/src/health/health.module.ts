@@ -1,11 +1,12 @@
 import {HttpAdapterHost} from '@nestjs/core';
 import {Inject, Module, OnModuleInit} from '@nestjs/common';
+import {SystemModule} from '@relate/common';
 
 import {HealthService} from './services/health.service';
 
 @Module({
     exports: [HealthService],
-    imports: [],
+    imports: [SystemModule],
     providers: [HealthService],
 })
 export class HealthModule implements OnModuleInit {
@@ -14,13 +15,13 @@ export class HealthModule implements OnModuleInit {
         @Inject(HealthService) private readonly loader: HealthService,
     ) {}
 
-    onModuleInit(): void {
+    async onModuleInit(): Promise<void> {
         if (!this.httpAdapterHost) {
             return;
         }
 
         const {httpAdapter} = this.httpAdapterHost;
 
-        this.loader.register(httpAdapter);
+        await this.loader.register(httpAdapter);
     }
 }

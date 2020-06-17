@@ -92,10 +92,10 @@ export class DBMSResolver {
 
     @Query(() => [DbmsVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS](
-        @Args() {environmentId}: DbmsVersionArgs,
+        @Args() {environmentNameOrId}: DbmsVersionArgs,
         @Args() {filters}: FilterArgs,
     ): Promise<List<IDbmsVersion>> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
 
         return environment.dbmss.versions(filters);
     }
@@ -103,9 +103,9 @@ export class DBMSResolver {
     // @todo: do we want to allow updating dbms config here?
     @Mutation(() => Boolean)
     async [PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG](
-        @Args() {environmentId, dbmsId, properties}: UpdateDbmsConfigArgs,
+        @Args() {environmentNameOrId, dbmsId, properties}: UpdateDbmsConfigArgs,
     ): Promise<boolean> {
-        const environment = await this.systemProvider.getEnvironment(environmentId);
+        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         return environment.dbmss.updateConfig(dbmsId, new Map(properties));
     }
 }

@@ -21,7 +21,7 @@ export class AppData {
 @ObjectType()
 export class AppLaunchData {
     @Field(() => String)
-    environmentId: string;
+    environmentNameOrId: string;
 
     @Field(() => String)
     appName: string;
