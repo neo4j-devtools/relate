@@ -13,7 +13,7 @@ import {
     RemoveProjectDbmsArgs,
     RemoveProjectFileArgs,
 } from './projects.types';
-import {EnvironmentArgs, RelateFile} from '../global.types';
+import {EnvironmentArgs, FilterArgs, RelateFile} from '../global.types';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
 
@@ -27,8 +27,9 @@ export class ProjectsResolver {
     async [PUBLIC_GRAPHQL_METHODS.LIST_PROJECTS](
         @Context('environment') environment: Environment,
         @Args() _env: EnvironmentArgs,
+        @Args() {filters}: FilterArgs,
     ): Promise<List<Project>> {
-        const projects = await environment.projects.list();
+        const projects = await environment.projects.list(filters);
 
         return projects.mapEach((project) => ({
             ...project,
@@ -50,13 +51,21 @@ export class ProjectsResolver {
     }
 
     @ResolveField()
-    files(@Context('environment') environment: Environment, @Parent() project: Project): Promise<List<RelateFile>> {
-        return environment.projects.listFiles(project.name);
+    files(
+        @Context('environment') environment: Environment,
+        @Parent() project: Project,
+        @Args() {filters}: FilterArgs,
+    ): Promise<List<RelateFile>> {
+        return environment.projects.listFiles(project.name, filters);
     }
 
     @ResolveField()
-    dbmss(@Context('environment') environment: Environment, @Parent() project: Project): Promise<List<ProjectDbms>> {
-        return environment.projects.listDbmss(project.name);
+    dbmss(
+        @Context('environment') environment: Environment,
+        @Parent() project: Project,
+        @Args() {filters}: FilterArgs,
+    ): Promise<List<ProjectDbms>> {
+        return environment.projects.listDbmss(project.name, filters);
     }
 
     @Mutation(() => Project)

@@ -4,6 +4,7 @@ import {IFile, IProject, IProjectManifest, IProjectDbms, IDbms} from '../../mode
 import {ProjectsAbstract} from './projects.abstract';
 import {RemoteEnvironment} from '../environments';
 import {NotSupportedError} from '../../errors';
+import {IRelateFilter} from '../../utils/generic';
 
 export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
     create(_manifest: IProjectManifest): Promise<IProject> {
@@ -14,7 +15,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support getting projects`);
     }
 
-    list(): Promise<List<IProject>> {
+    list(_filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing projects`);
     }
 
@@ -22,7 +23,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support linking projects`);
     }
 
-    listFiles(_name: string): Promise<List<IFile>> {
+    listFiles(_nameOrId: string, _filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project files`);
     }
 
@@ -34,7 +35,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project files`);
     }
 
-    listDbmss(_name: string): Promise<List<IProjectDbms>> {
+    listDbmss(_nameOrId: string, _filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project dbmss`);
     }
 

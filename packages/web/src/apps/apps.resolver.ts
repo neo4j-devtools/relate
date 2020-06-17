@@ -18,7 +18,7 @@ import {
 import {createAppLaunchUrl} from './apps.utils';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
-import {EnvironmentArgs} from '../global.types';
+import {EnvironmentArgs, FilterArgs} from '../global.types';
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)
@@ -48,8 +48,11 @@ export class AppsResolver {
     async [PUBLIC_GRAPHQL_METHODS.INSTALLED_APPS](
         @Context('environment') environment: Environment,
         @Args() _env: EnvironmentArgs,
+        @Args() {filters}: FilterArgs,
     ): Promise<List<AppData>> {
-        const installedApps = (await environment.extensions.list()).filter(({type}) => type === EXTENSION_TYPES.STATIC);
+        const installedApps = (await environment.extensions.list(filters)).filter(
+            ({type}) => type === EXTENSION_TYPES.STATIC,
+        );
 
         return installedApps
             .mapEach(async (app) => {
@@ -111,10 +114,11 @@ export class AppsResolver {
 
     @Query(() => [ExtensionVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS](
+        @Args() {filters}: FilterArgs,
         @Args('environmentId', {nullable: true}) environmentId?: string,
     ): Promise<ExtensionVersion[]> {
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        return (await environment.extensions.list()).toArray();
+        return (await environment.extensions.list(filters)).toArray();
     }
 
     @Query(() => [AppData])

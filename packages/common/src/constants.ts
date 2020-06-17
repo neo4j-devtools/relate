@@ -130,3 +130,15 @@ export const MAX_CONNECTION_RETRIES = 5;
 export const PROJECTS_DIR_NAME = 'projects';
 export const PROJECTS_MANIFEST_FILE = 'relate.project.json';
 export const PROJECTS_PREFIX = 'project-';
+
+export enum FILTER_COMPARATORS {
+    EQUALS = 'EQUALS',
+    NOT_EQUALS = 'NOT_EQUALS',
+    CONTAINS = 'CONTAINS',
+    NOT_CONTAINS = 'NOT_CONTAINS',
+}
+
+export enum FILTER_CONNECTORS {
+    AND = 'AND',
+    OR = 'OR',
+}

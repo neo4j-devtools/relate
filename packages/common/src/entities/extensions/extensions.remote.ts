@@ -6,6 +6,7 @@ import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
+import {IRelateFilter} from '../../utils/generic';
 
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {
@@ -23,18 +24,18 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             });
     }
 
-    async versions(): Promise<List<IExtensionVersion>> {
+    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ExtensionVersions {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS} {
+                query ExtensionVersions($filters: [IRelateFilter]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS}(filters: $filters) {
                         name
                         version
                         origin
                     }
                 }
             `,
-            variables: {},
+            variables: {filters},
         });
 
         if (errors) {
@@ -47,18 +48,18 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         return List.from(data.listExtensionVersions);
     }
 
-    async list(): Promise<List<IExtensionMeta>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query InstalledExtensions {
-                    ${PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS} {
+                query InstalledExtensions($filters: [IRelateFilter]) {
+                    ${PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS}(filters: $filters) {
                         name
                         type
                         path
                     }
                 }
             `,
-            variables: {},
+            variables: {filters},
         });
 
         if (errors) {

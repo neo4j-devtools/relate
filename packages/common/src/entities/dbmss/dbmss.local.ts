@@ -28,7 +28,7 @@ import {
     NotFoundError,
     NotSupportedError,
 } from '../../errors';
-import {isValidUrl} from '../../utils/generic';
+import {isValidUrl, applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {
     LocalEnvironment,
     LOCALHOST_IP_ADDRESS,
@@ -50,12 +50,11 @@ import {CypherParameterError} from '../../errors/cypher-parameter.error';
 import {systemDbQuery} from '../../utils/dbmss/system-db-query';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
-    async versions(): Promise<List<IDbmsVersion>> {
+    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const cached = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
         const online = await fetchNeo4jVersions();
         const allVersions = cached.concat(online);
-
-        return allVersions
+        const mapped = allVersions
             .mapEach((version) => {
                 if (version.origin === 'cached') {
                     return version;
@@ -77,6 +76,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     });
             })
             .compact();
+
+        return applyEntityFilters(mapped, filters);
     }
 
     async install(name: string, credentials: string, version: string): Promise<string> {
@@ -205,11 +206,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return true;
     }
 
-    async list(): Promise<List<IDbms>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>> {
         // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
 
-        return Dict.from(this.dbmss).values;
+        return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
 
     async get(nameOrId: string): Promise<IDbms> {
