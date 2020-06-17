@@ -1,5 +1,5 @@
 import {List, Str} from '@relate/types';
-import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker} from '@huboneo/tapestry';
+import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQueryMeta} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
@@ -44,13 +44,16 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
 
+    abstract createDb(dbmsId: string, user: string, name: string, accessToken: string): Promise<void>;
+
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
         query: string,
         params: any = {},
         retry = 0,
+        meta: IQueryMeta = {},
     ): rxjs.Observable<TapestryJSONResponse<Res>> {
-        return driver.query(query, params).pipe(
+        return driver.query(query, params, meta).pipe(
             rxjsOps.tap((res) => {
                 if (res.type === DRIVER_RESULT_TYPE.FAILURE) {
                     throw new DbmsQueryError(`Failed to execute query`, res);
@@ -91,10 +94,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         );
     }
 
-    protected async getJSONDriverInstance(
-        dbmsId: string,
-        authToken: IAuthToken,
-    ): Promise<Driver<TapestryJSONResponse>> {
+    public async getJSONDriverInstance(dbmsId: string, authToken: IAuthToken): Promise<Driver<TapestryJSONResponse>> {
         const dbmsInfo = (await this.info([dbmsId])).first.getOrElse(() => {
             throw new NotFoundError(`Could not find Dbms ${dbmsId}`);
         });

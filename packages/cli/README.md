@@ -18,7 +18,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.1-alpha.0 darwin-x64 node-v12.14.1
+@relate/cli/1.0.1-alpha.0 linux-x64 node-v12.16.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -51,6 +51,7 @@ daedalus$ relate --help
 
 * [`relate app`](./docs/app.md) - Manage Graph Apps
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
+* [`relate db`](./docs/db.md) - Manage Neo4j Databases
 * [`relate dbms`](./docs/dbms.md) - Manage Neo4j DBMSs
 * [`relate environment`](./docs/environment.md) - Manage relate environments
 * [`relate extension`](./docs/extension.md) - Manage relate extensions
