@@ -15,7 +15,7 @@ export default class CreateCommand extends BaseCommand {
         {
             name: 'name',
             description: 'database name',
-            reuqired: REQUIRED_FOR_SCRIPTS,
+            required: REQUIRED_FOR_SCRIPTS,
         },
     ];
 

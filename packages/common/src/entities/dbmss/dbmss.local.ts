@@ -22,6 +22,7 @@ import {
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
+    CypherParameterError,
     DbmsExistsError,
     InvalidArgumentError,
     NotAllowedError,
@@ -46,7 +47,6 @@ import {
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
 import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
-import {CypherParameterError} from '../../errors/cypher-parameter.error';
 import {systemDbQuery} from '../../utils/dbmss/system-db-query';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {

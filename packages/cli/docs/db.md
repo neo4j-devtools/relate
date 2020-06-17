@@ -3,16 +3,16 @@
 
 Manage Neo4j Databases
 
-* [`relate db:create [NAME]`](#relate-dbcreate-name)
+* [`relate db:create NAME`](#relate-dbcreate-name)
 * [`relate db:drop [NAME]`](#relate-dbdrop-name)
 
-## `relate db:create [NAME]`
+## `relate db:create NAME`
 
 Create a new database
 
 ```
 USAGE
-  $ relate db:create [NAME]
+  $ relate db:create NAME
 
 ARGUMENTS
   NAME  database name
