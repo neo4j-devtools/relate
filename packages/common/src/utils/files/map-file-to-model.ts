@@ -1,8 +1,8 @@
-import {IFile, IProject} from '../../models';
+import {IRelateFile, IProject} from '../../models';
 import path from 'path';
 import {TokenService} from '../../token.service';
 
-export async function mapFileToModel(file: string, project: IProject): Promise<IFile | null> {
+export async function mapFileToModel(file: string, project: IProject): Promise<IRelateFile | null> {
     try {
         const fileObj = {
             name: path.basename(file),

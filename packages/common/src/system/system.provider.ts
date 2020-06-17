@@ -130,8 +130,26 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async reloadEnvironments(): Promise<void> {
-        const configs = await this.listEnvironments();
+        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
+            .filter((name) => name.endsWith('.json'))
+            .mapEach((name) => {
+                const configPath = path.join(this.dirPaths.environmentsConfig, name);
+
+                return fse
+                    .readJSON(configPath)
+                    .then(
+                        (config) =>
+                            new EnvironmentConfigModel({
+                                ...config,
+                                configPath,
+                                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
+                            }),
+                    )
+                    .catch(() => None.EMPTY);
+            })
+            .unwindPromises();
         const instances = await configs
+            .compact()
             .mapEach((environmentConfig) => createEnvironmentInstance(environmentConfig))
             .unwindPromises();
 
@@ -185,27 +203,10 @@ export class SystemProvider implements OnModuleInit {
             });
     }
 
-    async listEnvironments(): Promise<List<EnvironmentConfigModel>> {
-        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
-            .filter((name) => name.endsWith('.json'))
-            .mapEach((name) => {
-                const configPath = path.join(this.dirPaths.environmentsConfig, name);
+    async listEnvironments(): Promise<List<EnvironmentAbstract>> {
+        await this.reloadEnvironments();
 
-                return fse
-                    .readJSON(configPath)
-                    .then(
-                        (config) =>
-                            new EnvironmentConfigModel({
-                                ...config,
-                                configPath,
-                                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
-                            }),
-                    )
-                    .catch(() => None.EMPTY);
-            })
-            .unwindPromises();
-
-        return configs.compact();
+        return this.allEnvironments.values;
     }
 
     async handleFileUpload(fileName: string, readStream: Readable): Promise<string> {

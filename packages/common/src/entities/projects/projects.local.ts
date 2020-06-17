@@ -4,7 +4,7 @@ import {from} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 import {List, Maybe, None, Str} from '@relate/types';
 
-import {IFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms} from '../../models';
+import {IRelateFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {PROJECTS_MANIFEST_FILE, PROJECTS_DIR_NAME} from '../../constants';
@@ -89,7 +89,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
     }
 
-    async addFile(projectName: string, source: string, destination?: string): Promise<IFile> {
+    async addFile(projectName: string, source: string, destination?: string): Promise<IRelateFile> {
         if (Str.from(destination).includes('..')) {
             throw new InvalidArgumentError('Project files cannot be added outside of project');
         }
@@ -99,7 +99,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const projectDestination = destination || fileName;
         const projectDir = getNormalizedProjectPath(path.dirname(projectDestination));
         const existingFiles = await this.listFiles(project.name);
-        const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
+        const filePredicate = ({name, directory}: IRelateFile) => name === fileName && directory === projectDir;
 
         if (!existingFiles.find(filePredicate).isEmpty) {
             throw new InvalidArgumentError(`File ${fileName} already exists at that destination`);
@@ -117,12 +117,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async removeFile(projectName: string, relativePath: string): Promise<IFile> {
+    async removeFile(projectName: string, relativePath: string): Promise<IRelateFile> {
         const project = await this.get(projectName);
         const fileName = path.basename(relativePath);
         const projectDir = getNormalizedProjectPath(path.dirname(relativePath));
         const existingFiles = await this.listFiles(project.name);
-        const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
+        const filePredicate = ({name, directory}: IRelateFile) => name === fileName && directory === projectDir;
 
         return existingFiles.find(filePredicate).flatMap(async (found) => {
             if (None.isNone(found)) {
@@ -135,7 +135,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
+    async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>> {
         const project = await this.get(nameOrId);
         const allFiles = await this.findAllFilesRecursive(project.root);
         const mapped = await allFiles.mapEach((file) => mapFileToModel(file, project)).unwindPromises();
