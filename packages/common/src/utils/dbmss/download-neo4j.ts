@@ -1,6 +1,7 @@
 import fse from 'fs-extra';
 import got from 'got';
 import hasha from 'hasha';
+import {Str} from '@relate/types';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
@@ -14,7 +15,9 @@ export const getCheckSum = async (url: string): Promise<string> => {
     try {
         const response = await got(url);
         const {body: shaSum} = response;
-        return shaSum;
+        return Str.from(shaSum)
+            .trim()
+            .get();
     } catch (e) {
         throw new FetchError(e);
     }
