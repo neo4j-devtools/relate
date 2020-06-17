@@ -55,12 +55,6 @@
             }
         },
         {
-            "files": ["packages/cli/src/modules/**/*.ts", "packages/cli/src/prompts/**/*.ts"],
-            "rules": {
-                "sort-keys": ["off"]
-            }
-        },
-        {
             "files": ["packages/types/src/**/*.ts"],
             "rules": {
                 "@typescript-eslint/ban-ts-ignore": ["off"]
@@ -268,7 +262,7 @@
         "semi": "error",
         "semi-spacing": "error",
         "semi-style": "error",
-        "sort-keys": "warn",
+        "sort-keys": "off",
         "space-before-blocks": "error",
         "space-before-function-paren": [
             "error",

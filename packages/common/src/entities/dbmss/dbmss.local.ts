@@ -22,6 +22,7 @@ import {
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
+    CypherParameterError,
     DbmsExistsError,
     InvalidArgumentError,
     NotAllowedError,
@@ -46,7 +47,6 @@ import {
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
 import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
-import {CypherParameterError} from '../../errors/cypher-parameter.error';
 import {systemDbQuery} from '../../utils/dbmss/system-db-query';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
@@ -239,9 +239,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return token;
     }
 
-    async createDb(dbmsId: string, dbmsUser: string, name: string, accessToken: string): Promise<void> {
-        if (!name.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${name}" as a Cypher parameter`);
+    async createDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
+            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
         await systemDbQuery(
@@ -251,7 +251,23 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 dbmsUser,
                 environment: this.environment,
             },
-            `CREATE DATABASE ${name}`,
+            `CREATE DATABASE ${dbName}`,
+        );
+    }
+
+    async dropDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
+            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
+        }
+
+        await systemDbQuery(
+            {
+                accessToken,
+                dbmsId,
+                dbmsUser,
+                environment: this.environment,
+            },
+            `DROP DATABASE ${dbName}`,
         );
     }
 

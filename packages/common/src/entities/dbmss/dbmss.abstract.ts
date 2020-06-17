@@ -45,7 +45,9 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
 
-    abstract createDb(dbmsId: string, user: string, name: string, accessToken: string): Promise<void>;
+    abstract createDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
+
+    abstract dropDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
 
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
