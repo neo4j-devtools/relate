@@ -1,4 +1,3 @@
-import fse from 'fs-extra';
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
 import path from 'path';
@@ -6,7 +5,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
 
 import {isInteractive, readStdin} from '../../stdin';
-import LoadCommand from '../../commands/dbms/load';
+import DumpCommand from '../../commands/db/dump';
 import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
@@ -14,30 +13,23 @@ import {selectDbmsPrompt} from '../../prompts';
     imports: [SystemModule],
     providers: [],
 })
-export class LoadModule implements OnApplicationBootstrap {
+export class DumpModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof LoadCommand>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof DumpCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const {from, database, force} = flags;
-
-        try {
-            await fse.ensureFile(from);
-        } catch (e) {
-            throw new NotFoundError(`File not found (${from})`);
-        }
-
-        const filePath = path.resolve(from);
+        const {to, database} = flags;
+        const filePath = path.resolve(to);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
         if (!dbmsId) {
             if (isInteractive()) {
-                dbmsId = await selectDbmsPrompt('Select a DBMS to load data to', environment);
+                dbmsId = await selectDbmsPrompt('Select a DBMS to dump DB data from', environment);
             } else {
                 dbmsId = await readStdin();
             }
@@ -54,8 +46,8 @@ export class LoadModule implements OnApplicationBootstrap {
             cli.action.stop(chalk.green('done'));
         }
 
-        cli.action.start(`Loading data from dump into ${dbms.name}`);
-        return environment.dbmss.dbLoad(dbms.id, database, filePath, force).then((res: string) => {
+        cli.action.start(`Dumping ${database} from ${dbms.name}`);
+        return environment.dbmss.dbDump(dbms.id, database, filePath).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];
@@ -63,16 +55,15 @@ export class LoadModule implements OnApplicationBootstrap {
                 const done = res.split('\n').reverse();
                 message.push(chalk.green(done[1]));
                 message.push(
-                    `Successfully loaded data from ${chalk.cyan(filePath)} ` +
-                        `into ${chalk.cyan(`${dbms.name}->${database}`)}`,
+                    `Successfully dumped ${chalk.cyan(database)} ` +
+                        `from ${chalk.cyan(dbms.name)} to ${chalk.cyan(filePath)}`,
                 );
             } else {
                 result = chalk.red('failed');
-                if (res.includes('Database already exists')) {
-                    message.push(`Database already exists: ${chalk.cyan(database)}`);
-                    message.push(`Select another database or use flag '--force' to overwrite existing database.`);
+                if (res.includes('Database does not exist')) {
+                    message.push(`Database does not exist: ${chalk.cyan(database)}`);
                 }
-                message.push(chalk.red(`Failed to load dump.`));
+                message.push(chalk.red(`Failed to dump data.`));
             }
 
             cli.action.stop(result);

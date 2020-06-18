@@ -4,7 +4,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
 
 import {isInteractive, readStdin} from '../../stdin';
-import QueryFileCommand from '../../commands/dbms/query-file';
+import ExecCommand from '../../commands/db/exec';
 import {selectDbmsPrompt, passwordPrompt} from '../../prompts';
 
 @Module({
@@ -12,9 +12,9 @@ import {selectDbmsPrompt, passwordPrompt} from '../../prompts';
     imports: [SystemModule],
     providers: [],
 })
-export class QueryFileModule implements OnApplicationBootstrap {
+export class ExecModule implements OnApplicationBootstrap {
     constructor(
-        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof QueryFileCommand>,
+        @Inject('PARSED_PROVIDER') protected readonly parsed: ParsedInput<typeof ExecCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
@@ -47,7 +47,7 @@ export class QueryFileModule implements OnApplicationBootstrap {
         const password = await passwordPrompt('Enter passphrase');
 
         return environment.dbmss
-            .dbQueryFile(dbmsId, from, {
+            .dbExec(dbmsId, from, {
                 database,
                 user,
                 password,

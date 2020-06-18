@@ -2,7 +2,7 @@ import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
-import {LoadModule} from '../../modules/dbms/load.module';
+import {LoadModule} from '../../modules/db/load.module';
 
 export default class LoadCommand extends BaseCommand {
     commandClass = LoadCommand;

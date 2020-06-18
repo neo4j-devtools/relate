@@ -125,7 +125,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     // dump / import
     DB_DUMP = 'dbDump',
     DB_LOAD = 'dbLoad',
-    QUERY_FILE = 'dbQueryFile',
+    QUERY_FILE = 'dbExec',
 }
 
 // seconds

@@ -96,6 +96,6 @@ export class TestDbmss {
             }
         });
         await Promise.all(uninstallAll);
-        await fse.remove(path.resolve(`${process.env.NEO4J_RELATE_DATA_HOME}/test-db.dump`));
+        await fse.remove(path.resolve(path.join(envPaths().data, 'test-db.dump')));
     }
 }

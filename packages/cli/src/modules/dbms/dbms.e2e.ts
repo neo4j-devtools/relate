@@ -1,14 +1,15 @@
+import path from 'path';
 import {test} from '@oclif/test';
-import {TestDbmss, DBMS_STATUS} from '@relate/common';
+import {TestDbmss, DBMS_STATUS, envPaths} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
 import StartCommand from '../../commands/dbms/start';
 import InfoCommand from '../../commands/dbms/info';
 import StopCommand from '../../commands/dbms/stop';
-import DumpCommand from '../../commands/dbms/dump';
-import LoadCommand from '../../commands/dbms/load';
-import QueryFileCommand from '../../commands/dbms/query-file';
+import DumpCommand from '../../commands/db/dump';
+import LoadCommand from '../../commands/db/load';
+import ExecCommand from '../../commands/db/exec';
 
 jest.mock('../../prompts', () => {
     return {
@@ -69,7 +70,7 @@ describe('$relate dbms', () => {
         });
 
     test.stdout().it('should import cypher', async (ctx) => {
-        await QueryFileCommand.run([
+        await ExecCommand.run([
             TEST_DB_ID,
             `--from=${process.env.NEO4J_RELATE_CONFIG_HOME}/movies.cypher`,
             '--database=neo4j',
@@ -90,21 +91,21 @@ describe('$relate dbms', () => {
     test.stdout().it('should log successful dump', async (ctx) => {
         await DumpCommand.run([
             TEST_DB_ID,
-            `--to=${process.env.NEO4J_RELATE_DATA_HOME}/test-db.dump`,
+            `--to=${path.join(envPaths().data, 'test-db.dump')}`,
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        await expect(ctx.stdout).toContain('Done');
+        await expect(ctx.stdout).toContain('Successfully dumped');
     });
 
     test.stdout().it('should log successful load', async (ctx) => {
         await LoadCommand.run([
             TEST_DB_ID,
-            `--from=${process.env.NEO4J_RELATE_DATA_HOME}/test-db.dump`,
+            `--from=${path.join(envPaths().data, 'test-db.dump')}`,
             '--database=neo4j',
             '--force',
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        await expect(ctx.stdout).toContain('Done');
+        await expect(ctx.stdout).toContain('Successfully loaded data from');
     });
 
     test.stdout().it('logs stopped status', async (ctx) => {

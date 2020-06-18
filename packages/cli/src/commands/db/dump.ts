@@ -2,12 +2,12 @@ import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
-import {QueryFileModule} from '../../modules/dbms/query-file.module';
+import {DumpModule} from '../../modules/db/dump.module';
 
 export default class DumpCommand extends BaseCommand {
     commandClass = DumpCommand;
 
-    commandModule = QueryFileModule;
+    commandModule = DumpModule;
 
     static description = 'Dump a database from a Neo4j DBMS';
 
@@ -22,15 +22,10 @@ export default class DumpCommand extends BaseCommand {
             default: 'neo4j',
             description: 'Database',
         }),
-        from: flags.string({
-            char: 'f',
-            default: '',
-            description: 'Cypher file to load data from',
-        }),
-        user: flags.string({
-            char: 'u',
-            default: 'neo4j',
-            description: 'DBMS user',
+        to: flags.string({
+            char: 't',
+            default: `${process.cwd()}/db-dump-${Date.now()}.dump`,
+            description: 'Path and filename for dump',
         }),
     };
 }

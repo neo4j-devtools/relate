@@ -334,7 +334,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`Not implemented yet. ${dbmsId} ${db}`);
     }
 
-    dbQueryFile(dbmsId: string, db: string): Promise<string> {
+    dbExec(dbmsId: string, db: string): Promise<string> {
         throw new NotSupportedError(`Not implemented yet. ${dbmsId} ${db}`);
     }
 

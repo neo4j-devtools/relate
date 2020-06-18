@@ -3,9 +3,13 @@
 
 Manage Neo4j Databases
 
-* [`relate db:create NAME`](#relate-dbcreate-name)
-* [`relate db:drop [NAME]`](#relate-dbdrop-name)
-* [`relate db:list`](#relate-dblist)
+- [`relate db`](#relate-db)
+  - [`relate db:create NAME`](#relate-dbcreate-name)
+  - [`relate db:drop [NAME]`](#relate-dbdrop-name)
+  - [`relate db:list`](#relate-dblist)
+  - [`relate db:dump DBMS`](#relate-dbdump-dbms)
+  - [`relate db:exec DBMS`](#relate-dbexec-dbms)
+  - [`relate db:load DBMS`](#relate-dbload-dbms)
 
 ## `relate db:create NAME`
 
@@ -26,7 +30,7 @@ OPTIONS
                                  to the system database)
 ```
 
-_See code: [dist/commands/db/create.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/db/create.ts)_
+_See code: [dist/commands/db/create.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.1/dist/commands/db/create.ts)_
 
 ## `relate db:drop [NAME]`
 
@@ -78,3 +82,64 @@ OPTIONS
 ```
 
 _See code: [dist/commands/db/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/db/list.ts)_
+
+## `relate db:dump DBMS`
+
+Dump a database from a Neo4j DBMS
+
+```
+USAGE
+  $ relate db:dump DBMS
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+OPTIONS
+  -d, --database=database        [default: neo4j] Database
+  -e, --environment=environment  Name of the environment to run the command against
+
+  -t, --to=to                    [default: /Users/linus/Projects/neo4j/relate/packages/cli/db-dump-1592812842983.dump]
+                                 Path and filename for dump
+```
+
+_See code: [dist/commands/db/dump.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.1/dist/commands/db/dump.ts)_
+
+## `relate db:exec DBMS`
+
+Dump a database from a Neo4j DBMS
+
+```
+USAGE
+  $ relate db:exec DBMS
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+OPTIONS
+  -d, --database=database        [default: neo4j] Database
+  -e, --environment=environment  Name of the environment to run the command against
+  -f, --from=from                Cypher file to load data from
+  -u, --user=user                [default: neo4j] DBMS user
+```
+
+_See code: [dist/commands/db/exec.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.1/dist/commands/db/exec.ts)_
+
+## `relate db:load DBMS`
+
+Load data into a database from a dump
+
+```
+USAGE
+  $ relate db:load DBMS
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+OPTIONS
+  -d, --database=database        [default: neo4j] Database to load data into
+  -e, --environment=environment  Name of the environment to run the command against
+  -f, --from=from                Dump to load data from
+  -s, --force                    Force load data (WARNING! this will erase any existing data)
+```
+
+_See code: [dist/commands/db/load.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.1/dist/commands/db/load.ts)_

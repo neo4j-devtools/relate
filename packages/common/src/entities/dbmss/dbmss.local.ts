@@ -531,9 +531,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async dbDump(dbmsId: string, database: string, to: string): Promise<string> {
-        // const dateISO = new Date().toISOString();
-        // const [date] = dateISO.split('.');
-        // const to = path.join(outputDir, filename || `${dbmsId}-${database}-${date.replace(':', '')}.dump`);
         const params = ['dump', `--database=${database}`, `--to=${to}`];
         const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
         return result;
@@ -545,7 +542,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return result;
     }
 
-    async dbQueryFile(
+    async dbExec(
         dbmsId: string,
         from: string,
         args: {

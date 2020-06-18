@@ -137,7 +137,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string>;
 
-    abstract dbQueryFile(
+    abstract dbExec(
         dbmsId: string,
         from: string,
         args: {database: string; user: string; password: string},
