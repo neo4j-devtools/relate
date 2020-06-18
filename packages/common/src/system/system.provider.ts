@@ -30,10 +30,9 @@ export class SystemProvider implements OnModuleInit {
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
 
     async onModuleInit(): Promise<void> {
-        await verifyAcceptedTerms();
-
         await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
+        await verifyAcceptedTerms();
         await this.reloadEnvironments();
     }
 
