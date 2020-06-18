@@ -25,7 +25,7 @@ async function globalTeardown() {
         .mapEach((filename) => path.join(cachePath, filename));
 
     const dataFiles = List.from(await fse.readdir(dataPath))
-        .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
+        .filter((filename) => !['.GITIGNORED', 'dbmss', 'acceptedTerms'].includes(filename))
         .mapEach((filename) => path.join(dataPath, filename));
 
     await List.from()
