@@ -30,7 +30,7 @@ export class ExtensionsResolver {
         @Context('environment') environment: Environment,
         @Args() {appName, launchToken}: LaunchDataArgs,
     ): Promise<AppLaunchData> {
-        const {dbmsId, ...rest} = await this.systemProvider.parseAppLaunchToken(appName, launchToken);
+        const {dbmsId, ...rest} = await environment.extensions.parseAppLaunchToken(appName, launchToken);
         const dbms = await environment.dbmss.get(dbmsId);
 
         return {
@@ -65,13 +65,7 @@ export class ExtensionsResolver {
         @Context('environment') environment: Environment,
         @Args() {appName, dbmsId, principal, accessToken}: CreateLaunchTokenArgs,
     ): Promise<AppLaunchToken> {
-        const token = await this.systemProvider.createAppLaunchToken(
-            environment.id,
-            appName,
-            dbmsId,
-            principal,
-            accessToken,
-        );
+        const token = await environment.extensions.createAppLaunchToken(appName, dbmsId, principal, accessToken);
         const appBasePath = await environment.extensions.getAppPath(appName, STATIC_APP_BASE_ENDPOINT);
 
         return {

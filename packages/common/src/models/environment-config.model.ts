@@ -59,8 +59,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public httpOrigin?: string;
 
-    // @todo: this is RemoteEnvironment specific
-    @IsString()
+    @IsUUID('4')
     @IsOptional()
     public remoteEnvironmentId?: string;
 

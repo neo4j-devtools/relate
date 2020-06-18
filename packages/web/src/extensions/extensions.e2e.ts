@@ -2,7 +2,7 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
-import {SystemProvider, TestDbmss, TestExtensions, IInstalledExtension, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
+import {Environment, TestDbmss, TestExtensions, IInstalledExtension, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
 
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
@@ -69,10 +69,12 @@ describe('AppsModule', () => {
     let dbmss: TestDbmss;
     const extensions = new TestExtensions(__filename);
     let testExtension: IInstalledExtension;
+    let testEnvironment: Environment;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
         const {id} = await dbmss.createDbms();
+        testEnvironment = dbmss.environment;
         TEST_DB_ID = id;
         testExtension = await extensions.installNew();
 
@@ -119,10 +121,8 @@ describe('AppsModule', () => {
     });
 
     test('/graphql appLaunchData', async () => {
-        const {environmentNameOrId, principal} = CREATE_APP_LAUNCH_TOKEN.variables;
-        const systemProvider = app.get(SystemProvider);
-        const launchToken = await systemProvider.createAppLaunchToken(
-            environmentNameOrId,
+        const {principal} = CREATE_APP_LAUNCH_TOKEN.variables;
+        const launchToken = await testEnvironment.extensions.createAppLaunchToken(
             testExtension.name,
             TEST_DB_ID,
             principal,

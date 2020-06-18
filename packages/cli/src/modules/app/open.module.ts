@@ -68,7 +68,7 @@ export class OpenModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
 
         if (!user) {
-            const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);
+            const launchToken = await environment.extensions.createAppLaunchToken(environment.id, appName, dbms.id);
             const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
 
             this.logOrOpen(tokenUrl);
@@ -76,13 +76,7 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
-        const launchToken = await this.systemProvider.createAppLaunchToken(
-            environment.id,
-            appName,
-            dbms.id,
-            user,
-            accessToken,
-        );
+        const launchToken = await environment.extensions.createAppLaunchToken(appName, dbms.id, user, accessToken);
 
         const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
         this.logOrOpen(tokenUrl);
@@ -93,7 +87,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         const error = new NotFoundError(`Could not connect to the @relate/web server`, [
             'If you are connecting locally, run "relate-web start" and try again.',
-            'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
+            'If you are connecting to a remote, ensure that you are logged in',
         ]);
 
         try {

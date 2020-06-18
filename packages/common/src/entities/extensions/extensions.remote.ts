@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import {List, None} from '@relate/types';
+import {Dict, List, None} from '@relate/types';
 
 import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
@@ -7,6 +7,7 @@ import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
 import {IRelateFilter} from '../../utils/generic';
+import {IAppLaunchToken} from '../../models';
 
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {
@@ -150,5 +151,83 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         }
 
         return List.from(data[PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION]);
+    }
+
+    async createAppLaunchToken(
+        appName: string,
+        dbmsId: string,
+        principal?: string,
+        accessToken?: string,
+    ): Promise<string> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+                mutation CreateAppLaunchToken(
+                    $dbmsId: String!,
+                    $appName: String!,
+                    $principal: String!,
+                    $accessToken: String!
+                ) {
+                    ${PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN}(
+                        dbmsId: $dbmsId,
+                        appName: $appName,
+                        principal: $principal,
+                        accessToken: $accessToken
+                    ) {
+                        token
+                        path
+                    }
+                }
+            `,
+            variables: {
+                dbmsId,
+                appName,
+                principal,
+                accessToken,
+            },
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to create app launch token',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return Dict.from(data[PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN])
+            .getValue('token')
+            .getOrElse(() => {
+                throw new NotFoundError(`Unable to parse app launch token`);
+            });
+    }
+
+    async parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+               query appLaunchData($appName: String!, $launchToken: String!) {
+                    ${PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA}(appName: $appName, launchToken: $launchToken) {
+                        environmentId
+                        appName
+                        dbms {
+                            id
+                        }
+                        principal
+                        accessToken
+                    }
+                }
+            `,
+            variables: {
+                appName,
+                launchToken,
+            },
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to parse app launch token',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return data[PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA];
     }
 }

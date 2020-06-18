@@ -7,12 +7,11 @@ import {v4 as uuidv4} from 'uuid';
 
 import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
-import {NotFoundError, ValidationFailureError, TargetExistsError, FileUploadError} from '../errors';
-import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfigInput} from '../models';
+import {NotFoundError, TargetExistsError, FileUploadError} from '../errors';
+import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
-import {TokenService} from '../token.service';
 import {verifyAcceptedTerms} from './verifyAcceptedTerms';
 
 @Injectable()
@@ -157,53 +156,6 @@ export class SystemProvider implements OnModuleInit {
             .unwindPromises();
 
         this.allEnvironments = Dict.from(instances.mapEach((env): [string, EnvironmentAbstract] => [env.id, env]));
-    }
-
-    async createAppLaunchToken(
-        environmentNameOrId: string,
-        appName: string,
-        dbmsId: string,
-        principal?: string,
-        accessToken?: string,
-    ): Promise<string> {
-        const environment = await this.getEnvironment(environmentNameOrId);
-        const validated = JSON.parse(
-            JSON.stringify(
-                new AppLaunchTokenModel({
-                    accessToken,
-                    appName,
-                    dbmsId,
-                    environmentId: environment.id,
-                    principal,
-                }),
-            ),
-        );
-
-        return TokenService.sign(validated, appName);
-    }
-
-    parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
-        return TokenService.verify(launchToken, appName)
-            .then((decoded: any) => {
-                if (decoded.appName !== appName) {
-                    throw new ValidationFailureError('App Launch Token mismatch');
-                }
-
-                return new AppLaunchTokenModel({
-                    accessToken: decoded.accessToken,
-                    appName: decoded.appName,
-                    dbmsId: decoded.dbmsId,
-                    environmentId: decoded.environmentId,
-                    principal: decoded.principal,
-                });
-            })
-            .catch((e) => {
-                if (e instanceof ValidationFailureError) {
-                    throw e;
-                }
-
-                throw new ValidationFailureError('Invalid App Launch Token');
-            });
     }
 
     async listEnvironments(): Promise<List<EnvironmentAbstract>> {
