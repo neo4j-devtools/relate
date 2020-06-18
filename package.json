@@ -11,9 +11,6 @@
         "type": "git",
         "url": "git+https://github.com/neo-technology/relate.git"
     },
-    "publishConfig": {
-        "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
-    },
     "scripts": {
         "prettify": "prettier --write 'packages/**/*.ts'",
         "lint": "eslint . --ext .ts",
