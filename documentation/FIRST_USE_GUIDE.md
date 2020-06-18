@@ -110,7 +110,7 @@ relate env:init
 ```
 You will be presented with several prompts, enter the following values:
 - `Type`: "Remote"
-- `URL`: "https://relate.neo4jlabs.com/" (or any other `@relate` remote)
+- `Origin`: "https://relate.neo4jlabs.com" (or any other `@relate` remote)
 - `Authentication`: "Yes"
 - `Authentication Type`: "Client"
 - `Restrict GraphQL API`: "No"
