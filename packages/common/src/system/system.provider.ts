@@ -13,6 +13,7 @@ import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../util
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {TokenService} from '../token.service';
+import {verifyAcceptedTerms} from './verifyAcceptedTerms';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -30,6 +31,8 @@ export class SystemProvider implements OnModuleInit {
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
 
     async onModuleInit(): Promise<void> {
+        await verifyAcceptedTerms();
+
         await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
         await this.reloadEnvironments();
