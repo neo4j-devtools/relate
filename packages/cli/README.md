@@ -18,7 +18,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.1-alpha.4 win32-x64 node-v13.12.0
+@relate/cli/1.0.1-alpha.5 win32-x64 node-v13.12.0
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
