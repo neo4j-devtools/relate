@@ -1,7 +1,7 @@
 import {List} from '@relate/types';
 
 import {EnvironmentAbstract} from '../environments';
-import {IFile, IProjectManifest, IProject, IProjectDbms, IDbms} from '../../models';
+import {IRelateFile, IProjectManifest, IProject, IProjectDbms, IDbms} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
@@ -17,11 +17,11 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     abstract link(filePath: string): Promise<IProject>;
 
-    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>>;
+    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
 
-    abstract addFile(name: string, source: string, destination?: string): Promise<IFile>;
+    abstract addFile(name: string, source: string, destination?: string): Promise<IRelateFile>;
 
-    abstract removeFile(name: string, relativePath: string): Promise<IFile>;
+    abstract removeFile(name: string, relativePath: string): Promise<IRelateFile>;
 
     abstract listDbmss(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
 

@@ -9,9 +9,6 @@
         "type": "git",
         "url": "git+https://github.com/neo-technology/relate.git"
     },
-    "publishConfig": {
-        "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
-    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
