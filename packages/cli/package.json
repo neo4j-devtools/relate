@@ -31,6 +31,7 @@
         "@oclif/plugin-autocomplete": "0.1.5",
         "@oclif/plugin-help": "2.2.3",
         "@relate/common": "^1.0.1-alpha.1",
+        "@relate/types": "1.0.1-alpha.0",
         "cli-ux": "5.4.5",
         "cross-env": "7.0.2",
         "enquirer": "2.3.4",

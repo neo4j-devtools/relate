@@ -46,6 +46,7 @@
         "@nestjs/graphql": "7.3.4",
         "@nestjs/platform-express": "7.0.8",
         "@relate/common": "^1.0.1-alpha.1",
+        "@relate/types": "1.0.1-alpha.0",
         "@relate/web": "^1.0.1-alpha.1",
         "apollo-server-express": "2.12.0",
         "class-transformer": "0.2.3",
