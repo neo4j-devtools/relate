@@ -9,6 +9,9 @@
         "type": "git",
         "url": "git+https://github.com/neo-technology/relate.git"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "bin": {
         "relate-web": "./bin/run"
     },

@@ -9,6 +9,9 @@
         "type": "git",
         "url": "git+https://github.com/neo-technology/relate.git"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
