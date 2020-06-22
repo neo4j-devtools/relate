@@ -23,7 +23,6 @@ export default class LoadCommand extends BaseCommand {
             description: 'Database to load data into',
         }),
         force: flags.boolean({
-            char: 's',
             default: false,
             description: 'Force load data (WARNING! this will erase any existing data)',
         }),

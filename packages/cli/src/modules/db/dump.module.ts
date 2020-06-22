@@ -23,7 +23,6 @@ export class DumpModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const {to, database} = flags;
-        const filePath = path.resolve(to);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;
@@ -39,6 +38,12 @@ export class DumpModule implements OnApplicationBootstrap {
         const dbms = dbmsInfo.first.getOrElse(() => {
             throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
         });
+
+        const dateISO = new Date().toISOString();
+        const [date] = dateISO.split('.');
+        const file = path.join(to || `${dbms.name}-${database}-${date.replace(':', '')}.dump`);
+
+        const filePath = path.resolve(file);
 
         if (dbms.status === DBMS_STATUS.STARTED) {
             cli.action.start(`Stopping ${dbms.name} DBMS`);

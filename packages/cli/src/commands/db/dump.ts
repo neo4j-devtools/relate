@@ -24,8 +24,7 @@ export default class DumpCommand extends BaseCommand {
         }),
         to: flags.string({
             char: 't',
-            default: `${process.cwd()}/db-dump-${Date.now()}.dump`,
-            description: 'Path and filename for dump',
+            description: 'Path and filename for dump (defaults to a "dbmsName-db-date-time.dump")',
         }),
     };
 }
