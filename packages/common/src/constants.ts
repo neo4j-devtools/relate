@@ -103,6 +103,9 @@ export enum PUBLIC_GRAPHQL_METHODS {
     LIST_DBMSS = 'listDbmss',
     LIST_DBMS_VERSIONS = 'listDbmsVersions',
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
+    CREATE_DB = 'createDb',
+    DROP_DB = 'dropDb',
+    LIST_DBS = 'listDbs',
 
     // apps
     LIST_APPS = 'listApps',
