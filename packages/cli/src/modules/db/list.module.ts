@@ -2,18 +2,18 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 
 import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
-import DropCommand from '../../commands/db/drop';
-import {inputPrompt, selectDbmsPrompt} from '../../prompts';
+import ListCommand from '../../commands/db/list';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
     imports: [SystemModule],
     providers: [],
 })
-export class DropModule implements OnApplicationBootstrap {
+export class ListModule implements OnApplicationBootstrap {
     constructor(
         @Inject('PARSED_PROVIDER')
-        protected readonly parsed: ParsedInput<typeof DropCommand>,
+        protected readonly parsed: ParsedInput<typeof ListCommand>,
         @Inject('UTILS_PROVIDER') protected readonly utils: CommandUtils,
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
@@ -24,17 +24,25 @@ export class DropModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         const dbms =
-            flags.dbms || (await selectDbmsPrompt('Select DBMS to drop database in', environment, DBMS_STATUS.STARTED));
-
-        let {name} = this.parsed.args;
-        if (!name) {
-            name = await inputPrompt('Enter the name of the database to drop');
-        }
+            flags.dbms || (await selectDbmsPrompt('Select DBMS to list database in', environment, DBMS_STATUS.STARTED));
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
-        cli.action.start('Dropping database');
-        await environment.dbmss.dbDrop(dbms, user, name, accessToken);
-        cli.action.stop();
+        const dbs = await environment.dbmss.dbList(dbms, user, accessToken);
+        cli.table(
+            dbs.toArray(),
+            {
+                name: {},
+                role: {},
+                requestedStatus: {},
+                currentStatus: {},
+                error: {},
+                default: {},
+            },
+            {
+                printLine: this.utils.log,
+                ...flags,
+            },
+        );
     }
 }
