@@ -1,5 +1,5 @@
 import {Dict, List, Maybe, None, Str} from '@relate/types';
-import fse from 'fs-extra';
+import fse, {ReadStream} from 'fs-extra';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import {IAuthToken} from '@huboneo/tapestry';
@@ -544,7 +544,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     async dbExec(
         dbmsId: string,
-        from: string,
+        from: string | ReadStream,
         args: {
             database: string;
             user: string;

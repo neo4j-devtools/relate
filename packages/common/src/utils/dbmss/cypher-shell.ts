@@ -1,4 +1,4 @@
-import fse from 'fs-extra';
+import fse, {ReadStream} from 'fs-extra';
 import path from 'path';
 
 import {NotFoundError, DependencyError} from '../../errors';
@@ -10,17 +10,23 @@ import {EnvVars} from '../env-vars';
 export async function cypherShellCmd(
     dbmsRootPath: string,
     args: string[],
-    from: string,
+    from: string | ReadStream,
     credentials?: string,
 ): Promise<string> {
     const cypherShellBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, CYPHER_SHELL_BIN_FILE);
     const relateJavaHome = await resolveRelateJavaHome();
 
-    const file = path.resolve(from);
-    try {
-        await fse.ensureFile(file);
-    } catch (e) {
-        throw new NotFoundError(`File not found (${file})`);
+    let stream;
+    if (typeof from === 'string' || from instanceof String) {
+        const file = path.resolve(from as string);
+        try {
+            await fse.ensureFile(file);
+        } catch (e) {
+            throw new NotFoundError(`File not found (${file})`);
+        }
+        stream = fse.createReadStream(file);
+    } else {
+        stream = from;
     }
 
     await fse.access(cypherShellBinPath, fse.constants.X_OK).catch(() => {
@@ -41,7 +47,6 @@ export async function cypherShellCmd(
     // precedence over any user installed JAVA executable.
     env.set('PATH', relateJavaHome ? `${relateJavaHome}${path.delimiter}${process.env.PATH}` : process.env.PATH);
 
-    const stream = fse.createReadStream(file);
     const output = await spawnPromise(
         cypherShellBinPath,
         args,
