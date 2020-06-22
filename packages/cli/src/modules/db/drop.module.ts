@@ -28,13 +28,13 @@ export class DropModule implements OnApplicationBootstrap {
 
         let {name} = this.parsed.args;
         if (!name) {
-            name = await inputPrompt('Enter a name for the new database');
+            name = await inputPrompt('Enter the name of the database to drop');
         }
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
         cli.action.start('Dropping database');
-        await environment.dbmss.dropDb(dbms, user, name, accessToken);
+        await environment.dbmss.dbDrop(dbms, user, name, accessToken);
         cli.action.stop();
     }
 }

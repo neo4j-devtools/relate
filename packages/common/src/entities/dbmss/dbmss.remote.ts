@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, IDb} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {RemoteEnvironment} from '../environments';
@@ -318,11 +318,15 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support getting DBMS config`);
     }
 
-    createDb(_dbmsId: string, _dbmsUser: string, _dbName: string, _accessToken: string): Promise<void> {
+    dbCreate(_dbmsId: string, _dbmsUser: string, _dbName: string, _accessToken: string): Promise<void> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support creating databases`);
     }
 
-    dropDb(_dbmsId: string, _dbmsUser: string, _dbName: string, _accessToken: string): Promise<void> {
+    dbDrop(_dbmsId: string, _dbmsUser: string, _dbName: string, _accessToken: string): Promise<void> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support dropping databases`);
+    }
+
+    dbList(_dbmsId: string, _dbmsUser: string, _accessToken: string): Promise<List<IDb>> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support listing databases`);
     }
 }
