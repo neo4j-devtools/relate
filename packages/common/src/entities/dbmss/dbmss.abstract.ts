@@ -3,7 +3,7 @@ import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQ
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDb, IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -45,9 +45,11 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
 
-    abstract createDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
+    abstract dbCreate(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
 
-    abstract dropDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
+    abstract dbDrop(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
+
+    abstract dbList(dbmsId: string, user: string, accessToken: string): Promise<List<IDb>>;
 
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,

@@ -7,7 +7,7 @@ import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion, IDb} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -239,7 +239,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return token;
     }
 
-    async createDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+    async dbCreate(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
@@ -255,7 +255,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         );
     }
 
-    async dropDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+    async dbDrop(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
@@ -269,6 +269,29 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             },
             `DROP DATABASE ${dbName}`,
         );
+    }
+
+    async dbList(dbmsId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
+        const dbs = await systemDbQuery(
+            {
+                accessToken,
+                dbmsId,
+                dbmsUser,
+                environment: this.environment,
+            },
+            `SHOW DATABASES`,
+        );
+
+        return dbs.mapEach(({data}) => {
+            return {
+                name: data[0],
+                role: data[2],
+                requestedStatus: data[3],
+                currentStatus: data[4],
+                error: data[5],
+                default: Boolean(data[6]),
+            };
+        });
     }
 
     private getDbmsRootPath(dbmsId?: string): string {

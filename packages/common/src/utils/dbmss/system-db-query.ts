@@ -1,3 +1,6 @@
+import * as rxjsOps from 'rxjs/operators';
+import {List} from '@relate/types';
+
 import {NotFoundError, NotAllowedError} from '../../errors';
 import {EnvironmentAbstract} from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
@@ -14,7 +17,7 @@ export const systemDbQuery = async (
     target: IQueryTarget,
     query: string,
     params: any = {},
-): Promise<TapestryJSONResponse> => {
+): Promise<List<TapestryJSONResponse>> => {
     const {dbmss} = target.environment;
 
     const dbmsInfo = (await dbmss.info([target.dbmsId])).first.getOrElse(() => {
@@ -33,6 +36,7 @@ export const systemDbQuery = async (
 
     return dbmss
         .runQuery(driver, query, params, 3, {db: 'system'})
+        .pipe(rxjsOps.reduce((agg, next) => agg.concat(next), List.of<TapestryJSONResponse>([])))
         .toPromise()
-        .finally(() => driver.shutDown());
+        .finally(() => driver.shutDown().toPromise());
 };
