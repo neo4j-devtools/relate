@@ -1,5 +1,5 @@
 import {Dict, List, Maybe, None, Str} from '@relate/types';
-import fse from 'fs-extra';
+import fse, {ReadStream} from 'fs-extra';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import {IAuthToken} from '@huboneo/tapestry';
@@ -48,6 +48,7 @@ import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} fro
 import {PropertiesFile} from '../../system/files';
 import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
 import {systemDbQuery} from '../../utils/dbmss/system-db-query';
+import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -180,14 +181,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     : DBMS_STATUS.STOPPED;
 
                 return {
+                    connectionUri: dbms.connectionUri,
+                    description: dbms.description,
+                    edition: v?.edition,
                     id: dbms.id,
                     name: dbms.name,
-                    description: dbms.description,
                     rootPath: dbms.rootPath,
-                    connectionUri: dbms.connectionUri,
                     status,
                     version: v?.version,
-                    edition: v?.edition,
                 };
             })
             .unwindPromises();
@@ -368,7 +369,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), ['set-initial-password'], credentials);
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
@@ -527,5 +528,33 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.unlink(configFileName);
 
         return this.discoverDbmss();
+    }
+
+    async dbDump(dbmsId: string, database: string, to: string): Promise<string> {
+        const params = ['dump', `--database=${database}`, `--to=${to}`];
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
+        return result;
+    }
+
+    async dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string> {
+        const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
+        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
+        return result;
+    }
+
+    async dbExec(
+        dbmsId: string,
+        from: string | ReadStream,
+        args: {
+            database: string;
+            user: string;
+            password: string;
+        },
+    ): Promise<string> {
+        const dbms = await this.get(dbmsId);
+        const params = ['--format=plain', `--address=${dbms.connectionUri}`];
+        Object.keys(args).forEach((key: string) => params.push(`--${key}=${(args as {[key: string]: string})[key]}`));
+        const result = await cypherShellCmd(this.getDbmsRootPath(dbmsId), params, from);
+        return result;
     }
 }

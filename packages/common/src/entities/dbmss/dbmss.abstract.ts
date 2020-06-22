@@ -2,6 +2,7 @@ import {List, Str} from '@relate/types';
 import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQueryMeta} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
+import {ReadStream} from 'fs-extra';
 
 import {IDb, IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
@@ -132,4 +133,14 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }
     }
+
+    abstract dbDump(dbmsId: string, database: string, to: string): Promise<string>;
+
+    abstract dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string>;
+
+    abstract dbExec(
+        dbmsId: string,
+        from: string | ReadStream,
+        args: {database: string; user: string; password: string},
+    ): Promise<string>;
 }

@@ -7,8 +7,10 @@ CLI tool for interacting with the Neo4j platform.
 [![Downloads/week](https://img.shields.io/npm/dw/cli.svg)](https://npmjs.org/package/cli)
 [![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/relate/blob/master/package.json)
 
--   [Usage](#usage)
--   [Command Topics](#command-topics)
+- [@relate/cli](#relatecli)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Command Topics](#command-topics)
 
 # Usage
 
@@ -18,7 +20,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.1-alpha.5 win32-x64 node-v13.12.0
+@relate/cli/1.0.1-alpha.5 darwin-x64 node-v12.13.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND

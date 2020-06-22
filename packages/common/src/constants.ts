@@ -121,6 +121,11 @@ export enum PUBLIC_GRAPHQL_METHODS {
     REMOVE_PROJECT_DBMS = 'removeProjectDbms',
     ADD_PROJECT_FILE = 'addProjectFile',
     REMOVE_PROJECT_FILE = 'removeProjectFile',
+
+    // dump / import
+    DB_DUMP = 'dbDump',
+    DB_LOAD = 'dbLoad',
+    QUERY_FILE = 'dbExec',
 }
 
 // seconds

@@ -26,7 +26,7 @@ ALIASES
   $ relate env:init
 ```
 
-_See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/init.ts)_
+_See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/environment/init.ts)_
 
 ## `relate environment:list`
 
@@ -40,7 +40,7 @@ ALIASES
   $ relate env:list
 ```
 
-_See code: [dist/commands/environment/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/list.ts)_
+_See code: [dist/commands/environment/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/environment/list.ts)_
 
 ## `relate environment:login`
 
@@ -57,7 +57,7 @@ ALIASES
   $ relate env:login
 ```
 
-_See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/login.ts)_
+_See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/environment/login.ts)_
 
 ## `relate environment:open`
 
@@ -75,7 +75,7 @@ ALIASES
   $ relate env:open
 ```
 
-_See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/open.ts)_
+_See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/environment/open.ts)_
 
 ## `relate environment:use ENVIRONMENT`
 
@@ -92,4 +92,4 @@ ALIASES
   $ relate env:use
 ```
 
-_See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/environment/use.ts)_
+_See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/environment/use.ts)_

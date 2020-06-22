@@ -32,7 +32,7 @@ OPTIONS
   -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
 ```
 
-_See code: [dist/commands/project/add-dbms.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/add-dbms.ts)_
+_See code: [dist/commands/project/add-dbms.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/add-dbms.ts)_
 
 ## `relate project:add-file SOURCE`
 
@@ -48,7 +48,7 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/add-file.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/add-file.ts)_
+_See code: [dist/commands/project/add-file.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/add-file.ts)_
 
 ## `relate project:init TARGETDIR`
 
@@ -63,7 +63,7 @@ OPTIONS
   --name=name                    (required) Name of the project to initialize
 ```
 
-_See code: [dist/commands/project/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/init.ts)_
+_See code: [dist/commands/project/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/init.ts)_
 
 ## `relate project:link [FILEPATH]`
 
@@ -74,7 +74,7 @@ USAGE
   $ relate project:link [FILEPATH]
 ```
 
-_See code: [dist/commands/project/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/link.ts)_
+_See code: [dist/commands/project/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/link.ts)_
 
 ## `relate project:list`
 
@@ -88,7 +88,7 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
 ```
 
-_See code: [dist/commands/project/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/list.ts)_
+_See code: [dist/commands/project/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/list.ts)_
 
 ## `relate project:list-dbmss`
 
@@ -103,7 +103,7 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/list-dbmss.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/list-dbmss.ts)_
+_See code: [dist/commands/project/list-dbmss.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/list-dbmss.ts)_
 
 ## `relate project:list-files`
 
@@ -118,7 +118,7 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/list-files.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/list-files.ts)_
+_See code: [dist/commands/project/list-files.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/list-files.ts)_
 
 ## `relate project:open NAME`
 
@@ -134,7 +134,7 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/open.ts)_
+_See code: [dist/commands/project/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/open.ts)_
 
 ## `relate project:remove-dbms DBMS`
 
@@ -152,7 +152,7 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/remove-dbms.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/remove-dbms.ts)_
+_See code: [dist/commands/project/remove-dbms.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/remove-dbms.ts)_
 
 ## `relate project:remove-file FILE`
 
@@ -167,4 +167,4 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
 ```
 
-_See code: [dist/commands/project/remove-file.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/project/remove-file.ts)_
+_See code: [dist/commands/project/remove-file.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/project/remove-file.ts)_
