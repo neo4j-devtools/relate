@@ -71,12 +71,6 @@ export class CreateAccessTokenArgs extends EnvironmentArgs {
     authToken: AuthTokenInput;
 }
 
-@ArgsType()
-export class DbmsVersionArgs {
-    @Field(() => String, {nullable: true})
-    environmentNameOrId?: string;
-}
-
 @ObjectType()
 export class DbmsVersion {
     @Field(() => String)
@@ -94,12 +88,48 @@ export class DbmsVersion {
 
 @ArgsType()
 export class UpdateDbmsConfigArgs {
-    @Field(() => String, {nullable: true})
-    environmentNameOrId?: string;
-
     @Field(() => String)
     dbmsId: string;
 
     @Field(() => [[String, String]])
     properties: [string, string][];
+}
+
+@ArgsType()
+export class ListDbArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => String)
+    user: string;
+
+    @Field(() => String)
+    accessToken: string;
+}
+
+@ArgsType()
+export class CreateOrDropDbArgs extends ListDbArgs {
+    @Field(() => String)
+    dbName: string;
+}
+
+@ObjectType()
+export class Db {
+    @Field(() => String)
+    name: string;
+
+    @Field(() => String)
+    role: string;
+
+    @Field(() => String)
+    requestedStatus: string;
+
+    @Field(() => String)
+    currentStatus: string;
+
+    @Field(() => String)
+    error: string;
+
+    @Field(() => String)
+    default: boolean;
 }

@@ -29,6 +29,15 @@ input AuthTokenInput {
   credentials: String!
 }
 
+type Db {
+  name: String!
+  role: String!
+  requestedStatus: String!
+  currentStatus: String!
+  error: String!
+  default: String!
+}
+
 type Dbms {
   id: ID!
   name: String
@@ -88,7 +97,10 @@ type Mutation {
   startDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentNameOrId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
-  updateDbmsConfig(environmentNameOrId: String, dbmsId: String!, properties: [[String!]!]!): Boolean!
+  updateDbmsConfig(dbmsId: String!, properties: [[String!]!]!): Boolean!
+  createDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
+  dropDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
+  listDbs(dbmsId: String!, user: String!, accessToken: String!): [Db!]!
   initProject(environmentNameOrId: String, name: String!): Project!
   addProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
   removeProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!): ProjectDbms!
@@ -117,7 +129,7 @@ type Query {
   getDbms(environmentNameOrId: String, dbmsId: String!): Dbms!
   listDbmss(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Dbms!]!
   infoDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [DbmsInfo!]!
-  listDbmsVersions(filters: [RelateSimpleFilter!], environmentNameOrId: String): [DbmsVersion!]!
+  listDbmsVersions(filters: [RelateSimpleFilter!]): [DbmsVersion!]!
   listProjects(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Project!]!
   getProject(environmentNameOrId: String, name: String!): Project!
 }
