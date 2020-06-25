@@ -29,7 +29,7 @@ OPTIONS
                                  to the system database)
 ```
 
-_See code: [dist/commands/db/create.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/create.ts)_
+_See code: [dist/commands/db/create.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/create.ts)_
 
 ## `relate db:drop [NAME]`
 
@@ -50,7 +50,7 @@ OPTIONS
                                  the system database)
 ```
 
-_See code: [dist/commands/db/drop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/drop.ts)_
+_See code: [dist/commands/db/drop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/drop.ts)_
 
 ## `relate db:dump DBMS`
 
@@ -69,7 +69,7 @@ OPTIONS
   -t, --to=to                    Path and filename for dump (defaults to a "dbmsName-db-date-time.dump")
 ```
 
-_See code: [dist/commands/db/dump.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/dump.ts)_
+_See code: [dist/commands/db/dump.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/dump.ts)_
 
 ## `relate db:exec DBMS`
 
@@ -89,7 +89,7 @@ OPTIONS
   -u, --user=user                [default: neo4j] DBMS user
 ```
 
-_See code: [dist/commands/db/exec.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/exec.ts)_
+_See code: [dist/commands/db/exec.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/exec.ts)_
 
 ## `relate db:list`
 
@@ -119,7 +119,7 @@ OPTIONS
   --sort=sort                    property to sort by (prepend '-' for descending)
 ```
 
-_See code: [dist/commands/db/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/list.ts)_
+_See code: [dist/commands/db/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/list.ts)_
 
 ## `relate db:load DBMS`
 
@@ -139,4 +139,4 @@ OPTIONS
   --force                        Force load data (WARNING! this will erase any existing data)
 ```
 
-_See code: [dist/commands/db/load.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/db/load.ts)_
+_See code: [dist/commands/db/load.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/db/load.ts)_
