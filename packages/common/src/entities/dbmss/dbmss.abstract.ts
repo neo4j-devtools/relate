@@ -134,9 +134,15 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         }
     }
 
-    abstract dbDump(dbmsId: string, database: string, to: string): Promise<string>;
+    abstract dbDump(dbmsId: string, database: string, to: string, javaPath?: string): Promise<string>;
 
-    abstract dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string>;
+    abstract dbLoad(
+        dbmsId: string,
+        database: string,
+        from: string,
+        force?: boolean,
+        javaPath?: string,
+    ): Promise<string>;
 
     abstract dbExec(
         dbmsId: string,

@@ -305,6 +305,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return dbmssDir;
     }
 
+    private isDbmsRootPath = async (dbmsId: string): Promise<string> => {
+        // Checks if the supplied string is a DBMS root path
+        if (await fse.pathExists(path.join(dbmsId, 'bin'))) {
+            return dbmsId;
+        }
+
+        return this.getDbmsRootPath(dbmsId);
+    };
+
     private async installNeo4j(
         name: string,
         credentials: string,
@@ -530,15 +539,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return this.discoverDbmss();
     }
 
-    async dbDump(dbmsId: string, database: string, to: string): Promise<string> {
+    async dbDump(dbmsId: string, database: string, to: string, javaPath?: string): Promise<string> {
         const params = ['dump', `--database=${database}`, `--to=${to}`];
-        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
+        const result = await neo4jAdminCmd(await this.isDbmsRootPath(dbmsId), params, '', javaPath);
         return result;
     }
 
-    async dbLoad(dbmsId: string, database: string, from: string, force?: boolean): Promise<string> {
+    async dbLoad(dbmsId: string, database: string, from: string, force?: boolean, javaPath?: string): Promise<string> {
         const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
-        const result = await neo4jAdminCmd(this.getDbmsRootPath(dbmsId), params);
+        const result = await neo4jAdminCmd(await this.isDbmsRootPath(dbmsId), params, '', javaPath);
         return result;
     }
 
@@ -554,7 +563,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const dbms = await this.get(dbmsId);
         const params = ['--format=plain', `--address=${dbms.connectionUri}`];
         Object.keys(args).forEach((key: string) => params.push(`--${key}=${(args as {[key: string]: string})[key]}`));
-        const result = await cypherShellCmd(this.getDbmsRootPath(dbmsId), params, from);
+        const result = await cypherShellCmd(await this.isDbmsRootPath(dbmsId), params, from);
         return result;
     }
 }
