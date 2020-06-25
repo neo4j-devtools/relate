@@ -38,8 +38,12 @@ export const verifyHash = async (
     return hash;
 };
 
-export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    const onlineVersions = await fetchNeo4jVersions();
+export const downloadNeo4j = async (
+    version: string,
+    neo4jDistributionPath: string,
+    limited?: boolean,
+): Promise<void> => {
+    const onlineVersions = await fetchNeo4jVersions(limited);
     const requestedDistribution = onlineVersions.find(
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
     );

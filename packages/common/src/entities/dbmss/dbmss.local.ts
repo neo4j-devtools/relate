@@ -51,9 +51,9 @@ import {systemDbQuery} from '../../utils/dbmss/system-db-query';
 import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
-    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
+    async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const cached = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
-        const online = await fetchNeo4jVersions();
+        const online = await fetchNeo4jVersions(limited);
         const allVersions = cached.concat(online);
         const mapped = allVersions
             .mapEach((version) => {
@@ -81,7 +81,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(mapped, filters);
     }
 
-    async install(name: string, credentials: string, version: string): Promise<string> {
+    async install(
+        name: string,
+        credentials: string,
+        version: string,
+        noCaching?: boolean,
+        limited?: boolean,
+    ): Promise<string> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -122,7 +128,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const found = await requestedDistribution.flatMap(async (dist) => {
                 if (None.isNone(dist)) {
-                    await downloadNeo4j(coercedVersion, this.environment.dirPaths.dbmssCache);
+                    await downloadNeo4j(coercedVersion, this.environment.dirPaths.dbmssCache, limited);
                     const afterDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
 
                     return afterDownload.find(
@@ -138,7 +144,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
 
-                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist);
+                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist, noCaching);
             });
         }
 
@@ -319,6 +325,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         credentials: string,
         dbmssDir: string,
         extractedDistPath: string,
+        noCaching?: boolean,
     ): Promise<string> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
@@ -331,6 +338,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
+        if (noCaching) {
+            await fse.remove(extractedDistPath);
+        }
         await this.setDbmsManifest(dbmsId, {name});
 
         const config = await PropertiesFile.readFile(
