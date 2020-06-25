@@ -24,7 +24,7 @@ ALIASES
   $ relate ext:install
 ```
 
-_See code: [dist/commands/extension/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/extension/install.ts)_
+_See code: [dist/commands/extension/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/extension/install.ts)_
 
 ## `relate extension:link [FILEPATH]`
 
@@ -38,7 +38,7 @@ ALIASES
   $ relate ext:link
 ```
 
-_See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/extension/link.ts)_
+_See code: [dist/commands/extension/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/extension/link.ts)_
 
 ## `relate extension:list`
 
@@ -55,7 +55,7 @@ ALIASES
   $ relate ext:list
 ```
 
-_See code: [dist/commands/extension/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/extension/list.ts)_
+_See code: [dist/commands/extension/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/extension/list.ts)_
 
 ## `relate extension:uninstall EXTENSION`
 
@@ -75,4 +75,4 @@ ALIASES
   $ relate ext:uninstall
 ```
 
-_See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.5/dist/commands/extension/uninstall.ts)_
+_See code: [dist/commands/extension/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/extension/uninstall.ts)_
