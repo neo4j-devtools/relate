@@ -4,7 +4,7 @@ import {List} from '@relate/types';
 
 import {TestDbmss} from '../../utils/system';
 import {EnvironmentAbstract} from '../environments';
-import {IProject, IProjectManifest} from '../../models';
+import {IProject, IProjectManifest, WriteFileFlag} from '../../models';
 import {InvalidArgumentError} from '../../errors';
 import {envPaths} from '../../utils';
 import {PROJECTS_DIR_NAME} from '../../constants';
@@ -80,7 +80,7 @@ describe('LocalProjects - list', () => {
 
     test('projects.addFile() - destination outside project', () => {
         return expect(environment.projects.addFile(testId, testFile, testDestinationOutside)).rejects.toEqual(
-            new InvalidArgumentError('Project files cannot be added outside of project'),
+            new InvalidArgumentError('Path must point to a location within the project directory'),
         );
     });
 
@@ -88,6 +88,55 @@ describe('LocalProjects - list', () => {
         return expect(environment.projects.addFile(testId, testFile, testDestination)).rejects.toEqual(
             new InvalidArgumentError(`File ${testOtherFileName} already exists at that destination`),
         );
+    });
+
+    test('projects.writeFile() - override', async () => {
+        const expectedContent = 'The file will contain this text.';
+
+        expect(await environment.projects.writeFile(testId, testFileName, expectedContent)).toEqual({
+            name: 'test.txt',
+            extension: '.txt',
+            downloadToken: expect.any(String),
+            directory: '.',
+        });
+
+        const project = await environment.projects.get(testId);
+        const actualContent = await fse.readFile(path.join(project.root, testFileName), 'utf8');
+        expect(actualContent).toEqual(expectedContent);
+    });
+
+    test('projects.writeFile() - append', async () => {
+        const appendedContent = 'And this text as well.';
+        const expectedContent = `The file will contain this text.${appendedContent}`;
+
+        expect(
+            await environment.projects.writeFile(testId, testFileName, appendedContent, WriteFileFlag.APPEND),
+        ).toEqual({
+            name: 'test.txt',
+            extension: '.txt',
+            downloadToken: expect.any(String),
+            directory: '.',
+        });
+
+        const project = await environment.projects.get(testId);
+        const actualContent = await fse.readFile(path.join(project.root, testFileName), 'utf8');
+        expect(actualContent).toEqual(expectedContent);
+    });
+
+    test('projects.writeFile() - non existing file', async () => {
+        const expectedContent = "If a file doesn't exist it will be created.";
+        const nonExistingFile = 'non-existing-file';
+
+        expect(await environment.projects.writeFile(testId, nonExistingFile, expectedContent)).toEqual({
+            name: nonExistingFile,
+            extension: '',
+            downloadToken: expect.any(String),
+            directory: '.',
+        });
+
+        const project = await environment.projects.get(testId);
+        const actualContent = await fse.readFile(path.join(project.root, nonExistingFile), 'utf8');
+        expect(actualContent).toEqual(expectedContent);
     });
 
     test('projects.removeFile() - no dir', async () => {
