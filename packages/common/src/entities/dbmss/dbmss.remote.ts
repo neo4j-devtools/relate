@@ -44,15 +44,16 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG];
     }
 
-    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
+    async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const {data, errors}: any = await this.environment.graphql({
             /* eslint-disable max-len */
             query: gql`
                 query ListDbmsVersions (
                     $environmentId: String,
+                    limited: Boolean,
                     $filters: [RelateSimpleFilter!]
                 ) {
-                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS}(environmentNameOrId: $environmentId, filters: $filters) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS}(environmentNameOrId: $environmentId, limited: $limited, filters: $filters) {
                         edition
                         version
                         origin
@@ -62,6 +63,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
             /* eslint-enable max-len */
             variables: {
                 environmentNameOrId: this.environment.remoteEnvironmentId,
+                limited,
                 filters,
             },
         });
@@ -76,7 +78,13 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS];
     }
 
-    async install(name: string, credentials: string, version: string): Promise<string> {
+    async install(
+        name: string,
+        credentials: string,
+        version: string,
+        noCaching?: boolean,
+        limited?: boolean,
+    ): Promise<string> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation InstallDbms(
@@ -84,12 +92,16 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $name: String!
                     $credentials: String!
                     $version: String!
+                    $noCaching: String,
+                    $version: String,
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS}(
                         environmentNameOrId: $environmentId
                         name: $name
                         credentials: $credentials
                         version: $version
+                        noCaching: $noCaching
+                        limited: $limited
                     )
                 }
             `,
@@ -98,6 +110,8 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 environmentNameOrId: this.environment.remoteEnvironmentId,
                 name,
                 version,
+                noCaching,
+                limited,
             },
         });
 

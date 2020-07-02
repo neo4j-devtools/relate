@@ -42,6 +42,12 @@ export class DbmssArgs extends EnvironmentArgs {
 }
 
 @ArgsType()
+export class ListDbmsVersionsArgs extends EnvironmentArgs {
+    @Field(() => Boolean, {nullable: true})
+    limited?: boolean;
+}
+
+@ArgsType()
 export class InstallDbmsArgs extends EnvironmentArgs {
     @Field(() => String)
     name: string;
@@ -51,6 +57,12 @@ export class InstallDbmsArgs extends EnvironmentArgs {
 
     @Field(() => String)
     version: string;
+
+    @Field(() => Boolean, {nullable: true})
+    noCaching?: boolean;
+
+    @Field(() => Boolean, {nullable: true})
+    limited?: boolean;
 }
 
 @ArgsType()

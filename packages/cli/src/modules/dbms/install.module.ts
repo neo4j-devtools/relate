@@ -36,15 +36,17 @@ export class InstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {environment: environmentId} = flags;
+        const {environment: environmentId, limited} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         this.registerHookListeners();
 
         const name = flags.name || (await inputPrompt('Enter the DBMS name'));
 
+        const noCaching = flags['no-caching'];
+
         let {version = ''} = args;
         if (!version) {
-            const versions = (await environment.dbmss.versions()).toArray();
+            const versions = (await environment.dbmss.versions(limited)).toArray();
             version = await selectPrompt(
                 'Select a version to install',
                 versions.map((v) => ({
@@ -60,7 +62,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.dbmss.install(name, credentials, version).then((res) => {
+        return environment.dbmss.install(name, credentials, version, noCaching, limited).then((res) => {
             this.utils.log(res);
         });
     }

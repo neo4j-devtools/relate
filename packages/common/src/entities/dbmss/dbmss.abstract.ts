@@ -24,9 +24,15 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     constructor(protected readonly environment: Env) {}
 
-    abstract versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
+    abstract versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
 
-    abstract install(name: string, credentials: string, version: string): Promise<string>;
+    abstract install(
+        name: string,
+        credentials: string,
+        version: string,
+        noCaching?: boolean,
+        limited?: boolean,
+    ): Promise<string>;
 
     abstract uninstall(dbmsId: string): Promise<void>;
 

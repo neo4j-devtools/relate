@@ -38,7 +38,7 @@ describe('$relate dbms', () => {
 
     test.stdout().it('should log failed dump', async (ctx) => {
         await DumpCommand.run([TEST_DB_ID, '--environment', TEST_ENVIRONMENT_ID]);
-        await expect(ctx.stdout).toContain('Failed to dump data.');
+        expect(ctx.stdout).toContain('Failed to dump data.');
     });
 
     test.stdout().it('logs start message', async (ctx) => {
@@ -77,7 +77,7 @@ describe('$relate dbms', () => {
             '--user=neo4j',
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        await expect(ctx.stdout).toContain('Successfully imported');
+        expect(ctx.stdout).toContain('Successfully imported');
     });
 
     test.stdout()
@@ -94,7 +94,7 @@ describe('$relate dbms', () => {
             `--to=${path.join(envPaths().data, 'test-db.dump')}`,
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        await expect(ctx.stdout).toContain('Successfully dumped');
+        expect(ctx.stdout).toContain('Successfully dumped');
     });
 
     test.stdout().it('should log successful load', async (ctx) => {
@@ -105,7 +105,7 @@ describe('$relate dbms', () => {
             '--force',
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        await expect(ctx.stdout).toContain('Successfully loaded data from');
+        expect(ctx.stdout).toContain('Successfully loaded data from');
     });
 
     test.stdout().it('logs stopped status', async (ctx) => {

@@ -68,6 +68,8 @@ ARGUMENTS
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -n, --name=name                (required) Name to give the newly installed DBMS
+  --limited                      Display limited download versions of DBMSs
+  --no-caching                   Prevent caching of the downloaded DBMS
 ```
 
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/install.ts)_
