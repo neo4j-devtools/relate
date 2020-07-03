@@ -30,8 +30,7 @@ export const verifyHash = async (
 ): Promise<string> => {
     const hash = await hasha.fromFile(pathToFile, {algorithm});
     if (hash !== expectedShasumHash) {
-        // @todo maybe not?
-        // remove tmp output
+        // remove tmp output in this case as it is neither user provided nor trusted
         await fse.remove(pathToFile);
         throw new IntegrityError('Expected hash mismatch');
     }

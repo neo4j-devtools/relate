@@ -338,38 +338,45 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
+
         if (noCaching) {
             await fse.remove(extractedDistPath);
         }
-        await this.setDbmsManifest(dbmsId, {name});
 
-        const config = await PropertiesFile.readFile(
-            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
-        );
+        try {
+            await this.setDbmsManifest(dbmsId, {name});
 
-        config.set('dbms.security.auth_enabled', true);
-        config.set('dbms.memory.heap.initial_size', '512m');
-        config.set('dbms.memory.heap.max_size', '1G');
-        config.set('dbms.memory.pagecache.size', '512m');
-        if (process.platform === 'win32') {
-            config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+            const neo4jConfig = await PropertiesFile.readFile(
+                path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+            );
+
+            neo4jConfig.set('dbms.security.auth_enabled', true);
+            neo4jConfig.set('dbms.memory.heap.initial_size', '512m');
+            neo4jConfig.set('dbms.memory.heap.max_size', '1G');
+            neo4jConfig.set('dbms.memory.pagecache.size', '512m');
+            if (process.platform === 'win32') {
+                neo4jConfig.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+            }
+
+            await neo4jConfig.flush();
+
+            if (process.platform === 'win32') {
+                await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+            }
+
+            await this.ensureDbmsStructure(dbmsId, neo4jConfig);
+            await neo4jConfig.backupPropertiesFile(
+                path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
+            );
+            await this.setInitialDatabasePassword(dbmsId, credentials);
+            await this.installSecurityPlugin(dbmsId);
+
+            return dbmsId;
+        } catch (error) {
+            await fse.remove(path.join(dbmssDir, dbmsIdFilename));
+            await fse.remove(path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`));
+            throw error;
         }
-
-        await config.flush();
-
-        if (process.platform === 'win32') {
-            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
-        }
-
-        await this.ensureDbmsStructure(dbmsId, config);
-        await config.backupPropertiesFile(
-            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
-        );
-        await this.setInitialDatabasePassword(dbmsId, credentials);
-        await this.installSecurityPlugin(dbmsId);
-
-        // will come back to check the installPluginDependencies situation in future PRs
-        return dbmsId;
     }
 
     private async uninstallNeo4j(dbmsId: string): Promise<void> {
