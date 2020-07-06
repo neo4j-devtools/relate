@@ -48,7 +48,7 @@ export const verifyAcceptedTerms = async (): Promise<void> => {
                     rl.close();
                     reject(
                         new NotAllowedError(
-                            'Relate is available through an early access program. To request access visit http://neo4j.relate.by/invite',
+                            'Relate is available through an early access program. To request access visit https://neo4j.relate.by/invite',
                         ),
                     );
                 }

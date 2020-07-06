@@ -10,5 +10,7 @@ export default class LinkCommand extends BaseCommand {
 
     static description = 'Link an extension (useful for development)';
 
+    static examples = ['$ relate ext:link file/path/to/extension'];
+
     static args = [{name: 'filePath'}];
 }

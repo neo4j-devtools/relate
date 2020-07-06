@@ -11,6 +11,13 @@ export default class DumpCommand extends BaseCommand {
 
     static description = 'Dump a database from a Neo4j DBMS';
 
+    static examples = [
+        '$ relate db:dump',
+        '$ relate db:dump -e environment-name',
+        '$ relate db:dump dbms-containing-db-to-dump -d db-to-dump',
+        '$ relate db:dump dbms-containing-db-to-dump -d db-to-dump -t /path/to/save/dump/file/to',
+    ];
+
     static args = [ARGS.DBMS];
 
     static strict = false;

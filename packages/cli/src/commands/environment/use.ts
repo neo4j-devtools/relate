@@ -8,6 +8,8 @@ export default class UseCommand extends BaseCommand {
 
     static description = 'Set an environment as default';
 
+    static examples = ['$ relate env:use environment-to-set-as-active'];
+
     static aliases = ['env:use'];
 
     static args = [

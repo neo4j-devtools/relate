@@ -11,6 +11,13 @@ export default class AccessTokenCommand extends BaseCommand {
 
     static description = 'Generate access token for a Neo4j DBMS';
 
+    static examples = [
+        '$ relate dbms:access-token',
+        '$ relate dbms:access-token -e environment-name',
+        '$ relate dbms:access-token my-dbms',
+        '$ relate dbms:access-token my-dbms -u dbms-user',
+    ];
+
     static args = [ARGS.DBMS];
 
     static flags = {

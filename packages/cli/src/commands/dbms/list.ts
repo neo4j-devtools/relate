@@ -11,6 +11,14 @@ export default class ListCommand extends BaseCommand {
 
     static description = 'List available Neo4j DBMSs in the selected environment';
 
+    static examples = [
+        '$ relate dbms:list',
+        '$ relate dbms:list -e environment-name',
+        '$ relate dbms:list --columns=id,name --no-header --no-truncate',
+        '$ relate dbms:list --sort=name',
+        '$ relate dbms:list --filter=name=my-dbms --output=json',
+    ];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...cli.table.flags({except: ['extended', 'csv']}),

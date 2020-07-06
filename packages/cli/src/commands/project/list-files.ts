@@ -10,6 +10,12 @@ export default class ListFilesCommand extends BaseCommand {
 
     static description = 'Lists project files';
 
+    static examples = [
+        '$ relate project:list-files',
+        '$ relate project:list-files -e environment-name',
+        '$ relate project:list-files -p my-project',
+    ];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,

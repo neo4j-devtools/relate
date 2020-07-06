@@ -28,7 +28,7 @@ export const ZULU_JAVA_DOWNLOAD_URL = 'https://cdn.azul.com/zulu/bin/';
 export const NEO4J_BIN_DIR = 'bin';
 export const NEO4J_BIN_FILE = process.platform === 'win32' ? 'neo4j.bat' : 'neo4j';
 export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.bat' : 'neo4j-admin';
-export const NEO4J_DIST_VERSIONS_URL = 'http://dist.neo4j.org/versions/v1/neo4j-versions.json';
+export const NEO4J_DIST_VERSIONS_URL = 'https://dist.neo4j.org/versions/v1/neo4j-versions.json';
 export const NEO4J_DIST_LIMITED_VERSIONS_URL = 'https://dist.neo4j.org/versions/v1/neo4j-limited-versions.json';
 export const NEO4J_CONF_DIR = 'conf';
 export const NEO4J_PLUGIN_DIR = 'plugins';

@@ -11,6 +11,15 @@ export default class InfoCommand extends BaseCommand {
 
     static description = 'Show the status of one or more Neo4j DBMSs';
 
+    static examples = [
+        '$ relate dbms:info',
+        '$ relate dbms:info -e environment-name',
+        '$ relate dbms:info -x',
+        '$ relate dbms:info --columns=id,name --no-header --no-truncate',
+        '$ relate dbms:info --sort=name',
+        '$ relate dbms:info --filter=name=my-dbms --output=json',
+    ];
+
     static args = [ARGS.DBMSS];
 
     static strict = false;

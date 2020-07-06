@@ -11,6 +11,13 @@ export default class DumpCommand extends BaseCommand {
 
     static description = 'Dump a database from a Neo4j DBMS';
 
+    static examples = [
+        '$ relate db:exec -f /path/to/cypher/file',
+        '$ relate db:exec -f /path/to/cypher/file -e environment-name',
+        '$ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into',
+        '$ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into --force',
+    ];
+
     static args = [ARGS.DBMS];
 
     static strict = false;
@@ -24,8 +31,8 @@ export default class DumpCommand extends BaseCommand {
         }),
         from: flags.string({
             char: 'f',
-            default: '',
             description: 'Cypher file to load data from',
+            required: true,
         }),
         user: flags.string({
             char: 'u',
