@@ -27,6 +27,7 @@ export abstract class ExtensionsAbstract<Env extends EnvironmentAbstract> {
         dbmsId: string,
         principal?: string,
         accessToken?: string,
+        projectId?: string,
     ): Promise<string>;
 
     abstract parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken>;

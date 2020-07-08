@@ -158,6 +158,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         dbmsId: string,
         principal?: string,
         accessToken?: string,
+        projectId?: string,
     ): Promise<string> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
@@ -165,13 +166,15 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
                     $dbmsId: String!,
                     $appName: String!,
                     $principal: String!,
-                    $accessToken: String!
+                    $accessToken: String!,
+                    $projectId: String!
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN}(
                         dbmsId: $dbmsId,
                         appName: $appName,
                         principal: $principal,
-                        accessToken: $accessToken
+                        accessToken: $accessToken,
+                        projectId: $projectId
                     ) {
                         token
                         path
@@ -183,6 +186,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
                 appName,
                 principal,
                 accessToken,
+                projectId,
             },
         });
 
@@ -212,6 +216,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
                         }
                         principal
                         accessToken
+                        projectId
                     }
                 }
             `,

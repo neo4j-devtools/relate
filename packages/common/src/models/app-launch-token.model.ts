@@ -9,6 +9,7 @@ export interface IAppLaunchToken {
     principal?: string;
     appName: string;
     accessToken?: string;
+    projectId?: string;
 }
 
 export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implements IAppLaunchToken {
@@ -29,4 +30,8 @@ export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implemen
     @IsOptional()
     @IsValidJWT()
     accessToken?: string;
+
+    @IsString()
+    @IsOptional()
+    projectId?: string;
 }
