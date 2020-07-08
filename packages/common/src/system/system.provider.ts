@@ -71,7 +71,9 @@ export class SystemProvider implements OnModuleInit {
 
         return activeEnvironment.flatMap((env) => {
             if (None.isNone(env)) {
-                throw new NotFoundError(`No environment in use`);
+                throw new NotFoundError(`No environment in use`, [
+                    'Run relate env:use <environment> first to set an active environment',
+                ]);
             }
 
             return env;
