@@ -6,7 +6,7 @@ import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';
 
 export async function getAppBasePath(appName: string): Promise<string> {
-    const installed = await getInstalledExtensions();
+    const installed = getInstalledExtensions();
     const app = _.find(installed, ({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName);
 
     if (!app) {
@@ -16,7 +16,7 @@ export async function getAppBasePath(appName: string): Promise<string> {
     const {name, manifest} = await discoverExtension(app.root);
     const appBase = `/${name}`;
     let main = _.startsWith(manifest.main, '.') ? manifest.main.substr(1) : manifest.main;
-    main = _.startsWith(manifest.main, '/') ? manifest.main.substr(1) : manifest.main;
+    main = _.startsWith(main, '/') ? main.substr(1) : main;
 
     return `${appBase}/${main}`;
 }
