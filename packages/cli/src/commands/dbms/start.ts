@@ -9,6 +9,13 @@ export default class StartCommand extends BaseCommand {
 
     static description = 'Start one or more Neo4j DBMSs';
 
+    static examples = [
+        '$ relate dbms:start',
+        '$ relate dbms:start my-dbms',
+        '$ relate dbms:start my-dbms my-other-dbms',
+        '$ relate dbms:start -e environment-name',
+    ];
+
     static args = [ARGS.DBMSS];
 
     static strict = false;

@@ -11,6 +11,14 @@ export default class InstallCommand extends BaseCommand {
 
     static description = 'Install a Neo4j DBMS in the selected environment';
 
+    static examples = [
+        '$ relate dbms:install',
+        '$ relate dbms:install --limited',
+        '$ relate dbms:install -n my-new-dbms',
+        '$ relate dbms:install 4.0.2 -n my-new-dbms',
+        '$ relate dbms:install 4.0.2 -n my-new-dbms -e environment-name --no-caching',
+    ];
+
     static args = [ARGS.VERSION];
 
     static flags = {

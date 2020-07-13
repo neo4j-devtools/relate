@@ -11,6 +11,8 @@ export default class LoginCommand extends BaseCommand {
 
     static aliases = ['env:login'];
 
+    static examples = ['$ relate env:login -e environment-supporting-login'];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
     };

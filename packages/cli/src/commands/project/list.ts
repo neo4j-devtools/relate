@@ -9,6 +9,8 @@ export default class ListCommand extends BaseCommand {
 
     static description = 'Lists all projects';
 
+    static examples = ['$ relate project:list', '$ relate project:list -e environment-name'];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
     };

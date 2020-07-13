@@ -11,6 +11,13 @@ export default class LoadCommand extends BaseCommand {
 
     static description = 'Load data into a database from a dump';
 
+    static examples = [
+        '$ relate db:load -f /path/to/dump/file',
+        '$ relate db:load -f /path/to/dump/file -e environment-name',
+        '$ relate db:load dbms-containing-db-to-load-into -f /path/to/dump/file -d db-to-load-into',
+        '$ relate db:load dbms-containing-db-to-load-into -f /path/to/dump/file -d db-to-load-into --force',
+    ];
+
     static args = [ARGS.DBMS];
 
     static strict = false;
@@ -28,8 +35,8 @@ export default class LoadCommand extends BaseCommand {
         }),
         from: flags.string({
             char: 'f',
-            default: '',
             description: 'Dump to load data from',
+            required: true,
         }),
     };
 }

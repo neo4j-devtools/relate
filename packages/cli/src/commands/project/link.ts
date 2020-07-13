@@ -8,5 +8,7 @@ export default class LinkCommand extends BaseCommand {
 
     static description = 'Link a project (useful for development)';
 
+    static examples = ['$ relate project:link /path/to/target/project/dir'];
+
     static args = [{name: 'filePath'}];
 }
