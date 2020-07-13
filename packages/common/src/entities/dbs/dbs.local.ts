@@ -85,13 +85,19 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         args: {
             database: string;
             user: string;
-            password: string;
+            accessToken: string;
         },
     ): Promise<string> {
         const dbms = await this.environment.dbmss.get(dbmsId);
-        const params = ['--format=plain', `--address=${dbms.connectionUri}`];
-        Object.keys(args).forEach((key: string) => params.push(`--${key}=${(args as {[key: string]: string})[key]}`));
+        const params = [
+            '--format=plain',
+            `--address=${dbms.connectionUri}`,
+            ...Object.entries(args).map(([key, val]) => {
+                return key === 'accessToken' ? `--password=${val}` : `--${key}=${val}`;
+            }),
+        ];
         const result = await cypherShellCmd(await this.resolveDbmsRootPath(dbmsId), params, from);
+
         return result;
     }
 

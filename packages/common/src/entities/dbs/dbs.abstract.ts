@@ -21,6 +21,6 @@ export abstract class DbsAbstract<Env extends EnvironmentAbstract> {
     abstract exec(
         dbmsId: string,
         from: string | ReadStream,
-        args: {database: string; user: string; password: string},
+        args: {database: string; user: string; accessToken: string},
     ): Promise<string>;
 }
