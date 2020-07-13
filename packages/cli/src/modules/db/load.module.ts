@@ -55,7 +55,7 @@ export class LoadModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Loading data from dump into ${dbms.name}`);
-        return environment.dbmss.dbLoad(dbms.id, database, filePath, force).then((res: string) => {
+        return environment.dbs.load(dbms.id, database, filePath, force).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];

@@ -46,8 +46,8 @@ export class ExecModule implements OnApplicationBootstrap {
 
         const password = await passwordPrompt('Enter passphrase');
 
-        return environment.dbmss
-            .dbExec(dbmsId, from, {
+        return environment.dbs
+            .exec(dbmsId, from, {
                 database,
                 user,
                 password,

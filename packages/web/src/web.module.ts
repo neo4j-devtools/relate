@@ -10,6 +10,7 @@ import {PATH_TO_EXECUTABLE_ROOT} from './constants';
 import {AuthModule} from './auth';
 import {ProjectsModule} from './projects/projects.module';
 import {FilesModule} from './files';
+import {DbModule} from './db';
 
 export interface IWebModuleConfig {
     protocol: string;
@@ -23,6 +24,7 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
     imports: [
         SystemModule,
         DBMSModule,
+        DbModule,
         ExtensionsModule,
         ProjectsModule,
         FilesModule,

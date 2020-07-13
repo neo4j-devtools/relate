@@ -34,7 +34,7 @@ export class DropModule implements OnApplicationBootstrap {
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
         cli.action.start('Dropping database');
-        await environment.dbmss.dbDrop(dbms, user, name, accessToken);
+        await environment.dbs.drop(dbms, user, name, accessToken);
         cli.action.stop();
     }
 }

@@ -2,9 +2,8 @@ import {List, Str} from '@relate/types';
 import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQueryMeta} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
-import {ReadStream} from 'fs-extra';
 
-import {IDb, IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -50,13 +49,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract getDbmsConfig(dbmsId: string): Promise<PropertiesFile>;
 
-    abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
-
-    abstract dbCreate(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
-
-    abstract dbDrop(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
-
-    abstract dbList(dbmsId: string, user: string, accessToken: string): Promise<List<IDb>>;
+    abstract updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean>;
 
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
@@ -139,20 +132,4 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }
     }
-
-    abstract dbDump(dbmsId: string, database: string, to: string, javaPath?: string): Promise<string>;
-
-    abstract dbLoad(
-        dbmsId: string,
-        database: string,
-        from: string,
-        force?: boolean,
-        javaPath?: string,
-    ): Promise<string>;
-
-    abstract dbExec(
-        dbmsId: string,
-        from: string | ReadStream,
-        args: {database: string; user: string; password: string},
-    ): Promise<string>;
 }
