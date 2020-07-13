@@ -8,4 +8,4 @@ import {DbResolver} from './db.resolver';
     imports: [SystemModule],
     providers: [DbResolver],
 })
-export class DbModule {}
+export class DBModule {}

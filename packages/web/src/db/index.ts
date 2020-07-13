@@ -1,1 +1,1 @@
-export {DbModule} from './db.module';
+export {DBModule} from './db.module';

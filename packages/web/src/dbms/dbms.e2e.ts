@@ -17,7 +17,6 @@ import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
 let TEST_DBMS_NAME: string;
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'testDb';
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const HTTP_OK = 200;
@@ -203,90 +202,6 @@ describe('DBMSModule', () => {
                         expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
                         expect(v.version).not.toEqual('3.5.17');
                     });
-                });
-        });
-
-        test('/graphql createDb (no running dbms)', () => {
-            const accessToken = 'someTokenValue1234';
-
-            return request(app.getHttpServer())
-                .post('/graphql')
-                .send(
-                    queryBody(
-                        `mutation CreateDb($dbmsId: String!, $user: String!, $dbName: String!, $accessToken: String!) {
-                                createDb(dbmsId: $dbmsId, user: $user, dbName: $dbName, accessToken: $accessToken)
-                            }`,
-                        {
-                            user: 'neo4j',
-                            dbName: TEST_DB_NAME,
-                            dbmsId: TEST_DBMS_NAME,
-                            accessToken,
-                        },
-                    ),
-                )
-                .expect(HTTP_OK)
-                .expect((res: request.Response) => {
-                    const {errors} = res.body;
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
-                });
-        });
-
-        test('/graphql dropDb (no running dbms)', () => {
-            const accessToken = 'someTokenValue1234';
-
-            return request(app.getHttpServer())
-                .post('/graphql')
-                .send(
-                    queryBody(
-                        `mutation DropDb($dbmsId: String!, $user: String!, $dbName: String!, $accessToken: String!) {
-                                dropDb(dbmsId: $dbmsId, user: $user, dbName: $dbName, accessToken: $accessToken)
-                            }`,
-                        {
-                            user: 'neo4j',
-                            dbName: TEST_DB_NAME,
-                            dbmsId: TEST_DBMS_NAME,
-                            accessToken,
-                        },
-                    ),
-                )
-                .expect(HTTP_OK)
-                .expect((res: request.Response) => {
-                    const {errors} = res.body;
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
-                });
-        });
-
-        test('/graphql listDbs (no running dbms)', () => {
-            const accessToken = 'someTokenValue1234';
-
-            return request(app.getHttpServer())
-                .post('/graphql')
-                .send(
-                    queryBody(
-                        `query ListDbs($dbmsId: String!, $user: String!, $accessToken: String!) {
-                                listDbs(dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
-                                    name,
-                                    role,
-                                    requestedStatus,
-                                    currentStatus,
-                                    error,
-                                    default
-                                }
-                            }`,
-                        {
-                            user: 'neo4j',
-                            dbmsId: TEST_DBMS_NAME,
-                            accessToken,
-                        },
-                    ),
-                )
-                .expect(HTTP_OK)
-                .expect((res: request.Response) => {
-                    const {errors} = res.body;
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
                 });
         });
     });

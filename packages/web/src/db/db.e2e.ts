@@ -7,9 +7,9 @@ import {TestDbmss} from '@relate/common';
 import configuration from '../configs/dev.config';
 import {WebModule} from '../web.module';
 let TEST_DBMS_NAME: string;
+let TEST_DBMS_ACCESS_TOKEN: string;
 const TEST_APP_ID = 'foo';
 const TEST_DB_NAME = 'testDb';
-
 const HTTP_OK = 200;
 
 const queryBody = (query: string, variables?: {[key: string]: any}): {[key: string]: any} => ({
@@ -22,24 +22,15 @@ const queryBody = (query: string, variables?: {[key: string]: any}): {[key: stri
     },
 });
 
-describe('DBMSModule', () => {
+describe('DBModule', () => {
     let app: INestApplication;
     let dbmss: TestDbmss;
-    let TEST_DBMS_ACCESS_TOKEN: string;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
         const {name} = await dbmss.createDbms();
+
         TEST_DBMS_NAME = name;
-
-        await dbmss.environment.dbmss.start([TEST_DBMS_NAME]);
-
-        // set access token
-        TEST_DBMS_ACCESS_TOKEN = await dbmss.environment.dbmss.createAccessToken(TEST_APP_ID, TEST_DBMS_NAME, {
-            credentials: TestDbmss.DBMS_CREDENTIALS,
-            principal: 'neo4j',
-            scheme: 'basic',
-        });
 
         const module = await Test.createTestingModule({
             imports: [
@@ -57,8 +48,125 @@ describe('DBMSModule', () => {
 
     afterAll(() => dbmss.teardown());
 
-    describe('databases', () => {
-        test('/graphql createDb (invalid accessToken)', () => {
+    describe('dbms stopped', () => {
+        test('/graphql createDb (no running dbms)', () => {
+            const accessToken = 'someTokenValue1234';
+
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation CreateDb($dbmsId: String!, $user: String!, $dbName: String!, $accessToken: String!) {
+                                createDb(dbmsId: $dbmsId, user: $user, dbName: $dbName, accessToken: $accessToken)
+                            }`,
+                        {
+                            user: 'neo4j',
+                            dbName: TEST_DB_NAME,
+                            dbmsId: TEST_DBMS_NAME,
+                            accessToken,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {errors} = res.body;
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
+                });
+        });
+
+        test('/graphql dropDb (no running dbms)', () => {
+            const accessToken = 'someTokenValue1234';
+
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation DropDb($dbmsId: String!, $user: String!, $dbName: String!, $accessToken: String!) {
+                                dropDb(dbmsId: $dbmsId, user: $user, dbName: $dbName, accessToken: $accessToken)
+                            }`,
+                        {
+                            user: 'neo4j',
+                            dbName: TEST_DB_NAME,
+                            dbmsId: TEST_DBMS_NAME,
+                            accessToken,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {errors} = res.body;
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
+                });
+        });
+
+        test('/graphql listDbs (no running dbms)', () => {
+            const accessToken = 'someTokenValue1234';
+
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `query ListDbs($dbmsId: String!, $user: String!, $accessToken: String!) {
+                                listDbs(dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
+                                    name,
+                                    role,
+                                    requestedStatus,
+                                    currentStatus,
+                                    error,
+                                    default
+                                }
+                            }`,
+                        {
+                            user: 'neo4j',
+                            dbmsId: TEST_DBMS_NAME,
+                            accessToken,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {errors} = res.body;
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
+                });
+        });
+    });
+
+    describe('dbms started', () => {
+        test('/graphql startDbmss', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation StartDBMSSs($environmentNameOrId: String, $dbmsNames: [String!]!) {
+                            startDbmss(environmentNameOrId: $environmentNameOrId, dbmsIds: $dbmsNames)
+                        }`,
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {startDbmss} = res.body.data;
+
+                    if (process.platform === 'win32') {
+                        expect(startDbmss[0]).toContain('Neo4j service started');
+                    } else {
+                        expect(startDbmss[0]).toContain('Directories in use');
+                        expect(startDbmss[0]).toContain('Starting Neo4j');
+                        expect(startDbmss[0]).toContain('Started neo4j (pid');
+                    }
+                });
+        });
+
+        test('/graphql createDb (invalid accessToken)', async () => {
+            // set access token
+            TEST_DBMS_ACCESS_TOKEN = await dbmss.environment.dbmss.createAccessToken(TEST_APP_ID, TEST_DBMS_NAME, {
+                credentials: TestDbmss.DBMS_CREDENTIALS,
+                principal: 'neo4j',
+                scheme: 'basic',
+            });
+
             const accessToken = 'invalidAccessToken1234';
 
             return request(app.getHttpServer())
