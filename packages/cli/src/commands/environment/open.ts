@@ -11,6 +11,12 @@ export default class OpenCommand extends BaseCommand {
 
     static description = "Open an environment's configuration with the default editor";
 
+    static examples = [
+        '$ relate env:open',
+        '$ relate env:open -e environment-name',
+        '$ relate env:open -e environment-name -L',
+    ];
+
     static aliases = ['env:open'];
 
     static flags = {

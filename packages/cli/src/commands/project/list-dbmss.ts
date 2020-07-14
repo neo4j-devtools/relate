@@ -10,6 +10,12 @@ export default class ListDbmssCommand extends BaseCommand {
 
     static description = 'Lists project dbmss';
 
+    static examples = [
+        '$ relate project:list-dbmss',
+        '$ relate project:list-dbmss -e environment-name',
+        '$ relate project:list-dbmss -p my-project',
+    ];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,

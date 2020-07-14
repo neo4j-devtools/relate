@@ -12,6 +12,15 @@ export default class ListCommand extends BaseCommand {
 
     static description = 'List a database';
 
+    static examples = [
+        '$ relate db:list',
+        '$ relate db:list -e environment-name',
+        '$ relate db:list',
+        '$ relate db:list --columns=name,role -u dbms-user --no-header --no-truncate',
+        '$ relate db:list --sort=name',
+        '$ relate db:list --filter=name=db-name --output=json',
+    ];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...cli.table.flags({except: ['extended', 'csv']}),
@@ -22,7 +31,7 @@ export default class ListCommand extends BaseCommand {
         }),
         dbms: flags.string({
             char: 'D',
-            description: 'DBMS containing the databases to list',
+            description: 'DBMS containing the databases to list (needs to be started and have an access token created)',
             required: REQUIRED_FOR_SCRIPTS,
         }),
     };

@@ -19,7 +19,7 @@ import {NotFoundError, FetchError, IntegrityError} from '../../errors';
 
 jest.mock('uuid');
 
-const TEST_DIST = 'http://dist.neo4j.org';
+const TEST_DIST = 'https://dist.neo4j.org';
 const TMP_NEO4J_DIST_PATH = path.join(envPaths().cache, DBMS_DIR_NAME);
 const TMP_UUID = 'tmp_uuid';
 const TMP_FILE_CONTENTS = 'test file contents';

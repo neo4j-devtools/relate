@@ -24,6 +24,11 @@ OPTIONS
 
 ALIASES
   $ relate env:init
+
+EXAMPLES
+  $ relate env:init
+  $ relate env:init --name=local-environment-name --type=LOCAL
+  $ relate env:init --name=remote-environment-name --type=REMOTE --httpOrigin=https://url.of.hosted.relate.com
 ```
 
 _See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/environment/init.ts)_
@@ -37,6 +42,9 @@ USAGE
   $ relate environment:list
 
 ALIASES
+  $ relate env:list
+
+EXAMPLE
   $ relate env:list
 ```
 
@@ -55,6 +63,9 @@ OPTIONS
 
 ALIASES
   $ relate env:login
+
+EXAMPLE
+  $ relate env:login -e environment-supporting-login
 ```
 
 _See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/environment/login.ts)_
@@ -73,6 +84,11 @@ OPTIONS
 
 ALIASES
   $ relate env:open
+
+EXAMPLES
+  $ relate env:open
+  $ relate env:open -e environment-name
+  $ relate env:open -e environment-name -L
 ```
 
 _See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/environment/open.ts)_
@@ -90,6 +106,9 @@ ARGUMENTS
 
 ALIASES
   $ relate env:use
+
+EXAMPLE
+  $ relate env:use environment-to-set-as-active
 ```
 
 _See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/environment/use.ts)_

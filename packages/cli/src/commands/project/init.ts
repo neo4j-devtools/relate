@@ -11,9 +11,16 @@ export default class InitCommand extends BaseCommand {
 
     static description = 'Create a new project';
 
+    static examples = [
+        '$ relate project:init /path/to/target/project/dir',
+        '$ relate project:init /path/to/target/project/dir -e environment-name',
+        '$ relate project:init /path/to/target/project/dir --name=my-project',
+    ];
+
     static args = [
         {
             name: 'targetDir',
+            // @todo: this is optional is projects.abstract
             required: true,
         },
     ];

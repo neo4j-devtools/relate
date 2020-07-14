@@ -9,6 +9,13 @@ export default class StopCommand extends BaseCommand {
 
     static description = 'Stop one or more Neo4j DBMSs';
 
+    static examples = [
+        '$ relate dbms:stop',
+        '$ relate dbms:stop my-dbms',
+        '$ relate dbms:stop my-dbms my-other-dbms',
+        '$ relate dbms:stop -e environment-name',
+    ];
+
     static args = [ARGS.DBMSS];
 
     static strict = false;

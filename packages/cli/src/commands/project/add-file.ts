@@ -12,6 +12,12 @@ export default class AddFileCommand extends BaseCommand {
 
     static description = 'Adds a file to a project';
 
+    static examples = [
+        '$ relate project:add-file',
+        '$ relate project:add-file -e environment-name',
+        '$ relate project:add-file -p my-project -d /path/to/name.file',
+    ];
+
     static args = [
         {
             name: 'source',

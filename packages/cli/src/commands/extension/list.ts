@@ -12,6 +12,8 @@ export default class ListCommand extends BaseCommand {
 
     static description = 'Lists installed extensions';
 
+    static examples = ['$ relate ext:list', '$ relate ext:list -e environment-name'];
+
     static flags = {
         ...FLAGS.ENVIRONMENT,
     };
