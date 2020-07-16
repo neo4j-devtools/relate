@@ -1,5 +1,3 @@
-import path from 'path';
-
 import {getAppBasePath} from './get-app-base-path';
 import * as installExtensions from './get-installed-extensions';
 import * as extensionVersions from './extension-versions';
@@ -12,8 +10,8 @@ const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
     name: TEST_APP_NAME,
     version: '',
     type: EXTENSION_TYPES.STATIC,
-    main: path.join('path', 'to', 'main'),
-    root: path.join('path', 'to', 'root'),
+    main: 'path/to/main',
+    root: 'path/to/root',
 };
 const TEST_EXTENSION_META: extensionVersions.IExtensionMeta = {
     name: TEST_APP_NAME,
@@ -64,41 +62,39 @@ describe('extract', () => {
             ...TEST_EXTENSION_META,
             manifest: {
                 ...TEST_INSTALLED_EXTENSION,
-                main: path.join('.', TEST_INSTALLED_EXTENSION.main),
+                main: `.${TEST_INSTALLED_EXTENSION.main}`,
             },
         });
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 
-    test('installed app manifest.main begins with "/"', async () => {
+    test(`installed app manifest.main begins with "/"`, async () => {
         jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
             ...TEST_EXTENSION_META,
             manifest: {
                 ...TEST_INSTALLED_EXTENSION,
-                main: path.join('/', TEST_INSTALLED_EXTENSION.main),
+                main: `/${TEST_INSTALLED_EXTENSION.main}`,
             },
         });
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 
-    test('installed app manifest.main begins with "./"', async () => {
+    test(`installed app manifest.main begins with "./"`, async () => {
         jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
             ...TEST_EXTENSION_META,
             manifest: {
                 ...TEST_INSTALLED_EXTENSION,
-                main: path.join('.', TEST_INSTALLED_EXTENSION.main),
+                main: `./${TEST_INSTALLED_EXTENSION.main}`,
             },
         });
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 
-    test('app base path returned scuessfully', async () => {
+    test('app base path returned successfully', async () => {
         jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(TEST_EXTENSION_META);
-        await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(
-            path.join('/', TEST_APP_NAME, TEST_INSTALLED_EXTENSION.main),
-        );
+        await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 });
