@@ -7,7 +7,14 @@ import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
 import {PropertiesFile} from '../../system/files';
-import {DbmsQueryError, ErrorAbstract, InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
+import {
+    ConnectionError,
+    DbmsQueryError,
+    ErrorAbstract,
+    InvalidConfigError,
+    NotAllowedError,
+    NotFoundError,
+} from '../../errors';
 import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
 import {emitHookEvent} from '../../utils';
 import {IRelateFilter} from '../../utils/generic';
@@ -72,8 +79,8 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
                 const message = Str.from(e.message);
 
-                if (!message.includes('ECONNREFUSED') && retry > 2) {
-                    throw new NotAllowedError('Unable to connect to DBMS');
+                if (!message.includes('ECONNREFUSED')) {
+                    throw new ConnectionError('Unable to connect to DBMS', [message]);
                 }
 
                 if (retry < MAX_CONNECTION_RETRIES) {
@@ -94,7 +101,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
                     );
                 }
 
-                throw new NotAllowedError('Unable to connect to DBMS');
+                throw new ConnectionError('Unable to connect to DBMS', [message]);
             }),
         );
     }

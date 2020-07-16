@@ -112,6 +112,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const coercedVersion = coerce(version)?.version;
+
         if (coercedVersion) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
@@ -151,8 +152,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
-        if (!status.includes('Neo4j is not running')) {
-            throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
+        if (status.includes(DBMS_STATUS_FILTERS.STARTED)) {
+            throw new NotAllowedError('Cannot uninstall DBMS that is running');
         }
 
         return this.uninstallNeo4j(id);
