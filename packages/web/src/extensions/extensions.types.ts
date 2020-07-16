@@ -1,6 +1,7 @@
 import {ArgsType, Field, ObjectType} from '@nestjs/graphql';
 import {EXTENSION_ORIGIN, EXTENSION_TYPES} from '@relate/common';
 import {Dbms} from '../dbms/dbms.types';
+import {Project} from '../projects/projects.types';
 import {EnvironmentArgs} from '../global.types';
 
 @ObjectType()
@@ -40,6 +41,9 @@ export class AppLaunchData {
 
     @Field(() => String, {nullable: true})
     accessToken?: string;
+
+    @Field(() => Project, {nullable: true})
+    project?: Project;
 }
 
 @ObjectType()
@@ -85,6 +89,9 @@ export class CreateLaunchTokenArgs extends EnvironmentArgs {
 
     @Field(() => String, {nullable: true})
     accessToken: string;
+
+    @Field(() => String, {nullable: true})
+    projectId: string;
 }
 
 @ObjectType()
