@@ -5,7 +5,6 @@ import {FileStructureError} from '../errors';
 
 const ARCHIVE_DIR_PATH = path.join('path', 'to', 'archive');
 const OUTPUT_DIR_PATH = path.join('path', 'to', 'outputDir');
-const EXTRACTED_ROOT_DIR = 'extractedRootDir';
 
 jest.mock('decompress', () => ({
     __esModule: true,
@@ -16,14 +15,14 @@ jest.mock('decompress', () => ({
                 data: Buffer.of(),
                 mode: 1,
                 mtime: '1234',
-                path: path.join(EXTRACTED_ROOT_DIR, 'to', 'extracted', 'test-file'),
+                path: path.join('extractedRootDir', 'to', 'extracted', 'test-file'),
                 type: 'file',
             },
             {
                 data: Buffer.of(),
                 mode: 1,
                 mtime: '4321',
-                path: path.join('another', EXTRACTED_ROOT_DIR, 'to', 'extracted', 'test-file2'),
+                path: path.join('another', 'extractedRootDir', 'to', 'extracted', 'test-file2'),
                 type: 'file',
             },
         ])
@@ -33,7 +32,7 @@ jest.mock('decompress', () => ({
                 data: Buffer.of(),
                 mode: 1,
                 mtime: '1234',
-                path: path.join(EXTRACTED_ROOT_DIR, 'to', 'extracted', 'test-file'),
+                path: path.join('extractedRootDir', 'to', 'extracted', 'test-file'),
                 type: 'file',
             },
         ]),
@@ -56,7 +55,7 @@ describe('extract', () => {
 
     test('exactly 1 output root dir path', async () => {
         await expect(extract(ARCHIVE_DIR_PATH, OUTPUT_DIR_PATH)).resolves.toBe(
-            path.join(OUTPUT_DIR_PATH, EXTRACTED_ROOT_DIR),
+            path.join(OUTPUT_DIR_PATH, 'extractedRootDir'),
         );
     });
 });
