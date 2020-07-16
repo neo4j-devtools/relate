@@ -31,7 +31,7 @@ export class OpenModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {appName} = args;
-        const {environment: environmentId, user, dbmsId} = flags;
+        const {environment: environmentId, user, dbmsId, project} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installedApps = (await environment.extensions.listApps()).toArray();
 
@@ -76,7 +76,13 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
-        const launchToken = await environment.extensions.createAppLaunchToken(appName, dbms.id, user, accessToken);
+        const launchToken = await environment.extensions.createAppLaunchToken(
+            appName,
+            dbms.id,
+            user,
+            accessToken,
+            project,
+        );
 
         const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
         this.logOrOpen(tokenUrl);

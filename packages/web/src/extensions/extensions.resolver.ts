@@ -30,14 +30,23 @@ export class ExtensionsResolver {
         @Context('environment') environment: Environment,
         @Args() {appName, launchToken}: LaunchDataArgs,
     ): Promise<AppLaunchData> {
-        const {dbmsId, ...rest} = await environment.extensions.parseAppLaunchToken(appName, launchToken);
+        const {dbmsId, projectId, ...rest} = await environment.extensions.parseAppLaunchToken(appName, launchToken);
         const dbms = await environment.dbmss.get(dbmsId);
 
-        return {
+        const appLaunchData: AppLaunchData = {
+            ...rest,
             dbms,
             environmentId: environment.id,
-            ...rest,
         };
+
+        if (projectId) {
+            appLaunchData.project = {
+                ...(await environment.projects.get(projectId)),
+                files: [],
+            };
+        }
+
+        return appLaunchData;
     }
 
     @Query(() => [AppData])
@@ -63,9 +72,15 @@ export class ExtensionsResolver {
     @Mutation(() => AppLaunchToken)
     async [PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN](
         @Context('environment') environment: Environment,
-        @Args() {appName, dbmsId, principal, accessToken}: CreateLaunchTokenArgs,
+        @Args() {appName, dbmsId, principal, accessToken, projectId}: CreateLaunchTokenArgs,
     ): Promise<AppLaunchToken> {
-        const token = await environment.extensions.createAppLaunchToken(appName, dbmsId, principal, accessToken);
+        const token = await environment.extensions.createAppLaunchToken(
+            appName,
+            dbmsId,
+            principal,
+            accessToken,
+            projectId,
+        );
         const appBasePath = await environment.extensions.getAppPath(appName, STATIC_APP_BASE_ENDPOINT);
 
         return {
