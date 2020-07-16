@@ -79,7 +79,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
                 const message = Str.from(e.message);
 
-                if (!message.includes('ECONNREFUSED')) {
+                if (!message.includes('ECONNREFUSED') && retry > 2) {
                     throw new ConnectionError('Unable to connect to DBMS', [message]);
                 }
 
