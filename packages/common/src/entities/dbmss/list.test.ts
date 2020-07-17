@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import {ENVIRONMENT_TYPES} from '../environments/environment.constants';
 import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
-import {LocalEnvironment} from '../environments/local.environment';
+import {LocalEnvironment} from '../environments/environment.local';
 import {PropertiesFile} from '../../system/files';
 import {DBMS_DIR_NAME} from '../../constants';
 
