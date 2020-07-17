@@ -52,7 +52,7 @@ export class DumpModule implements OnApplicationBootstrap {
         }
 
         cli.action.start(`Dumping ${database} from ${dbms.name}`);
-        return environment.dbmss.dbDump(dbms.id, database, filePath).then((res: string) => {
+        return environment.dbs.dump(dbms.id, database, filePath).then((res: string) => {
             let result = chalk.green('done');
 
             const message = ['------------------------------------------'];

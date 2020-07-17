@@ -35,7 +35,7 @@ export class CreateModule implements OnApplicationBootstrap {
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
         cli.action.start('Creating database');
-        await environment.dbmss.dbCreate(dbms, user, name, accessToken);
+        await environment.dbs.create(dbms, user, name, accessToken);
         cli.action.stop();
     }
 }

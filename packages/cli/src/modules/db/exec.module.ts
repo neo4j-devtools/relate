@@ -5,7 +5,7 @@ import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/
 
 import {isInteractive, readStdin} from '../../stdin';
 import ExecCommand from '../../commands/db/exec';
-import {selectDbmsPrompt, passwordPrompt} from '../../prompts';
+import {selectDbmsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -44,13 +44,13 @@ export class ExecModule implements OnApplicationBootstrap {
             cli.action.stop(chalk.green('done'));
         }
 
-        const password = await passwordPrompt('Enter passphrase');
+        const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
 
-        return environment.dbmss
-            .dbExec(dbmsId, from, {
+        return environment.dbs
+            .exec(dbmsId, from, {
                 database,
                 user,
-                password,
+                accessToken,
             })
             .then((res: string) => {
                 const message = ['------------------------------------------'];
