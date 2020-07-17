@@ -44,6 +44,13 @@ function compare(source: any, target: any, comparator = FILTER_COMPARATORS.EQUAL
                 : !Str.from(source).includes(target);
         }
 
+        case FILTER_COMPARATORS.IN:
+        case FILTER_COMPARATORS.NOT_IN: {
+            return comparator === FILTER_COMPARATORS.IN
+                ? List.from(target).includes(source)
+                : !List.from(target).includes(source);
+        }
+
         default:
         case FILTER_COMPARATORS.EQUALS:
         case FILTER_COMPARATORS.NOT_EQUALS: {

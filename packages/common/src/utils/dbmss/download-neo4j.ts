@@ -39,22 +39,20 @@ export const verifyHash = async (
 
 export const downloadNeo4j = async (
     version: string,
+    edition: NEO4J_EDITION,
     neo4jDistributionPath: string,
     limited?: boolean,
 ): Promise<void> => {
     const onlineVersions = await fetchNeo4jVersions(limited);
-    const requestedDistribution = onlineVersions.find(
-        (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
-    );
+    const requestedDistribution = onlineVersions.find((dist) => dist.version === version && dist.edition === edition);
     const errorMessage = () => {
-        const onlineEnterpriseVersions = onlineVersions
-            .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
+        const mappedVersions = onlineVersions
             .mapEach((dist) => dist.version)
             .join(', ')
-            .map((versions) => `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${versions}`)
-            .getOrElse(`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`);
+            .map((versions) => `Use a valid version found online: ${versions}`)
+            .getOrElse(`Use a valid version`);
 
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [onlineEnterpriseVersions]);
+        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [mappedVersions]);
     };
 
     const dist = requestedDistribution.getOrElse(errorMessage);

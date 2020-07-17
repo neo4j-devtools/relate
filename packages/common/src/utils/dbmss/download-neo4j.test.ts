@@ -70,7 +70,7 @@ describe('Download Neo4j (to local cache)', () => {
         );
 
         // call downloadNeo4j
-        await downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH);
+        await downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TestDbmss.NEO4J_EDITION, TMP_NEO4J_DIST_PATH);
 
         // tests
         expect(getCheckSumSpy).toHaveBeenCalledWith(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`);
@@ -83,7 +83,7 @@ describe('Download Neo4j (to local cache)', () => {
 
     test('downloadNeo4j: no requested distributions found online', async () => {
         // eslint-disable-next-line max-len
-        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`;
+        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a valid version`;
 
         let dbmsVersion = {
             ...DBMS_VERSION,
@@ -94,9 +94,9 @@ describe('Download Neo4j (to local cache)', () => {
             Promise.resolve(List.from([dbmsVersion])),
         );
 
-        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
-            new NotFoundError(message),
-        );
+        await expect(
+            downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TestDbmss.NEO4J_EDITION, TMP_NEO4J_DIST_PATH),
+        ).rejects.toThrow(new NotFoundError(message));
 
         const majorVersionIncrement = inc(TestDbmss.NEO4J_VERSION, 'major');
         dbmsVersion = {
@@ -105,11 +105,11 @@ describe('Download Neo4j (to local cache)', () => {
         };
 
         // eslint-disable-next-line max-len
-        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${majorVersionIncrement}`;
+        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a valid version found online: ${majorVersionIncrement}`;
 
-        await expect(downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TMP_NEO4J_DIST_PATH)).rejects.toThrow(
-            new NotFoundError(message),
-        );
+        await expect(
+            downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TestDbmss.NEO4J_EDITION, TMP_NEO4J_DIST_PATH),
+        ).rejects.toThrow(new NotFoundError(message));
     });
 
     test('getCheckSum: valid response from sha URL', async () => {

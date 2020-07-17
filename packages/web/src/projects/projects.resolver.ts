@@ -91,7 +91,7 @@ export class ProjectsResolver {
     ): Promise<ProjectDbms> {
         const dbms = await environment.dbmss.get(dbmsId);
 
-        return environment.projects.addDbms(name, dbmsName, dbms, user, accessToken);
+        return environment.projects.addDbms(name, dbmsName, dbms.id, user, accessToken);
     }
 
     @Mutation(() => ProjectDbms)

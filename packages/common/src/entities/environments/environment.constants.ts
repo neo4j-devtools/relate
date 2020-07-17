@@ -41,7 +41,7 @@ export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
 export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
-export const NEO4J_SUPPORTED_VERSION_RANGE = '>=4.x';
+export const NEO4J_SUPPORTED_VERSION_RANGE = '>=4';
 export const NEO4J_JWT_ADDON_NAME = 'neo4j-jwt-addon';
 export const NEO4J_JWT_ADDON_VERSION = '1.0.0-SNAPSHOT';
 export const NEO4J_JWT_CONF_FILE = 'jwt-auth-addon.conf';

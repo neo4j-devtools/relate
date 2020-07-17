@@ -28,7 +28,7 @@ import {
     NotFoundError,
     NotSupportedError,
 } from '../../errors';
-import {isValidUrl, applyEntityFilters, IRelateFilter} from '../../utils/generic';
+import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
     LocalEnvironment,
     LOCALHOST_IP_ADDRESS,
@@ -81,8 +81,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         name: string,
         credentials: string,
         version: string,
-        noCaching?: boolean,
-        limited?: boolean,
+        edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
+        noCaching = false,
+        limited = false,
     ): Promise<string> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
@@ -120,17 +121,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const beforeDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
             const requestedDistribution = beforeDownload.find(
-                (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === coercedVersion,
+                (dist) => dist.version === coercedVersion && dist.edition === edition,
             );
 
             const found = await requestedDistribution.flatMap(async (dist) => {
                 if (None.isNone(dist)) {
-                    await downloadNeo4j(coercedVersion, this.environment.dirPaths.dbmssCache, limited);
+                    await downloadNeo4j(coercedVersion, edition, this.environment.dirPaths.dbmssCache, limited);
                     const afterDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
 
-                    return afterDownload.find(
-                        (down) => down.edition === NEO4J_EDITION.ENTERPRISE && down.version === coercedVersion,
-                    );
+                    return afterDownload.find((down) => down.version === coercedVersion && down.edition === edition);
                 }
 
                 return Maybe.of(dist);
@@ -138,7 +137,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             return found.flatMap((dist) => {
                 if (None.isNone(dist)) {
-                    throw new NotFoundError(`Unable to find the requested version: ${version} online`);
+                    throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
                 return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist, noCaching);
@@ -217,17 +216,35 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
 
-    async get(nameOrId: string): Promise<IDbms> {
+    async get(nameOrId: string): Promise<IDbmsInfo> {
         // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
 
-        return resolveDbms(this.dbmss, nameOrId);
+        const dbms = resolveDbms(this.dbmss, nameOrId);
+        const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
+        const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
+        const status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED;
+
+        return {
+            connectionUri: dbms.connectionUri,
+            description: dbms.description,
+            edition: v?.edition,
+            id: dbms.id,
+            name: dbms.name,
+            rootPath: dbms.rootPath,
+            status,
+            version: v?.version,
+        };
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbms = await this.get(dbmsNameOrId);
-        const driver = await this.getJSONDriverInstance(dbms.id, authToken);
 
+        if (dbms.edition !== NEO4J_EDITION.ENTERPRISE) {
+            throw new NotSupportedError(`Only Neo4j ${NEO4J_EDITION.ENTERPRISE} editions can create access tokens.`);
+        }
+
+        const driver = await this.getJSONDriverInstance(dbms.id, authToken);
         const token = await this.runQuery<string>(driver, 'CALL jwt.security.requestAccess($appName)', {appName})
             .pipe(
                 rxjs.first(),
@@ -302,9 +319,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
             );
             await this.setInitialDatabasePassword(dbmsId, credentials);
-            await this.installSecurityPlugin(dbmsId);
 
-            return dbmsId;
+            const installed = await this.get(dbmsId);
+
+            if (installed.edition === NEO4J_EDITION.ENTERPRISE) {
+                await this.installSecurityPlugin(dbmsId);
+            }
+
+            return installed.id;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
             await fse.remove(path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`));

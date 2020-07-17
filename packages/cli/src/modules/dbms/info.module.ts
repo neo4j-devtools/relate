@@ -1,5 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {FILTER_COMPARATORS, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import InfoCommand from '../../commands/dbms/info';
@@ -20,12 +20,21 @@ export class InfoModule implements OnApplicationBootstrap {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
         const namesOrIds = this.parsed.argv;
+        const dbmss = await environment.dbmss.list(
+            /* eslint-disable indent */
+            namesOrIds.length
+                ? [
+                      {
+                          field: 'id',
+                          value: namesOrIds,
+                          type: FILTER_COMPARATORS.IN,
+                      },
+                  ]
+                : [],
+            /* eslint-enable indent */
+        );
 
-        let dbmss = await Promise.all(namesOrIds.map((n) => environment.dbmss.get(n)));
-        if (!namesOrIds.length) {
-            dbmss = (await environment.dbmss.list()).toArray();
-        }
-        const dbmsIds = dbmss.map((dbms) => dbms.id);
+        const dbmsIds = dbmss.mapEach((dbms) => dbms.id).toArray();
 
         return environment.dbmss.info(dbmsIds).then((res) => {
             const table = res
