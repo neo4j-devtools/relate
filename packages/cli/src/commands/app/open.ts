@@ -41,5 +41,10 @@ export default class OpenCommand extends BaseCommand {
             description: 'The Neo4j DBMS user to automatically connect with, assuming an access token exists',
             required: false,
         }),
+        project: flags.string({
+            char: 'p',
+            description: 'Name of a project context to connect with',
+            required: false,
+        }),
     };
 }

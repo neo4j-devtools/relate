@@ -16,6 +16,7 @@ type AppLaunchData {
   dbms: Dbms!
   principal: String
   accessToken: String
+  project: Project
 }
 
 type AppLaunchToken {
@@ -89,10 +90,10 @@ enum FILTER_CONNECTORS {
 }
 
 type Mutation {
-  createAppLaunchToken(environmentNameOrId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String): AppLaunchToken!
+  createAppLaunchToken(environmentNameOrId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String, projectId: String): AppLaunchToken!
   installExtension(name: String!, environmentNameOrId: String, version: String!): AppData!
   uninstallExtension(environmentNameOrId: String, name: String!): [ExtensionData!]!
-  installDbms(environmentNameOrId: String, name: String!, credentials: String!, version: String!): String!
+  installDbms(environmentNameOrId: String, name: String!, credentials: String!, version: String!, noCaching: Boolean, limited: Boolean): String!
   uninstallDbms(environmentNameOrId: String, name: String!): String!
   startDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
@@ -100,7 +101,6 @@ type Mutation {
   updateDbmsConfig(dbmsId: String!, properties: [[String!]!]!): Boolean!
   createDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
   dropDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
-  listDbs(dbmsId: String!, user: String!, accessToken: String!): [Db!]!
   initProject(environmentNameOrId: String, name: String!): Project!
   addProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
   removeProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!): ProjectDbms!
@@ -129,7 +129,8 @@ type Query {
   getDbms(environmentNameOrId: String, dbmsId: String!): Dbms!
   listDbmss(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Dbms!]!
   infoDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [DbmsInfo!]!
-  listDbmsVersions(filters: [RelateSimpleFilter!]): [DbmsVersion!]!
+  listDbmsVersions(filters: [RelateSimpleFilter!], environmentNameOrId: String, limited: Boolean): [DbmsVersion!]!
+  listDbs(dbmsId: String!, user: String!, accessToken: String!): [Db!]!
   listProjects(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Project!]!
   getProject(environmentNameOrId: String, name: String!): Project!
 }

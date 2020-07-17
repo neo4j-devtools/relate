@@ -186,7 +186,13 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    createAppLaunchToken(appName: string, dbmsId: string, principal?: string, accessToken?: string): Promise<string> {
+    createAppLaunchToken(
+        appName: string,
+        dbmsId: string,
+        principal?: string,
+        accessToken?: string,
+        projectId?: string,
+    ): Promise<string> {
         const validated = JSON.parse(
             JSON.stringify(
                 new AppLaunchTokenModel({
@@ -195,6 +201,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
                     dbmsId,
                     environmentId: this.environment.id,
                     principal,
+                    projectId,
                 }),
             ),
         );
@@ -215,6 +222,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
                     dbmsId: decoded.dbmsId,
                     environmentId: decoded.environmentId,
                     principal: decoded.principal,
+                    projectId: decoded.projectId,
                 });
             })
             .catch((e) => {
