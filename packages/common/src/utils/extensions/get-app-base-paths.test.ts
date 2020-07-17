@@ -26,14 +26,14 @@ describe('extract', () => {
     afterEach(() => jest.restoreAllMocks());
 
     test('no installed apps', async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => []);
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => []);
         await expect(getAppBasePath(TEST_APP_NAME)).rejects.toThrow(
             new NotFoundError(`App ${TEST_APP_NAME} not found`),
         );
     });
 
     test('app is not part of installed apps', async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
             {
                 ...TEST_INSTALLED_EXTENSION,
                 name: `${TEST_APP_NAME}2`,
@@ -45,7 +45,7 @@ describe('extract', () => {
     });
 
     test('installed app is not a static app', async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
             {
                 ...TEST_INSTALLED_EXTENSION,
                 type: EXTENSION_TYPES.SYSTEM,
@@ -57,7 +57,9 @@ describe('extract', () => {
     });
 
     test('installed app manifest.main begins with "."', async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
+            TEST_INSTALLED_EXTENSION,
+        ]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
             ...TEST_EXTENSION_META,
             manifest: {
@@ -69,7 +71,9 @@ describe('extract', () => {
     });
 
     test(`installed app manifest.main begins with "/"`, async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
+            TEST_INSTALLED_EXTENSION,
+        ]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
             ...TEST_EXTENSION_META,
             manifest: {
@@ -81,7 +85,9 @@ describe('extract', () => {
     });
 
     test(`installed app manifest.main begins with "./"`, async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
+            TEST_INSTALLED_EXTENSION,
+        ]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
             ...TEST_EXTENSION_META,
             manifest: {
@@ -93,7 +99,9 @@ describe('extract', () => {
     });
 
     test('app base path returned successfully', async () => {
-        jest.spyOn(installExtensions, 'getInstalledExtensions').mockImplementation(() => [TEST_INSTALLED_EXTENSION]);
+        jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() => [
+            TEST_INSTALLED_EXTENSION,
+        ]);
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(TEST_EXTENSION_META);
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
