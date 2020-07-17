@@ -5,7 +5,7 @@ import fse from 'fs-extra';
 import {EnvironmentConfigModel, IDbmsInfo} from '../../models';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment, NEO4J_EDITION} from '../../entities/environments';
 
-import {NotSupportedError, NotFoundError} from '../../errors';
+import {NotFoundError, NotSupportedError} from '../../errors';
 import {envPaths} from '../env-paths';
 import {DBMS_DIR_NAME} from '../../constants';
 
@@ -59,14 +59,14 @@ export class TestDbmss {
         return name;
     }
 
-    async createDbms(): Promise<IDbmsInfo> {
+    async createDbms(edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE): Promise<IDbmsInfo> {
         const name = this.createName();
 
         const dbmsId = await this.environment.dbmss.install(
             name,
             TestDbmss.DBMS_CREDENTIALS,
             TestDbmss.NEO4J_VERSION,
-            TestDbmss.NEO4J_EDITION,
+            edition || TestDbmss.NEO4J_EDITION,
         );
 
         const shortUUID = dbmsId.slice(0, 8);

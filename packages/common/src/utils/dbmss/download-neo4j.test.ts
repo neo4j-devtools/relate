@@ -16,6 +16,7 @@ import {envPaths} from '../env-paths';
 import {NEO4J_EDITION, NEO4J_ORIGIN, NEO4J_SHA_ALGORITHM} from '../../entities/environments';
 import {DBMS_DIR_NAME, DOWNLOADING_FILE_EXTENSION} from '../../constants';
 import {NotFoundError, FetchError, IntegrityError} from '../../errors';
+import {IDbmsVersion} from '../../models';
 
 jest.mock('uuid');
 
@@ -83,15 +84,11 @@ describe('Download Neo4j (to local cache)', () => {
 
     test('downloadNeo4j: no requested distributions found online', async () => {
         // eslint-disable-next-line max-len
-        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a valid version`;
-
-        let dbmsVersion = {
-            ...DBMS_VERSION,
-            edition: NEO4J_EDITION.COMMUNITY,
-        };
+        let message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION}-${TestDbmss.NEO4J_EDITION} online.\n\nSuggested Action(s):\n- Use a valid version`;
+        let dbmsVersion: IDbmsVersion[] = [];
 
         jest.spyOn(dbmsVersions, 'fetchNeo4jVersions').mockImplementation(() =>
-            Promise.resolve(List.from([dbmsVersion])),
+            Promise.resolve(List.from(dbmsVersion)),
         );
 
         await expect(
@@ -99,13 +96,15 @@ describe('Download Neo4j (to local cache)', () => {
         ).rejects.toThrow(new NotFoundError(message));
 
         const majorVersionIncrement = inc(TestDbmss.NEO4J_VERSION, 'major');
-        dbmsVersion = {
-            ...DBMS_VERSION,
-            version: majorVersionIncrement!,
-        };
+        dbmsVersion = [
+            {
+                ...DBMS_VERSION,
+                version: majorVersionIncrement!,
+            },
+        ];
 
         // eslint-disable-next-line max-len
-        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION} online.\n\nSuggested Action(s):\n- Use a valid version found online: ${majorVersionIncrement}`;
+        message = `Unable to find the requested version: ${TestDbmss.NEO4J_VERSION}-${TestDbmss.NEO4J_EDITION} online.\n\nSuggested Action(s):\n- Use a valid version found online: ${majorVersionIncrement}-${TestDbmss.NEO4J_EDITION}`;
 
         await expect(
             downloadNeo4j.downloadNeo4j(TestDbmss.NEO4J_VERSION, TestDbmss.NEO4J_EDITION, TMP_NEO4J_DIST_PATH),

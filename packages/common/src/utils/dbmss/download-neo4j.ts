@@ -47,21 +47,21 @@ export const downloadNeo4j = async (
     const requestedDistribution = onlineVersions.find((dist) => dist.version === version && dist.edition === edition);
     const errorMessage = () => {
         const mappedVersions = onlineVersions
-            .mapEach((dist) => dist.version)
+            .mapEach((dist) => `${dist.version}-${dist.edition}`)
             .join(', ')
             .map((versions) => `Use a valid version found online: ${versions}`)
             .getOrElse(`Use a valid version`);
 
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [mappedVersions]);
+        throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`, [mappedVersions]);
     };
 
     const dist = requestedDistribution.getOrElse(errorMessage);
     const requestedDistributionUrl = dist.dist;
-    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
 
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
     const downloadFilePath = await download(requestedDistributionUrl, neo4jDistributionPath);
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
+    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
     await verifyHash(shaSum, downloadFilePath);
 
     await extractNeo4j(downloadFilePath, neo4jDistributionPath);
