@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import {getInstalledExtensions} from './get-installed-extensions';
+import {getInstalledExtensionsSync} from './get-installed-extensions';
 import {EXTENSION_TYPES} from '../../constants';
 import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';
 
 export async function getAppBasePath(appName: string): Promise<string> {
-    const installed = getInstalledExtensions();
+    const installed = getInstalledExtensionsSync();
     const app = _.find(installed, ({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName);
 
     if (!app) {
