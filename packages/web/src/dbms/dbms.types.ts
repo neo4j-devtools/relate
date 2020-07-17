@@ -1,7 +1,8 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
+import {NEO4J_EDITION} from '@relate/common';
+
 import {AuthTokenInput} from './dto/auth-token.input';
 import {EnvironmentArgs} from '../global.types';
-import {NEO4J_EDITION} from '@relate/common/src';
 
 @ObjectType()
 export class Dbms {
