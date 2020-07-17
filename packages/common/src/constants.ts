@@ -144,8 +144,6 @@ export enum FILTER_COMPARATORS {
     NOT_EQUALS = 'NOT_EQUALS',
     CONTAINS = 'CONTAINS',
     NOT_CONTAINS = 'NOT_CONTAINS',
-    IN = 'IN',
-    NOT_IN = 'NOT_IN',
 }
 
 export enum FILTER_CONNECTORS {

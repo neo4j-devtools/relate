@@ -304,6 +304,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             neo4jConfig.set('dbms.memory.heap.initial_size', '512m');
             neo4jConfig.set('dbms.memory.heap.max_size', '1G');
             neo4jConfig.set('dbms.memory.pagecache.size', '512m');
+
             if (process.platform === 'win32') {
                 neo4jConfig.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
             }
