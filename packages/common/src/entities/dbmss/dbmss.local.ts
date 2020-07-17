@@ -1,5 +1,5 @@
 import {Dict, List, Maybe, None, Str} from '@relate/types';
-import fse, {ReadStream} from 'fs-extra';
+import fse from 'fs-extra';
 import {coerce, satisfies} from 'semver';
 import path from 'path';
 import {IAuthToken} from '@huboneo/tapestry';
@@ -7,7 +7,7 @@ import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion, IDb} from '../../models';
+import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -22,7 +22,6 @@ import {
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
-    CypherParameterError,
     DbmsExistsError,
     InvalidArgumentError,
     NotAllowedError,
@@ -46,9 +45,6 @@ import {
 } from '../environments';
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
-import {systemDbQuery} from '../../utils/dbmss/system-db-query';
-import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -116,6 +112,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const coercedVersion = coerce(version)?.version;
+
         if (coercedVersion) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
@@ -155,8 +152,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
-        if (!status.includes('Neo4j is not running')) {
-            throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
+        if (status.includes(DBMS_STATUS_FILTERS.STARTED)) {
+            throw new NotAllowedError('Cannot uninstall DBMS that is running');
         }
 
         return this.uninstallNeo4j(id);
@@ -246,62 +243,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return token;
     }
 
-    async dbCreate(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
-        }
-
-        await systemDbQuery(
-            {
-                accessToken,
-                dbmsId,
-                dbmsUser,
-                environment: this.environment,
-            },
-            `CREATE DATABASE ${dbName}`,
-        );
-    }
-
-    async dbDrop(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
-        }
-
-        await systemDbQuery(
-            {
-                accessToken,
-                dbmsId,
-                dbmsUser,
-                environment: this.environment,
-            },
-            `DROP DATABASE ${dbName}`,
-        );
-    }
-
-    async dbList(dbmsId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
-        const dbs = await systemDbQuery(
-            {
-                accessToken,
-                dbmsId,
-                dbmsUser,
-                environment: this.environment,
-            },
-            `SHOW DATABASES`,
-        );
-
-        return dbs.mapEach(({data}) => {
-            return {
-                name: data[0],
-                role: data[2],
-                requestedStatus: data[3],
-                currentStatus: data[4],
-                error: data[5],
-                default: Boolean(data[6]),
-            };
-        });
-    }
-
-    private getDbmsRootPath(dbmsId?: string): string {
+    public getDbmsRootPath(dbmsId?: string): string {
         const dbmssDir = path.join(this.environment.dirPaths.dbmssData);
 
         if (dbmsId) {
@@ -310,15 +252,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         return dbmssDir;
     }
-
-    private isDbmsRootPath = async (dbmsId: string): Promise<string> => {
-        // Checks if the supplied string is a DBMS root path
-        if (await fse.pathExists(path.join(dbmsId, 'bin'))) {
-            return dbmsId;
-        }
-
-        return this.getDbmsRootPath(dbmsId);
-    };
 
     private async installNeo4j(
         name: string,
@@ -554,33 +487,5 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.unlink(configFileName);
 
         return this.discoverDbmss();
-    }
-
-    async dbDump(dbmsId: string, database: string, to: string, javaPath?: string): Promise<string> {
-        const params = ['dump', `--database=${database}`, `--to=${to}`];
-        const result = await neo4jAdminCmd(await this.isDbmsRootPath(dbmsId), params, '', javaPath);
-        return result;
-    }
-
-    async dbLoad(dbmsId: string, database: string, from: string, force?: boolean, javaPath?: string): Promise<string> {
-        const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
-        const result = await neo4jAdminCmd(await this.isDbmsRootPath(dbmsId), params, '', javaPath);
-        return result;
-    }
-
-    async dbExec(
-        dbmsId: string,
-        from: string | ReadStream,
-        args: {
-            database: string;
-            user: string;
-            password: string;
-        },
-    ): Promise<string> {
-        const dbms = await this.get(dbmsId);
-        const params = ['--format=plain', `--address=${dbms.connectionUri}`];
-        Object.keys(args).forEach((key: string) => params.push(`--${key}=${(args as {[key: string]: string})[key]}`));
-        const result = await cypherShellCmd(await this.isDbmsRootPath(dbmsId), params, from);
-        return result;
     }
 }

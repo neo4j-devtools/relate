@@ -28,7 +28,7 @@ export class ListModule implements OnApplicationBootstrap {
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
-        const dbs = await environment.dbmss.dbList(dbms, user, accessToken);
+        const dbs = await environment.dbs.list(dbms, user, accessToken);
         cli.table(
             dbs.toArray(),
             {

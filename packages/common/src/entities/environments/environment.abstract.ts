@@ -13,12 +13,15 @@ import {
 import {NotSupportedError} from '../../errors';
 import {arrayHasItems} from '../../utils/generic';
 import {DbmssAbstract} from '../dbmss';
+import {DbsAbstract} from '../dbs';
 import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
 import {envPaths} from '../../utils';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
+
+    public readonly dbs!: DbsAbstract<EnvironmentAbstract>;
 
     public readonly extensions!: ExtensionsAbstract<EnvironmentAbstract>;
 
