@@ -129,7 +129,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
-    link(_name: string, _rootPath: string): Promise<IDbms> {
+    link(_name: string, _rootPath: string): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support linking DBMSs`);
     }
 

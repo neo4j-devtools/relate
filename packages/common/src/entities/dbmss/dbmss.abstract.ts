@@ -41,7 +41,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         limited?: boolean,
     ): Promise<string>;
 
-    abstract link(name: string, rootPath: string): Promise<IDbms>;
+    abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 
     abstract uninstall(dbmsId: string): Promise<void>;
 

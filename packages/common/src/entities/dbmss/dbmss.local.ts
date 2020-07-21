@@ -147,7 +147,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
-    async link(name: string, rootPath: string): Promise<IDbms> {
+    async link(name: string, rootPath: string): Promise<IDbmsInfo> {
         const exists = await this.list([
             {
                 field: 'name',
@@ -474,7 +474,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
             .filter((file) => file.startsWith('dbms-'))
-            .mapEach((file) => fse.stat(path.join(root, file)).then((stats) => (stats.isDirectory() ? file : null)))
+            .mapEach((file) =>
+                fse
+                    .stat(path.join(root, file))
+                    .then((stats) => (stats.isDirectory() ? file : null))
+                    .catch(() => null),
+            )
             .unwindPromises();
 
         await files
