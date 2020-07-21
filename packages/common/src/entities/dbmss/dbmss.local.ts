@@ -425,21 +425,21 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         neo4jConfig.set(
             `dbms.security.authentication_providers`,
             authenticationProviders
-                .concat(`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`)
+                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
                 .join(',')
                 .get(),
         );
         neo4jConfig.set(
             `dbms.security.authorization_providers`,
             authorizationProviders
-                .concat(`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`)
+                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
                 .join(',')
                 .get(),
         );
         neo4jConfig.set(
             `dbms.security.procedures.unrestricted`,
             unrestrictedProcedures
-                .concat(`jwt.security.*`)
+                .concat([`jwt.security.*`])
                 .join(',')
                 .get(),
         );
