@@ -2,7 +2,7 @@ const path = require('path');
 const tar = require('tar');
 
 const envSetup = require('../../e2e/jest-global.setup');
-const {TestDbmss, DBMS_DIR_NAME} = require('../../packages/common');
+const {TestDbmss, DBMS_DIR_NAME, NEO4J_EDITION} = require('../../packages/common');
 
 envSetup();
 const dbmssCache = path.join(process.env.NEO4J_RELATE_CACHE_HOME, DBMS_DIR_NAME);
@@ -15,7 +15,9 @@ async function globalSetup() {
     // right after as we're not really doing anything with it, we only care about
     // the cached directory we get during installation.
     await env.dbmss.install('global-setup', 'password', TestDbmss.NEO4J_VERSION);
+    await env.dbmss.install('global-setup-community', 'password', TestDbmss.NEO4J_VERSION, NEO4J_EDITION.COMMUNITY);
     await env.dbmss.uninstall('global-setup');
+    await env.dbmss.uninstall('global-setup-community');
 
     // Some tests require an archive of the DBMS to be passed to them, and
     // during installation we only keep the extracted directory, so we compress

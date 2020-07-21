@@ -28,9 +28,9 @@ export class DBMSResolver {
     @Mutation(() => String)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](
         @Context('environment') environment: Environment,
-        @Args() {name, credentials, version, noCaching, limited}: InstallDbmsArgs,
+        @Args() {name, credentials, version, edition, noCaching, limited}: InstallDbmsArgs,
     ): Promise<string> {
-        return environment.dbmss.install(name, credentials, version, noCaching, limited);
+        return environment.dbmss.install(name, credentials, version, edition, noCaching, limited);
     }
 
     @Mutation(() => String)
@@ -41,11 +41,11 @@ export class DBMSResolver {
         return environment.dbmss.uninstall(name).then(() => name);
     }
 
-    @Query(() => Dbms)
+    @Query(() => DbmsInfo)
     async [PUBLIC_GRAPHQL_METHODS.GET_DBMS](
         @Context('environment') environment: Environment,
         @Args() {dbmsId}: DbmsArgs,
-    ): Promise<IDbms> {
+    ): Promise<DbmsInfo> {
         return environment.dbmss.get(dbmsId);
     }
 

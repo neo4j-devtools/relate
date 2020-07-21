@@ -39,31 +39,29 @@ export const verifyHash = async (
 
 export const downloadNeo4j = async (
     version: string,
+    edition: NEO4J_EDITION,
     neo4jDistributionPath: string,
     limited?: boolean,
 ): Promise<void> => {
     const onlineVersions = await fetchNeo4jVersions(limited);
-    const requestedDistribution = onlineVersions.find(
-        (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
-    );
+    const requestedDistribution = onlineVersions.find((dist) => dist.version === version && dist.edition === edition);
     const errorMessage = () => {
-        const onlineEnterpriseVersions = onlineVersions
-            .filter((dist) => dist.edition === NEO4J_EDITION.ENTERPRISE)
-            .mapEach((dist) => dist.version)
+        const mappedVersions = onlineVersions
+            .mapEach((dist) => `${dist.version}-${dist.edition}`)
             .join(', ')
-            .map((versions) => `Use a relevant ${NEO4J_EDITION.ENTERPRISE} version found online: ${versions}`)
-            .getOrElse(`Use a relevant ${NEO4J_EDITION.ENTERPRISE} version`);
+            .map((versions) => `Use a valid version found online: ${versions}`)
+            .getOrElse(`Use a valid version`);
 
-        throw new NotFoundError(`Unable to find the requested version: ${version} online`, [onlineEnterpriseVersions]);
+        throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`, [mappedVersions]);
     };
 
     const dist = requestedDistribution.getOrElse(errorMessage);
     const requestedDistributionUrl = dist.dist;
-    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
 
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_START, null);
     const downloadFilePath = await download(requestedDistributionUrl, neo4jDistributionPath);
     await emitHookEvent(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, null);
+    const shaSum = await getCheckSum(`${requestedDistributionUrl}.${NEO4J_SHA_ALGORITHM}`);
     await verifyHash(shaSum, downloadFilePath);
 
     await extractNeo4j(downloadFilePath, neo4jDistributionPath);

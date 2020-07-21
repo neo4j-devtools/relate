@@ -1,8 +1,9 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS} from '@relate/common';
+import {SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS, NEO4J_EDITION} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
 import cli from 'cli-ux';
+import _ from 'lodash';
 
 import InstallCommand from '../../commands/dbms/install';
 import {selectPrompt, inputPrompt, passwordPrompt} from '../../prompts';
@@ -45,15 +46,20 @@ export class InstallModule implements OnApplicationBootstrap {
         const noCaching = flags['no-caching'];
 
         let {version = ''} = args;
+        let edition: NEO4J_EDITION | undefined;
         if (!version) {
             const versions = (await environment.dbmss.versions(limited)).toArray();
-            version = await selectPrompt(
+            const choices = new Map(_.entries(_.keyBy(versions, (v) => `${v.version} ${v.edition}`)));
+            const selected = await selectPrompt(
                 'Select a version to install',
-                versions.map((v) => ({
+                [...choices].map(([k, v]) => ({
                     message: `[${v.origin.toLowerCase()}] ${v.version} ${v.edition}`,
-                    name: v.version,
+                    name: k,
                 })),
             );
+
+            version = choices.get(selected)!.version;
+            edition = choices.get(selected)!.edition;
         }
         const pathVersion = path.resolve(version);
         if (await fse.pathExists(pathVersion)) {
@@ -62,7 +68,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.dbmss.install(name, credentials, version, noCaching, limited).then((res) => {
+        return environment.dbmss.install(name, credentials, version, edition, noCaching, limited).then((res) => {
             this.utils.log(res);
         });
     }

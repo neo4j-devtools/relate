@@ -27,7 +27,7 @@ import {
     fetchExtensionVersions,
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
-import {LocalEnvironment} from '../environments/local.environment';
+import {LocalEnvironment} from '../environments/environment.local';
 import {AppLaunchTokenModel, IAppLaunchToken} from '../../models';
 import {TokenService} from '../../token.service';
 
