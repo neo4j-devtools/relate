@@ -41,6 +41,8 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         limited?: boolean,
     ): Promise<string>;
 
+    abstract link(name: string, rootPath: string): Promise<IDbms>;
+
     abstract uninstall(dbmsId: string): Promise<void>;
 
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>>;
