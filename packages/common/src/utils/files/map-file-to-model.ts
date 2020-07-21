@@ -1,13 +1,14 @@
-import {IFile, IProject} from '../../models';
+import {IRelateFile, IProject} from '../../models';
 import path from 'path';
 import {TokenService} from '../../token.service';
+import {InvalidArgumentError} from '../../errors';
 
-export async function mapFileToModel(file: string, project: IProject): Promise<IFile | null> {
+export async function mapFileToModel(file: string, project: IProject): Promise<IRelateFile | null> {
     try {
         const fileObj = {
             name: path.basename(file),
             extension: path.extname(file),
-            directory: getNormalizedProjectPath(path.dirname(path.relative(project.root, file))),
+            directory: getRelativeProjectPath(project, path.dirname(file)),
         };
 
         return {
@@ -22,8 +23,18 @@ export async function mapFileToModel(file: string, project: IProject): Promise<I
     }
 }
 
-export function getNormalizedProjectPath(projectPath: string): string {
-    const dirname = path.normalize(projectPath);
+export function getAbsoluteProjectPath(project: IProject, filePath: string): string {
+    const absolutePath = path.normalize(path.resolve(project.root, filePath));
 
-    return path.normalize(dirname !== '.' ? `./${dirname}` : dirname);
+    if (filePath.includes('..') || !absolutePath.startsWith(project.root)) {
+        throw new InvalidArgumentError('Path must point to a location within the project directory');
+    }
+
+    return absolutePath;
+}
+
+export function getRelativeProjectPath(project: IProject, filePath: string): string {
+    const absolutePath = getAbsoluteProjectPath(project, filePath);
+
+    return path.relative(project.root, absolutePath) || '.';
 }

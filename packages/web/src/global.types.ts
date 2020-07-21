@@ -1,5 +1,5 @@
 import {ArgsType, Field, InputType, ObjectType, registerEnumType} from '@nestjs/graphql';
-import {FILTER_COMPARATORS, FILTER_CONNECTORS, IFile, IRelateFilter} from '@relate/common';
+import {FILTER_COMPARATORS, FILTER_CONNECTORS, IRelateFile, IRelateFilter} from '@relate/common';
 
 @ArgsType()
 export class EnvironmentArgs {
@@ -8,7 +8,7 @@ export class EnvironmentArgs {
 }
 
 @ObjectType()
-export class RelateFile implements IFile {
+export class RelateFile implements IRelateFile {
     @Field(() => String)
     name: string;
 

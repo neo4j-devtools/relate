@@ -11,6 +11,13 @@ export default class CreateCommand extends BaseCommand {
 
     static description = 'Create a new database';
 
+    static examples = [
+        '$ relate db:create',
+        '$ relate db:create -e environment-name',
+        '$ relate db:create my-new-db -D started-dbms',
+        '$ relate db:create my-new-db -D started-dbms -u dbms-user-with-system-db-access',
+    ];
+
     static args = [
         {
             name: 'name',
@@ -29,7 +36,8 @@ export default class CreateCommand extends BaseCommand {
         }),
         dbms: flags.string({
             char: 'D',
-            description: 'DBMS that will contain the new database',
+            description:
+                'DBMS that will contain the new database (needs to be started and have an access token created)',
             required: REQUIRED_FOR_SCRIPTS,
         }),
     };

@@ -12,8 +12,8 @@ import {
     UninstallDbmsArgs,
     DbmsArgs,
     DbmsVersion,
-    DbmsVersionArgs,
     UpdateDbmsConfigArgs,
+    ListDbmsVersionsArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
@@ -28,9 +28,9 @@ export class DBMSResolver {
     @Mutation(() => String)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](
         @Context('environment') environment: Environment,
-        @Args() {name, credentials, version}: InstallDbmsArgs,
+        @Args() {name, credentials, version, noCaching, limited}: InstallDbmsArgs,
     ): Promise<string> {
-        return environment.dbmss.install(name, credentials, version);
+        return environment.dbmss.install(name, credentials, version, noCaching, limited);
     }
 
     @Mutation(() => String)
@@ -92,20 +92,19 @@ export class DBMSResolver {
 
     @Query(() => [DbmsVersion])
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBMS_VERSIONS](
-        @Args() {environmentNameOrId}: DbmsVersionArgs,
+        @Context('environment') environment: Environment,
+        @Args() {limited}: ListDbmsVersionsArgs,
         @Args() {filters}: FilterArgs,
     ): Promise<List<IDbmsVersion>> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
-
-        return environment.dbmss.versions(filters);
+        return environment.dbmss.versions(limited, filters);
     }
 
     // @todo: do we want to allow updating dbms config here?
     @Mutation(() => Boolean)
     async [PUBLIC_GRAPHQL_METHODS.UPDATE_DBMS_CONFIG](
-        @Args() {environmentNameOrId, dbmsId, properties}: UpdateDbmsConfigArgs,
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, properties}: UpdateDbmsConfigArgs,
     ): Promise<boolean> {
-        const environment = await this.systemProvider.getEnvironment(environmentNameOrId);
         return environment.dbmss.updateConfig(dbmsId, new Map(properties));
     }
 }

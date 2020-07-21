@@ -3,13 +3,13 @@ import {Inject, Module, OnModuleInit} from '@nestjs/common';
 import {SystemModule} from '@relate/common';
 
 import {AppsService} from './services/apps.service';
-import {AppsResolver} from './apps.resolver';
+import {ExtensionsResolver} from './extensions.resolver';
 
 @Module({
     imports: [SystemModule],
-    providers: [AppsResolver, AppsService],
+    providers: [ExtensionsResolver, AppsService],
 })
-export class AppsModule implements OnModuleInit {
+export class ExtensionsModule implements OnModuleInit {
     constructor(
         @Inject(HttpAdapterHost) private readonly httpAdapterHost: HttpAdapterHost,
         @Inject(AppsService) private readonly loader: AppsService,

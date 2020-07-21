@@ -1,8 +1,10 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {IExtensionMeta, SystemModule, SystemProvider} from '@relate/common';
+import {IExtensionMeta, SystemModule, SystemProvider, InvalidArgumentError} from '@relate/common';
 import _ from 'lodash';
 
 import UninstallCommand from '../../commands/extension/uninstall';
+import {selectPrompt} from '../../prompts';
+import {readStdin, isInteractive} from '../../stdin';
 
 @Module({
     exports: [],
@@ -18,11 +20,28 @@ export class UninstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {extension: name} = args;
+        let {extension: name} = args;
         const {environment: environmentId} = flags;
-
         const environment = await this.systemProvider.getEnvironment(environmentId);
+        const installedExtensions = (await environment.extensions.list()).toArray();
 
+        if (!installedExtensions.length) {
+            throw new InvalidArgumentError(`Could not find extensions to uninstall`);
+        }
+
+        if (!name) {
+            if (isInteractive()) {
+                name = await selectPrompt(
+                    'Select an extension to uninstall',
+                    _.map(installedExtensions, (v) => ({
+                        name: `${v.name}`,
+                        message: `[${v.origin.toLowerCase()}] ${v.name}@${v.version}`,
+                    })),
+                );
+            } else {
+                name = await readStdin();
+            }
+        }
         return environment.extensions.uninstall(name).then((exts) => {
             // @todo: will we have more than 1 version installed? If so, will
             // need to pass in / select version to uninstall

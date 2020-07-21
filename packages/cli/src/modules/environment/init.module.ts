@@ -64,7 +64,6 @@ export class InitModule implements OnApplicationBootstrap {
                 remoteEnvironmentId,
                 authentication,
                 allowedMethods,
-                user: 'foo',
             };
 
             cli.action.start('Creating environment');
@@ -76,7 +75,6 @@ export class InitModule implements OnApplicationBootstrap {
             name: name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             remoteEnvironmentId,
-            user: 'foo',
         };
 
         cli.action.start('Creating environment');

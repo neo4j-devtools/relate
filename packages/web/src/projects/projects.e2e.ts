@@ -65,8 +65,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String) {
-                            listProjects(environmentNameOrId: $environmentId) {
+                        query list($environmentNameOrId: String) {
+                            listProjects(environmentNameOrId: $environmentNameOrId) {
                                 name
                             }
                         }
@@ -88,8 +88,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                             }
                         }
@@ -112,8 +112,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation init($environmentId: String, $name: String!) {
-                            initProject(environmentNameOrId: $environmentId, name: $name) {
+                        mutation init($environmentNameOrId: String, $name: String!) {
+                            initProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                             }
                         }
@@ -138,8 +138,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                             }
                         }
@@ -162,8 +162,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation init($environmentId: String, $name: String!) {
-                            initProject(environmentNameOrId: $environmentId, name: $name) {
+                        mutation init($environmentNameOrId: String, $name: String!) {
+                            initProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                             }
                         }
@@ -186,8 +186,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String) {
-                            listProjects(environmentNameOrId: $environmentId) {
+                        query list($environmentNameOrId: String) {
+                            listProjects(environmentNameOrId: $environmentNameOrId) {
                                 name
                             }
                         }
@@ -209,8 +209,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query list($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -239,8 +239,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
-                            addProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
+                            addProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
                                 name
                             }
                         }
@@ -269,8 +269,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
-                            addProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!, $dbmsId: String!) {
+                            addProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId) {
                                 name
                             }
                         }
@@ -297,8 +297,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -327,8 +327,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
-                            removeProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName) {
                                 name
                             }
                         }
@@ -356,8 +356,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
-                            removeProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName) {
                                 name
                             }
                         }
@@ -383,8 +383,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -413,8 +413,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!, $dbmsId: String!, $user: String, $accessToken: String) {
-                            addProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!, $dbmsId: String!, $user: String, $accessToken: String) {
+                            addProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName, dbmsId: $dbmsId, user: $user, accessToken: $accessToken) {
                                 name
                                 user
                                 accessToken
@@ -449,8 +449,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -485,8 +485,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        mutation dbms($environmentId: String, $dbmsName: String!, $name: String!) {
-                            removeProjectDbms(environmentNameOrId: $environmentId, name: $name, dbmsName: $dbmsName) {
+                        mutation dbms($environmentNameOrId: String, $dbmsName: String!, $name: String!) {
+                            removeProjectDbms(environmentNameOrId: $environmentNameOrId, name: $name, dbmsName: $dbmsName) {
                                 name
                                 accessToken
                             }
@@ -516,8 +516,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query get($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query get($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 dbmss {
                                     name
@@ -546,8 +546,8 @@ describe('AppsModule', () => {
             .send(
                 queryBody(
                     `
-                        query list($environmentId: String, $name: String!) {
-                            getProject(environmentNameOrId: $environmentId, name: $name) {
+                        query list($environmentNameOrId: String, $name: String!) {
+                            getProject(environmentNameOrId: $environmentNameOrId, name: $name) {
                                 name
                                 files {
                                     name

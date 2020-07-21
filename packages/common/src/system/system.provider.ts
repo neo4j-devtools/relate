@@ -7,12 +7,12 @@ import {v4 as uuidv4} from 'uuid';
 
 import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
-import {NotFoundError, ValidationFailureError, TargetExistsError, FileUploadError} from '../errors';
-import {EnvironmentConfigModel, AppLaunchTokenModel, IAppLaunchToken, IEnvironmentConfigInput} from '../models';
+import {NotFoundError, TargetExistsError, FileUploadError} from '../errors';
+import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
-import {TokenService} from '../token.service';
+import {verifyAcceptedTerms} from './verifyAcceptedTerms';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -32,6 +32,7 @@ export class SystemProvider implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
         await ensureFiles(this.filePaths);
+        await verifyAcceptedTerms();
         await this.reloadEnvironments();
     }
 
@@ -70,7 +71,9 @@ export class SystemProvider implements OnModuleInit {
 
         return activeEnvironment.flatMap((env) => {
             if (None.isNone(env)) {
-                throw new NotFoundError(`No environment in use`);
+                throw new NotFoundError(`No environment in use`, [
+                    'Run relate env:use <environment> first to set an active environment',
+                ]);
             }
 
             return env;
@@ -130,61 +133,6 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async reloadEnvironments(): Promise<void> {
-        const configs = await this.listEnvironments();
-        const instances = await configs
-            .mapEach((environmentConfig) => createEnvironmentInstance(environmentConfig))
-            .unwindPromises();
-
-        this.allEnvironments = Dict.from(instances.mapEach((env): [string, EnvironmentAbstract] => [env.id, env]));
-    }
-
-    createAppLaunchToken(
-        environmentNameOrId: string,
-        appName: string,
-        dbmsId: string,
-        principal?: string,
-        accessToken?: string,
-    ): Promise<string> {
-        const validated = JSON.parse(
-            JSON.stringify(
-                new AppLaunchTokenModel({
-                    accessToken,
-                    appName,
-                    dbmsId,
-                    environmentNameOrId,
-                    principal,
-                }),
-            ),
-        );
-
-        return TokenService.sign(validated, appName);
-    }
-
-    parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
-        return TokenService.verify(launchToken, appName)
-            .then((decoded: any) => {
-                if (decoded.appName !== appName) {
-                    throw new ValidationFailureError('App Launch Token mismatch');
-                }
-
-                return new AppLaunchTokenModel({
-                    accessToken: decoded.accessToken,
-                    appName: decoded.appName,
-                    dbmsId: decoded.dbmsId,
-                    environmentNameOrId: decoded.environmentNameOrId,
-                    principal: decoded.principal,
-                });
-            })
-            .catch((e) => {
-                if (e instanceof ValidationFailureError) {
-                    throw e;
-                }
-
-                throw new ValidationFailureError('Invalid App Launch Token');
-            });
-    }
-
-    async listEnvironments(): Promise<List<EnvironmentConfigModel>> {
         const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
             .filter((name) => name.endsWith('.json'))
             .mapEach((name) => {
@@ -203,8 +151,18 @@ export class SystemProvider implements OnModuleInit {
                     .catch(() => None.EMPTY);
             })
             .unwindPromises();
+        const instances = await configs
+            .compact()
+            .mapEach((environmentConfig) => createEnvironmentInstance(environmentConfig))
+            .unwindPromises();
 
-        return configs.compact();
+        this.allEnvironments = Dict.from(instances.mapEach((env): [string, EnvironmentAbstract] => [env.id, env]));
+    }
+
+    async listEnvironments(): Promise<List<EnvironmentAbstract>> {
+        await this.reloadEnvironments();
+
+        return this.allEnvironments.values;
     }
 
     async handleFileUpload(fileName: string, readStream: Readable): Promise<string> {

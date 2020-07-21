@@ -1,11 +1,11 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {Environment, EXTENSION_TYPES, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
+import {Environment, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 import _ from 'lodash';
 import fetch, {Response} from 'node-fetch';
 
 import OpenCommand from '../../commands/app/open';
-import {isInteractive, readStdinArray} from '../../stdin';
+import {isInteractive, readStdin} from '../../stdin';
 import {selectAppPrompt} from '../../prompts';
 
 @Module({
@@ -31,11 +31,9 @@ export class OpenModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {appName} = args;
-        const {environment: environmentId, user, dbmsId} = flags;
+        const {environment: environmentId, user, dbmsId, project} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const installedApps = (await environment.extensions.list())
-            .filter(({type}) => type === EXTENSION_TYPES.STATIC)
-            .toArray();
+        const installedApps = (await environment.extensions.listApps()).toArray();
 
         if (!installedApps.length) {
             throw new NotFoundError('No apps are installed', [
@@ -45,9 +43,9 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!appName) {
             if (isInteractive()) {
-                appName = await selectAppPrompt('Select a DBMS to start', installedApps);
+                appName = await selectAppPrompt('Select an app to open', installedApps);
             } else {
-                appName = await readStdinArray();
+                appName = await readStdin();
             }
         }
         const appIsInstalled = _.some(installedApps, ({name}) => appName === name);
@@ -70,7 +68,7 @@ export class OpenModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
 
         if (!user) {
-            const launchToken = await this.systemProvider.createAppLaunchToken(environment.id, appName, dbms.id);
+            const launchToken = await environment.extensions.createAppLaunchToken(environment.id, appName, dbms.id);
             const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
 
             this.logOrOpen(tokenUrl);
@@ -78,12 +76,12 @@ export class OpenModule implements OnApplicationBootstrap {
         }
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
-        const launchToken = await this.systemProvider.createAppLaunchToken(
-            environment.id,
+        const launchToken = await environment.extensions.createAppLaunchToken(
             appName,
             dbms.id,
             user,
             accessToken,
+            project,
         );
 
         const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
@@ -95,7 +93,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         const error = new NotFoundError(`Could not connect to the @relate/web server`, [
             'If you are connecting locally, run "relate-web start" and try again.',
-            'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
+            'If you are connecting to a remote, ensure that you are logged in',
         ]);
 
         try {

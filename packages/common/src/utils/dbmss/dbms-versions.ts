@@ -12,6 +12,7 @@ import {
     NEO4J_EDITION,
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
+    NEO4J_DIST_LIMITED_VERSIONS_URL,
 } from '../../entities/environments';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
@@ -71,15 +72,30 @@ interface IVersionManifest {
     versions: IVersions;
 }
 
-export const fetchNeo4jVersions = async (): Promise<List<IDbmsVersion>> => {
-    let versionManifest: IVersionManifest;
-    try {
-        versionManifest = await got(NEO4J_DIST_VERSIONS_URL).json();
-    } catch {
-        return List.from([]);
+export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVersion>> => {
+    const versionsUrls = [NEO4J_DIST_VERSIONS_URL];
+
+    if (limited === true) {
+        // @todo: this isn't an active url yet - https://trello.com/c/uVg2EuT5
+        versionsUrls.push(NEO4J_DIST_LIMITED_VERSIONS_URL);
     }
 
-    return Dict.from(versionManifest.versions)
+    const versionsUrlsResponses: List<IVersionManifest> = await List.from(versionsUrls)
+        .mapEach((url) =>
+            got(url)
+                .json()
+                .catch(() => None.of({})),
+        )
+        .unwindPromises();
+
+    const versionManifest: IVersions = versionsUrlsResponses.compact().reduce((verManifest, verResponse) => {
+        return {
+            ...verManifest,
+            ...verResponse.versions,
+        };
+    }, {});
+
+    return Dict.from(versionManifest)
         .toList()
         .filter(([versionStr]) => semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE))
         .mapEach(([versionStr, versionObj]) => {

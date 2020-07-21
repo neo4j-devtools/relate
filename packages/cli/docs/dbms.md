@@ -26,9 +26,15 @@ ARGUMENTS
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -u, --user=user                [default: neo4j] Neo4j DBMS user to create the token for
+
+EXAMPLES
+  $ relate dbms:access-token
+  $ relate dbms:access-token -e environment-name
+  $ relate dbms:access-token my-dbms
+  $ relate dbms:access-token my-dbms -u dbms-user
 ```
 
-_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/access-token.ts)_
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/access-token.ts)_
 
 ## `relate dbms:info [DBMSS]`
 
@@ -50,9 +56,17 @@ OPTIONS
   --no-truncate                  do not truncate output to fit screen
   --output=csv|json|yaml         output in a more machine friendly format
   --sort=sort                    property to sort by (prepend '-' for descending)
+
+EXAMPLES
+  $ relate dbms:info
+  $ relate dbms:info -e environment-name
+  $ relate dbms:info -x
+  $ relate dbms:info --columns=id,name --no-header --no-truncate
+  $ relate dbms:info --sort=name
+  $ relate dbms:info --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/info.ts)_
+_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/info.ts)_
 
 ## `relate dbms:install VERSION`
 
@@ -68,9 +82,18 @@ ARGUMENTS
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -n, --name=name                (required) Name to give the newly installed DBMS
+  --limited                      Display limited versions of DBMSs
+  --no-caching                   Prevent caching of the downloaded DBMS
+
+EXAMPLES
+  $ relate dbms:install
+  $ relate dbms:install --limited
+  $ relate dbms:install -n my-new-dbms
+  $ relate dbms:install 4.0.2 -n my-new-dbms
+  $ relate dbms:install 4.0.2 -n my-new-dbms -e environment-name --no-caching
 ```
 
-_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/install.ts)_
+_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/install.ts)_
 
 ## `relate dbms:list`
 
@@ -88,9 +111,16 @@ OPTIONS
   --no-truncate                  do not truncate output to fit screen
   --output=csv|json|yaml         output in a more machine friendly format
   --sort=sort                    property to sort by (prepend '-' for descending)
+
+EXAMPLES
+  $ relate dbms:list
+  $ relate dbms:list -e environment-name
+  $ relate dbms:list --columns=id,name --no-header --no-truncate
+  $ relate dbms:list --sort=name
+  $ relate dbms:list --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/list.ts)_
+_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/list.ts)_
 
 ## `relate dbms:open DBMS`
 
@@ -106,9 +136,14 @@ ARGUMENTS
 OPTIONS
   -L, --log                      If set, log the path instead
   -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLES
+  $ relate dbms:open
+  $ relate dbms:open -e environment-name
+  $ relate dbms:open -L
 ```
 
-_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/open.ts)_
+_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/open.ts)_
 
 ## `relate dbms:start [DBMSS]`
 
@@ -123,9 +158,15 @@ ARGUMENTS
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLES
+  $ relate dbms:start
+  $ relate dbms:start my-dbms
+  $ relate dbms:start my-dbms my-other-dbms
+  $ relate dbms:start -e environment-name
 ```
 
-_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/start.ts)_
+_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/start.ts)_
 
 ## `relate dbms:stop [DBMSS]`
 
@@ -140,9 +181,15 @@ ARGUMENTS
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLES
+  $ relate dbms:stop
+  $ relate dbms:stop my-dbms
+  $ relate dbms:stop my-dbms my-other-dbms
+  $ relate dbms:stop -e environment-name
 ```
 
-_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/stop.ts)_
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/stop.ts)_
 
 ## `relate dbms:uninstall DBMS`
 
@@ -157,6 +204,12 @@ ARGUMENTS
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLES
+  $ relate dbms:uninstall
+  $ relate dbms:uninstall -e environment-name
+  $ relate dbms:uninstall my-dbms
+  $ relate dbms:uninstall my-dbms -u dbms-user
 ```
 
-_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.0/dist/commands/dbms/uninstall.ts)_
+_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/uninstall.ts)_

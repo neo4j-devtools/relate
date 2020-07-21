@@ -1,4 +1,4 @@
-import {IsEnum, IsNotEmpty, IsString, IsOptional, IsBoolean, IsUUID} from 'class-validator';
+import {IsEnum, IsString, IsOptional, IsBoolean, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
@@ -19,7 +19,7 @@ export interface IEnvironmentConfigInput {
     name: string;
     active?: boolean;
     type: ENVIRONMENT_TYPES;
-    user: any;
+    user?: any;
     neo4jDataPath?: string;
     httpOrigin?: string;
     remoteEnvironmentId?: string;
@@ -47,8 +47,8 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     public type!: ENVIRONMENT_TYPES;
 
     // @todo: should be typed
-    @IsNotEmpty()
-    public user: any;
+    @IsOptional()
+    public user?: any;
 
     // @todo: this is LocalEnvironment specific
     @IsString()
@@ -59,8 +59,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsOptional()
     public httpOrigin?: string;
 
-    // @todo: this is RemoteEnvironment specific
-    @IsString()
+    @IsUUID('4')
     @IsOptional()
     public remoteEnvironmentId?: string;
 

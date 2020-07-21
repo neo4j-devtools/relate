@@ -26,6 +26,8 @@ describe('$relate db', () => {
         testEnvironmentId = dbmss.environment.id;
     });
 
+    afterAll(() => dbmss.teardown());
+
     test.stdout()
         .stderr()
         .it('creates a database', async (ctx) => {

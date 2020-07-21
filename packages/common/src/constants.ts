@@ -103,15 +103,18 @@ export enum PUBLIC_GRAPHQL_METHODS {
     LIST_DBMSS = 'listDbmss',
     LIST_DBMS_VERSIONS = 'listDbmsVersions',
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
+    CREATE_DB = 'createDb',
+    DROP_DB = 'dropDb',
+    LIST_DBS = 'listDbs',
 
     // apps
-    INSTALLED_APPS = 'listApps',
+    LIST_APPS = 'listApps',
     APP_LAUNCH_DATA = 'appLaunchData',
     CREATE_APP_LAUNCH_TOKEN = 'createAppLaunchToken',
 
     // extensions
     LIST_EXTENSION_VERSIONS = 'listExtensionVersions',
-    INSTALLED_EXTENSIONS = 'listInstalledExtensions',
+    LIST_EXTENSIONS = 'listExtensions',
 
     // projects
     GET_PROJECT = 'getProject',
@@ -121,6 +124,11 @@ export enum PUBLIC_GRAPHQL_METHODS {
     REMOVE_PROJECT_DBMS = 'removeProjectDbms',
     ADD_PROJECT_FILE = 'addProjectFile',
     REMOVE_PROJECT_FILE = 'removeProjectFile',
+
+    // dump / import
+    DB_DUMP = 'dbDump',
+    DB_LOAD = 'dbLoad',
+    QUERY_FILE = 'dbExec',
 }
 
 // seconds

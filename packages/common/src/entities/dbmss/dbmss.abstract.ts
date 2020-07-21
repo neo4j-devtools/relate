@@ -7,7 +7,14 @@ import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
 import {PropertiesFile} from '../../system/files';
-import {DbmsQueryError, ErrorAbstract, InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
+import {
+    ConnectionError,
+    DbmsQueryError,
+    ErrorAbstract,
+    InvalidConfigError,
+    NotAllowedError,
+    NotFoundError,
+} from '../../errors';
 import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
 import {emitHookEvent} from '../../utils';
 import {IRelateFilter} from '../../utils/generic';
@@ -23,9 +30,15 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     constructor(protected readonly environment: Env) {}
 
-    abstract versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
+    abstract versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
 
-    abstract install(name: string, credentials: string, version: string): Promise<string>;
+    abstract install(
+        name: string,
+        credentials: string,
+        version: string,
+        noCaching?: boolean,
+        limited?: boolean,
+    ): Promise<string>;
 
     abstract uninstall(dbmsId: string): Promise<void>;
 
@@ -43,11 +56,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract getDbmsConfig(dbmsId: string): Promise<PropertiesFile>;
 
-    abstract updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean>;
-
-    abstract createDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
-
-    abstract dropDb(dbmsId: string, user: string, dbName: string, accessToken: string): Promise<void>;
+    abstract updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean>;
 
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
@@ -71,7 +80,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
                 const message = Str.from(e.message);
 
                 if (!message.includes('ECONNREFUSED') && retry > 2) {
-                    throw new NotAllowedError('Unable to connect to DBMS');
+                    throw new ConnectionError('Unable to connect to DBMS', [message]);
                 }
 
                 if (retry < MAX_CONNECTION_RETRIES) {
@@ -92,7 +101,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
                     );
                 }
 
-                throw new NotAllowedError('Unable to connect to DBMS');
+                throw new ConnectionError('Unable to connect to DBMS', [message]);
             }),
         );
     }

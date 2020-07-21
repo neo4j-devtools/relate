@@ -11,6 +11,7 @@ import {
     NotSupportedError,
     NotFoundError,
     ExtensionExistsError,
+    ValidationFailureError,
 } from '../../errors';
 import {EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
 import {emitHookEvent} from '../../utils';
@@ -27,6 +28,8 @@ import {
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/local.environment';
+import {AppLaunchTokenModel, IAppLaunchToken} from '../../models';
+import {TokenService} from '../../token.service';
 
 export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     async getAppPath(appName: string, appRoot = ''): Promise<string> {
@@ -47,6 +50,12 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             .unwindPromises();
 
         return applyEntityFilters(allInstalledExtensions.flatten(), filters);
+    }
+
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+        const extensions = await this.list(filters);
+
+        return extensions.filter(({type}) => type === EXTENSION_TYPES.STATIC);
     }
 
     async link(filePath: string): Promise<IExtensionMeta> {
@@ -175,5 +184,53 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
                 return ext;
             })
             .unwindPromises();
+    }
+
+    createAppLaunchToken(
+        appName: string,
+        dbmsId: string,
+        principal?: string,
+        accessToken?: string,
+        projectId?: string,
+    ): Promise<string> {
+        const validated = JSON.parse(
+            JSON.stringify(
+                new AppLaunchTokenModel({
+                    accessToken,
+                    appName,
+                    dbmsId,
+                    environmentId: this.environment.id,
+                    principal,
+                    projectId,
+                }),
+            ),
+        );
+
+        return TokenService.sign(validated, appName);
+    }
+
+    parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
+        return TokenService.verify(launchToken, appName)
+            .then((decoded: any) => {
+                if (decoded.appName !== appName) {
+                    throw new ValidationFailureError('App Launch Token mismatch');
+                }
+
+                return new AppLaunchTokenModel({
+                    accessToken: decoded.accessToken,
+                    appName: decoded.appName,
+                    dbmsId: decoded.dbmsId,
+                    environmentId: decoded.environmentId,
+                    principal: decoded.principal,
+                    projectId: decoded.projectId,
+                });
+            })
+            .catch((e) => {
+                if (e instanceof ValidationFailureError) {
+                    throw e;
+                }
+
+                throw new ValidationFailureError('Invalid App Launch Token');
+            });
     }
 }

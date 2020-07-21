@@ -14,6 +14,13 @@ export default class InstallCommand extends BaseCommand {
 
     static description = 'Install an extension';
 
+    static examples = [
+        '$ relate ext:install',
+        '$ relate ext:install -e environment-name',
+        '$ relate ext:install extension-name',
+        '$ relate ext:install extension-name -V 1.0.0',
+    ];
+
     static args = [
         {
             name: 'name',

@@ -19,7 +19,7 @@ import {
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
  */
-export function getInstalledExtensions(): IInstalledExtension[] {
+export function getInstalledExtensionsSync(): IInstalledExtension[] {
     const installationDir = path.join(envPaths().data, EXTENSION_DIR_NAME);
 
     return _.compact(

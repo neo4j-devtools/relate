@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "CLI tool for interacting with the Neo4j platform.",
-    "version": "1.0.1-alpha.0",
+    "version": "1.0.1-alpha.6",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo-technology/relate#readme",
@@ -10,7 +10,7 @@
         "url": "git+https://github.com/neo-technology/relate.git"
     },
     "publishConfig": {
-        "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
+        "access": "public"
     },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -30,11 +30,13 @@
         "@oclif/config": "1.13.3",
         "@oclif/plugin-autocomplete": "0.1.5",
         "@oclif/plugin-help": "2.2.3",
-        "@relate/common": "^1.0.1-alpha.0",
+        "@relate/common": "^1.0.1-alpha.3",
+        "@relate/types": "1.0.1-alpha.0",
         "cli-ux": "5.4.5",
         "cross-env": "7.0.2",
         "enquirer": "2.3.4",
         "fs-extra": "9.0.0",
+        "graphql": "15.1.0",
         "lodash": "4.17.15",
         "node-fetch": "2.6.0",
         "reflect-metadata": "0.1.13",
@@ -108,6 +110,7 @@
         "clean": "rimraf dist",
         "test": "jest",
         "add:readme": "git add README.md",
-        "version": "run-s build:readme add:readme"
+        "version": "run-s build:readme add:readme",
+        "watch": "tsc -w"
     }
 }

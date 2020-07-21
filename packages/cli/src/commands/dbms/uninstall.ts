@@ -9,6 +9,13 @@ export default class UninstallCommand extends BaseCommand {
 
     static description = 'Uninstall a Neo4j DBMS from the selected environment';
 
+    static examples = [
+        '$ relate dbms:uninstall',
+        '$ relate dbms:uninstall -e environment-name',
+        '$ relate dbms:uninstall my-dbms',
+        '$ relate dbms:uninstall my-dbms -u dbms-user',
+    ];
+
     static args = [ARGS.DBMS];
 
     static flags = {

@@ -11,6 +11,13 @@ export default class AddDbmsCommand extends BaseCommand {
 
     static description = 'Adds a dbms to a project';
 
+    static examples = [
+        '$ relate project:add-dbms',
+        '$ relate project:add-dbms -e environment-name',
+        '$ relate project:add-dbms -p my-project',
+        '$ relate project:add-dbms -p my-project -n dbms-name-in-project -u dbms-user-to-create-token-for',
+    ];
+
     static args = [ARGS.DBMS];
 
     static flags = {

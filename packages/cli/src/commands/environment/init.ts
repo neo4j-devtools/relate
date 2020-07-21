@@ -12,6 +12,12 @@ export default class InitCommand extends BaseCommand {
 
     static description = 'Create a new environment';
 
+    static examples = [
+        '$ relate env:init',
+        '$ relate env:init --name=local-environment-name --type=LOCAL',
+        '$ relate env:init --name=remote-environment-name --type=REMOTE --httpOrigin=https://url.of.hosted.relate.com',
+    ];
+
     static aliases = ['env:init'];
 
     static flags = {

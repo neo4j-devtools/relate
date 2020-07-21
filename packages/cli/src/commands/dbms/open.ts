@@ -11,6 +11,8 @@ export default class OpenCommand extends BaseCommand {
 
     static description = "Open a Neo4j DBMS's directory";
 
+    static examples = ['$ relate dbms:open', '$ relate dbms:open -e environment-name', '$ relate dbms:open -L'];
+
     static args = [ARGS.DBMS];
 
     static flags = {

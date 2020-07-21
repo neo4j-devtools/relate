@@ -19,3 +19,4 @@ export {ExtensionExistsError} from './extension-exists.error';
 export {GraphqlError} from './graphql.error';
 export {ErrorAbstract} from './error.abstract';
 export {FileUploadError} from './file-upload.error';
+export {ConnectionError} from './connection.error';
