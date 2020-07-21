@@ -191,7 +191,7 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {listDbmsVersions} = res.body.data;
 
-                    expect(listDbmsVersions.length).toEqual(3);
+                    expect(listDbmsVersions.length).toEqual(6);
                     listDbmsVersions.forEach((v: IDbmsVersion) => {
                         if (v.origin === NEO4J_ORIGIN.CACHED) {
                             expect(v.version).toEqual(TestDbmss.NEO4J_VERSION);
@@ -199,7 +199,7 @@ describe('DBMSModule', () => {
                             expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
                             expect(v.dist).toContain('https://dist.neo4j.org/');
                         }
-                        expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
+                        expect([NEO4J_EDITION.ENTERPRISE, NEO4J_EDITION.COMMUNITY].includes(v.edition)).toBe(true);
                         expect(v.version).not.toEqual('3.5.17');
                     });
                 });
