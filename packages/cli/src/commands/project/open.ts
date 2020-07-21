@@ -2,7 +2,7 @@ import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
 
-import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
+import {FLAGS} from '../../constants';
 import {OpenModule} from '../../modules/project/open.module';
 
 export default class OpenCommand extends BaseCommand {
@@ -12,11 +12,11 @@ export default class OpenCommand extends BaseCommand {
 
     static description = 'Opens a project folder';
 
-    static args = [
-        {
-            name: 'name',
-            required: REQUIRED_FOR_SCRIPTS,
-        },
+    static examples = [
+        '$ relate project:open',
+        '$ relate project:open -e environment-name',
+        '$ relate project:open -p my-project',
+        '$ relate project:open -p my-project -L',
     ];
 
     static flags = {

@@ -30,16 +30,19 @@ export const verifyHash = async (
 ): Promise<string> => {
     const hash = await hasha.fromFile(pathToFile, {algorithm});
     if (hash !== expectedShasumHash) {
-        // @todo maybe not?
-        // remove tmp output
+        // remove tmp output in this case as it is neither user provided nor trusted
         await fse.remove(pathToFile);
         throw new IntegrityError('Expected hash mismatch');
     }
     return hash;
 };
 
-export const downloadNeo4j = async (version: string, neo4jDistributionPath: string): Promise<void> => {
-    const onlineVersions = await fetchNeo4jVersions();
+export const downloadNeo4j = async (
+    version: string,
+    neo4jDistributionPath: string,
+    limited?: boolean,
+): Promise<void> => {
+    const onlineVersions = await fetchNeo4jVersions(limited);
     const requestedDistribution = onlineVersions.find(
         (dist) => dist.edition === NEO4J_EDITION.ENTERPRISE && dist.version === version,
     );

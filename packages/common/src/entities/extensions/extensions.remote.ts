@@ -1,20 +1,21 @@
 import gql from 'graphql-tag';
-import {List, None} from '@relate/types';
+import {Dict, List, None} from '@relate/types';
 
 import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
-import {EXTENSION_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
 import {IRelateFilter} from '../../utils/generic';
+import {IAppLaunchToken} from '../../models';
 
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {
         // @todo: listInstalledApps has a bad typing for remote env
-        const installed: List<any> = await this.list();
+        const installed: List<any> = await this.listApps();
 
         return installed
-            .find(({name, type}) => type === EXTENSION_TYPES.STATIC && name === appName)
+            .find(({name}) => name === appName)
             .flatMap((app) => {
                 if (None.isNone(app)) {
                     throw new NotFoundError(`App ${appName} not found`);
@@ -27,7 +28,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query ExtensionVersions($filters: [IRelateFilter]) {
+                query ExtensionVersions($filters: [RelateSimpleFilter!]) {
                     ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS}(filters: $filters) {
                         name
                         version
@@ -45,14 +46,39 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.listExtensionVersions);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS]);
     }
 
     async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
-                query InstalledExtensions($filters: [IRelateFilter]) {
-                    ${PUBLIC_GRAPHQL_METHODS.INSTALLED_EXTENSIONS}(filters: $filters) {
+                query InstalledExtensions($filters: [RelateSimpleFilter!]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS}(filters: $filters) {
+                        type
+                        name
+                        version
+                        origin
+                    }
+                }
+            `,
+            variables: {filters},
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to list installed extensions',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS]);
+    }
+
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+                query InstalledExtensions($filters: [RelateSimpleFilter!]) {
+                    ${PUBLIC_GRAPHQL_METHODS.LIST_APPS}(filters: $filters) {
                         name
                         type
                         path
@@ -69,7 +95,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.installedExtensions);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_APPS]);
     }
 
     link(_filePath: string): Promise<IExtensionMeta> {
@@ -100,7 +126,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return data.installExtension;
+        return data[PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION];
     }
 
     async uninstall(name: string): Promise<List<IExtensionMeta>> {
@@ -124,6 +150,89 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
             );
         }
 
-        return List.from(data.uninstallExtension);
+        return List.from(data[PUBLIC_GRAPHQL_METHODS.UNINSTALL_EXTENSION]);
+    }
+
+    async createAppLaunchToken(
+        appName: string,
+        dbmsId: string,
+        principal?: string,
+        accessToken?: string,
+        projectId?: string,
+    ): Promise<string> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+                mutation CreateAppLaunchToken(
+                    $dbmsId: String!,
+                    $appName: String!,
+                    $principal: String!,
+                    $accessToken: String!,
+                    $projectId: String!
+                ) {
+                    ${PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN}(
+                        dbmsId: $dbmsId,
+                        appName: $appName,
+                        principal: $principal,
+                        accessToken: $accessToken,
+                        projectId: $projectId
+                    ) {
+                        token
+                        path
+                    }
+                }
+            `,
+            variables: {
+                dbmsId,
+                appName,
+                principal,
+                accessToken,
+                projectId,
+            },
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to create app launch token',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return Dict.from(data[PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN])
+            .getValue('token')
+            .getOrElse(() => {
+                throw new NotFoundError(`Unable to parse app launch token`);
+            });
+    }
+
+    async parseAppLaunchToken(appName: string, launchToken: string): Promise<IAppLaunchToken> {
+        const {data, errors}: any = await this.environment.graphql({
+            query: gql`
+               query appLaunchData($appName: String!, $launchToken: String!) {
+                    ${PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA}(appName: $appName, launchToken: $launchToken) {
+                        environmentId
+                        appName
+                        dbms {
+                            id
+                        }
+                        principal
+                        accessToken
+                        projectId
+                    }
+                }
+            `,
+            variables: {
+                appName,
+                launchToken,
+            },
+        });
+
+        if (errors) {
+            throw new GraphqlError(
+                'Unable to parse app launch token',
+                List.from<Error>(errors).mapEach(({message}) => message),
+            );
+        }
+
+        return data[PUBLIC_GRAPHQL_METHODS.APP_LAUNCH_DATA];
     }
 }

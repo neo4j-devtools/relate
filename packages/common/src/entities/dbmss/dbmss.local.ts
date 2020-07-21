@@ -22,7 +22,6 @@ import {
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
-    CypherParameterError,
     DbmsExistsError,
     InvalidArgumentError,
     NotAllowedError,
@@ -46,13 +45,11 @@ import {
 } from '../environments';
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import {NEO4J_DB_NAME_REGEX} from './dbmss.constants';
-import {systemDbQuery} from '../../utils/dbmss/system-db-query';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
-    async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
+    async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const cached = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
-        const online = await fetchNeo4jVersions();
+        const online = await fetchNeo4jVersions(limited);
         const allVersions = cached.concat(online);
         const mapped = allVersions
             .mapEach((version) => {
@@ -80,7 +77,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(mapped, filters);
     }
 
-    async install(name: string, credentials: string, version: string): Promise<string> {
+    async install(
+        name: string,
+        credentials: string,
+        version: string,
+        noCaching?: boolean,
+        limited?: boolean,
+    ): Promise<string> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -109,6 +112,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const coercedVersion = coerce(version)?.version;
+
         if (coercedVersion) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
                 throw new NotSupportedError(`version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`);
@@ -121,7 +125,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const found = await requestedDistribution.flatMap(async (dist) => {
                 if (None.isNone(dist)) {
-                    await downloadNeo4j(coercedVersion, this.environment.dirPaths.dbmssCache);
+                    await downloadNeo4j(coercedVersion, this.environment.dirPaths.dbmssCache, limited);
                     const afterDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
 
                     return afterDownload.find(
@@ -137,7 +141,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version} online`);
                 }
 
-                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist);
+                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist, noCaching);
             });
         }
 
@@ -148,8 +152,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
-        if (!status.includes('Neo4j is not running')) {
-            throw new NotAllowedError('Cannot uninstall DBMS that is not stopped');
+        if (status.includes(DBMS_STATUS_FILTERS.STARTED)) {
+            throw new NotAllowedError('Cannot uninstall DBMS that is running');
         }
 
         return this.uninstallNeo4j(id);
@@ -180,14 +184,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     : DBMS_STATUS.STOPPED;
 
                 return {
+                    connectionUri: dbms.connectionUri,
+                    description: dbms.description,
+                    edition: v?.edition,
                     id: dbms.id,
                     name: dbms.name,
-                    description: dbms.description,
                     rootPath: dbms.rootPath,
-                    connectionUri: dbms.connectionUri,
                     status,
                     version: v?.version,
-                    edition: v?.edition,
                 };
             })
             .unwindPromises();
@@ -239,39 +243,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return token;
     }
 
-    async createDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
-        }
-
-        await systemDbQuery(
-            {
-                accessToken,
-                dbmsId,
-                dbmsUser,
-                environment: this.environment,
-            },
-            `CREATE DATABASE ${dbName}`,
-        );
-    }
-
-    async dropDb(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
-            throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
-        }
-
-        await systemDbQuery(
-            {
-                accessToken,
-                dbmsId,
-                dbmsUser,
-                environment: this.environment,
-            },
-            `DROP DATABASE ${dbName}`,
-        );
-    }
-
-    private getDbmsRootPath(dbmsId?: string): string {
+    public getDbmsRootPath(dbmsId?: string): string {
         const dbmssDir = path.join(this.environment.dirPaths.dbmssData);
 
         if (dbmsId) {
@@ -286,6 +258,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         credentials: string,
         dbmssDir: string,
         extractedDistPath: string,
+        noCaching?: boolean,
     ): Promise<string> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
@@ -298,35 +271,45 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
-        await this.setDbmsManifest(dbmsId, {name});
 
-        const config = await PropertiesFile.readFile(
-            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
-        );
-
-        config.set('dbms.security.auth_enabled', true);
-        config.set('dbms.memory.heap.initial_size', '512m');
-        config.set('dbms.memory.heap.max_size', '1G');
-        config.set('dbms.memory.pagecache.size', '512m');
-        if (process.platform === 'win32') {
-            config.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+        if (noCaching) {
+            await fse.remove(extractedDistPath);
         }
 
-        await config.flush();
+        try {
+            await this.setDbmsManifest(dbmsId, {name});
 
-        if (process.platform === 'win32') {
-            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+            const neo4jConfig = await PropertiesFile.readFile(
+                path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+            );
+
+            neo4jConfig.set('dbms.security.auth_enabled', true);
+            neo4jConfig.set('dbms.memory.heap.initial_size', '512m');
+            neo4jConfig.set('dbms.memory.heap.max_size', '1G');
+            neo4jConfig.set('dbms.memory.pagecache.size', '512m');
+            if (process.platform === 'win32') {
+                neo4jConfig.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
+            }
+
+            await neo4jConfig.flush();
+
+            if (process.platform === 'win32') {
+                await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
+            }
+
+            await this.ensureDbmsStructure(dbmsId, neo4jConfig);
+            await neo4jConfig.backupPropertiesFile(
+                path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
+            );
+            await this.setInitialDatabasePassword(dbmsId, credentials);
+            await this.installSecurityPlugin(dbmsId);
+
+            return dbmsId;
+        } catch (error) {
+            await fse.remove(path.join(dbmssDir, dbmsIdFilename));
+            await fse.remove(path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`));
+            throw error;
         }
-
-        await this.ensureDbmsStructure(dbmsId, config);
-        await config.backupPropertiesFile(
-            path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
-        );
-        await this.setInitialDatabasePassword(dbmsId, credentials);
-        await this.installSecurityPlugin(dbmsId);
-
-        // will come back to check the installPluginDependencies situation in future PRs
-        return dbmsId;
     }
 
     private async uninstallNeo4j(dbmsId: string): Promise<void> {
@@ -345,7 +328,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), 'set-initial-password', credentials);
+        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), ['set-initial-password'], credentials);
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {

@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IFile, IProject, IProjectManifest, IProjectDbms, IDbms} from '../../models';
+import {IRelateFile, IProject, IProjectManifest, IProjectDbms, IDbms} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {RemoteEnvironment} from '../environments';
 import {NotSupportedError} from '../../errors';
@@ -23,15 +23,19 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support linking projects`);
     }
 
-    listFiles(_nameOrId: string, _filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
+    listFiles(_nameOrId: string, _filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project files`);
     }
 
-    addFile(_name: string, _source: string, _destination?: string): Promise<IFile> {
+    addFile(_name: string, _source: string, _destination?: string): Promise<IRelateFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project files`);
     }
 
-    removeFile(_name: string, _relativePath: string): Promise<IFile> {
+    writeFile(_projectName: string, _destination: string, _data: string | Buffer): Promise<IRelateFile> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support writing to project files`);
+    }
+
+    removeFile(_name: string, _relativePath: string): Promise<IRelateFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project files`);
     }
 

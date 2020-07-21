@@ -5,6 +5,15 @@ import {PropertiesFile} from '../system/files';
 import {DBMS_STATUS} from '../constants';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../entities/environments';
 
+export interface IDb {
+    name: string;
+    role: string;
+    requestedStatus: string;
+    currentStatus: string;
+    error: string;
+    default: boolean;
+}
+
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
     status: DBMS_STATUS;
     config?: null | undefined;

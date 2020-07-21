@@ -1,6 +1,6 @@
 {
     "name": "@relate/types",
-    "version": "1.0.0",
+    "version": "1.0.1-alpha.0",
     "description": "Relate type system",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -10,7 +10,7 @@
         "url": "git+https://github.com/neo-technology/relate.git"
     },
     "publishConfig": {
-        "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
+        "access": "public"
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",

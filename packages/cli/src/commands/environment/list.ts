@@ -8,5 +8,7 @@ export default class ListCommand extends BaseCommand {
 
     static description = 'Lists all available environments';
 
+    static examples = ['$ relate env:list'];
+
     static aliases = ['env:list'];
 }

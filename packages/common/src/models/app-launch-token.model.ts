@@ -4,16 +4,17 @@ import {ModelAbstract} from './model.abstract';
 import {IsValidJWT} from './custom-validators';
 
 export interface IAppLaunchToken {
-    environmentNameOrId: string;
+    environmentId: string;
     dbmsId: string;
     principal?: string;
     appName: string;
     accessToken?: string;
+    projectId?: string;
 }
 
 export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implements IAppLaunchToken {
     @IsString()
-    environmentNameOrId!: string;
+    environmentId!: string;
 
     @IsString()
     dbmsId!: string;
@@ -29,4 +30,8 @@ export class AppLaunchTokenModel extends ModelAbstract<IAppLaunchToken> implemen
     @IsOptional()
     @IsValidJWT()
     accessToken?: string;
+
+    @IsString()
+    @IsOptional()
+    projectId?: string;
 }

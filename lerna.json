@@ -4,9 +4,6 @@
     "command": {
         "bootstrap": {
             "ci": true
-        },
-        "publish": {
-            "registry": "https://neo.jfrog.io/artifactory/api/npm/npm-local-private"
         }
     }
 }

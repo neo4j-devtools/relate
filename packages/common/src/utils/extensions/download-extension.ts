@@ -69,8 +69,7 @@ const verifyHash = async (
 ): Promise<string> => {
     const hash = await hasha.fromFile(pathToFile, {algorithm});
     if (hash !== expectedShasumHash) {
-        // @todo maybe not?
-        // remove tmp output
+        // remove in this case since the file is neither user provided nor trusted
         await fse.remove(pathToFile);
         throw new IntegrityError('Expected hash mismatch');
     }

@@ -10,6 +10,13 @@ export default class RemoveFileCommand extends BaseCommand {
 
     static description = 'Removes a file from a project';
 
+    static examples = [
+        '$ relate project:remove-file',
+        '$ relate project:remove-file -e environment-name',
+        '$ relate project:remove-file /project/path/to/name.file',
+        '$ relate project:remove-file /project/path/to/name.file -p my-project',
+    ];
+
     static args = [
         {
             name: 'file',

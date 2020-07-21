@@ -4,12 +4,12 @@ import {from} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 import {List, Maybe, None, Str} from '@relate/types';
 
-import {IFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms} from '../../models';
+import {IRelateFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms, WriteFileFlag} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {PROJECTS_MANIFEST_FILE, PROJECTS_DIR_NAME} from '../../constants';
 import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
-import {getNormalizedProjectPath, mapFileToModel} from '../../utils/files';
+import {getRelativeProjectPath, mapFileToModel, getAbsoluteProjectPath} from '../../utils/files';
 import {envPaths} from '../../utils/env-paths';
 import {IRelateFilter, applyEntityFilters} from '../../utils/generic';
 
@@ -89,53 +89,74 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
     }
 
-    async addFile(projectName: string, source: string, destination?: string): Promise<IFile> {
-        if (Str.from(destination).includes('..')) {
-            throw new InvalidArgumentError('Project files cannot be added outside of project');
-        }
+    private async getFile(project: IProject, filePath: string): Promise<Maybe<IRelateFile>> {
+        const target = getRelativeProjectPath(project, filePath);
+        const fileName = path.basename(target);
+        const projectDir = path.dirname(target);
 
+        const files = await this.listFiles(project.name);
+        return files.find(({name, directory}) => name === fileName && directory === projectDir);
+    }
+
+    async addFile(projectName: string, source: string, destination?: string): Promise<IRelateFile> {
         const project = await this.get(projectName);
-        const fileName = path.basename(destination || source).replace(project.root, '');
-        const projectDestination = destination || fileName;
-        const projectDir = getNormalizedProjectPath(path.dirname(projectDestination));
-        const existingFiles = await this.listFiles(project.name);
-        const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
-        if (!existingFiles.find(filePredicate).isEmpty) {
-            throw new InvalidArgumentError(`File ${fileName} already exists at that destination`);
-        }
+        const target = getAbsoluteProjectPath(project, destination || path.basename(source));
+        const projectDir = path.dirname(target);
+        const fileName = path.basename(target);
 
-        const target = path.join(project.root, projectDestination);
+        const fileExists = await this.getFile(project, target);
+        fileExists.flatMap((file) => {
+            if (!None.isNone(file)) {
+                throw new InvalidArgumentError(`File ${file.name} already exists at that destination`);
+            }
+        });
 
-        await fse.ensureDir(path.dirname(target));
+        await fse.ensureDir(path.dirname(projectDir));
         await fse.copy(source, target);
 
-        const afterCopy = await this.listFiles(project.name);
-
-        return afterCopy.find(filePredicate).getOrElse(() => {
+        const afterCopy = await this.getFile(project, target);
+        return afterCopy.getOrElse(() => {
             throw new NotFoundError(`Unable to add ${fileName} to project`);
         });
     }
 
-    async removeFile(projectName: string, relativePath: string): Promise<IFile> {
+    async writeFile(
+        projectName: string,
+        destination: string,
+        data: string | Buffer,
+        writeFlag?: WriteFileFlag,
+    ): Promise<IRelateFile> {
         const project = await this.get(projectName);
-        const fileName = path.basename(relativePath);
-        const projectDir = getNormalizedProjectPath(path.dirname(relativePath));
-        const existingFiles = await this.listFiles(project.name);
-        const filePredicate = ({name, directory}: IFile) => name === fileName && directory === projectDir;
 
-        return existingFiles.find(filePredicate).flatMap(async (found) => {
-            if (None.isNone(found)) {
-                throw new InvalidArgumentError(`File ${relativePath} does not exists`);
-            }
+        const filePath = getAbsoluteProjectPath(project, destination);
+        await fse.writeFile(filePath, data, {
+            encoding: 'utf-8',
+            flag: writeFlag || WriteFileFlag.OVERWRITE,
+        });
+        const fileName = path.basename(filePath);
 
-            await fse.unlink(path.join(project.root, relativePath));
-
-            return found;
+        const afterWrite = await this.getFile(project, filePath);
+        return afterWrite.getOrElse(() => {
+            throw new NotFoundError(`Unable to write to file "${fileName}"`);
         });
     }
 
-    async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IFile>> {
+    async removeFile(projectName: string, relativePath: string): Promise<IRelateFile> {
+        const project = await this.get(projectName);
+        const maybeFile = await this.getFile(project, relativePath);
+
+        return maybeFile.flatMap(async (file) => {
+            if (None.isNone(file)) {
+                throw new InvalidArgumentError(`File ${relativePath} does not exists`);
+            }
+
+            await fse.unlink(path.join(project.root, file.directory, file.name));
+            return file;
+        });
+    }
+
+    async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>> {
         const project = await this.get(nameOrId);
         const allFiles = await this.findAllFilesRecursive(project.root);
         const mapped = await allFiles.mapEach((file) => mapFileToModel(file, project)).unwindPromises();

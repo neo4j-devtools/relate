@@ -11,6 +11,13 @@ export default class DropCommand extends BaseCommand {
 
     static description = 'Drop a database';
 
+    static examples = [
+        '$ relate db:drop',
+        '$ relate db:drop -e environment-name',
+        '$ relate db:drop my-new-db -D started-dbms',
+        '$ relate db:drop my-new-db -D started-dbms -u dbms-user-with-system-db-access',
+    ];
+
     static args = [
         {
             name: 'name',
@@ -28,7 +35,7 @@ export default class DropCommand extends BaseCommand {
         }),
         dbms: flags.string({
             char: 'D',
-            description: 'DBMS containing the database to drop',
+            description: 'DBMS containing the database to drop (needs to be started and have an access token created)',
             required: REQUIRED_FOR_SCRIPTS,
         }),
     };

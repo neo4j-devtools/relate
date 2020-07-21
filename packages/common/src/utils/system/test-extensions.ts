@@ -28,12 +28,19 @@ export class TestExtensions {
             main: '',
             root: '',
         };
+        const packageJson = {
+            name,
+            version: '1.0.0',
+        };
 
         const manifestPath = path.join(extensionPath, name, EXTENSION_MANIFEST);
+        const packageJsonPath = path.join(extensionPath, name, 'package.json');
         const indexPath = path.join(extensionPath, name, 'index.html');
         await fse.ensureFile(manifestPath);
+        await fse.ensureFile(packageJsonPath);
         await fse.ensureFile(indexPath);
         await fse.writeJSON(manifestPath, manifest);
+        await fse.writeJSON(packageJsonPath, packageJson);
 
         this.extensions.push(manifest);
         return manifest;

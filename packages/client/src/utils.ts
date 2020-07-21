@@ -21,6 +21,7 @@ export function getParseLaunchTokenPayload(appName: string, launchToken: string)
                 connectionUri
               }
               principal
+              projectId
             }
           }
         `,

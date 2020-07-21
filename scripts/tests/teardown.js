@@ -10,7 +10,7 @@ const cachePath = process.env.NEO4J_RELATE_CACHE_HOME;
 const dataPath = process.env.NEO4J_RELATE_DATA_HOME;
 
 async function globalTeardown() {
-    const env = (await TestDbmss.init()).environment;
+    const env = (await TestDbmss.init('relate')).environment;
 
     const dbmss = await env.dbmss.list();
     await dbmss
@@ -18,14 +18,15 @@ async function globalTeardown() {
             await env.dbmss.stop([dbms.id]);
             await env.dbmss.uninstall(dbms.id);
         })
-        .unwindPromises();
+        .unwindPromises()
+        .catch((err) => console.error(err));
 
     const cacheFiles = List.from(await fse.readdir(cachePath))
         .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
         .mapEach((filename) => path.join(cachePath, filename));
 
     const dataFiles = List.from(await fse.readdir(dataPath))
-        .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
+        .filter((filename) => !['.GITIGNORED', 'dbmss', 'acceptedTerms'].includes(filename))
         .mapEach((filename) => path.join(dataPath, filename));
 
     await List.from()
@@ -34,8 +35,40 @@ async function globalTeardown() {
         .mapEach((filepath) => fse.remove(filepath))
         .unwindPromises();
 
-    // Do not remove this directory if not empty, it could lead to unexpected behavior.
-    await fse.rmdir(path.join(dataPath, DBMS_DIR_NAME));
+    const dbmssPath = path.join(dataPath, DBMS_DIR_NAME);
+    try {
+        // Do not remove this directory if not empty, it could lead to unexpected behavior.
+        await fse.rmdir(dbmssPath);
+    } catch {
+        // If the DBMS directory is not empty by now it means stopping and
+        // uninstalling through relate didn't work as expected. This is a last
+        // resort attempt to kill all running DBMSs and empty the directory.
+        const files = await fse.readdir(dbmssPath);
+        await List.from(files)
+            .mapEach(async (filename) => {
+                const filePath = path.join(dbmssPath, filename);
+                const stats = await fse.stat(filePath);
+
+                if (stats.isFile()) {
+                    await fse.remove(filePath);
+                    return;
+                }
+
+                const pidPath = path.join(filePath, 'run', 'neo4j.pid');
+
+                const dbmsIsRunning = await fse.pathExists(pidPath);
+                if (dbmsIsRunning) {
+                    const pid = await fse.readFile(pidPath).then((p) => p.toString().trim());
+
+                    // https://nodejs.org/api/process.html#process_signal_events
+                    await process.kill(pid, 'SIGKILL');
+                    console.log(`Killed DBMS process "${pid}"`);
+                }
+
+                await fse.remove(path.join(filePath));
+            })
+            .unwindPromises();
+    }
 }
 
 globalTeardown()

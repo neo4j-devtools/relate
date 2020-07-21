@@ -14,9 +14,12 @@ import {AUTH_TOKEN_KEY} from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../../system/files';
 import {RemoteProjects} from '../projects';
+import {RemoteDbs} from '../dbs';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
+
+    public readonly dbs = new RemoteDbs(this);
 
     public readonly extensions = new RemoteExtensions(this);
 

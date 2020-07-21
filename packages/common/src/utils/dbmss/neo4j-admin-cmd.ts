@@ -7,15 +7,22 @@ import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
 
-export async function neo4jAdminCmd(dbmsRootPath: string, command: string, credentials?: string): Promise<string> {
+export async function neo4jAdminCmd(
+    dbmsRootPath: string,
+    args: string[],
+    credentials?: string,
+    javaPath?: string,
+): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
-    const relateJavaHome = await resolveRelateJavaHome();
+    const relateJavaHome = javaPath || (await resolveRelateJavaHome());
 
     await fse.access(neo4jAdminBinPath, fse.constants.X_OK).catch(() => {
         throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
     });
 
-    const args = [command === 'help' || command === 'version' ? `--${command}` : command];
+    if (args[0] === 'help' || args[0] === 'version') {
+        args[0] = `--${args[0]}`;
+    }
     if (credentials) {
         args.push(process.platform === 'win32' ? `"${credentials}"` : credentials);
     }

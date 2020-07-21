@@ -9,9 +9,12 @@ import {ensureDirs} from '../../system/files';
 import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} from './environment.constants';
 import {DBMS_DIR_NAME, EXTENSION_DIR_NAME, PROJECTS_DIR_NAME} from '../../constants';
 import {LocalProjects} from '../projects';
+import {LocalDbs} from '../dbs';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
+
+    public readonly dbs = new LocalDbs(this);
 
     public readonly extensions = new LocalExtensions(this);
 
