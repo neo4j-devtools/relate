@@ -156,7 +156,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         ]);
 
         if (!exists.isEmpty) {
-            throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Choose a unique name']);
+            throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Use a unique name']);
         }
 
         const newId = uuidv4();
@@ -165,7 +165,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
             throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j 4.x DBMS`, [
-                'Use a valid path to DBMS',
+                'Use a valid path',
             ]);
         }
 
