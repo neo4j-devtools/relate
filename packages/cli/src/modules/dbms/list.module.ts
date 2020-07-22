@@ -28,6 +28,7 @@ export class ListModule implements OnApplicationBootstrap {
                     id: {},
                     name: {},
                     description: {},
+                    tags: {},
                 },
                 {
                     printLine: this.utils.log,

@@ -61,6 +61,10 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean>;
 
+    abstract addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
+
+    abstract removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
+
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
         query: string,

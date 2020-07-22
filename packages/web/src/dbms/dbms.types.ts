@@ -15,6 +15,9 @@ export class Dbms {
     @Field(() => String, {nullable: true})
     description?: string;
 
+    @Field(() => [String])
+    tags: string[];
+
     @Field(() => String, {nullable: true})
     connectionUri?: string;
 }

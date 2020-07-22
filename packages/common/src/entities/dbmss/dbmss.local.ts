@@ -263,6 +263,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return {
             connectionUri: dbms.connectionUri,
             description: dbms.description,
+            tags: dbms.tags,
             edition: v?.edition,
             id: dbms.id,
             name: dbms.name,
@@ -522,11 +523,37 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return PropertiesFile.readFile(configFileName);
     }
 
+    public async addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
+        const {id, tags: existing} = await this.get(nameOrId);
+
+        await this.setDbmsManifest(id, {
+            tags: List.from(existing)
+                .concat(tags)
+                .unique()
+                .toArray(),
+        });
+
+        return this.get(id);
+    }
+
+    public async removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
+        const {id, tags: existing} = await this.get(nameOrId);
+
+        await this.setDbmsManifest(id, {
+            tags: List.from(existing)
+                .without(...tags)
+                .toArray(),
+        });
+
+        return this.get(id);
+    }
+
     private async getDbmsManifest(dbmsId: string): Promise<Dict<IDbmsConfig>> {
         const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const defaultValues = {
             description: '',
             name: '',
+            tags: [],
         };
 
         if (!(await fse.pathExists(configFileName))) {
