@@ -3,7 +3,6 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 
 import LinkCommand from '../../commands/project/link';
-import {RequiredArgsError} from '../../errors';
 
 @Module({
     exports: [],
@@ -20,12 +19,6 @@ export class LinkModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args} = this.parsed;
         const {filePath} = args;
-
-        if (!filePath) {
-            // @todo: figure this out in combination with TTY
-            throw new RequiredArgsError(['filepath']);
-        }
-
         const {projects} = await this.systemProvider.getEnvironment();
         const resolvedPath = path.resolve(filePath);
 

@@ -1,6 +1,6 @@
 import {Dict, List, Maybe, None, Str} from '@relate/types';
 import fse from 'fs-extra';
-import {coerce, satisfies} from 'semver';
+import semver, {coerce, satisfies} from 'semver';
 import path from 'path';
 import {IAuthToken} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs/operators';
@@ -145,6 +145,41 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
+    }
+
+    async link(name: string, rootPath: string): Promise<IDbmsInfo> {
+        const exists = await this.list([
+            {
+                field: 'name',
+                value: name,
+            },
+        ]);
+
+        if (!exists.isEmpty) {
+            throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Use a unique name']);
+        }
+
+        const newId = uuidv4();
+        const baseName = `dbms-${newId}`;
+        const info = await getDistributionInfo(rootPath);
+
+        if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
+            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j 4.x DBMS`, [
+                'Use a valid path',
+            ]);
+        }
+
+        const target = path.join(this.environment.dirPaths.dbmssData, baseName);
+
+        await fse.symlink(rootPath, target);
+        await this.discoverDbmss();
+        await this.setDbmsManifest(newId, {name});
+
+        if (info.edition === NEO4J_EDITION.ENTERPRISE) {
+            await this.installSecurityPlugin(newId);
+        }
+
+        return this.get(newId);
     }
 
     async uninstall(nameOrId: string): Promise<void> {
@@ -355,6 +390,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
+        const pKeyPassword = uuidv4();
         const pathToDbms = this.getDbmsRootPath(dbmsId);
         const pluginSource = path.join(
             this.environment.dirPaths.cache,
@@ -367,8 +403,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         );
         const publicKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.cert.pem');
         const privateKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.key.pem');
-        // @todo: figure out a better passphrase that's not publicly available
-        const {publicKey, privateKey} = generatePluginCerts(dbmsId);
+        const {publicKey, privateKey} = generatePluginCerts(pKeyPassword);
 
         await fse.copy(pluginSource, pluginTarget);
         await fse.writeFile(publicKeyTarget, publicKey, 'utf8');
@@ -377,16 +412,37 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const neo4jConfig = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
+        const authenticationProviders = Str.from(neo4jConfig.get('dbms.security.authentication_providers') || 'native')
+            .split(',')
+            .filter(Boolean);
+        const authorizationProviders = Str.from(neo4jConfig.get('dbms.security.authorization_providers') || 'native')
+            .split(',')
+            .filter(Boolean);
+        const unrestrictedProcedures = Str.from(neo4jConfig.get('dbms.security.procedures.unrestricted') || '')
+            .split(',')
+            .filter(Boolean);
 
         neo4jConfig.set(
             `dbms.security.authentication_providers`,
-            `plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin,native`,
+            authenticationProviders
+                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
+                .join(',')
+                .get(),
         );
         neo4jConfig.set(
             `dbms.security.authorization_providers`,
-            `plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin,native`,
+            authorizationProviders
+                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
+                .join(',')
+                .get(),
         );
-        neo4jConfig.set(`dbms.security.procedures.unrestricted`, `jwt.security.*`);
+        neo4jConfig.set(
+            `dbms.security.procedures.unrestricted`,
+            unrestrictedProcedures
+                .concat([`jwt.security.*`])
+                .join(',')
+                .get(),
+        );
 
         await neo4jConfig.flush();
 
@@ -398,7 +454,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         jwtConfig.set(`jwt.auth.public_key`, `${NEO4J_CERT_DIR}/security.cert.pem`);
         jwtConfig.set(`jwt.auth.private_key`, `${NEO4J_CERT_DIR}/security.key.pem`);
-        jwtConfig.set(`jwt.auth.private_key_password`, dbmsId);
+        jwtConfig.set(`jwt.auth.private_key_password`, pKeyPassword);
 
         await jwtConfig.flush();
     }
@@ -418,7 +474,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
             .filter((file) => file.startsWith('dbms-'))
-            .mapEach((file) => fse.stat(path.join(root, file)).then((stats) => (stats.isDirectory() ? file : null)))
+            .mapEach((file) =>
+                fse
+                    .stat(path.join(root, file))
+                    .then((stats) => (stats.isDirectory() ? file : null))
+                    .catch(() => null),
+            )
             .unwindPromises();
 
         await files

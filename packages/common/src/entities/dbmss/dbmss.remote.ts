@@ -129,6 +129,10 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
+    link(_name: string, _rootPath: string): Promise<IDbmsInfo> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support linking DBMSs`);
+    }
+
     async uninstall(name: string): Promise<void> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`

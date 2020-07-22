@@ -6,7 +6,7 @@ Manage relate projects
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
 * [`relate project:init TARGETDIR`](#relate-projectinit-targetdir)
-* [`relate project:link [FILEPATH]`](#relate-projectlink-filepath)
+* [`relate project:link FILEPATH`](#relate-projectlink-filepath)
 * [`relate project:list`](#relate-projectlist)
 * [`relate project:list-dbmss`](#relate-projectlist-dbmss)
 * [`relate project:list-files`](#relate-projectlist-files)
@@ -81,13 +81,13 @@ EXAMPLES
 
 _See code: [dist/commands/project/init.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/project/init.ts)_
 
-## `relate project:link [FILEPATH]`
+## `relate project:link FILEPATH`
 
 Link a project (useful for development)
 
 ```
 USAGE
-  $ relate project:link [FILEPATH]
+  $ relate project:link FILEPATH
 
 EXAMPLE
   $ relate project:link /path/to/target/project/dir
