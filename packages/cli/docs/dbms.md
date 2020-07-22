@@ -6,7 +6,7 @@ Manage Neo4j DBMSs
 * [`relate dbms:access-token DBMS`](#relate-dbmsaccess-token-dbms)
 * [`relate dbms:info [DBMSS]`](#relate-dbmsinfo-dbmss)
 * [`relate dbms:install VERSION`](#relate-dbmsinstall-version)
-* [`relate dbms:link [FILEPATH]`](#relate-dbmslink-filepath)
+* [`relate dbms:link FILEPATH DBMSNAME`](#relate-dbmslink-filepath-dbmsname)
 * [`relate dbms:list`](#relate-dbmslist)
 * [`relate dbms:open DBMS`](#relate-dbmsopen-dbms)
 * [`relate dbms:start [DBMSS]`](#relate-dbmsstart-dbmss)
@@ -96,20 +96,19 @@ EXAMPLES
 
 _See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/install.ts)_
 
-## `relate dbms:link [FILEPATH]`
+## `relate dbms:link FILEPATH DBMSNAME`
 
 Link an existing DBMS (useful for development)
 
 ```
 USAGE
-  $ relate dbms:link [FILEPATH]
+  $ relate dbms:link FILEPATH DBMSNAME
 
 OPTIONS
-  -n, --name=name  (required) Name to give the linked DBMS
-  -y, --yes=yes    (required) Confirm DBMS config alteration
+  -y, --confirm=confirm  (required) Confirm DBMS configuration changes
 
 EXAMPLE
-  $ relate dbms:link /path/to/target/dbms/dir --name foo
+  $ relate dbms:link /path/to/target/dbms/dir "foo bar"
 ```
 
 _See code: [dist/commands/dbms/link.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/link.ts)_

@@ -3,7 +3,6 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 
 import LinkCommand from '../../commands/dbms/link';
-import {RequiredArgsError} from '../../errors';
 import {confirmPrompt, inputPrompt} from '../../prompts';
 import {isInteractive} from '../../stdin';
 
@@ -21,33 +20,27 @@ export class LinkModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {filePath} = args;
-        const {yes} = flags;
-        const name = flags.name || (await inputPrompt('Enter the DBMS name'));
+        const {filePath, dbmsName} = args;
+        const {confirm} = flags;
+        const name = dbmsName || (await inputPrompt('Enter the DBMS name'));
+        const showPrompt = isInteractive() && !confirm;
+        /* eslint-disable indent */
+        const didConfirm = showPrompt
+            ? await confirmPrompt(
+                  `Linking a DBMS will update its configuration file (neo4j.conf), do you wish to proceed?`,
+              )
+            : confirm;
+        /* eslint-enable indent */
 
-        if (!filePath) {
-            // @todo: figure this out in combination with TTY
-            throw new RequiredArgsError(['filepath']);
-        }
-
-        if (
-            !yes &&
-            isInteractive() &&
-            !(await confirmPrompt(
-                `Linking a DBMS will update its configuration file (neo4j.conf), do you wish to proceed?`,
-            ))
-        ) {
-            this.utils.log('Aborted by user');
-        }
-
-        if (!isInteractive() && !yes) {
+        if (!didConfirm) {
             this.utils.error('Did not confirm DBMS configuration file (neo4j.conf) changes');
+            return;
         }
 
         const {dbmss} = await this.systemProvider.getEnvironment();
         const resolvedPath = path.resolve(filePath);
 
-        return dbmss.link(name, resolvedPath).then((res) => {
+        await dbmss.link(name, resolvedPath).then((res) => {
             this.utils.log(res.name);
         });
     }
