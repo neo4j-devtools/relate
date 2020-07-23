@@ -42,7 +42,6 @@ describe('LocalEnvironment - link', () => {
 
     test('Is not discovered if target is removed or missing', async () => {
         await testDbmss.environment.dbmss.uninstall(instance.id);
-
         await expect(testDbmss.environment.dbmss.get('bar')).rejects.toThrow(new NotFoundError('DBMS "bar" not found'));
     });
 });
