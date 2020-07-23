@@ -11,7 +11,6 @@ import Monad from '../monad';
  * const plain: 100 = num.get();
  * ```
  */
-// @ts-ignore
 export default class Num extends Monad<number> {
     static readonly ZERO = new Num(0);
 

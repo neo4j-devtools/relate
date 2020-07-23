@@ -40,7 +40,9 @@ interface IAsObject<T = any> {
  * ```
  */
 // @ts-ignore
-export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends List<RawDict<K, V>> {
+export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends List<
+    RawDict<K, V>
+> {
     protected ourKeys: Maybe<List<K>> = Maybe.of();
 
     protected ourValues: Maybe<List<V>> = Maybe.of();
@@ -120,8 +122,9 @@ export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']>
     static from<T extends Map<any, any>, R = Map<KeyVal<T>['key'], KeyVal<T>['value']>>(val?: T): Dict<R>;
     static from<T extends Iterable<[any, any]>>(val?: T): Dict<T>;
     static from<T extends List<[any, any]>>(val?: T): Dict<T>;
-    static from<T = any>(val?: T): Dict<T> {
-        return Dict.isDict<T>(val) ? val : Dict.of(val || {});
+    static from<T = any>(val?: T): Dict<T, string, any> {
+        // @ts-ignore
+        return Dict.isDict<T>(val) ? val : Dict.of<T>(val || {});
     }
 
     /**

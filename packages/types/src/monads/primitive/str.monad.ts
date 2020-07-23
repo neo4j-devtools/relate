@@ -14,7 +14,6 @@ import List from './list.monad';
  * const plain: 'true' = str.get();
  * ```
  */
-// @ts-ignore
 export default class Str<T extends string = string> extends Monad<T> {
     static EMPTY = new Str('');
 
@@ -57,10 +56,10 @@ export default class Str<T extends string = string> extends Monad<T> {
      * const strBool: Str<'1,2,3'> = Str.of([1,2,3]);
      *
      * const listMonad: List<string> = List.from([1,2,3]);
-     * const listBool: Str<'1,2,3'> = Str.of(listMonad);
+     * const listStr: Str<'1,2,3'> = Str.of(listMonad);
      * ```
      */
-    static of<T extends string = string>(val: T): Str<T> {
+    static of<T extends string>(val: T): Str<T> {
         return new Str<T>(String(val));
     }
 
@@ -68,10 +67,19 @@ export default class Str<T extends string = string> extends Monad<T> {
      * Coerces anything into a Str
      * @see {@link Str.of}
      */
-    // @ts-ignore
-    static from<T = string>(val?: T): Str<T> {
+    static from<T = string, R = T extends string ? T : T extends Str<infer V> ? V : string>(
+        val?: T,
         // @ts-ignore
-        return val instanceof Str ? val : Str.of(val !== undefined ? val : '');
+    ): Str<R> {
+        if (Str.isStr(val)) {
+            // @ts-ignore
+            return val;
+        }
+
+        const sane: string = val !== undefined ? `${val}` : '';
+
+        // @ts-ignore
+        return Str.of(sane);
     }
 
     test(regex: RegExp): boolean {
