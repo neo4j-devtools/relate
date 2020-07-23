@@ -69,7 +69,7 @@ describe('DBMS versions (local environment)', () => {
                 },
             });
         const versions = (await fetchNeo4jVersions()).toArray();
-        expect(versions.length).toEqual(4);
+        expect(versions.length).toEqual(6);
         versions.forEach((v) => {
             if (v.edition === NEO4J_EDITION.ENTERPRISE) {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
@@ -115,40 +115,41 @@ describe('DBMS versions (local environment)', () => {
                 },
             });
 
-        nock(neo4jLimitedVersionsUrl.origin)
-            .get(neo4jLimitedVersionsUrl.pathname)
-            .reply(200, {
-                versions: {
-                    '3.5.17-rc.1': {
-                        limited: true,
-                        dist: {
-                            linux: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-unix.tar.gz',
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-unix.tar.gz',
-                            win: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-windows.zip',
-                        },
-                    },
-                    '4.0.98': {
-                        limited: true,
-                        dist: {
-                            linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-unix.tar.gz',
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-unix.tar.gz',
-                            win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-windows.zip',
-                        },
-                    },
-                    '4.0.99': {
-                        limited: true,
-                        dist: {
-                            linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-unix.tar.gz',
-                            mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-unix.tar.gz',
-                            win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-windows.zip',
-                        },
+        const versionReply = {
+            versions: {
+                '3.5.17-rc.1': {
+                    limited: true,
+                    dist: {
+                        linux: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-unix.tar.gz',
+                        mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-unix.tar.gz',
+                        win: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-rc1-windows.zip',
                     },
                 },
-            });
+                '4.0.98': {
+                    limited: true,
+                    dist: {
+                        linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-unix.tar.gz',
+                        mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-unix.tar.gz',
+                        win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.98-windows.zip',
+                    },
+                },
+                '4.0.99': {
+                    limited: true,
+                    dist: {
+                        linux: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-unix.tar.gz',
+                        mac: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-unix.tar.gz',
+                        win: 'https://dist.neo4j.org/neo4j-enterprise-4.0.99-windows.zip',
+                    },
+                },
+            },
+        };
+        nock(neo4jLimitedVersionsUrl.origin)
+            .get(neo4jLimitedVersionsUrl.pathname)
+            .reply(200, versionReply);
         const versions = (await fetchNeo4jVersions(true)).toArray();
-        expect(versions.length).toEqual(8);
+        expect(versions.length).toEqual(10);
         versions.forEach((v) => {
-            if (v.version === '4.0.0' || v.version === '4.0.1') {
+            if (!Object.keys(versionReply.versions).includes(v.version)) {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
             } else {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.LIMITED);

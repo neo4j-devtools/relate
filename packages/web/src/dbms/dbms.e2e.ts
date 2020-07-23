@@ -150,7 +150,7 @@ describe('DBMSModule', () => {
                 .reply(200, {
                     tags: {latest: '4.0.1'},
                     versions: {
-                        '3.5.17': {
+                        '3.3.17': {
                             dist: {
                                 linux: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
                                 mac: 'https://dist.neo4j.org/neo4j-enterprise-3.5.17-unix.tar.gz',
@@ -200,7 +200,7 @@ describe('DBMSModule', () => {
                             expect(v.dist).toContain('https://dist.neo4j.org/');
                         }
                         expect([NEO4J_EDITION.ENTERPRISE, NEO4J_EDITION.COMMUNITY].includes(v.edition)).toBe(true);
-                        expect(v.version).not.toEqual('3.5.17');
+                        expect(v.version).not.toEqual('3.3.17');
                     });
                 });
         });

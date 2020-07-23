@@ -17,7 +17,7 @@ describe('LocalEnvironment - link', () => {
         await expect(testDbmss.environment.dbmss.link('foo', '/path/to/nowhere')).rejects.toThrow(
             new InvalidArgumentError(
                 // eslint-disable-next-line max-len
-                'Path "/path/to/nowhere" does not seem to be a valid neo4j 4.x DBMS.\n\nSuggested Action(s):\n- Use a valid path',
+                'Path "/path/to/nowhere" does not seem to be a valid neo4j DBMS.\n\nSuggested Action(s):\n- Use a valid path',
             ),
         );
     });

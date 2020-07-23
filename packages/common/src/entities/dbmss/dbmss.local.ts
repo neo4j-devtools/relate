@@ -19,6 +19,7 @@ import {
     neo4jAdminCmd,
     neo4jCmd,
     resolveDbms,
+    supportsAccessTokens,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -32,6 +33,7 @@ import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic
 import {
     LocalEnvironment,
     LOCALHOST_IP_ADDRESS,
+    NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE,
     NEO4J_CERT_DIR,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
@@ -164,7 +166,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const info = await getDistributionInfo(rootPath);
 
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
-            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j 4.x DBMS`, [
+            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j DBMS`, [
                 'Use a valid path',
             ]);
         }
@@ -175,7 +177,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await this.discoverDbmss();
         await this.setDbmsManifest(newId, {name});
 
-        if (info.edition === NEO4J_EDITION.ENTERPRISE) {
+        if (supportsAccessTokens(info)) {
             await this.installSecurityPlugin(newId);
         }
 
@@ -276,8 +278,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbms = await this.get(dbmsNameOrId);
 
-        if (dbms.edition !== NEO4J_EDITION.ENTERPRISE) {
-            throw new NotSupportedError(`Only Neo4j ${NEO4J_EDITION.ENTERPRISE} editions can create access tokens.`);
+        if (!supportsAccessTokens(dbms)) {
+            throw new NotSupportedError(
+                // eslint-disable-next-line max-len
+                `Only Neo4j ${NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE} ${NEO4J_EDITION.ENTERPRISE} can create access tokens.`,
+            );
         }
 
         const driver = await this.getJSONDriverInstance(dbms.id, authToken);
@@ -359,7 +364,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const installed = await this.get(dbmsId);
 
-            if (installed.edition === NEO4J_EDITION.ENTERPRISE) {
+            if (supportsAccessTokens(installed)) {
                 await this.installSecurityPlugin(dbmsId);
             }
 
