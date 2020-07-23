@@ -15,6 +15,9 @@ export class Dbms {
     @Field(() => String, {nullable: true})
     description?: string;
 
+    @Field(() => [String])
+    tags: string[];
+
     @Field(() => String, {nullable: true})
     connectionUri?: string;
 }
@@ -86,6 +89,24 @@ export class CreateAccessTokenArgs extends EnvironmentArgs {
 
     @Field(() => AuthTokenInput)
     authToken: AuthTokenInput;
+}
+
+@ArgsType()
+export class AddDbmsTagsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [String])
+    tags: string[];
+}
+
+@ArgsType()
+export class RemoveDbmsTagsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [String])
+    tags: string[];
 }
 
 @ObjectType()

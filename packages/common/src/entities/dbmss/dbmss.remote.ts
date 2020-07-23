@@ -164,6 +164,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         id
                         name
                         description
+                        tags
                         connectionUri
                         status
                         version
@@ -210,6 +211,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         id
                         name
                         description
+                        tags
                         connectionUri
                     }
                 }
@@ -283,6 +285,8 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     ${PUBLIC_GRAPHQL_METHODS.INFO_DBMSS}(environmentNameOrId: $environmentId, dbmsIds: $namesOrIds) {
                         id
                         name
+                        description
+                        tags
                         connectionUri
                         version
                         status
@@ -343,5 +347,13 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
 
     getDbmsConfig(_dbmsId: string): Promise<PropertiesFile> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support getting DBMS config`);
+    }
+
+    addTags(_nameOrId: string, _tags: string[]): Promise<IDbmsInfo> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support adding DBMS tags`);
+    }
+
+    removeTags(_nameOrId: string, _tags: string[]): Promise<IDbmsInfo> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support removing DBMS tags`);
     }
 }
