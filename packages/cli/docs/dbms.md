@@ -15,7 +15,7 @@ Manage Neo4j DBMSs
 
 ## `relate dbms:access-token DBMS`
 
-Generate access token for a Neo4j DBMS
+Generate access token for a Neo4j >=4.x enterprise DBMS
 
 ```
 USAGE
