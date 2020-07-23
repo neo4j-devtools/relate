@@ -29,7 +29,7 @@ export interface IMonad<T> extends Iterable<T> {
  * ```
  */
 export default class Monad<T> implements IMonad<T> {
-    protected alreadyIterable = false;
+    protected readonly alreadyIterable: boolean = false;
 
     protected readonly iterableValue: Iterable<T>;
 
@@ -80,8 +80,8 @@ export default class Monad<T> implements IMonad<T> {
      * const strMonadMonad: Monad<Monad<'foo'>> = Monad.of(Monad.of('foo'));
      * ```
      */
-    static of<T>(val: T): Monad<T> {
-        return new Monad<T>(val);
+    static of(val: any): Monad<any> {
+        return new Monad<any>(val);
     }
 
     /**
@@ -91,9 +91,8 @@ export default class Monad<T> implements IMonad<T> {
      * const strMonadAgain: Monad<'foo'> = Monad.from(Monad.of('foo'));
      * ```
      */
-    static from<T, R = T extends Monad<infer I> ? I : T>(val: T): Monad<R> {
-        // @ts-ignore
-        return Monad.isMonad<T>(val) ? val : Monad.of<R>(val);
+    static from(val: any): Monad<any> {
+        return Monad.isMonad<any>(val) ? val : Monad.of(val);
     }
 
     /**

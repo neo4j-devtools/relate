@@ -29,6 +29,7 @@ describe('Bool', () => {
         const two = Bool.from(one);
 
         expect(Bool.of(one)).toEqual(Bool.from(false));
+        // @ts-ignore
         expect(Bool.of(two)).toBe(Bool.from(true));
     });
 

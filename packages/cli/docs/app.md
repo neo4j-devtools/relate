@@ -17,7 +17,7 @@ OPTIONS
   -D, --dbmsId=dbmsId            The DBMS to automatically connect to
   -L, --log                      If set, log the path instead
   -e, --environment=environment  Name of the environment to run the command against
-  -p, --project=project          Name of the project to connect with
+  -p, --project=project          Name of a project context to connect with
   -u, --user=user                The Neo4j DBMS user to automatically connect with, assuming an access token exists
 
 EXAMPLES

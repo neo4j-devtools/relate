@@ -34,6 +34,16 @@ export const selectPrompt = async (message: string, choices: string[] | IChoice[
     return selection;
 };
 
+export const confirmPrompt = async (message: string): Promise<boolean> => {
+    const {confirmed} = await prompt({
+        message,
+        name: 'confirmed',
+        type: 'confirm',
+    });
+
+    return confirmed;
+};
+
 export const selectMultiplePrompt = async (message: string, choices: string[] | IChoice[]): Promise<string[]> => {
     const {selection} = await prompt({
         message,

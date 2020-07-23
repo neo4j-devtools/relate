@@ -21,7 +21,7 @@
         "build": "tsc",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
-        "dev": "run-s build:clean watch"
+        "start": "run-s build:clean watch"
     },
     "devDependencies": {
         "@nestjs/common": "7.0.8",

@@ -10,5 +10,10 @@ export default class LinkCommand extends BaseCommand {
 
     static examples = ['$ relate project:link /path/to/target/project/dir'];
 
-    static args = [{name: 'filePath'}];
+    static args = [
+        {
+            name: 'filePath',
+            required: true,
+        },
+    ];
 }

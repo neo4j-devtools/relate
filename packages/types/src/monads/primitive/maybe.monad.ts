@@ -17,7 +17,6 @@ import Nil from './nil.monad';
  * Maybe.of(List.from([1)).isEmpty // false
  * ```
  */
-// @ts-ignore
 export default class Maybe<T> extends Monad<T | None<T>> {
     static EMPTY = new Maybe(None.EMPTY);
 

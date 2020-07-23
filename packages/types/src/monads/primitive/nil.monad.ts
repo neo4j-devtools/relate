@@ -11,7 +11,6 @@ import Monad from '../monad';
  * const plain: null = nil.get();
  * ```
  */
-// @ts-ignore
 export default class Nil extends Monad<null> {
     static NULL = new Nil();
 
