@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-import {CypherParameterError, TestDbmss, IDbms} from '@relate/common';
+import {CypherParameterError, TestDbmss, IDbmsInfo} from '@relate/common';
 import CreateCommand from '../../commands/db/create';
 import DropCommand from '../../commands/db/drop';
 import AccessTokenCommand from '../../commands/dbms/access-token';
@@ -18,7 +18,7 @@ const TEST_DB_NAME = 'testDatabase';
 describe('$relate db', () => {
     let dbmss: TestDbmss;
     let testEnvironmentId: string;
-    let testDbms: IDbms;
+    let testDbms: IDbmsInfo;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);

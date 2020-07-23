@@ -1,11 +1,12 @@
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider, DBMS_STATUS, NotFoundError} from '@relate/common';
+import {SystemModule, SystemProvider, DBMS_STATUS, NEO4J_EDITION} from '@relate/common';
 
 import {isInteractive, readStdin} from '../../stdin';
 import ExecCommand from '../../commands/db/exec';
-import {selectDbmsPrompt} from '../../prompts';
+
+import {selectDbmsPrompt, passwordPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -33,10 +34,7 @@ export class ExecModule implements OnApplicationBootstrap {
             }
         }
 
-        const dbmsInfo = await environment.dbmss.info([dbmsId]);
-        const dbms = dbmsInfo.first.getOrElse(() => {
-            throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
-        });
+        const dbms = await environment.dbmss.get(dbmsId);
 
         if (dbms.status === DBMS_STATUS.STOPPED) {
             cli.action.start(`Starting ${dbms.name} DBMS`);
@@ -44,7 +42,10 @@ export class ExecModule implements OnApplicationBootstrap {
             cli.action.stop(chalk.green('done'));
         }
 
-        const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms.id, user);
+        const accessToken =
+            dbms.edition === NEO4J_EDITION.ENTERPRISE
+                ? await this.systemProvider.getAccessToken(environment.id, dbms.id, user)
+                : await passwordPrompt('Enter passphrase');
 
         return environment.dbs
             .exec(dbmsId, from, {

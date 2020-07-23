@@ -4,7 +4,7 @@ import {from} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 import {List, Maybe, None, Str} from '@relate/types';
 
-import {IRelateFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, IDbms, WriteFileFlag} from '../../models';
+import {IRelateFile, IProject, ProjectModel, IProjectManifest, IProjectDbms, WriteFileFlag} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {PROJECTS_MANIFEST_FILE, PROJECTS_DIR_NAME} from '../../constants';
@@ -173,11 +173,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async addDbms(
         nameOrId: string,
         dbmsName: string,
-        dbms: IDbms,
+        dbmsId: string,
         principal?: string,
         accessToken?: string,
     ): Promise<IProjectDbms> {
         const project = await this.get(nameOrId);
+        const dbms = await this.environment.dbmss.get(dbmsId);
         const manifest = await this.getManifest(project.root);
         const existing = List.from(manifest.dbmss);
         const newDbms: IProjectDbms = {

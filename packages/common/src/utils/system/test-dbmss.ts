@@ -2,10 +2,10 @@ import {v4 as uuid} from 'uuid';
 import path from 'path';
 import fse from 'fs-extra';
 
-import {EnvironmentConfigModel, IDbms} from '../../models';
-import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../entities/environments';
+import {EnvironmentConfigModel, IDbmsInfo} from '../../models';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment, NEO4J_EDITION} from '../../entities/environments';
 
-import {NotSupportedError, NotFoundError} from '../../errors';
+import {NotFoundError, NotSupportedError} from '../../errors';
 import {envPaths} from '../env-paths';
 import {DBMS_DIR_NAME} from '../../constants';
 
@@ -13,6 +13,8 @@ export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';
 
     static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
+
+    static NEO4J_EDITION = (process.env.TEST_NEO4J_EDITION || NEO4J_EDITION.ENTERPRISE) as NEO4J_EDITION;
 
     static ARCHIVE_PATH = path.join(envPaths().cache, DBMS_DIR_NAME, `neo4j-enterprise-${TestDbmss.NEO4J_VERSION}.tgz`);
 
@@ -57,10 +59,15 @@ export class TestDbmss {
         return name;
     }
 
-    async createDbms(): Promise<IDbms> {
+    async createDbms(edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE): Promise<IDbmsInfo> {
         const name = this.createName();
 
-        const dbmsId = await this.environment.dbmss.install(name, TestDbmss.DBMS_CREDENTIALS, TestDbmss.NEO4J_VERSION);
+        const dbmsId = await this.environment.dbmss.install(
+            name,
+            TestDbmss.DBMS_CREDENTIALS,
+            TestDbmss.NEO4J_VERSION,
+            edition || TestDbmss.NEO4J_EDITION,
+        );
 
         const shortUUID = dbmsId.slice(0, 8);
         const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {

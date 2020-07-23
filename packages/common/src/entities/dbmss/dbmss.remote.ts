@@ -5,7 +5,7 @@ import {IAuthToken} from '@huboneo/tapestry';
 import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {RemoteEnvironment} from '../environments';
+import {NEO4J_EDITION, RemoteEnvironment} from '../environments';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {GraphqlError, InvalidConfigError, NotSupportedError} from '../../errors';
 import {PropertiesFile} from '../../system/files';
@@ -82,8 +82,9 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         name: string,
         credentials: string,
         version: string,
-        noCaching?: boolean,
-        limited?: boolean,
+        edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
+        noCaching = false,
+        limited = false,
     ): Promise<string> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
@@ -92,6 +93,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $name: String!
                     $credentials: String!
                     $version: String!
+                    $edition: String!
                     $noCaching: String,
                     $version: String,
                 ) {
@@ -100,6 +102,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         name: $name
                         credentials: $credentials
                         version: $version
+                        edition: $edition
                         noCaching: $noCaching
                         limited: $limited
                     )
@@ -110,6 +113,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 environmentNameOrId: this.environment.remoteEnvironmentId,
                 name,
                 version,
+                edition,
                 noCaching,
                 limited,
             },
@@ -123,6 +127,10 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         }
 
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
+    }
+
+    link(_name: string, _rootPath: string): Promise<IDbmsInfo> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support linking DBMSs`);
     }
 
     async uninstall(name: string): Promise<void> {
@@ -148,7 +156,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS];
     }
 
-    async get(nameOrId: string): Promise<IDbms> {
+    async get(nameOrId: string): Promise<IDbmsInfo> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query GetDbms($environmentId: String, $nameOrId: String!) {
@@ -157,6 +165,9 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         name
                         description
                         connectionUri
+                        status
+                        version
+                        edition
                     }
                 }
             `,
@@ -184,9 +195,11 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         const relateUrl = new URL(this.environment.httpOrigin);
         const connectionUri = new URL(dbms.connectionUri);
         connectionUri.hostname = relateUrl.hostname;
-        dbms.connectionUri = connectionUri.toString();
 
-        return dbms;
+        return {
+            ...dbms,
+            connectionUri: connectionUri.toString(),
+        };
     }
 
     async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>> {

@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IRelateFile, IProject, IProjectManifest, IProjectDbms, IDbms} from '../../models';
+import {IRelateFile, IProject, IProjectManifest, IProjectDbms} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {RemoteEnvironment} from '../environments';
 import {NotSupportedError} from '../../errors';
@@ -46,7 +46,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
     addDbms(
         _name: string,
         _dbmsName: string,
-        _dbms: IDbms,
+        _dbmsId: string,
         _principal?: string,
         _accessToken?: string,
     ): Promise<IProjectDbms> {

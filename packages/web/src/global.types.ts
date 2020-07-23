@@ -1,5 +1,5 @@
 import {ArgsType, Field, InputType, ObjectType, registerEnumType} from '@nestjs/graphql';
-import {FILTER_COMPARATORS, FILTER_CONNECTORS, IRelateFile, IRelateFilter} from '@relate/common';
+import {FILTER_COMPARATORS, FILTER_CONNECTORS, IRelateFile, IRelateFilter, NEO4J_EDITION} from '@relate/common';
 
 @ArgsType()
 export class EnvironmentArgs {
@@ -28,6 +28,10 @@ registerEnumType(FILTER_COMPARATORS, {
 
 registerEnumType(FILTER_CONNECTORS, {
     name: 'FILTER_CONNECTORS',
+});
+
+registerEnumType(NEO4J_EDITION, {
+    name: 'NEO4J_EDITION',
 });
 
 @InputType()

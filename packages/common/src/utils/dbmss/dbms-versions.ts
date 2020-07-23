@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import got from 'got';
 import path from 'path';
 import semver from 'semver';
-import {Dict, List, None} from '@relate/types';
+import {Dict, List, None, Str} from '@relate/types';
 
 import {DependencyError, InvalidArgumentError} from '../../errors';
 import {IDbmsVersion} from '../../models';
@@ -109,14 +109,30 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
                 url = versionObj.dist.win;
             }
 
-            return {
-                dist: url,
-                edition: url.includes(NEO4J_EDITION.ENTERPRISE) ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
-                origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
-                version: versionStr,
-            };
-        });
+            return [
+                {
+                    dist: url,
+                    edition: NEO4J_EDITION.ENTERPRISE,
+                    origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
+                    version: versionStr,
+                },
+                // @todo: remove this when manifest contains community dists
+                {
+                    dist: buildCommunityDistributionUrl(url),
+                    edition: NEO4J_EDITION.COMMUNITY,
+                    origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
+                    version: versionStr,
+                },
+            ];
+        })
+        .flatten();
 };
+
+export function buildCommunityDistributionUrl(enterpriseUrl: string): string {
+    return Str.from(enterpriseUrl)
+        .replace(`-${NEO4J_EDITION.ENTERPRISE}-`, `-${NEO4J_EDITION.COMMUNITY}-`)
+        .get();
+}
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;

@@ -5,7 +5,7 @@ import * as rxjsOps from 'rxjs/operators';
 
 import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
-import {EnvironmentAbstract} from '../environments';
+import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
 import {
     ConnectionError,
@@ -36,15 +36,18 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         name: string,
         credentials: string,
         version: string,
+        edition?: NEO4J_EDITION,
         noCaching?: boolean,
         limited?: boolean,
     ): Promise<string>;
+
+    abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 
     abstract uninstall(dbmsId: string): Promise<void>;
 
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>>;
 
-    abstract get(nameOrId: string): Promise<IDbms>;
+    abstract get(nameOrId: string): Promise<IDbmsInfo>;
 
     abstract start(dbmsIds: string[] | List<string>): Promise<List<string>>;
 

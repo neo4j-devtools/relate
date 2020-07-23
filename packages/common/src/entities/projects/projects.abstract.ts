@@ -1,7 +1,7 @@
 import {List} from '@relate/types';
 
 import {EnvironmentAbstract} from '../environments';
-import {IRelateFile, IProjectManifest, IProject, IProjectDbms, IDbms, WriteFileFlag} from '../../models';
+import {IRelateFile, IProjectManifest, IProject, IProjectDbms, WriteFileFlag} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
@@ -41,7 +41,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     abstract addDbms(
         projectName: string,
         dbmsName: string,
-        dbms: IDbms,
+        dbmsId: string,
         principal?: string,
         accessToken?: string,
     ): Promise<IProjectDbms>;

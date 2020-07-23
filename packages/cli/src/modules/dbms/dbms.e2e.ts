@@ -1,6 +1,6 @@
 import path from 'path';
 import {test} from '@oclif/test';
-import {TestDbmss, DBMS_STATUS, envPaths} from '@relate/common';
+import {TestDbmss, DBMS_STATUS, envPaths, NotFoundError} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
@@ -115,7 +115,7 @@ describe('$relate dbms', () => {
 
     test.it('errors when trying to access a non existing dbms', async () => {
         const command = InfoCommand.run(['non-existent', '--environment', TEST_ENVIRONMENT_ID]);
-        const expectedError = new Error('DBMS "non-existent" not found');
+        const expectedError = new NotFoundError('DBMS "non-existent" not found');
         await expect(command).rejects.toThrow(expectedError);
     });
 });
