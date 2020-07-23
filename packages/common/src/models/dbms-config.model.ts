@@ -33,6 +33,7 @@ export interface IDbmsConfig {
     name: string;
     description: string;
     rootPath?: string;
+    secure?: boolean;
 }
 
 export interface IDbms extends IDbmsConfig {
