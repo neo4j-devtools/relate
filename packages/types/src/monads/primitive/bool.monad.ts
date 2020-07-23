@@ -11,7 +11,6 @@ import Monad from '../monad';
  * const plain: boolean = bool.get();
  * ```
  */
-// @ts-ignore
 export default class Bool extends Monad<boolean> {
     static TRUE = new Bool(true);
 
@@ -63,7 +62,7 @@ export default class Bool extends Monad<boolean> {
      * const listBool: Bool<false> = Bool.of(listMonad);
      * ```
      */
-    static of(val: any): Bool {
+    static of(val: boolean): Bool {
         const valToUse = Monad.from(val);
 
         return valToUse.isEmpty ? Bool.FALSE : Bool.TRUE;
