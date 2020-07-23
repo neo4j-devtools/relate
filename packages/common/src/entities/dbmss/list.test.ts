@@ -69,6 +69,7 @@ describe('LocalEnvironment - list', () => {
                 id: '6bb553ba',
                 name: 'Name',
                 rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+                tags: [],
                 secure: false,
             },
             {
@@ -78,6 +79,7 @@ describe('LocalEnvironment - list', () => {
                 id: '998f936e',
                 name: '',
                 rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
+                tags: [],
                 secure: false,
             },
         ];
@@ -121,6 +123,7 @@ describe('LocalEnvironment - list', () => {
                 id: '6bb553ba',
                 name: 'Name',
                 rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+                tags: [],
                 secure: false,
             },
         ];

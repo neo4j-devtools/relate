@@ -43,6 +43,7 @@ type Dbms {
   id: ID!
   name: String
   description: String
+  tags: [String!]!
   connectionUri: String
 }
 
@@ -50,6 +51,7 @@ type DbmsInfo {
   id: ID!
   name: String
   description: String
+  tags: [String!]!
   connectionUri: String
   status: String!
   version: String
@@ -93,19 +95,26 @@ type Mutation {
   createAppLaunchToken(environmentNameOrId: String, appName: String!, dbmsId: String!, principal: String, accessToken: String, projectId: String): AppLaunchToken!
   installExtension(name: String!, environmentNameOrId: String, version: String!): AppData!
   uninstallExtension(environmentNameOrId: String, name: String!): [ExtensionData!]!
-  installDbms(environmentNameOrId: String, name: String!, credentials: String!, version: String!, noCaching: Boolean, limited: Boolean): String!
+  installDbms(environmentNameOrId: String, name: String!, credentials: String!, version: String!, edition: NEO4J_EDITION, noCaching: Boolean, limited: Boolean): String!
   uninstallDbms(environmentNameOrId: String, name: String!): String!
   startDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   stopDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentNameOrId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
   updateDbmsConfig(dbmsId: String!, properties: [[String!]!]!): Boolean!
-  createDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
-  dropDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
+  addDbmsTags(environmentNameOrId: String, dbmsId: String!, tags: [String!]!): DbmsInfo!
+  removeDbmsTags(environmentNameOrId: String, dbmsId: String!, tags: [String!]!): DbmsInfo!
   initProject(environmentNameOrId: String, name: String!): Project!
   addProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
   removeProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!): ProjectDbms!
   addProjectFile(name: String!, environmentNameOrId: String, destination: String, fileUpload: Upload!): RelateFile!
   removeProjectFile(name: String!, environmentNameOrId: String, filePath: String!): RelateFile!
+  createDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
+  dropDb(dbmsId: String!, user: String!, accessToken: String!, dbName: String!): String!
+}
+
+enum NEO4J_EDITION {
+  COMMUNITY
+  ENTERPRISE
 }
 
 type Project {
@@ -126,13 +135,13 @@ type Query {
   listApps(filters: [RelateSimpleFilter!], environmentNameOrId: String): [AppData!]!
   listExtensionVersions(environmentNameOrId: String, filters: [RelateSimpleFilter!]): [ExtensionVersion!]!
   listExtensions(environmentNameOrId: String, filters: [RelateSimpleFilter!]): [AppData!]!
-  getDbms(environmentNameOrId: String, dbmsId: String!): Dbms!
+  getDbms(environmentNameOrId: String, dbmsId: String!): DbmsInfo!
   listDbmss(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Dbms!]!
   infoDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [DbmsInfo!]!
   listDbmsVersions(filters: [RelateSimpleFilter!], environmentNameOrId: String, limited: Boolean): [DbmsVersion!]!
-  listDbs(dbmsId: String!, user: String!, accessToken: String!): [Db!]!
   listProjects(filters: [RelateSimpleFilter!], environmentNameOrId: String): [Project!]!
   getProject(environmentNameOrId: String, name: String!): Project!
+  listDbs(dbmsId: String!, user: String!, accessToken: String!): [Db!]!
 }
 
 type RelateFile {

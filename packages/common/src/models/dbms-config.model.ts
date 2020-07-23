@@ -32,6 +32,7 @@ export interface IDbmsConfig {
     id: string;
     name: string;
     description: string;
+    tags: string[];
     rootPath?: string;
     secure?: boolean;
 }
@@ -51,6 +52,9 @@ export class DbmsConfigModel extends ModelAbstract<IDbmsConfig> implements IDbms
 
     @IsString()
     public description!: string;
+
+    @IsString({each: true})
+    public tags!: string[];
 
     @IsString()
     @IsOptional()
