@@ -123,6 +123,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             const {hostname, port} = new URL(dbmsInfo.connectionUri);
             const driver = new Driver<TapestryJSONResponse>({
                 connectionConfig: {
+                    secure: dbmsInfo.secure || undefined,
                     authToken,
                     host: hostname,
                     port: Number(port),

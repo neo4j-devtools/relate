@@ -494,7 +494,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     const neo4jConfig = await this.getDbmsConfig(id);
                     // @todo: verify these settings with driver team
                     const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
-                    const protocol = tlsLevel !== DBMS_TLS_LEVEL.DISABLED ? 'neo4j+s://' : 'neo4j://';
+                    const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
+                    const protocol = secure ? 'neo4j+s://' : 'neo4j://';
                     const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
                     const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
                     const configDbmss = await this.getDbmsManifest(id);
@@ -503,6 +504,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         connectionUri: `${protocol}${host}${port}`,
                         id,
                         rootPath: fullPath,
+                        secure,
                     };
 
                     this.dbmss[id] = configDbmss.merge(overrides).toObject();
