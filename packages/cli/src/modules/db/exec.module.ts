@@ -1,7 +1,7 @@
 import {cli} from 'cli-ux';
 import chalk from 'chalk';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider, DBMS_STATUS, NEO4J_EDITION} from '@relate/common';
+import {SystemModule, SystemProvider, DBMS_STATUS, supportsAccessTokens} from '@relate/common';
 
 import {isInteractive, readStdin} from '../../stdin';
 import ExecCommand from '../../commands/db/exec';
@@ -42,10 +42,9 @@ export class ExecModule implements OnApplicationBootstrap {
             cli.action.stop(chalk.green('done'));
         }
 
-        const accessToken =
-            dbms.edition === NEO4J_EDITION.ENTERPRISE
-                ? await this.systemProvider.getAccessToken(environment.id, dbms.id, user)
-                : await passwordPrompt('Enter passphrase');
+        const accessToken = supportsAccessTokens(dbms)
+            ? await this.systemProvider.getAccessToken(environment.id, dbms.id, user)
+            : await passwordPrompt('Enter passphrase');
 
         return environment.dbs
             .exec(dbmsId, from, {
