@@ -101,6 +101,8 @@ type Mutation {
   stopDbmss(environmentNameOrId: String, dbmsIds: [String!]!): [String!]!
   createAccessToken(environmentNameOrId: String, dbmsId: String!, appName: String!, authToken: AuthTokenInput!): String!
   updateDbmsConfig(dbmsId: String!, properties: [[String!]!]!): Boolean!
+  addDbmsTags(environmentNameOrId: String, dbmsId: String!, tags: [String!]!): DbmsInfo!
+  removeDbmsTags(environmentNameOrId: String, dbmsId: String!, tags: [String!]!): DbmsInfo!
   initProject(environmentNameOrId: String, name: String!): Project!
   addProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!, dbmsId: String!, user: String, accessToken: String): ProjectDbms!
   removeProjectDbms(name: String!, environmentNameOrId: String, dbmsName: String!): ProjectDbms!

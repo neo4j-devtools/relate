@@ -91,6 +91,24 @@ export class CreateAccessTokenArgs extends EnvironmentArgs {
     authToken: AuthTokenInput;
 }
 
+@ArgsType()
+export class AddDbmsTagsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [String])
+    tags: string[];
+}
+
+@ArgsType()
+export class RemoveDbmsTagsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [String])
+    tags: string[];
+}
+
 @ObjectType()
 export class DbmsVersion {
     @Field(() => String)
