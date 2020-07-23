@@ -34,6 +34,7 @@ export interface IDbmsConfig {
     description: string;
     tags: string[];
     rootPath?: string;
+    secure?: boolean;
 }
 
 export interface IDbms extends IDbmsConfig {
