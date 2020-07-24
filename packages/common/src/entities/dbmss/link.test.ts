@@ -17,7 +17,7 @@ describe('LocalEnvironment - link', () => {
         await expect(testDbmss.environment.dbmss.link('foo', '/path/to/nowhere')).rejects.toThrow(
             new InvalidArgumentError(
                 // eslint-disable-next-line max-len
-                'Path "/path/to/nowhere" does not seem to be a valid neo4j 4.x DBMS.\n\nSuggested Action(s):\n- Use a valid path',
+                'Path "/path/to/nowhere" does not seem to be a valid neo4j DBMS.\n\nSuggested Action(s):\n- Use a valid path',
             ),
         );
     });
@@ -42,7 +42,6 @@ describe('LocalEnvironment - link', () => {
 
     test('Is not discovered if target is removed or missing', async () => {
         await testDbmss.environment.dbmss.uninstall(instance.id);
-
         await expect(testDbmss.environment.dbmss.get('bar')).rejects.toThrow(new NotFoundError('DBMS "bar" not found'));
     });
 });

@@ -1,4 +1,4 @@
-import {join, filter, find, map, forEach, without} from 'lodash';
+import {join, filter, find, map, forEach, without, uniq, uniqBy} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
@@ -184,8 +184,8 @@ export default class List<T> extends Monad<Iterable<T>> {
         return List.of<T>(found);
     }
 
-    without(other: T): List<T> {
-        return List.of<T>(without([...this], other));
+    without(...other: T[]): List<T> {
+        return List.of<T>(without([...this], ...other));
     }
 
     /**
@@ -316,6 +316,16 @@ export default class List<T> extends Monad<Iterable<T>> {
 
     join(separator?: string | Str): Str {
         return Str.from(join([...this], separator ? `${separator}` : separator));
+    }
+
+    unique(predicate?: (val: T) => any) {
+        if (predicate) {
+            // @ts-ignore
+            return this.map((val) => uniqBy(val, predicate));
+        }
+
+        // @ts-ignore
+        return this.map(uniq);
     }
 
     toString() {

@@ -1,4 +1,5 @@
 import {flags} from '@oclif/command';
+import {NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE, NEO4J_EDITION} from '@relate/common';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -9,7 +10,8 @@ export default class AccessTokenCommand extends BaseCommand {
 
     commandModule = AccessTokenModule;
 
-    static description = 'Generate access token for a Neo4j DBMS';
+    // eslint-disable-next-line max-len
+    static description = `Generate access token for a Neo4j ${NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE} ${NEO4J_EDITION.ENTERPRISE} DBMS`;
 
     static examples = [
         '$ relate dbms:access-token',

@@ -19,6 +19,7 @@ import {
     neo4jAdminCmd,
     neo4jCmd,
     resolveDbms,
+    supportsAccessTokens,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -32,6 +33,7 @@ import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic
 import {
     LocalEnvironment,
     LOCALHOST_IP_ADDRESS,
+    NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE,
     NEO4J_CERT_DIR,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
@@ -164,7 +166,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const info = await getDistributionInfo(rootPath);
 
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
-            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j 4.x DBMS`, [
+            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j DBMS`, [
                 'Use a valid path',
             ]);
         }
@@ -175,7 +177,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await this.discoverDbmss();
         await this.setDbmsManifest(newId, {name});
 
-        if (info.edition === NEO4J_EDITION.ENTERPRISE) {
+        if (supportsAccessTokens(info)) {
             await this.installSecurityPlugin(newId);
         }
 
@@ -263,6 +265,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return {
             connectionUri: dbms.connectionUri,
             description: dbms.description,
+            tags: dbms.tags,
             edition: v?.edition,
             id: dbms.id,
             name: dbms.name,
@@ -275,8 +278,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
         const dbms = await this.get(dbmsNameOrId);
 
-        if (dbms.edition !== NEO4J_EDITION.ENTERPRISE) {
-            throw new NotSupportedError(`Only Neo4j ${NEO4J_EDITION.ENTERPRISE} editions can create access tokens.`);
+        if (!supportsAccessTokens(dbms)) {
+            throw new NotSupportedError(
+                // eslint-disable-next-line max-len
+                `Only Neo4j ${NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE} ${NEO4J_EDITION.ENTERPRISE} can create access tokens.`,
+            );
         }
 
         const driver = await this.getJSONDriverInstance(dbms.id, authToken);
@@ -358,7 +364,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const installed = await this.get(dbmsId);
 
-            if (installed.edition === NEO4J_EDITION.ENTERPRISE) {
+            if (supportsAccessTokens(installed)) {
                 await this.installSecurityPlugin(dbmsId);
             }
 
@@ -494,7 +500,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     const neo4jConfig = await this.getDbmsConfig(id);
                     // @todo: verify these settings with driver team
                     const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
-                    const protocol = tlsLevel !== DBMS_TLS_LEVEL.DISABLED ? 'neo4j+s://' : 'neo4j://';
+                    const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
+                    const protocol = secure ? 'neo4j+s://' : 'neo4j://';
                     const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
                     const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
                     const configDbmss = await this.getDbmsManifest(id);
@@ -503,6 +510,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         connectionUri: `${protocol}${host}${port}`,
                         id,
                         rootPath: fullPath,
+                        secure,
                     };
 
                     this.dbmss[id] = configDbmss.merge(overrides).toObject();
@@ -522,11 +530,37 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return PropertiesFile.readFile(configFileName);
     }
 
+    public async addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
+        const {id, tags: existing} = await this.get(nameOrId);
+
+        await this.setDbmsManifest(id, {
+            tags: List.from(existing)
+                .concat(tags)
+                .unique()
+                .toArray(),
+        });
+
+        return this.get(id);
+    }
+
+    public async removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
+        const {id, tags: existing} = await this.get(nameOrId);
+
+        await this.setDbmsManifest(id, {
+            tags: List.from(existing)
+                .without(...tags)
+                .toArray(),
+        });
+
+        return this.get(id);
+    }
+
     private async getDbmsManifest(dbmsId: string): Promise<Dict<IDbmsConfig>> {
         const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const defaultValues = {
             description: '',
             name: '',
+            tags: [],
         };
 
         if (!(await fse.pathExists(configFileName))) {

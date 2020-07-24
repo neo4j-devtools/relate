@@ -4,18 +4,20 @@
 Manage Neo4j DBMSs
 
 * [`relate dbms:access-token DBMS`](#relate-dbmsaccess-token-dbms)
+* [`relate dbms:add-tag DBMS TAGNAME`](#relate-dbmsadd-tag-dbms-tagname)
 * [`relate dbms:info [DBMSS]`](#relate-dbmsinfo-dbmss)
 * [`relate dbms:install VERSION`](#relate-dbmsinstall-version)
 * [`relate dbms:link FILEPATH DBMSNAME`](#relate-dbmslink-filepath-dbmsname)
 * [`relate dbms:list`](#relate-dbmslist)
 * [`relate dbms:open DBMS`](#relate-dbmsopen-dbms)
+* [`relate dbms:remove-tag DBMS TAGNAME`](#relate-dbmsremove-tag-dbms-tagname)
 * [`relate dbms:start [DBMSS]`](#relate-dbmsstart-dbmss)
 * [`relate dbms:stop [DBMSS]`](#relate-dbmsstop-dbmss)
 * [`relate dbms:uninstall DBMS`](#relate-dbmsuninstall-dbms)
 
 ## `relate dbms:access-token DBMS`
 
-Generate access token for a Neo4j DBMS
+Generate access token for a Neo4j >=4.x enterprise DBMS
 
 ```
 USAGE
@@ -36,6 +38,27 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/access-token.ts)_
+
+## `relate dbms:add-tag DBMS TAGNAME`
+
+Tag an existing DBMS
+
+```
+USAGE
+  $ relate dbms:add-tag DBMS TAGNAME
+
+ARGUMENTS
+  DBMS     Name or ID of a Neo4j instance
+  TAGNAME
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLE
+  $ relate dbms:add-tag dbmsId "foo bar"
+```
+
+_See code: [dist/commands/dbms/add-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/add-tag.ts)_
 
 ## `relate dbms:info [DBMSS]`
 
@@ -162,6 +185,27 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/open.ts)_
+
+## `relate dbms:remove-tag DBMS TAGNAME`
+
+Remove tag from an existing DBMS
+
+```
+USAGE
+  $ relate dbms:remove-tag DBMS TAGNAME
+
+ARGUMENTS
+  DBMS     Name or ID of a Neo4j instance
+  TAGNAME
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+
+EXAMPLE
+  $ relate dbms:remove-tag dbmsId "foo bar"
+```
+
+_See code: [dist/commands/dbms/remove-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.1-alpha.6/dist/commands/dbms/remove-tag.ts)_
 
 ## `relate dbms:start [DBMSS]`
 

@@ -14,6 +14,8 @@ import {
     DbmsVersion,
     UpdateDbmsConfigArgs,
     ListDbmsVersionsArgs,
+    AddDbmsTagsArgs,
+    RemoveDbmsTagsArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../guards/environment.guard';
 import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
@@ -106,5 +108,21 @@ export class DBMSResolver {
         @Args() {dbmsId, properties}: UpdateDbmsConfigArgs,
     ): Promise<boolean> {
         return environment.dbmss.updateConfig(dbmsId, new Map(properties));
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.ADD_DBMS_TAGS](
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, tags}: AddDbmsTagsArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.addTags(dbmsId, tags);
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.REMOVE_DBMS_TAGS](
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, tags}: RemoveDbmsTagsArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.removeTags(dbmsId, tags);
     }
 }

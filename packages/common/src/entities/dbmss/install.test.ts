@@ -71,7 +71,7 @@ describe('LocalEnvironment - install', () => {
     test('with version in unsupported range (semver)', async () => {
         await expect(
             testDbmss.environment.dbmss.install(testDbmss.createName(), DBMS_CREDENTIALS, '3.1'),
-        ).rejects.toThrow(new NotSupportedError('version not in range >=4.x'));
+        ).rejects.toThrow(new NotSupportedError('version not in range >=3.4'));
     });
 
     test('with valid, non cached version (semver)', async () => {
