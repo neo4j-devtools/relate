@@ -4,6 +4,11 @@
 
 # Summary
 Enable frontend applications to seamlessly interact with `@relate` backend using a client library that exposes information such as DBMS connection parameters and more.
+Launch tokens can contain informationa about the relate `environment`, `dbms`, and `project` the app was opened for, and are generated using the following logic:
+
+![](./launch-token-diagram.png)
+
+To decode a launch token the graph app has to pass it back to the originating relate web server, using either the raw GraphQL API or the `@relate/client` package.
 
 # Basic example
 Below interactions result in an App Launch Token being created which can be used in URLs to allow apps access to connection information for a given DBMS and user: `/static/neo4j-browser?_appLaunchToken=<token>`
