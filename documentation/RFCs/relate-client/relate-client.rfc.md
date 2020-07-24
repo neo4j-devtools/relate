@@ -4,7 +4,7 @@
 
 # Summary
 Enable frontend applications to seamlessly interact with `@relate` backend using a client library that exposes information such as DBMS connection parameters and more.
-Launch tokens can contain informationa about the relate `environment`, `dbms`, and `project` the app was opened for, and are generated using the following logic:
+Launch tokens can contain information about the relate `environment`, `dbms`, and `project` the app was opened for, and are generated using the following logic:
 
 ![](./launch-token-diagram.png)
 
