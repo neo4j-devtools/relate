@@ -6,13 +6,13 @@
 Allow first and third party developers to extend the `@relate` stack with additional functionality in two primary ways; `STATIC` and `APPLICATION` extensions, as well as through "event hooks" emitted in various parts of the application.
 
 ## Extensions
-Adds new functionality to one of more packages by:
-- `STATIC` extensions: Adding static html bundles (i.e. "graph apps") to the web server application. 
+Adds new functionality to one or more modules by:
+- `STATIC` extensions: Adding static html bundles (i.e. "graph apps") to the web module. 
 - `APPLICATION` extensions: Injecting [@nestjs](https://docs.nestjs.com/) modules to any of our supported application extension points:
-    - `SYSTEM`: Shared across all packages
-    - `CLI`: Only for CLI app
-    - `WEB`: Only for Web app
-    - `ELECTRON`: Only for Electron app
+    - `SYSTEM`: Shared across all modules
+    - `CLI`: Only for CLI module
+    - `WEB`: Only for Web module
+    - `ELECTRON`: Only for Electron module
     
 ## Event Hooks
 Allows reacting to events within the application and modify values being processed.
@@ -156,4 +156,4 @@ Along similar lines, introducing hooks exposes us to unintentional side effects 
 The alternative to this path is to only allow core functionality, and force third-party developers to raise PR's directly against the `@relate` repo. This process would be slow and labor intensive, taking our focus away from new features and functionality.
 
 # Adoption strategy
-We are creating several extensions as part of our `alpha-1` release and will share the source code with developers.
+Creating example extensions for all our modules and work with DevRel to spread knowledge.
