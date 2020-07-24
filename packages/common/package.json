@@ -67,7 +67,7 @@
         "graphql-tag": "2.10.3",
         "hasha": "5.2.0",
         "jsonwebtoken": "8.5.1",
-        "lodash": "4.17.15",
+        "lodash": "4.17.19",
         "node-forge": "0.9.1",
         "rxjs": "6.5.5",
         "semver": "7.1.3",
