@@ -23,19 +23,10 @@
 
 ### Type aliases
 
-* [Compactable](README.md#compactable)
 * [KeyVal](README.md#keyval)
 * [RawDict](README.md#rawdict)
 
 ## Type aliases
-
-###  Compactable
-
-Ƭ **Compactable**: *T extends null ? never : T extends undefined ? never : T extends Nil ? never : T | T extends None<any> ? never : T*
-
-*Defined in [src/monads/primitive/list.monad.ts:12](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/list.monad.ts#L12)*
-
-___
 
 ###  KeyVal
 

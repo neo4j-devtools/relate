@@ -19,6 +19,9 @@ import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES}
 import {emitHookEvent} from '../../utils';
 import {IRelateFilter} from '../../utils/generic';
 
+/**
+ * @hidden
+ */
 export type TapestryJSONResponse<Res = any> = {
     header: {fields: string[]};
     type: DRIVER_RESULT_TYPE;
