@@ -1,11 +1,11 @@
 import {Module} from '@nestjs/common';
 
 import {SystemModule} from '@relate/common';
-import {ProjectsResolver} from './projects.resolver';
+import {ProjectResolver} from './project.resolver';
 
 @Module({
     exports: [],
     imports: [SystemModule],
-    providers: [ProjectsResolver],
+    providers: [ProjectResolver],
 })
-export class ProjectsModule {}
+export class ProjectModule {}

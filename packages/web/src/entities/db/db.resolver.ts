@@ -4,8 +4,8 @@ import {Environment, SystemProvider, PUBLIC_GRAPHQL_METHODS, IDb} from '@relate/
 import {List} from '@relate/types';
 
 import {CreateOrDropDbArgs, ListDbArgs, Db} from './db.types';
-import {EnvironmentGuard} from '../guards/environment.guard';
-import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
+import {EnvironmentGuard} from '../../guards/environment.guard';
+import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)

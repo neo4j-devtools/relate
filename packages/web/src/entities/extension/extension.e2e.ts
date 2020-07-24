@@ -14,9 +14,9 @@ import {
 import fse from 'fs-extra';
 import path from 'path';
 
-import configuration from '../configs/dev.config';
-import {WebModule} from '../web.module';
-import {createAppLaunchUrl} from './extensions.utils';
+import configuration from '../../configs/dev.config';
+import {WebModule} from '../../web.module';
+import {createAppLaunchUrl} from './extension.utils';
 
 let TEST_DB_ID: string;
 const TEST_ACCESS_TOKEN =

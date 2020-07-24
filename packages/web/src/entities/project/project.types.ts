@@ -2,7 +2,7 @@ import {ObjectType, ArgsType, Field} from '@nestjs/graphql';
 import {IProject, IProjectDbms} from '@relate/common';
 import {IFileUpload, GraphQLUpload} from './graphql-upload';
 
-import {EnvironmentArgs, RelateFile} from '../global.types';
+import {EnvironmentArgs, RelateFile} from '../../global.types';
 
 @ObjectType()
 export class Project implements Omit<IProject, 'root'> {
