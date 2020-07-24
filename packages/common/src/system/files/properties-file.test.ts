@@ -1,4 +1,5 @@
-import * as utils from '../../utils/files';
+import * as read from '../../utils/files/read-properties-file';
+import * as write from '../../utils/files/write-properties-file';
 import {PropertiesFile} from './properties-file';
 
 jest.mock('./properties-file.constants.ts', () => ({
@@ -9,13 +10,13 @@ jest.mock('./properties-file.constants.ts', () => ({
 
 describe('PropertiesFile', () => {
     const path = '/path/to/config/file';
-    let configProperties: utils.PropertyEntries;
+    let configProperties: read.PropertyEntries;
     let readPropertiesFileSpy: jest.SpyInstance;
     let writePropertiesFileSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        readPropertiesFileSpy = jest.spyOn(utils, 'readPropertiesFile');
-        writePropertiesFileSpy = jest.spyOn(utils, 'writePropertiesFile');
+        readPropertiesFileSpy = jest.spyOn(read, 'readPropertiesFile');
+        writePropertiesFileSpy = jest.spyOn(write, 'writePropertiesFile');
     });
 
     test('readFile', async () => {
