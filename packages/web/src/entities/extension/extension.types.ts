@@ -1,8 +1,8 @@
 import {ArgsType, Field, ObjectType} from '@nestjs/graphql';
 import {EXTENSION_ORIGIN, EXTENSION_TYPES} from '@relate/common';
 import {Dbms} from '../dbms/dbms.types';
-import {Project} from '../projects/projects.types';
-import {EnvironmentArgs} from '../global.types';
+import {Project} from '../project/project.types';
+import {EnvironmentArgs} from '../../global.types';
 
 @ObjectType()
 export class ExtensionData {
