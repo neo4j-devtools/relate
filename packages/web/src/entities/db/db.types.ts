@@ -1,8 +1,6 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
-import {NEO4J_EDITION} from '@relate/common';
-
 import {AuthTokenInput} from './dto/auth-token.input';
-import {EnvironmentArgs} from '../global.types';
+import {EnvironmentArgs} from '../../global.types';
 
 @ObjectType()
 export class Dbms {
@@ -15,9 +13,6 @@ export class Dbms {
     @Field(() => String, {nullable: true})
     description?: string;
 
-    @Field(() => [String])
-    tags: string[];
-
     @Field(() => String, {nullable: true})
     connectionUri?: string;
 }
@@ -28,10 +23,10 @@ export class DbmsInfo extends Dbms {
     status: string;
 
     @Field(() => String, {nullable: true})
-    version?: string;
+    version: string;
 
     @Field(() => String, {nullable: true})
-    edition?: string;
+    edition: string;
 }
 
 @ArgsType()
@@ -63,9 +58,6 @@ export class InstallDbmsArgs extends EnvironmentArgs {
     @Field(() => String)
     version: string;
 
-    @Field(() => NEO4J_EDITION, {nullable: true})
-    edition?: NEO4J_EDITION;
-
     @Field(() => Boolean, {nullable: true})
     noCaching?: boolean;
 
@@ -89,24 +81,6 @@ export class CreateAccessTokenArgs extends EnvironmentArgs {
 
     @Field(() => AuthTokenInput)
     authToken: AuthTokenInput;
-}
-
-@ArgsType()
-export class AddDbmsTagsArgs extends EnvironmentArgs {
-    @Field(() => String)
-    dbmsId: string;
-
-    @Field(() => [String])
-    tags: string[];
-}
-
-@ArgsType()
-export class RemoveDbmsTagsArgs extends EnvironmentArgs {
-    @Field(() => String)
-    dbmsId: string;
-
-    @Field(() => [String])
-    tags: string[];
 }
 
 @ObjectType()

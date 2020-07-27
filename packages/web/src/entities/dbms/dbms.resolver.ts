@@ -17,9 +17,9 @@ import {
     AddDbmsTagsArgs,
     RemoveDbmsTagsArgs,
 } from './dbms.types';
-import {EnvironmentGuard} from '../guards/environment.guard';
-import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
-import {EnvironmentArgs, FilterArgs} from '../global.types';
+import {EnvironmentGuard} from '../../guards/environment.guard';
+import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
+import {EnvironmentArgs, FilterArgs} from '../../global.types';
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)

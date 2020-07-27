@@ -7,8 +7,8 @@ import fse from 'fs-extra';
 import path from 'path';
 import {envPaths, PROJECTS_DIR_NAME, PROJECTS_MANIFEST_FILE, TestDbmss} from '@relate/common';
 
-import configuration from '../configs/dev.config';
-import {WebModule} from '../web.module';
+import configuration from '../../configs/dev.config';
+import {WebModule} from '../../web.module';
 
 const HTTP_OK = 200;
 let TEST_DB_ID: string;

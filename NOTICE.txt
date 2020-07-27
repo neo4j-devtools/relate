@@ -388,7 +388,7 @@ Third-party licenses
 │  ├─ graphql-tag@2.10.3
 │  │  ├─ repository: https://github.com/apollographql/graphql-tag
 │  │  └─ publisher
-│  ├─ graphql@15.0.0
+│  ├─ graphql@15.1.0
 │  │  ├─ repository: https://github.com/graphql/graphql-js
 │  │  └─ publisher
 │  ├─ gtoken@5.0.1
@@ -566,6 +566,13 @@ Third-party licenses
 │  │  ├─ url: http://substack.net
 │  │  ├─ repository: https://github.com/substack/minimist
 │  │  └─ publisher: James Halliday
+│  ├─ minizlib@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minizlib
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ mkdirp@1.0.4
+│  │  ├─ repository: https://github.com/isaacs/node-mkdirp
+│  │  └─ publisher
 │  ├─ moment@2.24.0
 │  │  ├─ url: https://github.com/ichernev
 │  │  ├─ repository: https://github.com/moment/moment
@@ -817,11 +824,23 @@ Third-party licenses
 │  ├─ zen-observable@0.8.15
 │  │  ├─ repository: https://github.com/zenparsing/zen-observable
 │  │  └─ publisher
+│  ├─ @apollo/federation@0.17.0
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ @apollo/gateway@0.17.0
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
 │  ├─ @apollographql/apollo-tools@0.4.5
 │  │  ├─ repository: https://github.com/apollographql/apollo-tooling
 │  │  └─ publisher: Apollo GraphQL
 │  ├─ @apollographql/graphql-playground-html@1.6.24
 │  │  ├─ repository: https://github.com/graphcool/graphql-playground
+│  │  └─ publisher
+│  ├─ @apollographql/graphql-playground-html@1.6.26
+│  │  ├─ repository: https://github.com/graphcool/graphql-playground
+│  │  └─ publisher
+│  ├─ @ardatan/aggregate-error@0.0.1
+│  │  ├─ repository
 │  │  └─ publisher
 │  ├─ @babel/runtime@7.9.2
 │  │  ├─ repository: https://github.com/babel/babel
@@ -839,7 +858,19 @@ Third-party licenses
 │  ├─ @graphql-toolkit/schema-merging@0.10.4
 │  │  ├─ repository: https://github.com/ardatan/graphql-toolkit
 │  │  └─ publisher: Dotan Simha
+│  ├─ @graphql-tools/merge@6.0.12
+│  │  ├─ repository: https://github.com/ardatan/graphql-tools
+│  │  └─ publisher: Dotan Simha
+│  ├─ @graphql-tools/schema@6.0.12
+│  │  ├─ repository: https://github.com/ardatan/graphql-tools
+│  │  └─ publisher
+│  ├─ @graphql-tools/utils@6.0.12
+│  │  ├─ repository: https://github.com/ardatan/graphql-tools
+│  │  └─ publisher: Dotan Simha
 │  ├─ @jest/types@24.9.0
+│  │  ├─ repository: https://github.com/facebook/jest
+│  │  └─ publisher
+│  ├─ @jest/types@26.1.0
 │  │  ├─ repository: https://github.com/facebook/jest
 │  │  └─ publisher
 │  ├─ @nestjs/config@0.4.0
@@ -848,7 +879,13 @@ Third-party licenses
 │  ├─ @nestjs/graphql@7.3.4
 │  │  ├─ repository: https://github.com/nestjs/graphql
 │  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nestjs/graphql@7.5.5
+│  │  ├─ repository: https://github.com/nestjs/graphql
+│  │  └─ publisher: Kamil Mysliwiec
 │  ├─ @nestjs/mapped-types@0.0.3
+│  │  ├─ repository: https://github.com/nestjs/mapped-types
+│  │  └─ publisher: Kamil Mysliwiec
+│  ├─ @nestjs/mapped-types@0.0.5
 │  │  ├─ repository: https://github.com/nestjs/mapped-types
 │  │  └─ publisher: Kamil Mysliwiec
 │  ├─ @nestjs/platform-express@7.0.8
@@ -863,11 +900,21 @@ Third-party licenses
 │  ├─ @nodelib/fs.walk@1.2.4
 │  │  ├─ repository: https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk
 │  │  └─ publisher
+│  ├─ @npmcli/move-file@1.0.1
+│  │  ├─ repository: https://github.com/npm/move-file
+│  │  └─ publisher
 │  ├─ @tokenizer/token@0.1.1
 │  │  ├─ url: https://github.com/Borewit
 │  │  ├─ repository: https://github.com/Borewit/tokenizer-token
 │  │  └─ publisher: Borewit
+│  ├─ @tootallnate/once@1.1.2
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/once
+│  │  └─ publisher: Nathan Rajlich
 │  ├─ @ts-morph/common@0.4.0
+│  │  ├─ repository: https://github.com/dsherret/ts-morph
+│  │  └─ publisher: David Sherret
+│  ├─ @ts-morph/common@0.5.1
 │  │  ├─ repository: https://github.com/dsherret/ts-morph
 │  │  └─ publisher: David Sherret
 │  ├─ @types/accepts@1.3.5
@@ -877,6 +924,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ @types/body-parser@1.19.0
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/color-name@1.1.1
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ @types/connect@3.4.33
@@ -969,13 +1019,16 @@ Third-party licenses
 │  ├─ @types/ws@6.0.4
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
+│  ├─ @types/ws@7.2.6
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
 │  ├─ @types/yargs-parser@15.0.0
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
-│  ├─ @types/yargs@13.0.5
+│  ├─ @types/yargs@13.0.6
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
-│  ├─ @types/yargs@13.0.6
+│  ├─ @types/yargs@15.0.5
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ accepts@1.3.7
@@ -989,7 +1042,15 @@ Third-party licenses
 │  │  ├─ url: http://n8.io/
 │  │  ├─ repository: https://github.com/TooTallNate/node-agent-base
 │  │  └─ publisher: Nathan Rajlich
+│  ├─ agent-base@6.0.1
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-agent-base
+│  │  └─ publisher: Nathan Rajlich
 │  ├─ agentkeepalive@4.1.0
+│  │  ├─ url: https://fengmk2.com
+│  │  ├─ repository: https://github.com/node-modules/agentkeepalive
+│  │  └─ publisher: fengmk2
+│  ├─ agentkeepalive@4.1.3
 │  │  ├─ url: https://fengmk2.com
 │  │  ├─ repository: https://github.com/node-modules/agentkeepalive
 │  │  └─ publisher: fengmk2
@@ -997,16 +1058,36 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/aggregate-error
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-regex@5.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-regex
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ ansi-styles@4.2.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/ansi-styles
+│  │  └─ publisher: Sindre Sorhus
+│  ├─ apollo-cache-control@0.11.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-cache-control-js
+│  │  └─ publisher: Apollo
 │  ├─ apollo-cache-control@0.9.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-cache-control-js
 │  │  └─ publisher: Martijn Walraven
 │  ├─ apollo-datasource@0.7.0
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-datasource
 │  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-datasource@0.7.2
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-engine-reporting-protobuf@0.4.4
 │  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting/tree/master/packages/apollo-engine-reporting-protobuf
 │  │  └─ publisher: Apollo
+│  ├─ apollo-engine-reporting-protobuf@0.5.2
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-engine-reporting@1.7.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
+│  │  └─ publisher: Apollo
+│  ├─ apollo-engine-reporting@2.2.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
 │  │  └─ publisher: Apollo
 │  ├─ apollo-env@0.6.2
@@ -1018,23 +1099,44 @@ Third-party licenses
 │  ├─ apollo-server-caching@0.5.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-caching
 │  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-caching@0.5.2
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-core@2.12.0
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-core
 │  │  └─ publisher: Jonas Helfer
+│  ├─ apollo-server-core@2.15.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-env@2.4.3
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-env
 │  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-env@2.4.5
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-errors@2.4.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-errors
 │  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-server-errors@2.4.2
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-express@2.12.0
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-express
 │  │  └─ publisher: opensource@apollographql.com
 │  ├─ apollo-server-plugin-base@0.7.1
 │  │  ├─ repository
 │  │  └─ publisher: Apollo
+│  ├─ apollo-server-plugin-base@0.9.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-types@0.3.1
 │  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-server-types@0.5.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-tracing@0.11.1
+│  │  ├─ repository: https://github.com/apollographql/apollo-tracing-js
 │  │  └─ publisher: Apollo
 │  ├─ apollo-tracing@0.9.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-tracing-js
@@ -1098,7 +1200,14 @@ Third-party licenses
 │  │  ├─ url: http://blakeembrey.me
 │  │  ├─ repository: https://github.com/blakeembrey/change-case
 │  │  └─ publisher: Blake Embrey
+│  ├─ chalk@4.1.0
+│  │  ├─ repository: https://github.com/chalk/chalk
+│  │  └─ publisher
 │  ├─ chokidar@3.3.1
+│  │  ├─ url: https://paulmillr.com
+│  │  ├─ repository: https://github.com/paulmillr/chokidar
+│  │  └─ publisher: Paul Miller
+│  ├─ chokidar@3.4.0
 │  │  ├─ url: https://paulmillr.com
 │  │  ├─ repository: https://github.com/paulmillr/chokidar
 │  │  └─ publisher: Paul Miller
@@ -1108,6 +1217,12 @@ Third-party licenses
 │  ├─ code-block-writer@10.1.0
 │  │  ├─ repository: https://github.com/dsherret/code-block-writer
 │  │  └─ publisher: David Sherret
+│  ├─ color-convert@2.0.1
+│  │  ├─ repository: https://github.com/Qix-/color-convert
+│  │  └─ publisher: Heather Arthur
+│  ├─ color-name@1.1.4
+│  │  ├─ repository: https://github.com/colorjs/color-name
+│  │  └─ publisher: DY
 │  ├─ combined-stream@1.0.8
 │  │  ├─ url: http://debuggable.com/
 │  │  ├─ repository: https://github.com/felixge/node-combined-stream
@@ -1141,6 +1256,9 @@ Third-party licenses
 │  │  ├─ url: https://github.com/troygoode/
 │  │  ├─ repository: https://github.com/expressjs/cors
 │  │  └─ publisher: Troy Goode
+│  ├─ cssfilter@0.0.10
+│  │  ├─ repository: https://github.com/leizongmin/js-css-filter
+│  │  └─ publisher: Zongmin Lei
 │  ├─ debug@2.6.9
 │  │  ├─ repository: https://github.com/visionmedia/debug
 │  │  └─ publisher: TJ Holowaychuk
@@ -1182,6 +1300,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/pillarjs/encodeurl
 │  │  └─ publisher
 │  ├─ encoding@0.1.12
+│  │  ├─ repository: https://github.com/andris9/encoding
+│  │  └─ publisher: Andris Reinman
+│  ├─ encoding@0.1.13
 │  │  ├─ repository: https://github.com/andris9/encoding
 │  │  └─ publisher: Andris Reinman
 │  ├─ err-code@1.1.2
@@ -1226,6 +1347,10 @@ Third-party licenses
 │  │  ├─ url: https://mrmlnc.com
 │  │  ├─ repository: https://github.com/mrmlnc/fast-glob
 │  │  └─ publisher: Denis Malinochkin
+│  ├─ fast-glob@3.2.4
+│  │  ├─ url: https://mrmlnc.com
+│  │  ├─ repository: https://github.com/mrmlnc/fast-glob
+│  │  └─ publisher: Denis Malinochkin
 │  ├─ file-type@14.6.1
 │  │  ├─ url: https://sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/file-type
@@ -1251,6 +1376,9 @@ Third-party licenses
 │  ├─ fs-capacitor@2.0.4
 │  │  ├─ repository: https://github.com/mike-marcacci/fs-capacitor
 │  │  └─ publisher: Mike Marcacci
+│  ├─ fs-extra@9.0.1
+│  │  ├─ repository: https://github.com/jprichardson/node-fs-extra
+│  │  └─ publisher: JP Richardson
 │  ├─ fsevents@2.1.2
 │  │  ├─ repository: https://github.com/fsevents/fsevents
 │  │  └─ publisher
@@ -1264,6 +1392,9 @@ Third-party licenses
 │  ├─ graphql-extensions@0.11.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-server
 │  │  └─ publisher: Martijn Walraven
+│  ├─ graphql-extensions@0.12.4
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ graphql-subscriptions@1.1.0
 │  │  ├─ repository: https://github.com/apollostack/graphql-subscriptions
 │  │  └─ publisher
@@ -1280,6 +1411,10 @@ Third-party licenses
 │  ├─ graphql@14.6.0
 │  │  ├─ repository: https://github.com/graphql/graphql-js
 │  │  └─ publisher
+│  ├─ has-flag@4.0.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/has-flag
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ has-symbols@1.0.1
 │  │  ├─ url: http://ljharb.codes
 │  │  ├─ repository: https://github.com/ljharb/has-symbols
@@ -1299,6 +1434,10 @@ Third-party licenses
 │  │  ├─ url: http://n8.io/
 │  │  ├─ repository: https://github.com/TooTallNate/node-http-proxy-agent
 │  │  └─ publisher: Nathan Rajlich
+│  ├─ http-proxy-agent@4.0.1
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-http-proxy-agent
+│  │  └─ publisher: Nathan Rajlich
 │  ├─ https-proxy-agent@4.0.0
 │  │  ├─ url: http://n8.io/
 │  │  ├─ repository: https://github.com/TooTallNate/node-https-proxy-agent
@@ -1308,6 +1447,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/node-modules/humanize-ms
 │  │  └─ publisher: dead-horse
 │  ├─ iconv-lite@0.4.24
+│  │  ├─ repository: https://github.com/ashtuchkin/iconv-lite
+│  │  └─ publisher: Alexander Shtuchkin
+│  ├─ iconv-lite@0.6.2
 │  │  ├─ repository: https://github.com/ashtuchkin/iconv-lite
 │  │  └─ publisher: Alexander Shtuchkin
 │  ├─ iferr@0.1.5
@@ -1411,6 +1553,9 @@ Third-party licenses
 │  │  ├─ url: http://allyoucanleet.com/
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
+│  ├─ lodash@4.17.19
+│  │  ├─ repository: https://github.com/lodash/lodash
+│  │  └─ publisher: John-David Dalton
 │  ├─ loglevel@1.6.8
 │  │  ├─ url: http://tim-perry.co.uk
 │  │  ├─ repository: https://github.com/pimterry/loglevel
@@ -1430,6 +1575,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/Urigo/merge-graphql-schemas
 │  │  └─ publisher: The Guild
 │  ├─ merge2@1.3.0
+│  │  ├─ repository: https://github.com/teambition/merge2
+│  │  └─ publisher
+│  ├─ merge2@1.4.1
 │  │  ├─ repository: https://github.com/teambition/merge2
 │  │  └─ publisher
 │  ├─ methods@1.1.2
@@ -1452,17 +1600,10 @@ Third-party licenses
 │  ├─ minipass-fetch@1.2.1
 │  │  ├─ repository: https://github.com/npm/minipass-fetch
 │  │  └─ publisher
-│  ├─ minizlib@2.1.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/minizlib
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ mkdirp@0.5.5
 │  │  ├─ url: http://substack.net
 │  │  ├─ repository: https://github.com/substack/node-mkdirp
 │  │  └─ publisher: James Halliday
-│  ├─ mkdirp@1.0.4
-│  │  ├─ repository: https://github.com/isaacs/node-mkdirp
-│  │  └─ publisher
 │  ├─ ms@2.1.1
 │  │  ├─ repository: https://github.com/zeit/ms
 │  │  └─ publisher
@@ -1512,6 +1653,10 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/p-map
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ p-map@4.0.0
+│  │  ├─ url: https://sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/p-map
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ parseurl@1.3.3
 │  │  ├─ repository: https://github.com/pillarjs/parseurl
 │  │  └─ publisher
@@ -1541,6 +1686,9 @@ Third-party licenses
 │  ├─ pretty-format@24.9.0
 │  │  ├─ repository: https://github.com/facebook/jest
 │  │  └─ publisher: James Kyle
+│  ├─ pretty-format@26.1.0
+│  │  ├─ repository: https://github.com/facebook/jest
+│  │  └─ publisher: James Kyle
 │  ├─ promise-retry@1.1.1
 │  │  ├─ url: http://indigounited.com
 │  │  ├─ repository: https://github.com/IndigoUnited/node-promise-retry
@@ -1568,6 +1716,10 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/Borewit/readable-web-to-node-stream
 │  │  └─ publisher: Borewit
 │  ├─ readdirp@3.3.0
+│  │  ├─ url: thlorenz.com
+│  │  ├─ repository: https://github.com/paulmillr/readdirp
+│  │  └─ publisher: Thorsten Lorenz
+│  ├─ readdirp@3.4.0
 │  │  ├─ url: thlorenz.com
 │  │  ├─ repository: https://github.com/paulmillr/readdirp
 │  │  └─ publisher: Thorsten Lorenz
@@ -1610,7 +1762,14 @@ Third-party licenses
 │  │  ├─ url: http://n8.io/
 │  │  ├─ repository: https://github.com/TooTallNate/node-socks-proxy-agent
 │  │  └─ publisher: Nathan Rajlich
+│  ├─ socks-proxy-agent@5.0.0
+│  │  ├─ url: http://n8.io/
+│  │  ├─ repository: https://github.com/TooTallNate/node-socks-proxy-agent
+│  │  └─ publisher: Nathan Rajlich
 │  ├─ socks@2.3.3
+│  │  ├─ repository: https://github.com/JoshGlazebrook/socks
+│  │  └─ publisher: Josh Glazebrook
+│  ├─ socks@2.4.1
 │  │  ├─ repository: https://github.com/JoshGlazebrook/socks
 │  │  └─ publisher: Josh Glazebrook
 │  ├─ statuses@1.5.0
@@ -1635,6 +1794,10 @@ Third-party licenses
 │  ├─ subscriptions-transport-ws@0.9.16
 │  │  ├─ repository: https://github.com/apollostack/subscriptions-transport-ws
 │  │  └─ publisher
+│  ├─ supports-color@7.1.0
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/chalk/supports-color
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ symbol-observable@1.2.0
 │  │  ├─ repository: https://github.com/blesh/symbol-observable
 │  │  └─ publisher: Ben Lesh
@@ -1650,6 +1813,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/Borewit/token-types
 │  │  └─ publisher: Borewit
 │  ├─ ts-morph@7.0.2
+│  │  ├─ repository: https://github.com/dsherret/ts-morph
+│  │  └─ publisher: David Sherret
+│  ├─ ts-morph@7.1.2
 │  │  ├─ repository: https://github.com/dsherret/ts-morph
 │  │  └─ publisher: David Sherret
 │  ├─ type-is@1.6.18
@@ -1684,6 +1850,12 @@ Third-party licenses
 │  │  ├─ url: http://www.jaredhanson.net/
 │  │  ├─ repository: https://github.com/jaredhanson/utils-merge
 │  │  └─ publisher: Jared Hanson
+│  ├─ uuid@3.4.0
+│  │  ├─ repository: https://github.com/uuidjs/uuid
+│  │  └─ publisher
+│  ├─ uuid@8.2.0
+│  │  ├─ repository: https://github.com/uuidjs/uuid
+│  │  └─ publisher
 │  ├─ vary@1.1.2
 │  │  ├─ repository: https://github.com/jshttp/vary
 │  │  └─ publisher: Douglas Christopher Wilson
@@ -1691,10 +1863,14 @@ Third-party licenses
 │  │  ├─ url: http://2x.io
 │  │  ├─ repository: https://github.com/websockets/ws
 │  │  └─ publisher: Einar Otto Stangvik
-│  └─ ws@6.2.1
-│     ├─ url: http://2x.io
-│     ├─ repository: https://github.com/websockets/ws
-│     └─ publisher: Einar Otto Stangvik
+│  ├─ ws@6.2.1
+│  │  ├─ url: http://2x.io
+│  │  ├─ repository: https://github.com/websockets/ws
+│  │  └─ publisher: Einar Otto Stangvik
+│  └─ xss@1.0.7
+│     ├─ url: http://ucdok.com
+│     ├─ repository: https://github.com/leizongmin/js-xss
+│     └─ publisher: Zongmin Lei
 ├─ ISC
 │  ├─ @oclif/linewrap@1.0.0
 │  │  ├─ repository: https://github.com/heroku/node-linewrap
@@ -1702,6 +1878,10 @@ Third-party licenses
 │  ├─ at-least-node@1.0.0
 │  │  ├─ repository: https://github.com/RyanZim/at-least-node
 │  │  └─ publisher: Ryan Zimmerman
+│  ├─ chownr@2.0.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/chownr
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ cli-color@2.0.0
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/cli-color
@@ -1726,6 +1906,10 @@ Third-party licenses
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/es5-ext/tree/ext
 │  │  └─ publisher: Mariusz Nowak
+│  ├─ fs-minipass@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/fs-minipass
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ fs.realpath@1.0.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/fs.realpath
@@ -1768,6 +1952,10 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me
 │  │  ├─ repository: https://github.com/isaacs/minimatch
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass@3.1.3
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minipass
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ once@1.4.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/once
@@ -1778,6 +1966,10 @@ Third-party licenses
 │  ├─ semver@7.1.3
 │  │  ├─ repository: https://github.com/npm/node-semver
 │  │  └─ publisher
+│  ├─ tar@6.0.2
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/node-tar
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ timers-ext@0.1.7
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/timers-ext
@@ -1806,6 +1998,10 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/yallist
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ yallist@4.0.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/yallist
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ anymatch@3.1.1
 │  │  ├─ url: https://github.com/es128
 │  │  ├─ repository: https://github.com/micromatch/anymatch
@@ -1814,6 +2010,9 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/iarna/aproba
 │  │  └─ publisher: Rebecca Turner
 │  ├─ cacache@14.0.0
+│  │  ├─ repository: https://github.com/npm/cacache
+│  │  └─ publisher: Kat Marchán
+│  ├─ cacache@15.0.5
 │  │  ├─ repository: https://github.com/npm/cacache
 │  │  └─ publisher: Kat Marchán
 │  ├─ chownr@1.1.4
@@ -1827,13 +2026,12 @@ Third-party licenses
 │  ├─ fastq@1.7.0
 │  │  ├─ repository: https://github.com/mcollina/fastq
 │  │  └─ publisher: Matteo Collina
+│  ├─ fastq@1.8.0
+│  │  ├─ repository: https://github.com/mcollina/fastq
+│  │  └─ publisher: Matteo Collina
 │  ├─ figgy-pudding@3.5.2
 │  │  ├─ repository: https://github.com/npm/figgy-pudding
 │  │  └─ publisher: Kat Marchán
-│  ├─ fs-minipass@2.1.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/npm/fs-minipass
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ fs-write-stream-atomic@1.0.10
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/fs-write-stream-atomic
@@ -1850,7 +2048,13 @@ Third-party licenses
 │  │  ├─ url: https://izs.me
 │  │  ├─ repository: https://github.com/npm/infer-owner
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ lru-cache@6.0.0
+│  │  ├─ repository: https://github.com/isaacs/node-lru-cache
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ make-fetch-happen@7.1.1
+│  │  ├─ repository: https://github.com/npm/make-fetch-happen
+│  │  └─ publisher: Kat Marchán
+│  ├─ make-fetch-happen@8.0.8
 │  │  ├─ repository: https://github.com/npm/make-fetch-happen
 │  │  └─ publisher: Kat Marchán
 │  ├─ minipass-collect@1.0.2
@@ -1862,6 +2066,10 @@ Third-party licenses
 │  │  ├─ repository: https://github.com/isaacs/minipass-flush
 │  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ minipass-pipeline@1.2.2
+│  │  ├─ url: https://izs.me
+│  │  ├─ repository
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass-pipeline@1.2.3
 │  │  ├─ url: https://izs.me
 │  │  ├─ repository
 │  │  └─ publisher: Isaac Z. Schlueter
@@ -1888,6 +2096,10 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/rimraf
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ rimraf@3.0.2
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/rimraf
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ run-queue@1.0.3
 │  │  ├─ url: http://re-becca.org/
 │  │  ├─ repository: https://github.com/iarna/run-queue
@@ -1898,6 +2110,9 @@ Third-party licenses
 │  ├─ ssri@7.1.0
 │  │  ├─ repository: https://github.com/npm/ssri
 │  │  └─ publisher: Kat Marchán
+│  ├─ ssri@8.0.0
+│  │  ├─ repository: https://github.com/npm/ssri
+│  │  └─ publisher: Kat Marchán
 │  ├─ tar@6.0.1
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/node-tar
@@ -1906,14 +2121,10 @@ Third-party licenses
 │  │  ├─ url: http://re-becca.org/
 │  │  ├─ repository: https://github.com/iarna/unique-filename
 │  │  └─ publisher: Rebecca Turner
-│  ├─ unique-slug@2.0.2
-│  │  ├─ url: http://re-becca.org
-│  │  ├─ repository: https://github.com/iarna/unique-slug
-│  │  └─ publisher: Rebecca Turner
-│  └─ yallist@4.0.0
-│     ├─ url: http://blog.izs.me/
-│     ├─ repository: https://github.com/isaacs/yallist
-│     └─ publisher: Isaac Z. Schlueter
+│  └─ unique-slug@2.0.2
+│     ├─ url: http://re-becca.org
+│     ├─ repository: https://github.com/iarna/unique-slug
+│     └─ publisher: Rebecca Turner
 ├─ BSD-3-Clause
 │  ├─ buffer-equal-constant-time@1.0.1
 │  │  ├─ repository: https://github.com/goinstant/buffer-equal-constant-time
@@ -2025,7 +2236,10 @@ Third-party licenses
 │  ├─ long@4.0.0
 │  │  ├─ repository: https://github.com/dcodeIO/long.js
 │  │  └─ publisher: Daniel Wirtz
-│  └─ typescript@3.8.3
+│  ├─ typescript@3.8.3
+│  │  ├─ repository: https://github.com/Microsoft/TypeScript
+│  │  └─ publisher: Microsoft Corp.
+│  └─ typescript@3.9.6
 │     ├─ repository: https://github.com/Microsoft/TypeScript
 │     └─ publisher: Microsoft Corp.
 ├─ BSD-2-Clause
@@ -2084,9 +2298,13 @@ Third-party licenses
 │  └─ @apollo/gateway@0.14.1
 │     ├─ repository
 │     └─ publisher: opensource@apollographql.com
-└─ (MIT AND BSD-3-Clause)
-   └─ sha.js@2.4.11
-      ├─ url: dominictarr.com
-      ├─ repository: https://github.com/crypto-browserify/sha.js
-      └─ publisher: Dominic Tarr
+├─ (MIT AND BSD-3-Clause)
+│  └─ sha.js@2.4.11
+│     ├─ url: dominictarr.com
+│     ├─ repository: https://github.com/crypto-browserify/sha.js
+│     └─ publisher: Dominic Tarr
+└─ 0BSD
+   └─ tslib@2.0.0
+      ├─ repository: https://github.com/Microsoft/tslib
+      └─ publisher: Microsoft Corp.
 

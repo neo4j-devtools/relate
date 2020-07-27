@@ -13,16 +13,16 @@ import {
     LaunchDataArgs,
     ExtensionArgs,
     InstallExtensionArgs,
-} from './extensions.types';
-import {createAppLaunchUrl} from './extensions.utils';
-import {EnvironmentGuard} from '../guards/environment.guard';
-import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
-import {EnvironmentArgs, FilterArgs} from '../global.types';
+} from './extension.types';
+import {createAppLaunchUrl} from './extension.utils';
+import {EnvironmentGuard} from '../../guards/environment.guard';
+import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
+import {EnvironmentArgs, FilterArgs} from '../../global.types';
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)
 @UseInterceptors(EnvironmentInterceptor)
-export class ExtensionsResolver {
+export class ExtensionResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => AppLaunchData)

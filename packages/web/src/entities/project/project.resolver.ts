@@ -12,15 +12,15 @@ import {
     ProjectDbms,
     RemoveProjectDbmsArgs,
     RemoveProjectFileArgs,
-} from './projects.types';
-import {EnvironmentArgs, FilterArgs, RelateFile} from '../global.types';
-import {EnvironmentGuard} from '../guards/environment.guard';
-import {EnvironmentInterceptor} from '../interceptors/environment.interceptor';
+} from './project.types';
+import {EnvironmentArgs, FilterArgs, RelateFile} from '../../global.types';
+import {EnvironmentGuard} from '../../guards/environment.guard';
+import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 
 @Resolver(() => Project)
 @UseGuards(EnvironmentGuard)
 @UseInterceptors(EnvironmentInterceptor)
-export class ProjectsResolver {
+export class ProjectResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
     @Query(() => [Project])

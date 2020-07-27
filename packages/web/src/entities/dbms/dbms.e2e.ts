@@ -13,8 +13,8 @@ import {
 } from '@relate/common';
 import nock from 'nock';
 
-import configuration from '../configs/dev.config';
-import {WebModule} from '../web.module';
+import configuration from '../../configs/dev.config';
+import {WebModule} from '../../web.module';
 let TEST_DBMS_NAME: string;
 const TEST_APP_ID = 'foo';
 

@@ -4,8 +4,8 @@ import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import {TestDbmss} from '@relate/common';
 
-import configuration from '../configs/dev.config';
-import {WebModule} from '../web.module';
+import configuration from '../../configs/dev.config';
+import {WebModule} from '../../web.module';
 let TEST_DBMS_NAME: string;
 let TEST_DBMS_ACCESS_TOKEN: string;
 const TEST_APP_ID = 'foo';
