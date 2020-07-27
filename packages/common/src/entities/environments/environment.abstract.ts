@@ -39,8 +39,12 @@ export abstract class EnvironmentAbstract {
         return this.config.name;
     }
 
-    get active(): boolean {
+    get isActive(): boolean {
         return Boolean(this.config.active);
+    }
+
+    get isSandboxed(): boolean {
+        return Boolean(this.config.sandboxed);
     }
 
     get type(): ENVIRONMENT_TYPES {

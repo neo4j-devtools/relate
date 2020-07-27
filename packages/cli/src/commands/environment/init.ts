@@ -33,5 +33,8 @@ export default class InitCommand extends BaseCommand {
             options: Object.values(ENVIRONMENT_TYPES),
             required: REQUIRED_FOR_SCRIPTS,
         }),
+        sandboxed: flags.boolean({
+            description: 'Environment does not allow administrator privileges',
+        }),
     };
 }

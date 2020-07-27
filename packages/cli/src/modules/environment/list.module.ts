@@ -26,7 +26,7 @@ export class ListModule implements OnApplicationBootstrap {
             {
                 name: {get: getEntityDisplayName},
                 type: {},
-                active: {get: ({active}) => Boolean(active)},
+                active: {get: ({isActive}) => isActive},
                 httpOrigin: {get: (val) => val.httpOrigin || ''},
             },
             {
