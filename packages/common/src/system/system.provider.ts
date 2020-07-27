@@ -67,7 +67,7 @@ export class SystemProvider implements OnModuleInit {
             });
         }
 
-        const activeEnvironment = this.allEnvironments.values.find((env) => env.active);
+        const activeEnvironment = this.allEnvironments.values.find((env) => env.isActive);
 
         return activeEnvironment.flatMap((env) => {
             if (None.isNone(env)) {

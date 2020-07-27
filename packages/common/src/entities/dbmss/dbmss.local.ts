@@ -198,7 +198,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     start(nameOrIds: string[] | List<string>): Promise<List<string>> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
-            .mapEach((id) => neo4jCmd(this.getDbmsRootPath(id), 'start'))
+            .mapEach((id) => {
+                if (this.environment.isSandboxed) {
+                    return neo4jCmd(this.getDbmsRootPath(id), 'console');
+                }
+
+                return neo4jCmd(this.getDbmsRootPath(id), 'start');
+            })
             .unwindPromises();
     }
 
@@ -352,7 +358,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             await neo4jConfig.flush();
 
-            if (process.platform === 'win32') {
+            if (!this.environment.isSandboxed && process.platform === 'win32') {
                 await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
             }
 
@@ -384,7 +390,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
         }
 
-        if (process.platform === 'win32') {
+        if (!this.environment.isSandboxed && process.platform === 'win32') {
             await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
