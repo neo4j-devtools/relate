@@ -19,7 +19,7 @@
         "clean": "rimraf dist",
         "test": "jest",
         "build": "tsc",
-        "build:clean": "run-s clean build",
+        "build:clean": "run-s clean build generate:docs",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
         "generate:docs": "typedoc"

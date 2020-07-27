@@ -29,12 +29,32 @@ export type TapestryJSONResponse<Res = any> = {
 };
 
 export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
+    /**
+     * @hidden
+     */
     public dbmss: {[id: string]: IDbms} = {};
 
+    /**
+     * @hidden
+     */
     constructor(protected readonly environment: Env) {}
 
+    /**
+     * List all available DBMS versions to install
+     * @param   limited     Include limited versions
+     * @param   filters     Filters to apply
+     */
     abstract versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>>;
 
+    /**
+     * Installs new DBMS
+     * @param   name            DBMS name
+     * @param   credentials     Initial password to set
+     * @param   version         neo4j version
+     * @param   edition         neo4j edition
+     * @param   noCaching       Do not use distribution cache
+     * @param   limited         Is limited version
+     */
     abstract install(
         name: string,
         version: string,
@@ -52,30 +72,86 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         noCache?: boolean,
     ): Promise<IDbmsInfo>;
 
+    /**
+     * Links an existing DBMS to relate
+     * @param   name        Name of DBMS
+     * @param   rootPath    Path to DBMS root
+     */
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 
+    /**
+     * Uninstall a DBMS
+     * @param dbmsId
+     */
     abstract uninstall(dbmsId: string): Promise<IDbmsInfo>;
 
+    /**
+     * List all DBMS
+     * @param   filters     Filters to apply
+     */
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>>;
 
+    /**
+     * Get a DBMS by name or id
+     * @param   nameOrId
+     */
     abstract get(nameOrId: string): Promise<IDbmsInfo>;
 
+    /**
+     * Start one or more DBMSs
+     * @param   dbmsIds
+     */
     abstract start(dbmsIds: string[] | List<string>): Promise<List<string>>;
 
+    /**
+     * Stop one or more DBMSs
+     * @param   dbmsIds
+     */
     abstract stop(dbmsIds: string[] | List<string>): Promise<List<string>>;
 
+    /**
+     * Get info for one or more DBMSs
+     * @param   dbmsIds
+     */
     abstract info(dbmsIds: string[] | List<string>): Promise<List<IDbmsInfo>>;
 
+    /**
+     * Creates an access token for a given app, DBMS, and DBMS credentials
+     * @param   appName
+     * @param   dbmsId
+     * @param   authToken
+     */
     abstract createAccessToken(appName: string, dbmsId: string, authToken: IAuthToken): Promise<string>;
 
+    /**
+     * Get dbms configuration (neo4j.conf)
+     * @param   dbmsId
+     */
     abstract getDbmsConfig(dbmsId: string): Promise<PropertiesFile>;
 
+    /**
+     * Set dbms configuration properties (neo4j.conf)
+     * @param   dbmsId
+     */
     abstract updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean>;
 
+    /**
+     * Add tags to a DBMS
+     * @param   nameOrId
+     * @param   tags
+     */
     abstract addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
 
+    /**
+     * Remove tags from a DBMS
+     * @param   nameOrId
+     * @param   tags
+     */
     abstract removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
 
+    /**
+     * @hidden
+     */
     runQuery<Res = any>(
         driver: Driver<TapestryJSONResponse<Res>>,
         query: string,
@@ -124,6 +200,9 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         );
     }
 
+    /**
+     * @hidden
+     */
     public async getJSONDriverInstance(dbmsId: string, authToken: IAuthToken): Promise<Driver<TapestryJSONResponse>> {
         const dbmsInfo = (await this.info([dbmsId])).first.getOrElse(() => {
             throw new NotFoundError(`Could not find Dbms ${dbmsId}`);

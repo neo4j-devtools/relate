@@ -18,7 +18,7 @@
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
         "build": "tsc",
-        "build:clean": "run-s clean build",
+        "build:clean": "run-s clean build generate:docs",
         "generate:docs": "typedoc",
         "start": "tsc -w",
         "test": "jest"

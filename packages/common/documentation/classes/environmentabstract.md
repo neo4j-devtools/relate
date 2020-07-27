@@ -8,27 +8,20 @@
 
 ## Index
 
-### Constructors
-
-* [constructor](environmentabstract.md#constructor)
-
 ### Properties
 
 * [dbmss](environmentabstract.md#readonly-dbmss)
 * [dbs](environmentabstract.md#readonly-dbs)
-* [dirPaths](environmentabstract.md#readonly-dirpaths)
 * [extensions](environmentabstract.md#readonly-extensions)
 * [projects](environmentabstract.md#readonly-projects)
 
 ### Accessors
 
-* [active](environmentabstract.md#active)
-* [configPath](environmentabstract.md#configpath)
 * [httpOrigin](environmentabstract.md#httporigin)
 * [id](environmentabstract.md#id)
+* [isActive](environmentabstract.md#isactive)
+* [isSandboxed](environmentabstract.md#issandboxed)
 * [name](environmentabstract.md#name)
-* [neo4jDataPath](environmentabstract.md#neo4jdatapath)
-* [remoteEnvironmentId](environmentabstract.md#remoteenvironmentid)
 * [type](environmentabstract.md#type)
 
 ### Methods
@@ -42,29 +35,15 @@
 * [updateConfig](environmentabstract.md#updateconfig)
 * [verifyAuthToken](environmentabstract.md#verifyauthtoken)
 
-## Constructors
-
-###  constructor
-
-\+ **new EnvironmentAbstract**(`config`: EnvironmentConfigModel): *[EnvironmentAbstract](environmentabstract.md)*
-
-*Defined in [environments/environment.abstract.ts:64](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L64)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`config` | EnvironmentConfigModel |
-
-**Returns:** *[EnvironmentAbstract](environmentabstract.md)*
-
 ## Properties
 
 ### `Readonly` dbmss
 
 • **dbmss**: *[DbmssAbstract](dbmssabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-*Defined in [environments/environment.abstract.ts:22](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L22)*
+*Defined in [environments/environment.abstract.ts:25](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L25)*
+
+See [DbmssAbstract](dbmssabstract.md)
 
 ___
 
@@ -72,19 +51,9 @@ ___
 
 • **dbs**: *[DbsAbstract](dbsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-*Defined in [environments/environment.abstract.ts:24](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L24)*
-
-___
-
-### `Readonly` dirPaths
-
-• **dirPaths**: *object*
-
 *Defined in [environments/environment.abstract.ts:30](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L30)*
 
-#### Type declaration:
-
-* \[ **key**: *string*\]: string
+See [DbsAbstract](dbsabstract.md)
 
 ___
 
@@ -92,7 +61,9 @@ ___
 
 • **extensions**: *[ExtensionsAbstract](extensionsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-*Defined in [environments/environment.abstract.ts:26](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L26)*
+*Defined in [environments/environment.abstract.ts:35](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L35)*
+
+See [ExtensionsAbstract](extensionsabstract.md)
 
 ___
 
@@ -100,35 +71,17 @@ ___
 
 • **projects**: *[ProjectsAbstract](projectsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-*Defined in [environments/environment.abstract.ts:28](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L28)*
+*Defined in [environments/environment.abstract.ts:40](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L40)*
+
+See [ProjectsAbstract](projectsabstract.md)
 
 ## Accessors
-
-###  active
-
-• **get active**(): *boolean*
-
-*Defined in [environments/environment.abstract.ts:42](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L42)*
-
-**Returns:** *boolean*
-
-___
-
-###  configPath
-
-• **get configPath**(): *string*
-
-*Defined in [environments/environment.abstract.ts:54](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L54)*
-
-**Returns:** *string*
-
-___
 
 ###  httpOrigin
 
 • **get httpOrigin**(): *string*
 
-*Defined in [environments/environment.abstract.ts:50](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L50)*
+*Defined in [environments/environment.abstract.ts:75](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L75)*
 
 **Returns:** *string*
 
@@ -138,9 +91,33 @@ ___
 
 • **get id**(): *string*
 
-*Defined in [environments/environment.abstract.ts:34](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L34)*
+*Defined in [environments/environment.abstract.ts:49](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L49)*
 
 **Returns:** *string*
+
+___
+
+###  isActive
+
+• **get isActive**(): *boolean*
+
+*Defined in [environments/environment.abstract.ts:60](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L60)*
+
+Indicates if environment is current active
+
+**Returns:** *boolean*
+
+___
+
+###  isSandboxed
+
+• **get isSandboxed**(): *boolean*
+
+*Defined in [environments/environment.abstract.ts:67](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L67)*
+
+Indicates if environment lacks administrative privileges
+
+**Returns:** *boolean*
 
 ___
 
@@ -148,29 +125,9 @@ ___
 
 • **get name**(): *string*
 
-*Defined in [environments/environment.abstract.ts:38](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L38)*
+*Defined in [environments/environment.abstract.ts:53](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L53)*
 
 **Returns:** *string*
-
-___
-
-###  neo4jDataPath
-
-• **get neo4jDataPath**(): *string*
-
-*Defined in [environments/environment.abstract.ts:62](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L62)*
-
-**Returns:** *string*
-
-___
-
-###  remoteEnvironmentId
-
-• **get remoteEnvironmentId**(): *string | undefined*
-
-*Defined in [environments/environment.abstract.ts:58](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L58)*
-
-**Returns:** *string | undefined*
 
 ___
 
@@ -178,7 +135,7 @@ ___
 
 • **get type**(): *ENVIRONMENT_TYPES*
 
-*Defined in [environments/environment.abstract.ts:46](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L46)*
+*Defined in [environments/environment.abstract.ts:71](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L71)*
 
 **Returns:** *ENVIRONMENT_TYPES*
 
@@ -186,17 +143,21 @@ ___
 
 ###  generateAuthToken
 
-▸ **generateAuthToken**(`code`: string): *Promise‹string›*
+▸ **generateAuthToken**(`data`: any): *Promise‹string›*
 
-*Defined in [environments/environment.abstract.ts:102](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L102)*
+*Defined in [environments/environment.abstract.ts:151](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L151)*
+
+Generates an authentication token
 
 **Parameters:**
 
-Name | Type | Default |
+Name | Type | Description |
 ------ | ------ | ------ |
-`code` | string | "" |
+`data` | any | authentication response data |
 
 **Returns:** *Promise‹string›*
+
+token
 
 ___
 
@@ -204,7 +165,9 @@ ___
 
 ▸ **getConfigValue**‹**K**›(`key`: K): *Promise‹EnvironmentConfigModel[K]›*
 
-*Defined in [environments/environment.abstract.ts:128](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L128)*
+*Defined in [environments/environment.abstract.ts:189](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L189)*
+
+Gets config value for given key
 
 **Type parameters:**
 
@@ -224,7 +187,9 @@ ___
 
 ▸ **init**(): *Promise‹void›*
 
-*Defined in [environments/environment.abstract.ts:92](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L92)*
+*Defined in [environments/environment.abstract.ts:133](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L133)*
+
+Environment initialisation logic
 
 **Returns:** *Promise‹void›*
 
@@ -234,7 +199,9 @@ ___
 
 ▸ **login**(`redirectTo?`: undefined | string): *Promise‹IEnvironmentAuth›*
 
-*Defined in [environments/environment.abstract.ts:94](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L94)*
+*Defined in [environments/environment.abstract.ts:138](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L138)*
+
+Environment Authentication logic
 
 **Parameters:**
 
@@ -250,7 +217,9 @@ ___
 
 ▸ **reloadConfig**(): *Promise‹void›*
 
-*Defined in [environments/environment.abstract.ts:132](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L132)*
+*Defined in [environments/environment.abstract.ts:196](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L196)*
+
+Reloads config from disk
 
 **Returns:** *Promise‹void›*
 
@@ -260,13 +229,15 @@ ___
 
 ▸ **supports**(`methodName`: string): *boolean*
 
-*Defined in [environments/environment.abstract.ts:118](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L118)*
+*Defined in [environments/environment.abstract.ts:176](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L176)*
+
+Checks if given GraphQL method is supported
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`methodName` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`methodName` | string |   |
 
 **Returns:** *boolean*
 
@@ -276,7 +247,9 @@ ___
 
 ▸ **updateConfig**(`key`: string, `value`: any): *Promise‹void›*
 
-*Defined in [environments/environment.abstract.ts:141](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L141)*
+*Defined in [environments/environment.abstract.ts:208](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L208)*
+
+Updates config on disk
 
 **Parameters:**
 
@@ -293,12 +266,16 @@ ___
 
 ▸ **verifyAuthToken**(`token`: string): *Promise‹void›*
 
-*Defined in [environments/environment.abstract.ts:110](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L110)*
+*Defined in [environments/environment.abstract.ts:164](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L164)*
+
+Verifies an authentication token
+
+**`throws`** AuthenticationError
 
 **Parameters:**
 
-Name | Type | Default |
------- | ------ | ------ |
-`token` | string | "" |
+Name | Type | Default | Description |
+------ | ------ | ------ | ------ |
+`token` | string | "" | token to verify |
 
 **Returns:** *Promise‹void›*

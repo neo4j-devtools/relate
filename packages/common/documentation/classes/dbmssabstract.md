@@ -12,60 +12,22 @@
 
 ## Index
 
-### Constructors
-
-* [constructor](dbmssabstract.md#constructor)
-
-### Properties
-
-* [dbmss](dbmssabstract.md#dbmss)
-
 ### Methods
 
 * [addTags](dbmssabstract.md#abstract-addtags)
 * [createAccessToken](dbmssabstract.md#abstract-createaccesstoken)
 * [get](dbmssabstract.md#abstract-get)
 * [getDbmsConfig](dbmssabstract.md#abstract-getdbmsconfig)
-* [getJSONDriverInstance](dbmssabstract.md#getjsondriverinstance)
 * [info](dbmssabstract.md#abstract-info)
 * [install](dbmssabstract.md#abstract-install)
 * [link](dbmssabstract.md#abstract-link)
 * [list](dbmssabstract.md#abstract-list)
 * [removeTags](dbmssabstract.md#abstract-removetags)
-* [runQuery](dbmssabstract.md#runquery)
 * [start](dbmssabstract.md#abstract-start)
 * [stop](dbmssabstract.md#abstract-stop)
 * [uninstall](dbmssabstract.md#abstract-uninstall)
 * [updateConfig](dbmssabstract.md#abstract-updateconfig)
 * [versions](dbmssabstract.md#abstract-versions)
-
-## Constructors
-
-###  constructor
-
-\+ **new DbmssAbstract**(`environment`: Env): *[DbmssAbstract](dbmssabstract.md)*
-
-*Defined in [dbmss/dbmss.abstract.ts:32](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L32)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`environment` | Env |
-
-**Returns:** *[DbmssAbstract](dbmssabstract.md)*
-
-## Properties
-
-###  dbmss
-
-• **dbmss**: *object*
-
-*Defined in [dbmss/dbmss.abstract.ts:32](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L32)*
-
-#### Type declaration:
-
-* \[ **id**: *string*\]: IDbms
 
 ## Methods
 
@@ -73,14 +35,16 @@ Name | Type |
 
 ▸ **addTags**(`nameOrId`: string, `tags`: string[]): *Promise‹IDbmsInfo›*
 
-*Defined in [dbmss/dbmss.abstract.ts:67](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L67)*
+*Defined in [dbmss/dbmss.abstract.ts:135](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L135)*
+
+Add tags to a DBMS
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`nameOrId` | string |
-`tags` | string[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`nameOrId` | string | - |
+`tags` | string[] |   |
 
 **Returns:** *Promise‹IDbmsInfo›*
 
@@ -90,15 +54,17 @@ ___
 
 ▸ **createAccessToken**(`appName`: string, `dbmsId`: string, `authToken`: IAuthToken): *Promise‹string›*
 
-*Defined in [dbmss/dbmss.abstract.ts:61](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L61)*
+*Defined in [dbmss/dbmss.abstract.ts:116](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L116)*
+
+Creates an access token for a given app, DBMS, and DBMS credentials
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`appName` | string |
-`dbmsId` | string |
-`authToken` | IAuthToken |
+Name | Type | Description |
+------ | ------ | ------ |
+`appName` | string | - |
+`dbmsId` | string | - |
+`authToken` | IAuthToken |   |
 
 **Returns:** *Promise‹string›*
 
@@ -108,13 +74,15 @@ ___
 
 ▸ **get**(`nameOrId`: string): *Promise‹IDbmsInfo›*
 
-*Defined in [dbmss/dbmss.abstract.ts:53](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L53)*
+*Defined in [dbmss/dbmss.abstract.ts:90](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L90)*
+
+Get a DBMS by name or id
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`nameOrId` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`nameOrId` | string |   |
 
 **Returns:** *Promise‹IDbmsInfo›*
 
@@ -124,32 +92,17 @@ ___
 
 ▸ **getDbmsConfig**(`dbmsId`: string): *Promise‹PropertiesFile›*
 
-*Defined in [dbmss/dbmss.abstract.ts:63](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L63)*
+*Defined in [dbmss/dbmss.abstract.ts:122](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L122)*
+
+Get dbms configuration (neo4j.conf)
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string |   |
 
 **Returns:** *Promise‹PropertiesFile›*
-
-___
-
-###  getJSONDriverInstance
-
-▸ **getJSONDriverInstance**(`dbmsId`: string, `authToken`: IAuthToken): *Promise‹Driver‹TapestryJSONResponse››*
-
-*Defined in [dbmss/dbmss.abstract.ts:119](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L119)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`authToken` | IAuthToken |
-
-**Returns:** *Promise‹Driver‹TapestryJSONResponse››*
 
 ___
 
@@ -157,13 +110,15 @@ ___
 
 ▸ **info**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹IDbmsInfo››*
 
-*Defined in [dbmss/dbmss.abstract.ts:59](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L59)*
+*Defined in [dbmss/dbmss.abstract.ts:108](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L108)*
+
+Get info for one or more DBMSs
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsIds` | string[] &#124; List‹string› |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsIds` | string[] &#124; List‹string› |   |
 
 **Returns:** *Promise‹List‹IDbmsInfo››*
 
@@ -173,18 +128,20 @@ ___
 
 ▸ **install**(`name`: string, `credentials`: string, `version`: string, `edition?`: NEO4J_EDITION, `noCaching?`: undefined | false | true, `limited?`: undefined | false | true): *Promise‹string›*
 
-*Defined in [dbmss/dbmss.abstract.ts:38](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L38)*
+*Defined in [dbmss/dbmss.abstract.ts:58](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L58)*
+
+Installs new DBMS
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`name` | string |
-`credentials` | string |
-`version` | string |
-`edition?` | NEO4J_EDITION |
-`noCaching?` | undefined &#124; false &#124; true |
-`limited?` | undefined &#124; false &#124; true |
+Name | Type | Description |
+------ | ------ | ------ |
+`name` | string | DBMS name |
+`credentials` | string | Initial password to set |
+`version` | string | neo4j version |
+`edition?` | NEO4J_EDITION | neo4j edition |
+`noCaching?` | undefined &#124; false &#124; true | Do not use distribution cache |
+`limited?` | undefined &#124; false &#124; true | Is limited version  |
 
 **Returns:** *Promise‹string›*
 
@@ -194,14 +151,16 @@ ___
 
 ▸ **link**(`name`: string, `rootPath`: string): *Promise‹IDbmsInfo›*
 
-*Defined in [dbmss/dbmss.abstract.ts:47](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L47)*
+*Defined in [dbmss/dbmss.abstract.ts:72](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L72)*
+
+Links an existing DBMS to relate
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`name` | string |
-`rootPath` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`name` | string | Name of DBMS |
+`rootPath` | string | Path to DBMS root  |
 
 **Returns:** *Promise‹IDbmsInfo›*
 
@@ -211,13 +170,15 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbms››*
 
-*Defined in [dbmss/dbmss.abstract.ts:51](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L51)*
+*Defined in [dbmss/dbmss.abstract.ts:84](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L84)*
+
+List all DBMS
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
 **Returns:** *Promise‹List‹IDbms››*
 
@@ -227,40 +188,18 @@ ___
 
 ▸ **removeTags**(`nameOrId`: string, `tags`: string[]): *Promise‹IDbmsInfo›*
 
-*Defined in [dbmss/dbmss.abstract.ts:69](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L69)*
+*Defined in [dbmss/dbmss.abstract.ts:142](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L142)*
+
+Remove tags from a DBMS
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`nameOrId` | string |
-`tags` | string[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`nameOrId` | string | - |
+`tags` | string[] |   |
 
 **Returns:** *Promise‹IDbmsInfo›*
-
-___
-
-###  runQuery
-
-▸ **runQuery**‹**Res**›(`driver`: Driver‹TapestryJSONResponse‹Res››, `query`: string, `params`: any, `retry`: number, `meta`: IQueryMeta): *Observable‹TapestryJSONResponse‹Res››*
-
-*Defined in [dbmss/dbmss.abstract.ts:71](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L71)*
-
-**Type parameters:**
-
-▪ **Res**
-
-**Parameters:**
-
-Name | Type | Default |
------- | ------ | ------ |
-`driver` | Driver‹TapestryJSONResponse‹Res›› | - |
-`query` | string | - |
-`params` | any | {} |
-`retry` | number | 0 |
-`meta` | IQueryMeta | {} |
-
-**Returns:** *Observable‹TapestryJSONResponse‹Res››*
 
 ___
 
@@ -268,13 +207,15 @@ ___
 
 ▸ **start**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹string››*
 
-*Defined in [dbmss/dbmss.abstract.ts:55](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L55)*
+*Defined in [dbmss/dbmss.abstract.ts:96](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L96)*
+
+Start one or more DBMSs
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsIds` | string[] &#124; List‹string› |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsIds` | string[] &#124; List‹string› |   |
 
 **Returns:** *Promise‹List‹string››*
 
@@ -284,13 +225,15 @@ ___
 
 ▸ **stop**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹string››*
 
-*Defined in [dbmss/dbmss.abstract.ts:57](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L57)*
+*Defined in [dbmss/dbmss.abstract.ts:102](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L102)*
+
+Stop one or more DBMSs
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsIds` | string[] &#124; List‹string› |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsIds` | string[] &#124; List‹string› |   |
 
 **Returns:** *Promise‹List‹string››*
 
@@ -300,13 +243,15 @@ ___
 
 ▸ **uninstall**(`dbmsId`: string): *Promise‹void›*
 
-*Defined in [dbmss/dbmss.abstract.ts:49](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L49)*
+*Defined in [dbmss/dbmss.abstract.ts:78](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L78)*
+
+Uninstall a DBMS
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string |   |
 
 **Returns:** *Promise‹void›*
 
@@ -316,7 +261,9 @@ ___
 
 ▸ **updateConfig**(`nameOrId`: string, `properties`: Map‹string, string›): *Promise‹boolean›*
 
-*Defined in [dbmss/dbmss.abstract.ts:65](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L65)*
+*Defined in [dbmss/dbmss.abstract.ts:128](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L128)*
+
+Set dbms configuration properties (neo4j.conf)
 
 **Parameters:**
 
@@ -333,13 +280,15 @@ ___
 
 ▸ **versions**(`limited?`: undefined | false | true, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsVersion››*
 
-*Defined in [dbmss/dbmss.abstract.ts:36](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L36)*
+*Defined in [dbmss/dbmss.abstract.ts:47](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L47)*
+
+List all available DBMS versions to install
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`limited?` | undefined &#124; false &#124; true |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`limited?` | undefined &#124; false &#124; true | Include limited versions |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
 **Returns:** *Promise‹List‹IDbmsVersion››*

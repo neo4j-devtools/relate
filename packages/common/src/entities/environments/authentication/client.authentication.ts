@@ -28,8 +28,8 @@ export class ClientAuthentication implements IAuthentication {
         });
     }
 
-    generateAuthToken(_code: string): Promise<string> {
-        throw new NotAllowedError('Authentication clients cannot generate tokens');
+    generateAuthToken(_data: any): Promise<string> {
+        throw new NotAllowedError('Clients cannot generate tokens');
     }
 
     async verifyAuthToken(token: string): Promise<void> {
