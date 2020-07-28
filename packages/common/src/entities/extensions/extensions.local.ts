@@ -18,13 +18,13 @@ import {download, emitHookEvent} from '../../utils';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
     discoverExtension,
-    discoverExtensionDistributions,
-    downloadExtension,
     extractExtension,
     fetchExtensionVersions,
     getAppBasePath,
     IExtensionVersion,
 } from '../../utils/extensions';
+import {downloadExtension} from '../../utils/extensions/download-extension';
+import {discoverExtensionDistributions} from '../../utils/extensions/extension-versions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
 import {AppLaunchTokenModel, IAppLaunchToken, IExtensionInfo} from '../../models';
