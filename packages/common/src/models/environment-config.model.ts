@@ -21,7 +21,7 @@ export interface IEnvironmentConfigInput {
     sandboxed?: boolean;
     type: ENVIRONMENT_TYPES;
     user?: any;
-    neo4jDataPath?: string;
+    relateDataPath?: string;
     httpOrigin?: string;
     remoteEnvironmentId?: string;
     authToken?: string;
@@ -58,7 +58,7 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     // @todo: this is LocalEnvironment specific
     @IsString()
     @IsOptional()
-    public neo4jDataPath?: string;
+    public relateDataPath?: string;
 
     @IsValidUrl()
     @IsOptional()

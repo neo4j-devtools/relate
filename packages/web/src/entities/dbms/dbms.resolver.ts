@@ -27,20 +27,20 @@ import {EnvironmentArgs, FilterArgs} from '../../global.types';
 export class DBMSResolver {
     constructor(@Inject(SystemProvider) protected readonly systemProvider: SystemProvider) {}
 
-    @Mutation(() => String)
+    @Mutation(() => DbmsInfo)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](
         @Context('environment') environment: Environment,
         @Args() {name, credentials, version, edition, noCaching, limited}: InstallDbmsArgs,
-    ): Promise<string> {
+    ): Promise<DbmsInfo> {
         return environment.dbmss.install(name, credentials, version, edition, noCaching, limited);
     }
 
-    @Mutation(() => String)
+    @Mutation(() => DbmsInfo)
     async [PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS](
         @Context('environment') environment: Environment,
         @Args() {name}: UninstallDbmsArgs,
-    ): Promise<string> {
-        return environment.dbmss.uninstall(name).then(() => name);
+    ): Promise<DbmsInfo> {
+        return environment.dbmss.uninstall(name);
     }
 
     @Query(() => DbmsInfo)

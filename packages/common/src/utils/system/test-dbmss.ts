@@ -62,7 +62,7 @@ export class TestDbmss {
     async createDbms(edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE): Promise<IDbmsInfo> {
         const name = this.createName();
 
-        const dbmsId = await this.environment.dbmss.install(
+        const {id: dbmsId} = await this.environment.dbmss.install(
             name,
             TestDbmss.DBMS_CREDENTIALS,
             TestDbmss.NEO4J_VERSION,

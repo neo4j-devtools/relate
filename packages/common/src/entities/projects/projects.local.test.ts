@@ -4,20 +4,19 @@ import {List} from '@relate/types';
 
 import {TestDbmss} from '../../utils/system';
 import {EnvironmentAbstract} from '../environments';
-import {IProject, IProjectManifest, WriteFileFlag} from '../../models';
+import {IProject, IProjectInput, WriteFileFlag} from '../../models';
 import {InvalidArgumentError} from '../../errors';
 import {envPaths} from '../../utils';
 import {PROJECTS_DIR_NAME} from '../../constants';
 
-const testId = 'testId';
-
-const TEST_MANIFEST: IProjectManifest = {
-    name: testId,
+const TEST_MANIFEST: IProjectInput = {
+    name: 'testId',
     dbmss: [],
 };
 const TEST_CREATED: IProject = {
     ...TEST_MANIFEST,
     root: expect.any(String),
+    id: expect.any(String),
 };
 const testFileName = 'test.txt';
 const testOtherFileName = 'test.pem';
@@ -29,6 +28,7 @@ const testDestinationOutside = path.normalize(`../foo/bar/baz/${testOtherFileNam
 describe('LocalProjects - list', () => {
     let environment: EnvironmentAbstract;
     let testDbmss: TestDbmss;
+    let projectId: string;
 
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
@@ -47,7 +47,10 @@ describe('LocalProjects - list', () => {
     });
 
     test('projects.create()', async () => {
-        expect(await environment.projects.create(TEST_MANIFEST)).toEqual(TEST_CREATED);
+        const created = await environment.projects.create(TEST_MANIFEST);
+        projectId = created.id;
+
+        expect(created).toEqual(TEST_CREATED);
     });
 
     test('projects.create() - duplicate', () => {
@@ -61,7 +64,7 @@ describe('LocalProjects - list', () => {
     });
 
     test('projects.addFile() - no destination', async () => {
-        expect(await environment.projects.addFile(testId, testFile)).toEqual({
+        expect(await environment.projects.addFile(projectId, testFile)).toEqual({
             name: 'test.txt',
             extension: '.txt',
             downloadToken: expect.any(String),
@@ -70,7 +73,7 @@ describe('LocalProjects - list', () => {
     });
 
     test('projects.addFile() - destination', async () => {
-        expect(await environment.projects.addFile(testId, testFile, testDestination)).toEqual({
+        expect(await environment.projects.addFile(projectId, testFile, testDestination)).toEqual({
             name: testOtherFileName,
             extension: '.pem',
             downloadToken: expect.any(String),
@@ -79,13 +82,13 @@ describe('LocalProjects - list', () => {
     });
 
     test('projects.addFile() - destination outside project', () => {
-        return expect(environment.projects.addFile(testId, testFile, testDestinationOutside)).rejects.toEqual(
+        return expect(environment.projects.addFile(projectId, testFile, testDestinationOutside)).rejects.toEqual(
             new InvalidArgumentError('Path must point to a location within the project directory'),
         );
     });
 
     test('projects.addFile() - duplicate', () => {
-        return expect(environment.projects.addFile(testId, testFile, testDestination)).rejects.toEqual(
+        return expect(environment.projects.addFile(projectId, testFile, testDestination)).rejects.toEqual(
             new InvalidArgumentError(`File ${testOtherFileName} already exists at that destination`),
         );
     });
@@ -93,14 +96,14 @@ describe('LocalProjects - list', () => {
     test('projects.writeFile() - override', async () => {
         const expectedContent = 'The file will contain this text.';
 
-        expect(await environment.projects.writeFile(testId, testFileName, expectedContent)).toEqual({
+        expect(await environment.projects.writeFile(projectId, testFileName, expectedContent)).toEqual({
             name: 'test.txt',
             extension: '.txt',
             downloadToken: expect.any(String),
             directory: '.',
         });
 
-        const project = await environment.projects.get(testId);
+        const project = await environment.projects.get(projectId);
         const actualContent = await fse.readFile(path.join(project.root, testFileName), 'utf8');
         expect(actualContent).toEqual(expectedContent);
     });
@@ -110,7 +113,7 @@ describe('LocalProjects - list', () => {
         const expectedContent = `The file will contain this text.${appendedContent}`;
 
         expect(
-            await environment.projects.writeFile(testId, testFileName, appendedContent, WriteFileFlag.APPEND),
+            await environment.projects.writeFile(projectId, testFileName, appendedContent, WriteFileFlag.APPEND),
         ).toEqual({
             name: 'test.txt',
             extension: '.txt',
@@ -118,7 +121,7 @@ describe('LocalProjects - list', () => {
             directory: '.',
         });
 
-        const project = await environment.projects.get(testId);
+        const project = await environment.projects.get(projectId);
         const actualContent = await fse.readFile(path.join(project.root, testFileName), 'utf8');
         expect(actualContent).toEqual(expectedContent);
     });
@@ -127,20 +130,20 @@ describe('LocalProjects - list', () => {
         const expectedContent = "If a file doesn't exist it will be created.";
         const nonExistingFile = 'non-existing-file';
 
-        expect(await environment.projects.writeFile(testId, nonExistingFile, expectedContent)).toEqual({
+        expect(await environment.projects.writeFile(projectId, nonExistingFile, expectedContent)).toEqual({
             name: nonExistingFile,
             extension: '',
             downloadToken: expect.any(String),
             directory: '.',
         });
 
-        const project = await environment.projects.get(testId);
+        const project = await environment.projects.get(projectId);
         const actualContent = await fse.readFile(path.join(project.root, nonExistingFile), 'utf8');
         expect(actualContent).toEqual(expectedContent);
     });
 
     test('projects.removeFile() - no dir', async () => {
-        expect(await environment.projects.removeFile(testId, testFileName)).toEqual({
+        expect(await environment.projects.removeFile(projectId, testFileName)).toEqual({
             name: 'test.txt',
             extension: '.txt',
             downloadToken: expect.any(String),
@@ -149,19 +152,19 @@ describe('LocalProjects - list', () => {
     });
 
     test('projects.removeFile() - not exists', () => {
-        return expect(environment.projects.removeFile(testId, testFileName)).rejects.toEqual(
+        return expect(environment.projects.removeFile(projectId, testFileName)).rejects.toEqual(
             new InvalidArgumentError(`File ${testFileName} does not exists`),
         );
     });
 
     test('projects.removeFile() - with dir but not provided', () => {
-        return expect(environment.projects.removeFile(testId, testOtherFileName)).rejects.toEqual(
+        return expect(environment.projects.removeFile(projectId, testOtherFileName)).rejects.toEqual(
             new InvalidArgumentError(`File ${testOtherFileName} does not exists`),
         );
     });
 
     test('projects.removeFile() - with dir', async () => {
-        expect(await environment.projects.removeFile(testId, path.join(testProjectDir, testOtherFileName))).toEqual({
+        expect(await environment.projects.removeFile(projectId, path.join(testProjectDir, testOtherFileName))).toEqual({
             name: testOtherFileName,
             extension: '.pem',
             downloadToken: expect.any(String),

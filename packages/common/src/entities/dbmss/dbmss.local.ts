@@ -44,7 +44,14 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
 } from '../environments';
-import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
+import {
+    BOLT_DEFAULT_PORT,
+    DBMS_MANIFEST_FILE,
+    DBMS_STATUS,
+    DBMS_STATUS_FILTERS,
+    DBMS_TLS_LEVEL,
+    ENTITY_TYPES,
+} from '../../constants';
 import {PropertiesFile} from '../../system/files';
 import {winNeo4jStart, winNeo4jStop, winNeo4jStatus} from '../../utils/dbmss/neo4j-process-win';
 
@@ -86,7 +93,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
         noCaching = false,
         limited = false,
-    ): Promise<string> {
+    ): Promise<IDbmsInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -161,8 +168,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Use a unique name']);
         }
 
+        const alreadyHasManifest = await fse.pathExists(path.join(rootPath, DBMS_MANIFEST_FILE));
+
+        if (alreadyHasManifest) {
+            throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
+        }
+
         const newId = uuidv4();
-        const baseName = `dbms-${newId}`;
         const info = await getDistributionInfo(rootPath);
 
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
@@ -171,20 +183,21 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             ]);
         }
 
-        const target = path.join(this.environment.dirPaths.dbmssData, baseName);
+        const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, newId);
 
         await fse.symlink(rootPath, target, 'junction');
-        await this.discoverDbmss();
         await this.setDbmsManifest(newId, {name});
 
         if (supportsAccessTokens(info)) {
             await this.installSecurityPlugin(newId);
         }
 
+        await this.discoverDbmss();
+
         return this.get(newId);
     }
 
-    async uninstall(nameOrId: string): Promise<void> {
+    async uninstall(nameOrId: string): Promise<IDbmsInfo> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
@@ -321,13 +334,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     public getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.environment.dirPaths.dbmssData);
-
         if (dbmsId) {
-            return path.join(dbmssDir, `dbms-${dbmsId}`);
+            return this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, dbmsId);
         }
 
-        return dbmssDir;
+        return this.environment.dirPaths.dbmssData;
     }
 
     private async installNeo4j(
@@ -336,7 +347,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         dbmssDir: string,
         extractedDistPath: string,
         noCaching?: boolean,
-    ): Promise<string> {
+    ): Promise<IDbmsInfo> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
         }
@@ -383,23 +394,25 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 await this.installSecurityPlugin(dbmsId);
             }
 
-            return installed.id;
+            return installed;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
-            await fse.remove(path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`));
             throw error;
         }
     }
 
-    private async uninstallNeo4j(dbmsId: string): Promise<void> {
-        const dbmsDir = this.getDbmsRootPath(dbmsId);
-        const found = await fse.pathExists(dbmsDir);
+    private async uninstallNeo4j(dbmsId: string): Promise<IDbmsInfo> {
+        const dbms = await this.get(dbmsId);
+        const dbmsRootPath = this.getDbmsRootPath(dbms.id);
+        const found = await fse.pathExists(dbmsRootPath);
 
         if (!found) {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
         }
 
-        return fse.remove(dbmsDir).then(() => this.deleteDbmsManifest(dbmsId));
+        await fse.remove(dbmsRootPath);
+
+        return dbms;
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
@@ -567,19 +580,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async getDbmsManifest(dbmsId: string): Promise<Dict<IDbmsConfig>> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const defaultValues = {
             description: '',
             name: '',
             tags: [],
         };
 
-        if (!(await fse.pathExists(configFileName))) {
-            return Dict.from({
-                ...defaultValues,
-                id: dbmsId,
-            });
-        }
+        const configFileName = path.join(
+            this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, dbmsId),
+            DBMS_MANIFEST_FILE,
+        );
 
         try {
             const config = await fse.readJson(configFileName);
@@ -598,22 +608,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async setDbmsManifest(dbmsId: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
+        const configFileName = path.join(this.getDbmsRootPath(dbmsId), DBMS_MANIFEST_FILE);
         const config = await this.getDbmsManifest(dbmsId);
-        const updated = {
-            ...config.toObject(),
-            ...update,
+        const updated = config.merge(update).merge({
             id: dbmsId,
-        };
+        });
 
-        await fse.writeJson(configFileName, updated);
-        return this.discoverDbmss();
-    }
-
-    private async deleteDbmsManifest(dbmsId: string): Promise<void> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
-
-        await fse.unlink(configFileName);
+        await fse.writeJson(configFileName, updated.toObject());
 
         return this.discoverDbmss();
     }

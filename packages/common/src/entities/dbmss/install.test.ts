@@ -53,7 +53,7 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with valid version (file path)', async () => {
-        const dbmsID = await testDbmss.environment.dbmss.install(
+        const {id: dbmsID} = await testDbmss.environment.dbmss.install(
             testDbmss.createName(),
             DBMS_CREDENTIALS,
             ARCHIVE_PATH,
@@ -80,7 +80,7 @@ describe('LocalEnvironment - install', () => {
             .mockImplementationOnce(() => Promise.resolve(List.from([])));
         jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
-        const dbmsId = await testDbmss.environment.dbmss.install(
+        const {id: dbmsId} = await testDbmss.environment.dbmss.install(
             testDbmss.createName(),
             DBMS_CREDENTIALS,
             NEO4J_VERSION,
@@ -106,7 +106,7 @@ describe('LocalEnvironment - install', () => {
     });
 
     test('with valid version (semver)', async () => {
-        const dbmsId = await testDbmss.environment.dbmss.install(
+        const {id: dbmsId} = await testDbmss.environment.dbmss.install(
             testDbmss.createName(),
             DBMS_CREDENTIALS,
             NEO4J_VERSION,
@@ -118,7 +118,7 @@ describe('LocalEnvironment - install', () => {
         const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
 
-        const dbmsId2 = await testDbmss.environment.dbmss.install(
+        const {id: dbmsId2} = await testDbmss.environment.dbmss.install(
             testDbmss.createName(),
             DBMS_CREDENTIALS,
             NEO4J_VERSION,

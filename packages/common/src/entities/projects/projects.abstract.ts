@@ -1,7 +1,7 @@
 import {List} from '@relate/types';
 
 import {EnvironmentAbstract} from '../environments';
-import {IRelateFile, IProjectManifest, IProject, IProjectDbms, WriteFileFlag} from '../../models';
+import {IRelateFile, IProject, IProjectDbms, WriteFileFlag, IProjectInput} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
@@ -9,42 +9,36 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     constructor(protected readonly environment: Env) {}
 
-    abstract create(manifest: IProjectManifest, path?: string): Promise<IProject>;
+    abstract create(manifest: IProjectInput, path?: string): Promise<IProject>;
 
-    abstract get(name: string): Promise<IProject>;
+    abstract get(nameOrID: string): Promise<IProject>;
 
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>>;
 
     abstract link(filePath: string): Promise<IProject>;
 
-    abstract listFiles(
-        projectName: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IRelateFile>>;
+    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
 
-    abstract addFile(projectName: string, source: string, destination?: string): Promise<IRelateFile>;
+    abstract addFile(projectId: string, source: string, destination?: string): Promise<IRelateFile>;
 
     abstract writeFile(
-        projectName: string,
+        projectId: string,
         destination: string,
         data: string | Buffer,
         writeFlag?: WriteFileFlag,
     ): Promise<IRelateFile>;
 
-    abstract removeFile(projectName: string, relativePath: string): Promise<IRelateFile>;
+    abstract removeFile(projectId: string, relativePath: string): Promise<IRelateFile>;
 
-    abstract listDbmss(
-        projectName: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IProjectDbms>>;
+    abstract listDbmss(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
 
     abstract addDbms(
-        projectName: string,
+        projectId: string,
         dbmsName: string,
         dbmsId: string,
         principal?: string,
         accessToken?: string,
     ): Promise<IProjectDbms>;
 
-    abstract removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms>;
+    abstract removeDbms(projectId: string, dbmsName: string): Promise<IProjectDbms>;
 }

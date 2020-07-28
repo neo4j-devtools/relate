@@ -5,7 +5,7 @@ import tar from 'tar';
 
 import {envPaths} from '../env-paths';
 import {IInstalledExtension} from '../../models';
-import {EXTENSION_DIR_NAME, EXTENSION_TYPES, EXTENSION_MANIFEST} from '../../constants';
+import {EXTENSION_DIR_NAME, EXTENSION_MANIFEST_FILE, EXTENSION_TYPES} from '../../constants';
 
 export class TestExtensions {
     extensions: Array<IInstalledExtension | string> = [];
@@ -33,16 +33,23 @@ export class TestExtensions {
             version: '1.0.0',
         };
 
-        const manifestPath = path.join(extensionPath, name, EXTENSION_MANIFEST);
+        const manifestPath = path.join(extensionPath, name, EXTENSION_MANIFEST_FILE);
         const packageJsonPath = path.join(extensionPath, name, 'package.json');
         const indexPath = path.join(extensionPath, name, 'index.html');
+
         await fse.ensureFile(manifestPath);
         await fse.ensureFile(packageJsonPath);
         await fse.ensureFile(indexPath);
         await fse.writeJSON(manifestPath, manifest);
         await fse.writeJSON(packageJsonPath, packageJson);
 
+        if (type === EXTENSION_TYPES.STATIC) {
+            await fse.ensureDir(path.join(extensionPath, type));
+            await fse.symlink(path.join(extensionPath, name), path.join(extensionPath, type, name), 'junction');
+        }
+
         this.extensions.push(manifest);
+
         return manifest;
     }
 
@@ -73,7 +80,7 @@ export class TestExtensions {
     }
 
     installNew(type: EXTENSION_TYPES = EXTENSION_TYPES.STATIC): Promise<IInstalledExtension> {
-        const installationPath = path.join(envPaths().data, EXTENSION_DIR_NAME, type);
+        const installationPath = path.join(envPaths().data, EXTENSION_DIR_NAME);
 
         return this.createExtension(type, installationPath);
     }
@@ -89,8 +96,8 @@ export class TestExtensions {
                 [
                     path.join(envPaths().cache, EXTENSION_DIR_NAME, ext.name),
                     path.join(envPaths().cache, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.type, ext.name),
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.type, `${ext.name}@${ext.version}`),
+                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.name),
+                    path.join(envPaths().data, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
                 ].map((p) => fse.remove(p)),
             );
         });

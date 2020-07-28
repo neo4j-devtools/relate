@@ -85,7 +85,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
         noCaching = false,
         limited = false,
-    ): Promise<string> {
+    ): Promise<IDbmsInfo> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation InstallDbms(
@@ -105,7 +105,16 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         edition: $edition
                         noCaching: $noCaching
                         limited: $limited
-                    )
+                    ) {
+                        id
+                        name
+                        description
+                        tags
+                        connectionUri
+                        status
+                        version
+                        edition
+                    }
                 }
             `,
             variables: {
@@ -133,11 +142,20 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support linking DBMSs`);
     }
 
-    async uninstall(name: string): Promise<void> {
+    async uninstall(name: string): Promise<IDbmsInfo> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation UninstallDbms($environmentId: String, $name: String!) {
-                    ${PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS}(environmentNameOrId: $environmentId, name: $name)
+                    ${PUBLIC_GRAPHQL_METHODS.UNINSTALL_DBMS}(environmentNameOrId: $environmentId, name: $name) {
+                        id
+                        name
+                        description
+                        tags
+                        connectionUri
+                        status
+                        version
+                        edition
+                    }
                 }
             `,
             variables: {

@@ -63,8 +63,8 @@ export abstract class EnvironmentAbstract {
         return this.config.remoteEnvironmentId;
     }
 
-    public get neo4jDataPath(): string {
-        return this.config.neo4jDataPath || envPaths().data;
+    public get dataPath(): string {
+        return this.config.relateDataPath || envPaths().data;
     }
 
     constructor(protected config: EnvironmentConfigModel) {}
