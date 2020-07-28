@@ -16,7 +16,8 @@ export class UseModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const {environment: environmentId} = this.parsed.args;
+        const {args} = this.parsed;
+        const {environment: environmentId} = args;
         const environment = await this.systemProvider.useEnvironment(environmentId);
 
         this.utils.log(`Environment "${environment.name}" is now set as active.`);
