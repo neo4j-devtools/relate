@@ -35,8 +35,14 @@ jest.mock('got', () => ({
 }));
 
 describe('extension versions', () => {
-    const extensions = new TestExtensions(__filename);
+    let extensions: TestExtensions;
     let testExtension: IInstalledExtension;
+
+    beforeAll(() => {
+        extensions = new TestExtensions(__filename);
+    });
+
+    afterAll(() => extensions.teardown());
 
     describe('no extensions installed', () => {
         test('extension distributions empty (if none existing)', async () => {
@@ -77,8 +83,6 @@ describe('extension versions', () => {
     });
 
     describe('extensions installed', () => {
-        afterAll(() => extensions.teardown());
-
         test('extensions discovered (if existing and with a package.json)', async () => {
             testExtension = await extensions.installNew();
             const extensionMeta = await extensionVersions.discoverExtension(

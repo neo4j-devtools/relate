@@ -18,14 +18,14 @@ import {emitHookEvent} from '../../utils';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
     discoverExtension,
-    discoverExtensionDistributions,
-    downloadExtension,
     extractExtension,
     fetchExtensionVersions,
     getAppBasePath,
     IExtensionMeta,
     IExtensionVersion,
 } from '../../utils/extensions';
+import {downloadExtension} from '../../utils/extensions/download-extension';
+import {discoverExtensionDistributions} from '../../utils/extensions/extension-versions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
 import {AppLaunchTokenModel, IAppLaunchToken} from '../../models';
@@ -154,6 +154,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         await fse.copy(extractedDistPath, target);
 
         if (extension.type === EXTENSION_TYPES.STATIC) {
+            await fse.ensureDir(path.join(extensionsDir, EXTENSION_TYPES.STATIC));
             const staticTarget = path.join(extensionsDir, EXTENSION_TYPES.STATIC, extension.name);
 
             await fse.symlink(target, staticTarget, 'junction');
@@ -192,7 +193,11 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return targets
             .mapEach(async (ext) => {
                 await fse.remove(ext.dist);
-
+                if (ext.type === EXTENSION_TYPES.STATIC) {
+                    await fse.unlink(
+                        path.join(this.environment.dirPaths.extensionsData, EXTENSION_TYPES.STATIC, ext.name),
+                    );
+                }
                 return ext;
             })
             .unwindPromises();
