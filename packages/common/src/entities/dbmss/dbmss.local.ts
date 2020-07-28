@@ -11,7 +11,6 @@ import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
-    elevatedNeo4jWindowsCmd,
     extractNeo4j,
     fetchNeo4jVersions,
     generatePluginCerts,
@@ -47,6 +46,7 @@ import {
 } from '../environments';
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
+import { winNeo4jStart, winNeo4jStop, winNeo4jStatus } from '../../utils/dbmss/neo4j-process-win';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -199,8 +199,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
             .mapEach((id) => {
-                if (this.environment.isSandboxed) {
-                    return neo4jCmd(this.getDbmsRootPath(id), 'console');
+                if (process.platform === 'win32') {
+                    return winNeo4jStart(this.getDbmsRootPath(id));
                 }
 
                 return neo4jCmd(this.getDbmsRootPath(id), 'start');
@@ -211,7 +211,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     stop(nameOrIds: string[] | List<string>): Promise<List<string>> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
-            .mapEach((id) => neo4jCmd(this.getDbmsRootPath(id), 'stop'))
+            .mapEach((id) => {
+                if (process.platform === 'win32') {
+                    return winNeo4jStop(this.getDbmsRootPath(id));
+                }
+
+                return neo4jCmd(this.getDbmsRootPath(id), 'stop')
+            })
             .unwindPromises();
     }
 
@@ -220,10 +226,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
             .mapEach(async (dbms) => {
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-                const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
-                const status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED)
-                    ? DBMS_STATUS.STARTED
-                    : DBMS_STATUS.STOPPED;
+
+                let status: DBMS_STATUS;
+
+                if (process.platform === 'win32') {
+                    status = await winNeo4jStatus(this.getDbmsRootPath(dbms.id));
+                } else {
+                    const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
+                    status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED)
+                        ? DBMS_STATUS.STARTED
+                        : DBMS_STATUS.STOPPED;
+                }
 
                 return {
                     connectionUri: dbms.connectionUri,
@@ -358,10 +371,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             await neo4jConfig.flush();
 
-            if (!this.environment.isSandboxed && process.platform === 'win32') {
-                await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'install-service');
-            }
-
             await this.ensureDbmsStructure(dbmsId, neo4jConfig);
             await neo4jConfig.backupPropertiesFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
@@ -388,10 +397,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         if (!found) {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
-        }
-
-        if (!this.environment.isSandboxed && process.platform === 'win32') {
-            await elevatedNeo4jWindowsCmd(this.getDbmsRootPath(dbmsId), 'uninstall-service');
         }
 
         return fse.remove(dbmsDir).then(() => this.deleteDbmsManifest(dbmsId));

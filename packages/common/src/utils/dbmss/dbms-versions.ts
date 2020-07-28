@@ -13,13 +13,14 @@ import {
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_DIST_LIMITED_VERSIONS_URL,
+    NEO4J_LIB_DIR,
 } from '../../entities/environments';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
         const version = await getDistributionVersion(dbmsRootDir);
         const isEnterprise = await fse.pathExists(
-            path.join(dbmsRootDir, 'lib', `neo4j-server-enterprise-${version}.jar`),
+            path.join(dbmsRootDir, NEO4J_LIB_DIR, `neo4j-server-enterprise-${version}.jar`),
         );
 
         return {
@@ -121,7 +122,7 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
     const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
-    const libs = List.from(await fse.readdir(path.join(dbmsRoot, 'lib')));
+    const libs = List.from(await fse.readdir(path.join(dbmsRoot, NEO4J_LIB_DIR)));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 
     return neo4jJar

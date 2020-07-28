@@ -31,8 +31,13 @@ export const NEO4J_ADMIN_BIN_FILE = process.platform === 'win32' ? 'neo4j-admin.
 export const NEO4J_DIST_VERSIONS_URL = 'https://dist.neo4j.org/versions/v1/neo4j-versions.json';
 export const NEO4J_DIST_LIMITED_VERSIONS_URL = 'https://dist.neo4j.org/versions/v1/neo4j-limited-versions.json';
 export const NEO4J_CONF_DIR = 'conf';
+export const NEO4J_LOGS_DIR = 'logs';
+export const NEO4J_RUN_DIR = 'run';
+export const NEO4J_LIB_DIR = 'lib';
 export const NEO4J_PLUGIN_DIR = 'plugins';
 export const NEO4J_CERT_DIR = 'certificates';
+export const NEO4J_LOG_FILE = 'neo4j.log';
+export const NEO4J_RELATE_PID_FILE = 'neo4j-relate.pid';
 export const NEO4J_CONF_FILE = 'neo4j.conf';
 export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
