@@ -66,7 +66,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             throw new ExtensionExistsError(`${extension.name} is already installed`);
         }
 
-        await fse.symlink(filePath, target);
+        await fse.symlink(filePath, target, 'junction');
 
         return extension;
     }

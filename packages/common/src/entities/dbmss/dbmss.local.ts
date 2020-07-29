@@ -46,7 +46,7 @@ import {
 } from '../environments';
 import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import { winNeo4jStart, winNeo4jStop, winNeo4jStatus } from '../../utils/dbmss/neo4j-process-win';
+import {winNeo4jStart, winNeo4jStop, winNeo4jStatus} from '../../utils/dbmss/neo4j-process-win';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -173,7 +173,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         const target = path.join(this.environment.dirPaths.dbmssData, baseName);
 
-        await fse.symlink(rootPath, target);
+        await fse.symlink(rootPath, target, 'junction');
         await this.discoverDbmss();
         await this.setDbmsManifest(newId, {name});
 
@@ -216,7 +216,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     return winNeo4jStop(this.getDbmsRootPath(id));
                 }
 
-                return neo4jCmd(this.getDbmsRootPath(id), 'stop')
+                return neo4jCmd(this.getDbmsRootPath(id), 'stop');
             })
             .unwindPromises();
     }
