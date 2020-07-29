@@ -503,7 +503,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
-            .filter((file) => file.startsWith('dbms-'))
+            .filter((file) => file.startsWith(`${ENTITY_TYPES.DBMS}-`))
             .mapEach((file) =>
                 fse
                     .stat(path.join(root, file))

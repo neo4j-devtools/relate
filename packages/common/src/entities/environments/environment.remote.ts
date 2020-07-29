@@ -15,6 +15,7 @@ import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../../system/files';
 import {RemoteProjects} from '../projects';
 import {RemoteDbs} from '../dbs';
+import {RemoteBackups} from '../backups';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
@@ -24,6 +25,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly extensions = new RemoteExtensions(this);
 
     public readonly projects = new RemoteProjects(this);
+
+    public readonly backups = new RemoteBackups(this);
 
     private client: ApolloLink;
 

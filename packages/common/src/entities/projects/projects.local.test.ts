@@ -25,7 +25,7 @@ const testProjectDir = path.normalize('./foo/bar/baz');
 const testDestination = path.normalize(`./foo/bar/baz/${testOtherFileName}`);
 const testDestinationOutside = path.normalize(`../foo/bar/baz/${testOtherFileName}`);
 
-describe('LocalProjects - list', () => {
+describe('LocalProjects', () => {
     let environment: EnvironmentAbstract;
     let testDbmss: TestDbmss;
     let projectId: string;

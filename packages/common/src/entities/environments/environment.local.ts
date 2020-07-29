@@ -10,6 +10,7 @@ import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} fr
 import {BACKUPS_DIR_NAME, DBMS_DIR_NAME, ENTITY_TYPES, EXTENSION_DIR_NAME, PROJECTS_DIR_NAME} from '../../constants';
 import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
+import {LocalBackups} from '../backups';
 import {InvalidArgumentError} from '../../errors';
 
 export class LocalEnvironment extends EnvironmentAbstract {
@@ -20,6 +21,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
     public readonly extensions = new LocalExtensions(this);
 
     public readonly projects = new LocalProjects(this);
+
+    public readonly backups = new LocalBackups(this);
 
     public readonly dirPaths = {
         ...envPaths(),
@@ -34,6 +37,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     public getEntityRootPath(entityType: ENTITY_TYPES, entityNameOrId: string): string {
         switch (entityType) {
+            case ENTITY_TYPES.BACKUP:
+                return path.join(this.dirPaths.backupsData, `${ENTITY_TYPES.BACKUP}-${entityNameOrId}`);
+
             case ENTITY_TYPES.DBMS:
                 return path.join(this.dirPaths.dbmssData, `${ENTITY_TYPES.DBMS}-${entityNameOrId}`);
 

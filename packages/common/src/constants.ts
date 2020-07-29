@@ -6,6 +6,7 @@ export enum ENTITY_TYPES {
     DB = 'db',
     EXTENSION = 'extension',
     ENVIRONMENT = 'environment',
+    BACKUP = 'backup',
 }
 
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
@@ -13,13 +14,14 @@ export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 
+export const BACKUP_MANIFEST_FILE = `relate.${ENTITY_TYPES.BACKUP}.json`;
 export const DBMS_MANIFEST_FILE = `relate.${ENTITY_TYPES.DBMS}.json`;
 export const PROJECT_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT}.json`;
 export const EXTENSION_MANIFEST_FILE = `relate.${ENTITY_TYPES.EXTENSION}.json`;
 
 export const RELATE_KNOWN_CONNECTIONS_FILE = 'known_connections';
 export const DBMS_DIR_NAME = 'dbmss';
-export const BACKUPS_DIR_NAME = 'dbms-backups';
+export const BACKUPS_DIR_NAME = 'backups';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing daedalus instance
