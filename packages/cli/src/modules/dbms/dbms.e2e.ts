@@ -44,7 +44,7 @@ describe('$relate dbms', () => {
     test.stdout().it('logs start message', async (ctx) => {
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
         if (process.platform === 'win32') {
-            expect(ctx.stdout).toContain('Neo4j service started');
+            expect(ctx.stdout).toContain('neo4j started');
         } else {
             expect(ctx.stdout).toContain('Directories in use');
             expect(ctx.stdout).toContain('Starting Neo4j');

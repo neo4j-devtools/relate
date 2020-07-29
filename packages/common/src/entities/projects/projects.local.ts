@@ -77,7 +77,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
             const target = path.join(this.environment.dirPaths.projectsData, manifest.name);
 
-            await fse.symlink(projectPath, target);
+            await fse.symlink(projectPath, target, 'junction');
 
             return this.get(manifest.name);
         } catch (e) {

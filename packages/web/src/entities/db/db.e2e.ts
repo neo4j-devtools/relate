@@ -150,7 +150,7 @@ describe('DBModule', () => {
                     const {startDbmss} = res.body.data;
 
                     if (process.platform === 'win32') {
-                        expect(startDbmss[0]).toContain('Neo4j service started');
+                        expect(startDbmss[0]).toContain('neo4j started');
                     } else {
                         expect(startDbmss[0]).toContain('Directories in use');
                         expect(startDbmss[0]).toContain('Starting Neo4j');
@@ -477,7 +477,7 @@ describe('DBModule', () => {
                     const {stopDbmss} = res.body.data;
 
                     if (process.platform === 'win32') {
-                        expect(stopDbmss[0]).toContain('Neo4j service stopped');
+                        expect(stopDbmss[0]).toContain('neo4j stopped');
                     } else {
                         expect(stopDbmss[0]).toContain('Stopping Neo4j');
                         expect(stopDbmss[0]).toContain('stopped');

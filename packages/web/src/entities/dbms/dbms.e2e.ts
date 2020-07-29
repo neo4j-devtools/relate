@@ -222,7 +222,7 @@ describe('DBMSModule', () => {
                     const {startDbmss} = res.body.data;
 
                     if (process.platform === 'win32') {
-                        expect(startDbmss[0]).toContain('Neo4j service started');
+                        expect(startDbmss[0]).toContain('neo4j started');
                     } else {
                         expect(startDbmss[0]).toContain('Directories in use');
                         expect(startDbmss[0]).toContain('Starting Neo4j');
