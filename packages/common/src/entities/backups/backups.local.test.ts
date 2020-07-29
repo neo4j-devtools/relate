@@ -100,27 +100,22 @@ describe('LocalBackups', () => {
     });
 
     test('backups.restore() - directory', async () => {
-        const dbmsBefore = await environment.dbmss.list();
         const toRestore = await environment.backups.get(backupId);
+        const {entityId} = await environment.backups.restore(toRestore.directory);
+        const dbmsAfter = await environment.dbmss.get(entityId);
 
-        expect(dbmsBefore.length.get()).toEqual(1);
+        expect(dbmsAfter.id).toEqual(entityId);
 
-        await environment.backups.restore(toRestore.directory);
-
-        const dbmsAfter = await environment.dbmss.list();
-
-        expect(dbmsAfter.length.get()).toEqual(2);
+        await environment.dbmss.uninstall(entityId);
     });
 
     test('backups.restore() - file', async () => {
-        const dbmsBefore = await environment.dbmss.list();
         const toRestore = await environment.backups.get(backupId);
+        const {entityId} = await environment.backups.restore(path.join(toRestore.directory, toRestore.name));
+        const dbmsAfter = await environment.dbmss.get(entityId);
 
-        expect(dbmsBefore.length.get()).toEqual(2);
+        expect(dbmsAfter.id).toEqual(entityId);
 
-        await environment.backups.restore(path.join(toRestore.directory, toRestore.name));
-        const dbmsAfter = await environment.dbmss.list();
-
-        expect(dbmsAfter.length.get()).toEqual(3);
+        await environment.dbmss.uninstall(entityId);
     });
 });

@@ -58,7 +58,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
     }
 
     async restore(filePath: string, outputPath?: string): Promise<IRelateBackup> {
-        const restoreId = uuidv4();
+        const restoredEntityId = uuidv4();
         const manifest = await this.resolveRestorationManifest(filePath);
         const backupPath = path.join(manifest.directory, manifest.name);
 
@@ -66,34 +66,43 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             await decompress(backupPath, outputPath);
             await fse.writeJSON(path.join(outputPath, BACKUP_MANIFEST_FILE), manifest);
 
-            const restoredManifestPath = path.join(outputPath, this.getRestoredEntityManifestPath(manifest.entityType));
-            const restoredManifest = await fse.readJSON(restoredManifestPath);
+            const restoredEntityManifestPath = path.join(
+                outputPath,
+                this.getRestoredEntityManifestPath(manifest.entityType),
+            );
+            const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
 
-            await fse.writeJSON(restoredManifestPath, {
-                ...restoredManifest,
-                id: restoreId,
+            await fse.writeJSON(restoredEntityManifestPath, {
+                ...restoredEntityManifest,
+                id: restoredEntityId,
             });
 
-            return manifest;
+            return {
+                ...manifest,
+                entityId: restoredEntityId,
+            };
         }
 
-        const defaultOutputPath = this.environment.getEntityRootPath(manifest.entityType, restoreId);
+        const defaultOutputPath = this.environment.getEntityRootPath(manifest.entityType, restoredEntityId);
 
         await decompress(backupPath, defaultOutputPath);
         await fse.writeJSON(path.join(defaultOutputPath, BACKUP_MANIFEST_FILE), manifest);
 
-        const restoredManifestPath = path.join(
+        const restoredEntityManifestPath = path.join(
             defaultOutputPath,
             this.getRestoredEntityManifestPath(manifest.entityType),
         );
-        const restoredManifest = await fse.readJSON(restoredManifestPath);
+        const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
 
-        await fse.writeJSON(restoredManifestPath, {
-            ...restoredManifest,
-            id: restoreId,
+        await fse.writeJSON(restoredEntityManifestPath, {
+            ...restoredEntityManifest,
+            id: restoredEntityId,
         });
 
-        return manifest;
+        return {
+            ...manifest,
+            entityId: restoredEntityId,
+        };
     }
 
     async get(backupNameOrId: string): Promise<IRelateBackup> {
