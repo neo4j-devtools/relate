@@ -12,13 +12,7 @@ import {
 import fetch from 'node-fetch';
 
 import InitCommand from '../../commands/environment/init';
-import {
-    confirmPrompt,
-    inputPrompt,
-    selectAllowedMethodsPrompt,
-    selectAuthenticatorPrompt,
-    selectPrompt,
-} from '../../prompts';
+import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
 import {isInteractive} from '../../stdin';
 
 @Module({
@@ -34,7 +28,7 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        let {type, name, httpOrigin, sandboxed} = this.parsed.flags;
+        let {type, name, httpOrigin} = this.parsed.flags;
         let remoteEnvironmentId: string | undefined = undefined;
 
         const envChoices = Object.values(ENVIRONMENT_TYPES).map((envType) => ({
@@ -62,12 +56,10 @@ export class InitModule implements OnApplicationBootstrap {
 
         if (isInteractive()) {
             const authentication: IAuthenticationOptions | undefined = await selectAuthenticatorPrompt();
-            sandboxed = sandboxed || (await confirmPrompt('Is this environment sandboxed (lacks admin privileges)?'));
             const allowedMethods: string[] = await selectAllowedMethodsPrompt();
             const config: IEnvironmentConfigInput = {
                 type: type as ENVIRONMENT_TYPES,
                 name: name,
-                sandboxed,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
                 remoteEnvironmentId,
                 authentication,
@@ -81,7 +73,6 @@ export class InitModule implements OnApplicationBootstrap {
         const config: IEnvironmentConfigInput = {
             type: type as ENVIRONMENT_TYPES,
             name: name,
-            sandboxed,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             remoteEnvironmentId,
         };
