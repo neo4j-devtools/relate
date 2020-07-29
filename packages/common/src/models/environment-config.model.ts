@@ -18,7 +18,6 @@ export interface IEnvironmentConfig extends IEnvironmentConfigInput {
 export interface IEnvironmentConfigInput {
     name: string;
     active?: boolean;
-    sandboxed?: boolean;
     type: ENVIRONMENT_TYPES;
     user?: any;
     neo4jDataPath?: string;
@@ -43,10 +42,6 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsBoolean()
     @IsOptional()
     public active?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    public sandboxed?: boolean;
 
     @IsEnum(ENVIRONMENT_TYPES)
     public type!: ENVIRONMENT_TYPES;
