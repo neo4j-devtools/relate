@@ -20,7 +20,6 @@ USAGE
 OPTIONS
   --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
   --name=name              (required) Name of the environment to initialize
-  --sandboxed              Environment does not allow administrator privileges
   --type=(LOCAL|REMOTE)    (required) Type of environment
 
 ALIASES
