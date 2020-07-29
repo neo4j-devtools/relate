@@ -6,7 +6,6 @@ import {InvalidArgumentError, NotFoundError, NotSupportedError} from '../../erro
 import * as localUtils from '../../utils/dbmss';
 import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
-import {NEO4J_EDITION} from '../environments';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
@@ -130,35 +129,5 @@ describe('LocalEnvironment - install', () => {
 
         const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
         expect(info2?.version).toEqual(NEO4J_VERSION);
-    });
-
-    test('with valid community version (semver)', async () => {
-        const dbmsId = await testDbmss.environment.dbmss.install(
-            testDbmss.createName(),
-            DBMS_CREDENTIALS,
-            NEO4J_VERSION,
-            NEO4J_EDITION.COMMUNITY,
-        );
-
-        const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
-        expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
-
-        const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
-        expect(info?.version).toEqual(NEO4J_VERSION);
-        expect(info?.edition).toEqual(NEO4J_EDITION.COMMUNITY);
-
-        const dbmsId2 = await testDbmss.environment.dbmss.install(
-            testDbmss.createName(),
-            DBMS_CREDENTIALS,
-            NEO4J_VERSION,
-            NEO4J_EDITION.COMMUNITY,
-        );
-
-        const message2 = (await testDbmss.environment.dbmss.info([dbmsId2])).toArray();
-        expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
-
-        const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
-        expect(info2?.version).toEqual(NEO4J_VERSION);
-        expect(info?.edition).toEqual(NEO4J_EDITION.COMMUNITY);
     });
 });
