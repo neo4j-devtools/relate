@@ -6,6 +6,7 @@ import {NEO4J_BIN_DIR, CYPHER_SHELL_BIN_FILE} from '../../entities/environments/
 import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
+import {getDistributionVersion} from './dbms-versions';
 
 export async function cypherShellCmd(
     dbmsRootPath: string,
@@ -14,7 +15,8 @@ export async function cypherShellCmd(
     credentials?: string,
 ): Promise<string> {
     const cypherShellBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, CYPHER_SHELL_BIN_FILE);
-    const relateJavaHome = await resolveRelateJavaHome();
+    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     let stream;
     if (typeof from === 'string' || from instanceof String) {
@@ -58,6 +60,10 @@ export async function cypherShellCmd(
 
     if (output.includes('ERROR: Unable to find Java executable.')) {
         throw new DependencyError('Unable to find Java executable');
+    }
+
+    if (output.includes('Neo4j cannot be started using java version')) {
+        throw new DependencyError(output);
     }
 
     return output;
