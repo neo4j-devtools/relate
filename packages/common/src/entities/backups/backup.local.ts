@@ -2,8 +2,7 @@ import {List, Str} from '@relate/types';
 import fse from 'fs-extra';
 import {v4 as uuidv4} from 'uuid';
 import path from 'path';
-import zipAFolder from 'zip-a-folder';
-import decompress from 'decompress';
+import tar from 'tar';
 
 import {LocalEnvironment} from '../environments';
 import {IRelateBackup, RelateBackupModel} from '../../models';
@@ -18,8 +17,9 @@ import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {BackupAbstract} from './backup.abstract';
 import {InvalidArgumentError, RelateBackupError, ValidationFailureError} from '../../errors';
 import {updateRestoredEntityManifest} from '../../utils/backups';
+import {envPaths, extract} from '../../utils';
 
-const BACKUP_FILE_EXTENSION = '.gzip';
+const BACKUP_FILE_EXTENSION = '.tgz';
 
 export class LocalBackups extends BackupAbstract<LocalEnvironment> {
     async create(entityType: ENTITY_TYPES, entityNameOrId: string, entityMeta: any = {}): Promise<IRelateBackup> {
@@ -33,14 +33,24 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         const backupId = uuidv4();
         const createdAt = new Date();
         const backupDir = this.environment.getEntityRootPath(ENTITY_TYPES.BACKUP, backupId);
+        const entityDir = path.dirname(entityRoot);
         const backupName = `${
             ENTITY_TYPES.BACKUP
         }_${backupId}_${entityType}_${entityNameOrId}_${createdAt.getTime()}${BACKUP_FILE_EXTENSION}`;
+        const archiveTarget = path.join(entityDir, backupName);
         const backupTarget = path.join(backupDir, backupName);
 
         try {
             await fse.ensureDir(backupDir);
-            await zipAFolder.zip(entityRoot, backupTarget);
+            await tar.c(
+                {
+                    gzip: true,
+                    file: archiveTarget,
+                    cwd: entityDir,
+                },
+                [path.basename(entityRoot)],
+            );
+            await fse.move(archiveTarget, backupTarget);
 
             return this.setBackupManifest(backupId, {
                 directory: backupDir,
@@ -51,7 +61,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
                 created: createdAt,
             });
         } catch (e) {
-            await fse.remove(backupTarget).catch(() => null);
+            await fse.remove(archiveTarget).catch(() => null);
             await this.removeBackupManifest(backupId).catch(() => null);
 
             throw new RelateBackupError('Failed to create backup', List.from([e.stack]));
@@ -62,33 +72,16 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         const restoredEntityId = uuidv4();
         const manifest = await this.resolveRestorationManifest(filePath);
         const backupPath = path.join(manifest.directory, manifest.name);
-
-        if (outputPath) {
-            await decompress(backupPath, outputPath);
-            await fse.writeJSON(path.join(outputPath, BACKUP_MANIFEST_FILE), manifest);
-
-            const restoredEntityManifestPath = path.join(
-                outputPath,
-                this.getRestoredEntityManifestPath(manifest.entityType),
-            );
-            const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
-            const updated = updateRestoredEntityManifest(manifest, restoredEntityId, restoredEntityManifest);
-
-            await fse.writeJSON(restoredEntityManifestPath, updated);
-
-            return {
-                entityType: manifest.entityType,
-                entityId: updated.id,
-            };
-        }
-
         const defaultOutputPath = this.environment.getEntityRootPath(manifest.entityType, restoredEntityId);
+        const outputTarget = outputPath || defaultOutputPath;
+        const tmpPath = path.join(envPaths().tmp, `relate-restore-${manifest.id}-tmp`);
+        const result = await extract(backupPath, tmpPath);
 
-        await decompress(backupPath, defaultOutputPath);
-        await fse.writeJSON(path.join(defaultOutputPath, BACKUP_MANIFEST_FILE), manifest);
+        await fse.move(result, outputTarget);
+        await fse.writeJSON(path.join(outputTarget, BACKUP_MANIFEST_FILE), manifest);
 
         const restoredEntityManifestPath = path.join(
-            defaultOutputPath,
+            outputTarget,
             this.getRestoredEntityManifestPath(manifest.entityType),
         );
         const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);

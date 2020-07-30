@@ -118,7 +118,8 @@ enum NEO4J_EDITION {
 }
 
 type Project {
-  name: String
+  id: String!
+  name: String!
   dbmss(filters: [RelateSimpleFilter!]): [ProjectDbms!]!
   files(filters: [RelateSimpleFilter!]): [RelateFile!]!
 }

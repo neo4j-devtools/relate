@@ -168,6 +168,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const dbms = await this.get(dbmsId);
+        const dbmsManifest = await this.getDbmsManifest(dbmsId);
 
         if (semver.lte(version, dbms.version!)) {
             throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, [
@@ -217,6 +218,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             await this.uninstall(dbms.id);
             await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
             await this.setDbmsManifest(dbms.id, {
+                ...dbmsManifest.toObject(),
                 name: dbms.name,
             });
 
@@ -263,7 +265,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const alreadyHasManifest = await fse.pathExists(path.join(rootPath, DBMS_MANIFEST_FILE));
 
         if (alreadyHasManifest) {
-            throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
+            const {id} = await fse.readJson(path.join(rootPath, DBMS_MANIFEST_FILE));
+            const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, id);
+            const targetExists = await fse.pathExists(target);
+
+            if (targetExists) {
+                throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
+            }
+
+            await fse.symlink(rootPath, target, 'junction');
+
+            return this.get(id);
         }
 
         const newId = uuidv4();
@@ -378,25 +390,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async get(nameOrId: string): Promise<IDbmsInfo> {
-        // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
 
-        const dbms = resolveDbms(this.dbmss, nameOrId);
-        const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-        const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
-        const status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED;
+        try {
+            const info = await this.info([nameOrId]);
 
-        return {
-            connectionUri: dbms.connectionUri,
-            description: dbms.description,
-            tags: dbms.tags,
-            edition: v?.edition,
-            id: dbms.id,
-            name: dbms.name,
-            rootPath: dbms.rootPath,
-            status,
-            version: v?.version,
-        };
+            return info.first.getOrElse(() => {
+                throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+            });
+        } catch (e) {
+            throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+        }
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {

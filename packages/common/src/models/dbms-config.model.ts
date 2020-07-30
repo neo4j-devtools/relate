@@ -43,7 +43,6 @@ export interface IDbms extends IDbmsConfig {
 }
 
 export class DbmsConfigModel extends ModelAbstract<IDbmsConfig> implements IDbmsConfig {
-    // @todo: should be uuid
     @IsUUID()
     public id!: string;
 

@@ -11,11 +11,10 @@ describe('LocalDbmss - upgrade', () => {
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
         env = testDbmss.environment;
-        dbms404 = await env.dbmss.install('test', '4.0.4');
+        dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
     });
 
     afterAll(async () => {
-        await env.dbmss.uninstall(dbms404.id);
         await testDbmss.teardown();
     });
 
