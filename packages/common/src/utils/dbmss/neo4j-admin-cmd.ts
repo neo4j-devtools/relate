@@ -6,6 +6,7 @@ import {NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE} from '../../entities/environments/e
 import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
+import {getDistributionVersion} from './dbms-versions';
 
 export async function neo4jAdminCmd(
     dbmsRootPath: string,
@@ -14,7 +15,8 @@ export async function neo4jAdminCmd(
     javaPath?: string,
 ): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
-    const relateJavaHome = javaPath || (await resolveRelateJavaHome());
+    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const relateJavaHome = javaPath || (await resolveRelateJavaHome(dbmsVersion));
 
     await fse.access(neo4jAdminBinPath, fse.constants.X_OK).catch(() => {
         throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
@@ -39,6 +41,10 @@ export async function neo4jAdminCmd(
 
     if (output.includes('ERROR: Unable to find Java executable.')) {
         throw new DependencyError('Unable to find Java executable');
+    }
+
+    if (output.includes('Neo4j cannot be started using java version')) {
+        throw new DependencyError(output);
     }
 
     return output;

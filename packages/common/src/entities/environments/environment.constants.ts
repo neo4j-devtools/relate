@@ -22,7 +22,11 @@ export enum NEO4J_ORIGIN {
     LIMITED = 'limited',
 }
 
-export const ZULU_JAVA_VERSION = '11.35.13-ca-jdk11.0.5';
+export enum ZULU_JAVA_VERSION {
+    JAVA_8 = '8.42.0.21-ca-jdk8.0.232',
+    JAVA_11 = '11.35.13-ca-jdk11.0.5',
+}
+
 export const ZULU_JAVA_DOWNLOAD_URL = 'https://cdn.azul.com/zulu/bin/';
 
 export const NEO4J_BIN_DIR = 'bin';
@@ -46,6 +50,7 @@ export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
 export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
+export const NEO4J_JAVA_11_VERSION_RANGE = '>=3.5';
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=3.4';
 export const NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE = '>=4.x';
 export const NEO4J_JWT_ADDON_NAME = 'neo4j-jwt-addon';

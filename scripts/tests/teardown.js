@@ -54,6 +54,7 @@ async function globalTeardown() {
                     // because if a symlink is pointing to a path that no longer
                     // exists, fse.stat will fail.
                     await fse.unlink(filePath);
+                    return;
                 } catch {}
 
                 const pidPath = path.join(filePath, 'run', 'neo4j.pid');
