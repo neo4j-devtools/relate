@@ -6,7 +6,10 @@ import {EnvironmentArgs, RelateFile} from '../../global.types';
 
 @ObjectType()
 export class Project implements Omit<IProject, 'root'> {
-    @Field(() => String, {nullable: true})
+    @Field(() => String)
+    id: string;
+
+    @Field(() => String)
     name: string;
 
     @Field(() => [ProjectDbms])

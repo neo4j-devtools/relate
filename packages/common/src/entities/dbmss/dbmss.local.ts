@@ -23,10 +23,12 @@ import {
 import {
     AmbiguousTargetError,
     DbmsExistsError,
+    DbmsUpgradeError,
     InvalidArgumentError,
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
+    RelateBackupError,
 } from '../../errors';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
@@ -44,9 +46,18 @@ import {
     NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
 } from '../environments';
-import {BOLT_DEFAULT_PORT, DBMS_STATUS, DBMS_STATUS_FILTERS, DBMS_TLS_LEVEL} from '../../constants';
+import {
+    BOLT_DEFAULT_PORT,
+    DBMS_MANIFEST_FILE,
+    DBMS_STATUS,
+    DBMS_STATUS_FILTERS,
+    DBMS_TLS_LEVEL,
+    ENTITY_TYPES,
+    HOOK_EVENTS,
+} from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import {winNeo4jStart, winNeo4jStop, winNeo4jStatus} from '../../utils/dbmss/neo4j-process-win';
+import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
+import {emitHookEvent} from '../../utils';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -81,12 +92,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     async install(
         name: string,
-        credentials: string,
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
+        credentials = '',
         noCaching = false,
         limited = false,
-    ): Promise<string> {
+    ): Promise<IDbmsInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -106,7 +117,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const {extractedDistPath} = await extractNeo4j(version, this.environment.dirPaths.dbmssCache);
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
+            return this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
         }
 
         // @todo: version as a URL.
@@ -142,11 +153,101 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
-                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist, noCaching);
+                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials, noCaching);
             });
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
+    }
+
+    async upgrade(dbmsId: string, version: string, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo> {
+        if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
+            throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
+                'Use valid version',
+            ]);
+        }
+
+        const dbms = await this.get(dbmsId);
+        const dbmsManifest = await this.getDbmsManifest(dbmsId);
+
+        if (semver.lte(version, dbms.version!)) {
+            throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, [
+                'Use valid version',
+            ]);
+        }
+
+        if (dbms.status !== DBMS_STATUS.STOPPED) {
+            throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
+        }
+
+        const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
+            entityType: ENTITY_TYPES.DBMS,
+            entityId: dbms.id,
+        });
+        const dbmsBackup = await this.environment.backups.create(entityType, entityId);
+        const {backup: completeBackup} = await emitHookEvent(HOOK_EVENTS.BACKUP_COMPLETE, {backup: dbmsBackup});
+
+        const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
+
+        try {
+            const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
+
+            /**
+             * Following copy operations moved over from Neo4j Desktop
+             */
+            await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
+            await fse.copy(`${dbms.rootPath}/data`, `${upgradedDbms.rootPath}/data`);
+            await fse.copy(`${dbms.rootPath}/logs`, `${upgradedDbms.rootPath}/logs`);
+            await fse.copy(`${dbms.rootPath}/conf`, `${upgradedDbms.rootPath}/conf`);
+            await fse.copy(`${dbms.rootPath}/plugins`, `${upgradedDbms.rootPath}/plugins`);
+
+            const certExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.cert`);
+            const keyExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.key`);
+
+            if (certExists && keyExists) {
+                await fse.copy(
+                    `${dbms.rootPath}/certificates/neo4j.cert`,
+                    `${upgradedDbms.rootPath}/certificates/https/neo4j.cert`,
+                );
+                await fse.copy(
+                    `${dbms.rootPath}/certificates/neo4j.key`,
+                    `${upgradedDbms.rootPath}/certificates/https/neo4j.key`,
+                );
+            }
+
+            await this.uninstall(dbms.id);
+            await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
+            await this.setDbmsManifest(dbms.id, {
+                ...dbmsManifest.toObject(),
+                name: dbms.name,
+            });
+
+            if (!backup) {
+                await this.environment.backups.remove(completeBackup.id);
+            }
+
+            return this.get(dbms.id);
+        } catch (e) {
+            if (e instanceof RelateBackupError) {
+                throw e;
+            }
+
+            await this.get(upgradeTmpName)
+                .then(({id}) => this.uninstallNeo4j(id))
+                .catch(() => null);
+            await this.uninstallNeo4j(dbms.id).catch(() => null);
+
+            const restored = await this.environment.backups.restore(completeBackup.directory);
+
+            await fse.move(this.getDbmsRootPath(restored.entityId)!, dbms.rootPath!);
+            await this.setDbmsManifest(dbms.id, {
+                name: dbms.name,
+            });
+
+            throw new DbmsUpgradeError(`Failed to upgrade dbms ${dbms.id}`, [
+                `DBMS was restored from backup ${completeBackup.id}`,
+            ]);
+        }
     }
 
     async link(name: string, rootPath: string): Promise<IDbmsInfo> {
@@ -161,8 +262,23 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Use a unique name']);
         }
 
+        const alreadyHasManifest = await fse.pathExists(path.join(rootPath, DBMS_MANIFEST_FILE));
+
+        if (alreadyHasManifest) {
+            const {id} = await fse.readJson(path.join(rootPath, DBMS_MANIFEST_FILE));
+            const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, id);
+            const targetExists = await fse.pathExists(target);
+
+            if (targetExists) {
+                throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
+            }
+
+            await fse.symlink(rootPath, target, 'junction');
+
+            return this.get(id);
+        }
+
         const newId = uuidv4();
-        const baseName = `dbms-${newId}`;
         const info = await getDistributionInfo(rootPath);
 
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
@@ -171,20 +287,21 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             ]);
         }
 
-        const target = path.join(this.environment.dirPaths.dbmssData, baseName);
+        const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, newId);
 
         await fse.symlink(rootPath, target, 'junction');
-        await this.discoverDbmss();
         await this.setDbmsManifest(newId, {name});
 
         if (supportsAccessTokens(info)) {
             await this.installSecurityPlugin(newId);
         }
 
+        await this.discoverDbmss();
+
         return this.get(newId);
     }
 
-    async uninstall(nameOrId: string): Promise<void> {
+    async uninstall(nameOrId: string): Promise<IDbmsInfo> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
@@ -273,25 +390,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async get(nameOrId: string): Promise<IDbmsInfo> {
-        // Discover DBMSs again in case there have been changes in the file system.
         await this.discoverDbmss();
 
-        const dbms = resolveDbms(this.dbmss, nameOrId);
-        const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
-        const statusMessage = Str.from(await neo4jCmd(this.getDbmsRootPath(dbms.id), 'status'));
-        const status = statusMessage.includes(DBMS_STATUS_FILTERS.STARTED) ? DBMS_STATUS.STARTED : DBMS_STATUS.STOPPED;
+        try {
+            const info = await this.info([nameOrId]);
 
-        return {
-            connectionUri: dbms.connectionUri,
-            description: dbms.description,
-            tags: dbms.tags,
-            edition: v?.edition,
-            id: dbms.id,
-            name: dbms.name,
-            rootPath: dbms.rootPath,
-            status,
-            version: v?.version,
-        };
+            return info.first.getOrElse(() => {
+                throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+            });
+        } catch (e) {
+            throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+        }
     }
 
     async createAccessToken(appName: string, dbmsNameOrId: string, authToken: IAuthToken): Promise<string> {
@@ -321,22 +430,20 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     public getDbmsRootPath(dbmsId?: string): string {
-        const dbmssDir = path.join(this.environment.dirPaths.dbmssData);
-
         if (dbmsId) {
-            return path.join(dbmssDir, `dbms-${dbmsId}`);
+            return this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, dbmsId);
         }
 
-        return dbmssDir;
+        return this.environment.dirPaths.dbmssData;
     }
 
     private async installNeo4j(
         name: string,
-        credentials: string,
         dbmssDir: string,
         extractedDistPath: string,
+        credentials?: string,
         noCaching?: boolean,
-    ): Promise<string> {
+    ): Promise<IDbmsInfo> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
         }
@@ -375,7 +482,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             await neo4jConfig.backupPropertiesFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
             );
-            await this.setInitialDatabasePassword(dbmsId, credentials);
+
+            if (credentials) {
+                await this.setInitialDatabasePassword(dbmsId, credentials);
+            }
 
             const installed = await this.get(dbmsId);
 
@@ -383,23 +493,25 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 await this.installSecurityPlugin(dbmsId);
             }
 
-            return installed.id;
+            return installed;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
-            await fse.remove(path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`));
             throw error;
         }
     }
 
-    private async uninstallNeo4j(dbmsId: string): Promise<void> {
-        const dbmsDir = this.getDbmsRootPath(dbmsId);
-        const found = await fse.pathExists(dbmsDir);
+    private async uninstallNeo4j(dbmsId: string): Promise<IDbmsInfo> {
+        const dbms = await this.get(dbmsId);
+        const dbmsRootPath = this.getDbmsRootPath(dbms.id);
+        const found = await fse.pathExists(dbmsRootPath);
 
         if (!found) {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
         }
 
-        return fse.remove(dbmsDir).then(() => this.deleteDbmsManifest(dbmsId));
+        await fse.unlink(dbmsRootPath).catch(() => fse.remove(dbmsRootPath));
+
+        return dbms;
     }
 
     private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
@@ -490,7 +602,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
-            .filter((file) => file.startsWith('dbms-'))
+            .filter((file) => file.startsWith(`${ENTITY_TYPES.DBMS}-`))
             .mapEach((file) =>
                 fse
                     .stat(path.join(root, file))
@@ -567,19 +679,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async getDbmsManifest(dbmsId: string): Promise<Dict<IDbmsConfig>> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
         const defaultValues = {
             description: '',
             name: '',
             tags: [],
         };
 
-        if (!(await fse.pathExists(configFileName))) {
-            return Dict.from({
-                ...defaultValues,
-                id: dbmsId,
-            });
-        }
+        const configFileName = path.join(
+            this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, dbmsId),
+            DBMS_MANIFEST_FILE,
+        );
 
         try {
             const config = await fse.readJson(configFileName);
@@ -598,22 +707,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async setDbmsManifest(dbmsId: string, update: Partial<Omit<IDbms, 'id'>>): Promise<void> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
+        const configFileName = path.join(this.getDbmsRootPath(dbmsId), DBMS_MANIFEST_FILE);
         const config = await this.getDbmsManifest(dbmsId);
-        const updated = {
-            ...config.toObject(),
-            ...update,
+        const updated = config.merge(update).merge({
             id: dbmsId,
-        };
+        });
 
-        await fse.writeJson(configFileName, updated);
-        return this.discoverDbmss();
-    }
-
-    private async deleteDbmsManifest(dbmsId: string): Promise<void> {
-        const configFileName = path.join(this.environment.dirPaths.dbmssData, `dbms-${dbmsId}.json`);
-
-        await fse.unlink(configFileName);
+        await fse.writeJson(configFileName, updated.toObject());
 
         return this.discoverDbmss();
     }

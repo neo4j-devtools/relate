@@ -1,11 +1,14 @@
 import _ from 'lodash';
 
-import {Actor, HOOK_EVENTS, Listener} from '../constants';
+import {Actor, HOOK_EVENTS, IHookEventPayloads, Listener} from '../constants';
 
 const REGISTERED_LISTENERS = new Map<HOOK_EVENTS, Set<Listener<any>>>();
 const REGISTERED_ACTORS = new Map<HOOK_EVENTS, Set<Actor<any>>>();
 
-export async function emitHookEvent<T = any>(eventName: HOOK_EVENTS, eventData: T): Promise<T> {
+export async function emitHookEvent<E extends HOOK_EVENTS, T = IHookEventPayloads[E]>(
+    eventName: E,
+    eventData: T,
+): Promise<T> {
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
     const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
     let returnData = eventData;

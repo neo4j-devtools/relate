@@ -7,7 +7,7 @@ import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
 import {LocalEnvironment} from '../environments/environment.local';
 import {PropertiesFile} from '../../system/files';
-import {DBMS_DIR_NAME} from '../../constants';
+import {DBMS_DIR_NAME, DBMS_MANIFEST_FILE} from '../../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
@@ -22,28 +22,31 @@ function generateDummyConf(dbms: string): PropertiesFile {
     return new PropertiesFile([], configPath);
 }
 
-describe('LocalEnvironment - list', () => {
+describe('LocalDbmss - list', () => {
     let environment: LocalEnvironment;
 
     beforeAll(async () => {
-        await fse.ensureDir(INSTALLATION_ROOT);
-        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-6bb553ba.json`), {
+        const dbms1 = 'dbms-6bb553ba';
+        const dbms2 = 'dbms-998f936e';
+        await fse.ensureDir(path.join(INSTALLATION_ROOT, dbms1));
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, dbms1, DBMS_MANIFEST_FILE), {
             description: 'DBMS with metadata',
             id: '6bb553ba',
             name: 'Name',
-            rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+            rootPath: path.join(INSTALLATION_ROOT, dbms1),
         });
-        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-e0aef2ad.json`), {
+        await fse.ensureDir(path.join(INSTALLATION_ROOT, dbms2));
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, dbms2, DBMS_MANIFEST_FILE), {
             description: '',
             id: '998f936e',
             name: '',
-            rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
+            rootPath: path.join(INSTALLATION_ROOT, dbms2),
         });
 
         const config = new EnvironmentConfigModel({
             id: uuidv4(),
             name: 'test',
-            neo4jDataPath: TMP_HOME,
+            relateDataPath: TMP_HOME,
             type: ENVIRONMENT_TYPES.LOCAL,
             user: 'test',
             configPath: 'nowhere',

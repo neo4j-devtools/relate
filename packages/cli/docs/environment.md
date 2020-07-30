@@ -31,7 +31,7 @@ EXAMPLES
   $ relate env:init --name=remote-environment-name --type=REMOTE --httpOrigin=https://url.of.hosted.relate.com
 ```
 
-_See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.0/dist/commands/environment/init.ts)_
+_See code: [dist/commands/environment/init.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.1/dist/commands/environment/init.ts)_
 
 ## `relate environment:list`
 
@@ -48,7 +48,7 @@ EXAMPLE
   $ relate env:list
 ```
 
-_See code: [dist/commands/environment/list.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.0/dist/commands/environment/list.ts)_
+_See code: [dist/commands/environment/list.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.1/dist/commands/environment/list.ts)_
 
 ## `relate environment:login`
 
@@ -68,7 +68,7 @@ EXAMPLE
   $ relate env:login -e environment-supporting-login
 ```
 
-_See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.0/dist/commands/environment/login.ts)_
+_See code: [dist/commands/environment/login.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.1/dist/commands/environment/login.ts)_
 
 ## `relate environment:open`
 
@@ -91,7 +91,7 @@ EXAMPLES
   $ relate env:open -e environment-name -L
 ```
 
-_See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.0/dist/commands/environment/open.ts)_
+_See code: [dist/commands/environment/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.1/dist/commands/environment/open.ts)_
 
 ## `relate environment:use ENVIRONMENT`
 
@@ -111,4 +111,4 @@ EXAMPLE
   $ relate env:use environment-to-set-as-active
 ```
 
-_See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.0/dist/commands/environment/use.ts)_
+_See code: [dist/commands/environment/use.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.1/dist/commands/environment/use.ts)_

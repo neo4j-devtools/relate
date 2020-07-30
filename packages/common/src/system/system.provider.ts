@@ -145,7 +145,7 @@ export class SystemProvider implements OnModuleInit {
                             new EnvironmentConfigModel({
                                 ...config,
                                 configPath,
-                                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
+                                relateDataPath: config.relateDataPath || this.dirPaths.data,
                             }),
                     )
                     .catch(() => None.EMPTY);

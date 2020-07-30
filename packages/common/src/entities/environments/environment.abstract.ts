@@ -16,6 +16,7 @@ import {DbmssAbstract} from '../dbmss';
 import {DbsAbstract} from '../dbs';
 import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
+import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
 
 export abstract class EnvironmentAbstract {
@@ -26,6 +27,8 @@ export abstract class EnvironmentAbstract {
     public readonly extensions!: ExtensionsAbstract<EnvironmentAbstract>;
 
     public readonly projects!: ProjectsAbstract<EnvironmentAbstract>;
+
+    public readonly backups!: BackupAbstract<EnvironmentAbstract>;
 
     public readonly dirPaths!: {[key: string]: string};
 
@@ -59,8 +62,12 @@ export abstract class EnvironmentAbstract {
         return this.config.remoteEnvironmentId;
     }
 
-    public get neo4jDataPath(): string {
-        return this.config.neo4jDataPath || envPaths().data;
+    public get cachePath(): string {
+        return envPaths().cache;
+    }
+
+    public get dataPath(): string {
+        return this.config.relateDataPath || envPaths().data;
     }
 
     constructor(protected config: EnvironmentConfigModel) {}

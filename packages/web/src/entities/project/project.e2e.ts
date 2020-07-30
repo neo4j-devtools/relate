@@ -5,7 +5,7 @@ import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import fse from 'fs-extra';
 import path from 'path';
-import {envPaths, PROJECTS_DIR_NAME, PROJECTS_MANIFEST_FILE, TestDbmss} from '@relate/common';
+import {envPaths, PROJECTS_DIR_NAME, PROJECT_MANIFEST_FILE, TestDbmss} from '@relate/common';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
@@ -563,7 +563,7 @@ describe('AppsModule', () => {
                 const {getProject} = res.body.data;
                 const expected = {
                     name: TEST_PROJECT_NAME,
-                    files: [{name: PROJECTS_MANIFEST_FILE}],
+                    files: [{name: PROJECT_MANIFEST_FILE}],
                 };
 
                 expect(getProject).toEqual(expected);

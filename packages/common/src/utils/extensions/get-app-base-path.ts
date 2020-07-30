@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {Str} from '@relate/types';
 
 import {getInstalledExtensionsSync} from './get-installed-extensions';
 import {EXTENSION_TYPES} from '../../constants';
@@ -7,16 +7,17 @@ import {discoverExtension} from './extension-versions';
 
 export async function getAppBasePath(appName: string): Promise<string> {
     const installed = getInstalledExtensionsSync();
-    const app = _.find(installed, ({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName);
-
-    if (!app) {
-        throw new NotFoundError(`App ${appName} not found`);
-    }
+    const app = installed
+        .find(({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName)
+        .getOrElse(() => {
+            throw new NotFoundError(`App ${appName} not found`);
+        });
 
     const {name, manifest} = await discoverExtension(app.root);
     const appBase = `/${name}`;
-    let main = _.startsWith(manifest.main, '.') ? manifest.main.substr(1) : manifest.main;
-    main = _.startsWith(main, '/') ? main.substr(1) : main;
 
-    return `${appBase}/${main}`;
+    return Str.from(manifest.main)
+        .map((main) => (main.startsWith('.') ? main.substr(1) : main))
+        .map((main) => (main.startsWith('/') ? main.substr(1) : main))
+        .flatMap((main) => `${appBase}/${main}`);
 }

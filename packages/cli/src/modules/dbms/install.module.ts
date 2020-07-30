@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import InstallCommand from '../../commands/dbms/install';
 import {selectPrompt, inputPrompt, passwordPrompt} from '../../prompts';
+import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -68,8 +69,8 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.dbmss.install(name, credentials, version, edition, noCaching, limited).then((res) => {
-            this.utils.log(res);
+        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited).then((res) => {
+            this.utils.log(getEntityDisplayName(res));
         });
     }
 }
