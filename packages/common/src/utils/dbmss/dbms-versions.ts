@@ -121,7 +121,7 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
-    const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+    const neo4jJarRegex = /^neo4j-server-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
     const libs = List.from(await fse.readdir(path.join(dbmsRoot, NEO4J_LIB_DIR)));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 

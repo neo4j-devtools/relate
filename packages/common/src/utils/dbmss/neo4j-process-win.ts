@@ -14,6 +14,7 @@ import {
     NEO4J_LOG_FILE,
 } from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
+import {getDistributionVersion} from './dbms-versions';
 
 const getRunningNeo4jPid = async (dbmsRoot: string): Promise<number | null> => {
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
@@ -47,7 +48,9 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
     await fse.ensureFile(logFilePath);
 
-    const relateJavaHome = await resolveRelateJavaHome();
+    const dbmsVersion = await getDistributionVersion(dbmsRoot);
+    const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
+
     const env = new EnvVars({cloneFromProcess: true});
     env.set('JAVA_HOME', relateJavaHome || process.env.JAVA_HOME);
     // relateJavaHome is prepended to the PATH in order to take
