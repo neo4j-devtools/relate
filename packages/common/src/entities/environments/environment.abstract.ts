@@ -62,6 +62,10 @@ export abstract class EnvironmentAbstract {
         return this.config.remoteEnvironmentId;
     }
 
+    public get cachePath(): string {
+        return envPaths().cache;
+    }
+
     public get dataPath(): string {
         return this.config.relateDataPath || envPaths().data;
     }

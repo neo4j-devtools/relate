@@ -17,6 +17,7 @@ import {
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {BackupAbstract} from './backup.abstract';
 import {InvalidArgumentError, RelateBackupError, ValidationFailureError} from '../../errors';
+import {updateRestoredEntityManifest} from '../../utils/backups';
 
 const BACKUP_FILE_EXTENSION = '.gzip';
 
@@ -57,7 +58,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         }
     }
 
-    async restore(filePath: string, outputPath?: string): Promise<IRelateBackup> {
+    async restore(filePath: string, outputPath?: string): Promise<{entityType: ENTITY_TYPES; entityId: string}> {
         const restoredEntityId = uuidv4();
         const manifest = await this.resolveRestorationManifest(filePath);
         const backupPath = path.join(manifest.directory, manifest.name);
@@ -71,15 +72,13 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
                 this.getRestoredEntityManifestPath(manifest.entityType),
             );
             const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
+            const updated = updateRestoredEntityManifest(manifest, restoredEntityId, restoredEntityManifest);
 
-            await fse.writeJSON(restoredEntityManifestPath, {
-                ...restoredEntityManifest,
-                id: restoredEntityId,
-            });
+            await fse.writeJSON(restoredEntityManifestPath, updated);
 
             return {
-                ...manifest,
-                entityId: restoredEntityId,
+                entityType: manifest.entityType,
+                entityId: updated.id,
             };
         }
 
@@ -93,15 +92,13 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             this.getRestoredEntityManifestPath(manifest.entityType),
         );
         const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
+        const updated = updateRestoredEntityManifest(manifest, restoredEntityId, restoredEntityManifest);
 
-        await fse.writeJSON(restoredEntityManifestPath, {
-            ...restoredEntityManifest,
-            id: restoredEntityId,
-        });
+        await fse.writeJSON(restoredEntityManifestPath, updated);
 
         return {
-            ...manifest,
-            entityId: restoredEntityId,
+            entityType: manifest.entityType,
+            entityId: updated.id,
         };
     }
 

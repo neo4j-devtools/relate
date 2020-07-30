@@ -33,7 +33,10 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
 
         if (projectDir !== defaultDir) {
-            return this.link(projectDir);
+            const {id} = await this.link(projectDir);
+            await this.updateManifest(id, manifest);
+
+            return this.get(manifest.name);
         }
 
         await fse.ensureDir(projectDir);
@@ -88,7 +91,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
             const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
 
-            await fse.symlink(projectPath, target, 'junction');
+            await fse.symlink(path.normalize(projectPath), target, 'junction');
             await this.updateManifest(newId, {
                 id: newId,
             });
@@ -282,7 +285,9 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const nameToUse = Str.from(projectId);
         const allProjects = await this.list();
 
-        return allProjects.find(({id, name}) => nameToUse.equals(id) || nameToUse.equals(name));
+        return allProjects.find(
+            ({id, name}) => nameToUse.equals(id) || (!Str.EMPTY.equals(name) && nameToUse.equals(name)),
+        );
     }
 
     private findAllFilesRecursive(root: string): Promise<List<string>> {

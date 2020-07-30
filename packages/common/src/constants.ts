@@ -1,4 +1,5 @@
 import {SignOptions} from 'jsonwebtoken';
+import {IRelateBackup} from './models';
 
 export enum ENTITY_TYPES {
     DBMS = 'dbms',
@@ -79,10 +80,14 @@ export enum HOOK_EVENTS {
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP',
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
     RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
+    BACKUP_START = 'BACKUP_START',
+    BACKUP_COMPLETE = 'BACKUP_COMPLETE',
 }
 
 export interface IHookEventPayloads {
     [HOOK_EVENTS.RUN_QUERY_RETRY]: {query: string; params: any; retry: number};
+    [HOOK_EVENTS.BACKUP_START]: {entityType: ENTITY_TYPES; entityId: string};
+    [HOOK_EVENTS.BACKUP_COMPLETE]: {backup: IRelateBackup};
     [key: string]: any;
 }
 export type Listener<E extends HOOK_EVENTS> = (eventData: IHookEventPayloads[E]) => void | Promise<void>;

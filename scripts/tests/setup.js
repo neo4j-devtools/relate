@@ -1,14 +1,22 @@
 const path = require('path');
 const tar = require('tar');
+const fse = require('fs-extra');
 
 const envSetup = require('../../e2e/jest-global.setup');
-const {TestDbmss, DBMS_DIR_NAME} = require('../../packages/common');
+const {TestDbmss, DBMS_DIR_NAME, envPaths} = require('../../packages/common');
 
 envSetup();
 const dbmssCache = path.join(process.env.NEO4J_RELATE_CACHE_HOME, DBMS_DIR_NAME);
 
 async function globalSetup() {
+    await fse.emptyDir(envPaths().data);
+    await fse.emptyDir(envPaths().cache);
+    await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
+    await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
+    await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
+
     const env = (await TestDbmss.init('relate')).environment;
+
 
     // This step is to populate the cache with the version we want to test
     // (in case the cache is not already populated). The DBMS is uninstalled

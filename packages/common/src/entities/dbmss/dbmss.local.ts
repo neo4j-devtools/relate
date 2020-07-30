@@ -23,10 +23,12 @@ import {
 import {
     AmbiguousTargetError,
     DbmsExistsError,
+    DbmsUpgradeError,
     InvalidArgumentError,
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
+    RelateBackupError,
 } from '../../errors';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
@@ -51,9 +53,11 @@ import {
     DBMS_STATUS_FILTERS,
     DBMS_TLS_LEVEL,
     ENTITY_TYPES,
+    HOOK_EVENTS,
 } from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import {winNeo4jStart, winNeo4jStop, winNeo4jStatus} from '../../utils/dbmss/neo4j-process-win';
+import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
+import {emitHookEvent} from '../../utils';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
@@ -154,6 +158,94 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
+    }
+
+    async upgrade(dbmsId: string, version: string, backup?: boolean): Promise<IDbmsInfo> {
+        if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
+            throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
+                'Use valid version',
+            ]);
+        }
+
+        const dbms = await this.get(dbmsId);
+
+        if (semver.lte(version, dbms.version!)) {
+            throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, [
+                'Use valid version',
+            ]);
+        }
+
+        if (dbms.status !== DBMS_STATUS.STOPPED) {
+            throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
+        }
+
+        const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
+            entityType: ENTITY_TYPES.DBMS,
+            entityId: dbms.id,
+        });
+        const dbmsBackup = await this.environment.backups.create(entityType, entityId);
+        const {backup: completeBackup} = await emitHookEvent(HOOK_EVENTS.BACKUP_COMPLETE, {backup: dbmsBackup});
+
+        const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
+
+        try {
+            const upgradedDbms = await this.install(upgradeTmpName, 'neo4j', dbms.version!, dbms.edition!);
+
+            /**
+             * Following copy operations moved over from Neo4j Desktop
+             */
+            await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
+            await fse.copy(`${dbms.rootPath}/data`, `${upgradedDbms.rootPath}/data`);
+            await fse.copy(`${dbms.rootPath}/logs`, `${upgradedDbms.rootPath}/logs`);
+            await fse.copy(`${dbms.rootPath}/conf`, `${upgradedDbms.rootPath}/conf`);
+            await fse.copy(`${dbms.rootPath}/plugins`, `${upgradedDbms.rootPath}/plugins`);
+
+            const certExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.cert`);
+            const keyExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.key`);
+
+            if (certExists && keyExists) {
+                await fse.copy(
+                    `${dbms.rootPath}/certificates/neo4j.cert`,
+                    `${upgradedDbms.rootPath}/certificates/https/neo4j.cert`,
+                );
+                await fse.copy(
+                    `${dbms.rootPath}/certificates/neo4j.key`,
+                    `${upgradedDbms.rootPath}/certificates/https/neo4j.key`,
+                );
+            }
+
+            await this.uninstall(dbms.id);
+            await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
+            await this.setDbmsManifest(dbms.id, {
+                name: dbms.name,
+            });
+
+            if (!backup) {
+                await this.environment.backups.remove(completeBackup.id);
+            }
+
+            return this.get(dbms.id);
+        } catch (e) {
+            if (e instanceof RelateBackupError) {
+                throw e;
+            }
+
+            await this.get(upgradeTmpName)
+                .then(({id}) => this.uninstallNeo4j(id))
+                .catch(() => null);
+            await this.uninstallNeo4j(dbms.id).catch(() => null);
+
+            const restored = await this.environment.backups.restore(completeBackup.directory);
+
+            await fse.move(this.getDbmsRootPath(restored.entityId)!, dbms.rootPath!);
+            await this.setDbmsManifest(dbms.id, {
+                name: dbms.name,
+            });
+
+            throw new DbmsUpgradeError(`Failed to upgrade dbms ${dbms.id}`, [
+                `DBMS was restored from backup ${completeBackup.id}`,
+            ]);
+        }
     }
 
     async link(name: string, rootPath: string): Promise<IDbmsInfo> {
@@ -410,7 +502,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
         }
 
-        await fse.remove(dbmsRootPath);
+        await fse.unlink(dbmsRootPath).catch(() => fse.remove(dbmsRootPath));
 
         return dbms;
     }

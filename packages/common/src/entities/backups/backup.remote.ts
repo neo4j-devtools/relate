@@ -12,7 +12,7 @@ export class RemoteBackups extends BackupAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteBackups.name} does not support creating backups`);
     }
 
-    restore(_filePath: string, _outputPath?: string): Promise<IRelateBackup> {
+    restore(_filePath: string, _outputPath?: string): Promise<{entityType: ENTITY_TYPES; entityId: string}> {
         throw new NotSupportedError(`${RemoteBackups.name} does not support restoring backups`);
     }
 

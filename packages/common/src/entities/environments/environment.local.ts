@@ -29,9 +29,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
         dbmssData: path.join(this.dataPath, DBMS_DIR_NAME),
         backupsData: path.join(this.dataPath, BACKUPS_DIR_NAME),
         projectsData: path.join(this.dataPath, PROJECTS_DIR_NAME),
-        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
+        dbmssCache: path.join(this.cachePath, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        extensionsCache: path.join(envPaths().cache, EXTENSION_DIR_NAME),
+        extensionsCache: path.join(this.cachePath, EXTENSION_DIR_NAME),
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
     };
 

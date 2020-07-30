@@ -10,7 +10,7 @@ export abstract class BackupAbstract<Env extends EnvironmentAbstract> {
 
     abstract create(entityType: ENTITY_TYPES, entityNameOrId: string, entityMeta?: any): Promise<IRelateBackup>;
 
-    abstract restore(filePath: string, outputPath?: string): Promise<IRelateBackup>;
+    abstract restore(filePath: string, outputPath?: string): Promise<{entityType: ENTITY_TYPES; entityId: string}>;
 
     abstract get(backupNameOrId: string): Promise<IRelateBackup>;
 
