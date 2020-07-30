@@ -1,4 +1,3 @@
-import fse from 'fs-extra';
 import path from 'path';
 import {List} from '@relate/types';
 
@@ -7,6 +6,7 @@ import {EnvironmentAbstract} from '../environments';
 import {IRelateBackup} from '../../models';
 import {envPaths} from '../../utils';
 import {BACKUPS_DIR_NAME, ENTITY_TYPES} from '../../constants';
+import {InvalidArgumentError} from '../../errors';
 
 describe('LocalBackups', () => {
     let environment: EnvironmentAbstract;
@@ -23,13 +23,12 @@ describe('LocalBackups', () => {
         dbmsId = id;
     });
 
-    afterAll(async () => {
-        await testDbmss.teardown();
-        await fse.emptyDir(path.join(envPaths().data, BACKUPS_DIR_NAME));
-    });
+    afterAll(() => testDbmss.teardown());
 
     test('backups.list() - none created', async () => {
-        expect(await environment.backups.list()).toEqual(List.from());
+        const backups = await environment.backups.list();
+
+        expect(backups.filter(({id}) => [backupId, backupId2].includes(id))).toEqual(List.from());
     });
 
     test('backups.create()', async () => {
@@ -49,20 +48,18 @@ describe('LocalBackups', () => {
         expect(created).toEqual(expected);
     });
 
-    test('backups.list() - one created', async () => {
-        const expected: List<IRelateBackup> = List.from([
-            {
-                id: backupId,
-                directory: path.join(envPaths().data, BACKUPS_DIR_NAME, `${ENTITY_TYPES.BACKUP}-${backupId}`),
-                name: expect.stringContaining(`${ENTITY_TYPES.BACKUP}_${backupId}_${ENTITY_TYPES.DBMS}_${dbmsId}_`),
-                entityMeta: {},
-                entityType: ENTITY_TYPES.DBMS,
-                entityId: dbmsId,
-                created: expect.any(Date),
-            },
-        ]);
+    test('backups.get() - one created', async () => {
+        const expected: IRelateBackup = {
+            id: backupId,
+            directory: path.join(envPaths().data, BACKUPS_DIR_NAME, `${ENTITY_TYPES.BACKUP}-${backupId}`),
+            name: expect.stringContaining(`${ENTITY_TYPES.BACKUP}_${backupId}_${ENTITY_TYPES.DBMS}_${dbmsId}_`),
+            entityMeta: {},
+            entityType: ENTITY_TYPES.DBMS,
+            entityId: dbmsId,
+            created: expect.any(Date),
+        };
 
-        expect(await environment.backups.list()).toEqual(expected);
+        expect(await environment.backups.get(backupId)).toEqual(expected);
     });
 
     test('backups.create() - again', async () => {
@@ -81,10 +78,10 @@ describe('LocalBackups', () => {
         expect(created).toEqual(expected);
     });
 
-    test('backups.list() - two created', async () => {
-        const result = await environment.backups.list();
+    test('backups.get() - two created', async () => {
+        const result = await environment.backups.get(backupId2);
 
-        expect(result.mapEach(({id}) => id).sort()).toEqual(List.from([backupId, backupId2]).sort());
+        expect(result.id).toEqual(backupId2);
     });
 
     test('backups.remove()', async () => {
@@ -93,10 +90,10 @@ describe('LocalBackups', () => {
         expect(id).toEqual(backupId2);
     });
 
-    test('backups.list() - one removed', async () => {
-        const result = await environment.backups.list();
-
-        expect(result.mapEach(({id}) => id)).toEqual(List.from([backupId]));
+    test('backups.get() - one removed', async () => {
+        await expect(environment.backups.get(backupId2)).rejects.toEqual(
+            new InvalidArgumentError(`Backup ${backupId2} not found`),
+        );
     });
 
     test('backups.restore() - directory', async () => {

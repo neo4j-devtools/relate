@@ -22,7 +22,7 @@ function generateDummyConf(dbms: string): PropertiesFile {
     return new PropertiesFile([], configPath);
 }
 
-describe('LocalEnvironment - list', () => {
+describe('LocalDbmss - list', () => {
     let environment: LocalEnvironment;
 
     beforeAll(async () => {

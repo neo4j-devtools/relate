@@ -34,14 +34,14 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     abstract install(
         name: string,
-        credentials: string,
         version: string,
         edition?: NEO4J_EDITION,
+        credentials?: string,
         noCaching?: boolean,
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
-    abstract upgrade(dbmsId: string, version: string, backup?: boolean): Promise<IDbmsInfo>;
+    abstract upgrade(dbmsId: string, version: string, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo>;
 
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 

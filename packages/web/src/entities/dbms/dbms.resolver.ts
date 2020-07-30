@@ -32,7 +32,7 @@ export class DBMSResolver {
         @Context('environment') environment: Environment,
         @Args() {name, credentials, version, edition, noCaching, limited}: InstallDbmsArgs,
     ): Promise<DbmsInfo> {
-        return environment.dbmss.install(name, credentials, version, edition, noCaching, limited);
+        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited);
     }
 
     @Mutation(() => DbmsInfo)

@@ -64,9 +64,9 @@ export class TestDbmss {
 
         const {id: dbmsId} = await this.environment.dbmss.install(
             name,
-            TestDbmss.DBMS_CREDENTIALS,
             TestDbmss.NEO4J_VERSION,
             edition || TestDbmss.NEO4J_EDITION,
+            TestDbmss.DBMS_CREDENTIALS,
         );
 
         const shortUUID = dbmsId.slice(0, 8);

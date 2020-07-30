@@ -22,7 +22,7 @@ async function globalSetup() {
     // (in case the cache is not already populated). The DBMS is uninstalled
     // right after as we're not really doing anything with it, we only care about
     // the cached directory we get during installation.
-    await env.dbmss.install('global-setup', 'password', TestDbmss.NEO4J_VERSION);
+    await env.dbmss.install('global-setup', TestDbmss.NEO4J_VERSION, TestDbmss.NEO4J_EDITION, TestDbmss.DBMS_CREDENTIALS);
     await env.dbmss.uninstall('global-setup');
 
     // Some tests require an archive of the DBMS to be passed to them, and

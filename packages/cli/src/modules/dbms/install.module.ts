@@ -69,7 +69,7 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.dbmss.install(name, credentials, version, edition, noCaching, limited).then((res) => {
+        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited).then((res) => {
             this.utils.log(getEntityDisplayName(res));
         });
     }

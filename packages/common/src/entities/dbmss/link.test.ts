@@ -6,7 +6,7 @@ import {IDbmsInfo} from '../../models';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {DBMS_MANIFEST_FILE} from '../../constants';
 
-describe('LocalEnvironment - link', () => {
+describe('LocalDbmss - link', () => {
     let testDbmss: TestDbmss;
     let instance: IDbmsInfo;
     let tmpDbmsPath: string;

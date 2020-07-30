@@ -92,9 +92,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     async install(
         name: string,
-        credentials: string,
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
+        credentials = '',
         noCaching = false,
         limited = false,
     ): Promise<IDbmsInfo> {
@@ -117,7 +117,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const {extractedDistPath} = await extractNeo4j(version, this.environment.dirPaths.dbmssCache);
-            return this.installNeo4j(name, credentials, this.getDbmsRootPath(), extractedDistPath);
+            return this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
         }
 
         // @todo: version as a URL.
@@ -153,14 +153,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
-                return this.installNeo4j(name, credentials, this.getDbmsRootPath(), dist.dist, noCaching);
+                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials, noCaching);
             });
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
-    async upgrade(dbmsId: string, version: string, backup?: boolean): Promise<IDbmsInfo> {
+    async upgrade(dbmsId: string, version: string, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo> {
         if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
             throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
                 'Use valid version',
@@ -189,7 +189,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
 
         try {
-            const upgradedDbms = await this.install(upgradeTmpName, 'neo4j', dbms.version!, dbms.edition!);
+            const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
 
             /**
              * Following copy operations moved over from Neo4j Desktop
@@ -435,9 +435,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     private async installNeo4j(
         name: string,
-        credentials: string,
         dbmssDir: string,
         extractedDistPath: string,
+        credentials?: string,
         noCaching?: boolean,
     ): Promise<IDbmsInfo> {
         if (!(await fse.pathExists(extractedDistPath))) {
@@ -478,7 +478,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             await neo4jConfig.backupPropertiesFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE_BACKUP),
             );
-            await this.setInitialDatabasePassword(dbmsId, credentials);
+
+            if (credentials) {
+                await this.setInitialDatabasePassword(dbmsId, credentials);
+            }
 
             const installed = await this.get(dbmsId);
 

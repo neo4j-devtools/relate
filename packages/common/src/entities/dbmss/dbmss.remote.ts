@@ -80,9 +80,9 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
 
     async install(
         name: string,
-        credentials: string,
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
+        credentials = '',
         noCaching = false,
         limited = false,
     ): Promise<IDbmsInfo> {
@@ -138,7 +138,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
-    upgrade(_dbmsId: string, _version: string, _backup?: boolean): Promise<IDbmsInfo> {
+    upgrade(_dbmsId: string, _version: string, _backup?: boolean, _noCache?: boolean): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support upgrading DBMSs`);
     }
 
