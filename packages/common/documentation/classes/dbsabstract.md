@@ -12,10 +12,6 @@
 
 ## Index
 
-### Constructors
-
-* [constructor](dbsabstract.md#constructor)
-
 ### Methods
 
 * [create](dbsabstract.md#abstract-create)
@@ -25,38 +21,24 @@
 * [list](dbsabstract.md#abstract-list)
 * [load](dbsabstract.md#abstract-load)
 
-## Constructors
-
-###  constructor
-
-\+ **new DbsAbstract**(`environment`: Env): *[DbsAbstract](dbsabstract.md)*
-
-*Defined in [dbs/dbs.abstract.ts:8](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L8)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`environment` | Env |
-
-**Returns:** *[DbsAbstract](dbsabstract.md)*
-
 ## Methods
 
 ### `Abstract` create
 
 ▸ **create**(`dbmsId`: string, `user`: string, `dbName`: string, `accessToken`: string): *Promise‹void›*
 
-*Defined in [dbs/dbs.abstract.ts:11](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L11)*
+*Defined in [dbs/dbs.abstract.ts:21](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L21)*
+
+Creates a new Database
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`user` | string |
-`dbName` | string |
-`accessToken` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string | - |
+`user` | string | DBMS user |
+`dbName` | string | Database name |
+`accessToken` | string | DBMS access token  |
 
 **Returns:** *Promise‹void›*
 
@@ -66,16 +48,18 @@ ___
 
 ▸ **drop**(`dbmsId`: string, `user`: string, `dbName`: string, `accessToken`: string): *Promise‹void›*
 
-*Defined in [dbs/dbs.abstract.ts:13](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L13)*
+*Defined in [dbs/dbs.abstract.ts:30](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L30)*
+
+Drops a Database
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`user` | string |
-`dbName` | string |
-`accessToken` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string | - |
+`user` | string | DBMS user |
+`dbName` | string | Database name |
+`accessToken` | string | DBMS access token  |
 
 **Returns:** *Promise‹void›*
 
@@ -85,16 +69,18 @@ ___
 
 ▸ **dump**(`dbmsId`: string, `database`: string, `to`: string, `javaPath?`: undefined | string): *Promise‹string›*
 
-*Defined in [dbs/dbs.abstract.ts:17](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L17)*
+*Defined in [dbs/dbs.abstract.ts:47](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L47)*
+
+Dumps a databese contents
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`database` | string |
-`to` | string |
-`javaPath?` | undefined &#124; string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string | - |
+`database` | string | Database to dump |
+`to` | string | - |
+`javaPath?` | undefined &#124; string | - |
 
 **Returns:** *Promise‹string›*
 
@@ -104,7 +90,9 @@ ___
 
 ▸ **exec**(`dbmsId`: string, `from`: string | ReadStream, `args`: object): *Promise‹string›*
 
-*Defined in [dbs/dbs.abstract.ts:21](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L21)*
+*Defined in [dbs/dbs.abstract.ts:64](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L64)*
+
+Executes cypher against a given dbms
 
 **Parameters:**
 
@@ -128,15 +116,17 @@ ___
 
 ▸ **list**(`dbmsId`: string, `user`: string, `accessToken`: string): *Promise‹List‹IDb››*
 
-*Defined in [dbs/dbs.abstract.ts:15](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L15)*
+*Defined in [dbs/dbs.abstract.ts:38](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L38)*
+
+Lists all databases
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`user` | string |
-`accessToken` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string | - |
+`user` | string | DBMS user |
+`accessToken` | string | DBMS access token  |
 
 **Returns:** *Promise‹List‹IDb››*
 
@@ -146,16 +136,18 @@ ___
 
 ▸ **load**(`dbmsId`: string, `database`: string, `from`: string, `force?`: undefined | false | true, `javaPath?`: undefined | string): *Promise‹string›*
 
-*Defined in [dbs/dbs.abstract.ts:19](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L19)*
+*Defined in [dbs/dbs.abstract.ts:56](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L56)*
+
+Loads a database dump
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`dbmsId` | string |
-`database` | string |
-`from` | string |
-`force?` | undefined &#124; false &#124; true |
-`javaPath?` | undefined &#124; string |
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsId` | string | - |
+`database` | string | Database to load contents into |
+`from` | string | - |
+`force?` | undefined &#124; false &#124; true | - |
+`javaPath?` | undefined &#124; string |   |
 
 **Returns:** *Promise‹string›*

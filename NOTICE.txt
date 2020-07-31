@@ -25,7 +25,7 @@ Third-party licenses
 
 
 ├─ GPL-3.0
-│  └─ @huboneo/tapestry@1.0.1-0
+│  └─ @huboneo/tapestry@1.0.1-1
 │     ├─ repository: https://github.com/huboneo/tapestry
 │     └─ publisher: huboneo
 ├─ MIT
@@ -229,9 +229,6 @@ Third-party licenses
 │  ├─ colors@1.4.0
 │  │  ├─ repository: https://github.com/Marak/colors.js
 │  │  └─ publisher: Marak Squires
-│  ├─ commander@2.20.3
-│  │  ├─ repository: https://github.com/tj/commander.js
-│  │  └─ publisher: TJ Holowaychuk
 │  ├─ commander@2.8.1
 │  │  ├─ repository: https://github.com/tj/commander.js
 │  │  └─ publisher: TJ Holowaychuk
@@ -394,9 +391,6 @@ Third-party licenses
 │  ├─ gtoken@5.0.1
 │  │  ├─ repository: https://github.com/google/node-gtoken
 │  │  └─ publisher: Google, LLC
-│  ├─ handlebars@4.7.6
-│  │  ├─ repository: https://github.com/wycats/handlebars.js
-│  │  └─ publisher: Yehuda Katz
 │  ├─ has-flag@2.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/has-flag
@@ -417,6 +411,9 @@ Third-party licenses
 │  │  ├─ url: github.com/jamestalmage
 │  │  ├─ repository: https://github.com/jamestalmage/hyperlinker
 │  │  └─ publisher: James Talmage
+│  ├─ immediate@3.0.6
+│  │  ├─ repository: https://github.com/calvinmetcalf/immediate
+│  │  └─ publisher
 │  ├─ indent-string@3.2.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/indent-string
@@ -425,10 +422,6 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/indent-string
 │  │  └─ publisher: Sindre Sorhus
-│  ├─ interpret@1.4.0
-│  │  ├─ url: http://gulpjs.com/
-│  │  ├─ repository: https://github.com/gulpjs/interpret
-│  │  └─ publisher: Gulp Team
 │  ├─ is-fullwidth-code-point@2.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/is-fullwidth-code-point
@@ -491,6 +484,9 @@ Third-party licenses
 │  │  ├─ url: http://lukechilds.co.uk
 │  │  ├─ repository: https://github.com/lukechilds/keyv
 │  │  └─ publisher: Luke Childs
+│  ├─ lie@3.3.0
+│  │  ├─ repository: https://github.com/calvinmetcalf/lie
+│  │  └─ publisher
 │  ├─ lodash._reinterpolate@3.0.0
 │  │  ├─ url: http://allyoucanleet.com/
 │  │  ├─ repository: https://github.com/lodash/lodash
@@ -529,7 +525,7 @@ Third-party licenses
 │  ├─ lodash.templatesettings@4.2.0
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
-│  ├─ lodash@4.17.15
+│  ├─ lodash@4.17.19
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
 │  ├─ lowercase-keys@2.0.0
@@ -540,16 +536,10 @@ Third-party licenses
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/lru-queue
 │  │  └─ publisher: Mariusz Nowak
-│  ├─ lunr@2.3.8
-│  │  ├─ repository: https://github.com/olivernn/lunr.js
-│  │  └─ publisher: Oliver Nightingale
 │  ├─ make-dir@1.3.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/make-dir
 │  │  └─ publisher: Sindre Sorhus
-│  ├─ marked@1.0.0
-│  │  ├─ repository: https://github.com/markedjs/marked
-│  │  └─ publisher: Christopher Jeffrey
 │  ├─ mime@2.4.5
 │  │  ├─ url: http://github.com/broofa
 │  │  ├─ repository: https://github.com/broofa/node-mime
@@ -566,13 +556,10 @@ Third-party licenses
 │  │  ├─ url: http://substack.net
 │  │  ├─ repository: https://github.com/substack/minimist
 │  │  └─ publisher: James Halliday
-│  ├─ minizlib@2.1.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/minizlib
-│  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ mkdirp@1.0.4
-│  │  ├─ repository: https://github.com/isaacs/node-mkdirp
-│  │  └─ publisher
+│  ├─ mkdirp@0.5.5
+│  │  ├─ url: http://substack.net
+│  │  ├─ repository: https://github.com/substack/node-mkdirp
+│  │  └─ publisher: James Halliday
 │  ├─ moment@2.24.0
 │  │  ├─ url: https://github.com/ichernev
 │  │  ├─ repository: https://github.com/moment/moment
@@ -586,9 +573,6 @@ Third-party licenses
 │  ├─ natural-orderby@2.0.3
 │  │  ├─ repository: https://github.com/yobacca/natural-orderby
 │  │  └─ publisher: Olaf Ennen
-│  ├─ neo-async@2.6.1
-│  │  ├─ repository: https://github.com/suguru03/neo-async
-│  │  └─ publisher
 │  ├─ next-tick@1.0.0
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/next-tick
@@ -638,9 +622,6 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/path-key
 │  │  └─ publisher: Sindre Sorhus
-│  ├─ path-parse@1.0.6
-│  │  ├─ repository: https://github.com/jbgutierrez/path-parse
-│  │  └─ publisher: Javier Blanco
 │  ├─ path-to-regexp@3.2.0
 │  │  ├─ repository: https://github.com/pillarjs/path-to-regexp
 │  │  └─ publisher
@@ -666,27 +647,16 @@ Third-party licenses
 │  ├─ process-nextick-args@2.0.1
 │  │  ├─ repository: https://github.com/calvinmetcalf/process-nextick-args
 │  │  └─ publisher
-│  ├─ progress@2.0.3
-│  │  ├─ repository: https://github.com/visionmedia/node-progress
-│  │  └─ publisher: TJ Holowaychuk
 │  ├─ pump@3.0.0
 │  │  ├─ repository: https://github.com/mafintosh/pump
 │  │  └─ publisher: Mathias Buus Madsen
 │  ├─ readable-stream@2.3.7
 │  │  ├─ repository: https://github.com/nodejs/readable-stream
 │  │  └─ publisher
-│  ├─ rechoir@0.6.2
-│  │  ├─ url: http://goingslowly.com/
-│  │  ├─ repository: https://github.com/tkellen/node-rechoir
-│  │  └─ publisher: Tyler Kellen
 │  ├─ redeyed@2.1.1
 │  │  ├─ url: thlorenz.com
 │  │  ├─ repository: https://github.com/thlorenz/redeyed
 │  │  └─ publisher: Thorsten Lorenz
-│  ├─ resolve@1.17.0
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/browserify/resolve
-│  │  └─ publisher: James Halliday
 │  ├─ responselike@2.0.0
 │  │  ├─ repository: https://github.com/lukechilds/responselike
 │  │  └─ publisher: lukechilds
@@ -697,6 +667,10 @@ Third-party licenses
 │  ├─ seek-bzip@1.0.5
 │  │  ├─ repository: https://github.com/cscott/seek-bzip
 │  │  └─ publisher
+│  ├─ set-immediate-shim@1.0.1
+│  │  ├─ url: sindresorhus.com
+│  │  ├─ repository: https://github.com/sindresorhus/set-immediate-shim
+│  │  └─ publisher: Sindre Sorhus
 │  ├─ shebang-command@1.2.0
 │  │  ├─ url: github.com/kevva
 │  │  ├─ repository: https://github.com/kevva/shebang-command
@@ -759,15 +733,16 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/to-readable-stream
 │  │  └─ publisher: Sindre Sorhus
+│  ├─ tree-kill@1.2.2
+│  │  ├─ url: http://www.catonmat.net
+│  │  ├─ repository: https://github.com/pkrumins/node-tree-kill
+│  │  └─ publisher: Peteris Krumins
 │  ├─ treeify@1.1.0
 │  │  ├─ repository: https://github.com/notatestuser/treeify
 │  │  └─ publisher: Luke Plaster
 │  ├─ ts-invariant@0.4.4
 │  │  ├─ repository: https://github.com/apollographql/invariant-packages
 │  │  └─ publisher: Ben Newman
-│  ├─ typedoc-plugin-no-inherit@1.1.10
-│  │  ├─ repository: https://github.com/jonchardy/typedoc-plugin-no-inherit
-│  │  └─ publisher: Jon Hardy
 │  ├─ unbzip2-stream@1.4.1
 │  │  ├─ repository: https://github.com/regular/unbzip2-stream
 │  │  └─ publisher: Jan Bölsche
@@ -800,10 +775,6 @@ Third-party licenses
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/sindresorhus/widest-line
 │  │  └─ publisher: Sindre Sorhus
-│  ├─ wordwrap@1.0.0
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/node-wordwrap
-│  │  └─ publisher: James Halliday
 │  ├─ wrap-ansi@4.0.0
 │  │  ├─ url: sindresorhus.com
 │  │  ├─ repository: https://github.com/chalk/wrap-ansi
@@ -953,7 +924,7 @@ Third-party licenses
 │  ├─ @types/express@4.17.2
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
-│  ├─ @types/express@4.17.3
+│  ├─ @types/express@4.17.4
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ @types/express@4.17.6
@@ -1004,10 +975,16 @@ Third-party licenses
 │  ├─ @types/node-fetch@2.5.5
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
+│  ├─ @types/node-fetch@2.5.7
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
 │  ├─ @types/node@10.17.20
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ @types/qs@6.9.1
+│  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
+│  │  └─ publisher
+│  ├─ @types/qs@6.9.3
 │  │  ├─ repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 │  │  └─ publisher
 │  ├─ @types/range-parser@1.2.3
@@ -1090,10 +1067,19 @@ Third-party licenses
 │  ├─ apollo-engine-reporting@2.2.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
 │  │  └─ publisher: Apollo
+│  ├─ apollo-engine-reporting@2.3.0
+│  │  ├─ repository: https://github.com/apollographql/apollo-engine-reporting
+│  │  └─ publisher: Apollo
 │  ├─ apollo-env@0.6.2
 │  │  ├─ repository: https://github.com/apollographql/apollo-tooling
 │  │  └─ publisher: opensource@apollographql.com
+│  ├─ apollo-env@0.6.5
+│  │  ├─ repository: https://github.com/apollographql/apollo-tooling
+│  │  └─ publisher: opensource@apollographql.com
 │  ├─ apollo-graphql@0.4.1
+│  │  ├─ repository
+│  │  └─ publisher: Apollo
+│  ├─ apollo-graphql@0.5.0
 │  │  ├─ repository
 │  │  └─ publisher: Apollo
 │  ├─ apollo-server-caching@0.5.1
@@ -1108,6 +1094,9 @@ Third-party licenses
 │  ├─ apollo-server-core@2.15.1
 │  │  ├─ repository: https://github.com/apollographql/apollo-server
 │  │  └─ publisher: Apollo
+│  ├─ apollo-server-core@2.16.0
+│  │  ├─ repository: https://github.com/apollographql/apollo-server
+│  │  └─ publisher: Apollo
 │  ├─ apollo-server-env@2.4.3
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-env
 │  │  └─ publisher: opensource@apollographql.com
@@ -1120,7 +1109,7 @@ Third-party licenses
 │  ├─ apollo-server-errors@2.4.2
 │  │  ├─ repository: https://github.com/apollographql/apollo-server
 │  │  └─ publisher: Apollo
-│  ├─ apollo-server-express@2.12.0
+│  ├─ apollo-server-express@2.14.2
 │  │  ├─ repository: https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-express
 │  │  └─ publisher: opensource@apollographql.com
 │  ├─ apollo-server-plugin-base@0.7.1
@@ -1227,6 +1216,9 @@ Third-party licenses
 │  │  ├─ url: http://debuggable.com/
 │  │  ├─ repository: https://github.com/felixge/node-combined-stream
 │  │  └─ publisher: Felix Geisendörfer
+│  ├─ commander@2.20.3
+│  │  ├─ repository: https://github.com/tj/commander.js
+│  │  └─ publisher: TJ Holowaychuk
 │  ├─ concat-stream@1.6.2
 │  │  ├─ repository: https://github.com/maxogden/concat-stream
 │  │  └─ publisher: Max Ogden
@@ -1553,7 +1545,7 @@ Third-party licenses
 │  │  ├─ url: http://allyoucanleet.com/
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
-│  ├─ lodash@4.17.19
+│  ├─ lodash@4.17.15
 │  │  ├─ repository: https://github.com/lodash/lodash
 │  │  └─ publisher: John-David Dalton
 │  ├─ loglevel@1.6.8
@@ -1600,10 +1592,13 @@ Third-party licenses
 │  ├─ minipass-fetch@1.2.1
 │  │  ├─ repository: https://github.com/npm/minipass-fetch
 │  │  └─ publisher
-│  ├─ mkdirp@0.5.5
-│  │  ├─ url: http://substack.net
-│  │  ├─ repository: https://github.com/substack/node-mkdirp
-│  │  └─ publisher: James Halliday
+│  ├─ minizlib@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minizlib
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ mkdirp@1.0.4
+│  │  ├─ repository: https://github.com/isaacs/node-mkdirp
+│  │  └─ publisher
 │  ├─ ms@2.1.1
 │  │  ├─ repository: https://github.com/zeit/ms
 │  │  └─ publisher
@@ -1867,7 +1862,11 @@ Third-party licenses
 │  │  ├─ url: http://2x.io
 │  │  ├─ repository: https://github.com/websockets/ws
 │  │  └─ publisher: Einar Otto Stangvik
-│  └─ xss@1.0.7
+│  ├─ xss@1.0.7
+│  │  ├─ url: http://ucdok.com
+│  │  ├─ repository: https://github.com/leizongmin/js-xss
+│  │  └─ publisher: Zongmin Lei
+│  └─ xss@1.0.8
 │     ├─ url: http://ucdok.com
 │     ├─ repository: https://github.com/leizongmin/js-xss
 │     └─ publisher: Zongmin Lei
@@ -1878,10 +1877,6 @@ Third-party licenses
 │  ├─ at-least-node@1.0.0
 │  │  ├─ repository: https://github.com/RyanZim/at-least-node
 │  │  └─ publisher: Ryan Zimmerman
-│  ├─ chownr@2.0.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/chownr
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ cli-color@2.0.0
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/cli-color
@@ -1906,13 +1901,13 @@ Third-party licenses
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/es5-ext/tree/ext
 │  │  └─ publisher: Mariusz Nowak
-│  ├─ fs-minipass@2.1.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/npm/fs-minipass
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ fs.realpath@1.0.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/fs.realpath
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ fstream@1.0.12
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/fstream
 │  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ glob@7.1.6
 │  │  ├─ url: http://blog.izs.me/
@@ -1921,17 +1916,11 @@ Third-party licenses
 │  ├─ graceful-fs@4.2.3
 │  │  ├─ repository: https://github.com/isaacs/node-graceful-fs
 │  │  └─ publisher
-│  ├─ graceful-fs@4.2.4
-│  │  ├─ repository: https://github.com/isaacs/node-graceful-fs
-│  │  └─ publisher
 │  ├─ inflight@1.0.6
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/inflight
 │  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ inherits@2.0.3
-│  │  ├─ repository: https://github.com/isaacs/inherits
-│  │  └─ publisher
-│  ├─ inherits@2.0.4
 │  │  ├─ repository: https://github.com/isaacs/inherits
 │  │  └─ publisher
 │  ├─ isexe@2.0.0
@@ -1952,13 +1941,13 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me
 │  │  ├─ repository: https://github.com/isaacs/minimatch
 │  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ minipass@3.1.3
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/minipass
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ once@1.4.0
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/once
+│  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ rimraf@2.7.1
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/rimraf
 │  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ semver@5.7.1
 │  │  ├─ repository: https://github.com/npm/node-semver
@@ -1966,10 +1955,6 @@ Third-party licenses
 │  ├─ semver@7.1.3
 │  │  ├─ repository: https://github.com/npm/node-semver
 │  │  └─ publisher
-│  ├─ tar@6.0.2
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/npm/node-tar
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ timers-ext@0.1.7
 │  │  ├─ url: http://www.medikoo.com/
 │  │  ├─ repository: https://github.com/medikoo/timers-ext
@@ -1998,10 +1983,6 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/yallist
 │  │  └─ publisher: Isaac Z. Schlueter
-│  ├─ yallist@4.0.0
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/yallist
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ anymatch@3.1.1
 │  │  ├─ url: https://github.com/es128
 │  │  ├─ repository: https://github.com/micromatch/anymatch
@@ -2019,6 +2000,10 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/chownr
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ chownr@2.0.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/chownr
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ copy-concurrently@1.0.5
 │  │  ├─ url: http://re-becca.org/
 │  │  ├─ repository: https://github.com/npm/copy-concurrently
@@ -2032,6 +2017,10 @@ Third-party licenses
 │  ├─ figgy-pudding@3.5.2
 │  │  ├─ repository: https://github.com/npm/figgy-pudding
 │  │  └─ publisher: Kat Marchán
+│  ├─ fs-minipass@2.1.0
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/fs-minipass
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ fs-write-stream-atomic@1.0.10
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/fs-write-stream-atomic
@@ -2048,6 +2037,9 @@ Third-party licenses
 │  │  ├─ url: https://izs.me
 │  │  ├─ repository: https://github.com/npm/infer-owner
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ inherits@2.0.4
+│  │  ├─ repository: https://github.com/isaacs/inherits
+│  │  └─ publisher
 │  ├─ lru-cache@6.0.0
 │  │  ├─ repository: https://github.com/isaacs/node-lru-cache
 │  │  └─ publisher: Isaac Z. Schlueter
@@ -2081,6 +2073,10 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/minipass
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ minipass@3.1.3
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/isaacs/minipass
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ move-concurrently@1.0.1
 │  │  ├─ url: http://re-becca.org/
 │  │  ├─ repository: https://github.com/npm/move-concurrently
@@ -2092,10 +2088,6 @@ Third-party licenses
 │  ├─ remove-trailing-separator@1.1.0
 │  │  ├─ repository: https://github.com/darsain/remove-trailing-separator
 │  │  └─ publisher: darsain
-│  ├─ rimraf@2.7.1
-│  │  ├─ url: http://blog.izs.me/
-│  │  ├─ repository: https://github.com/isaacs/rimraf
-│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ rimraf@3.0.2
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/isaacs/rimraf
@@ -2117,14 +2109,22 @@ Third-party licenses
 │  │  ├─ url: http://blog.izs.me/
 │  │  ├─ repository: https://github.com/npm/node-tar
 │  │  └─ publisher: Isaac Z. Schlueter
+│  ├─ tar@6.0.2
+│  │  ├─ url: http://blog.izs.me/
+│  │  ├─ repository: https://github.com/npm/node-tar
+│  │  └─ publisher: Isaac Z. Schlueter
 │  ├─ unique-filename@1.1.1
 │  │  ├─ url: http://re-becca.org/
 │  │  ├─ repository: https://github.com/iarna/unique-filename
 │  │  └─ publisher: Rebecca Turner
-│  └─ unique-slug@2.0.2
-│     ├─ url: http://re-becca.org
-│     ├─ repository: https://github.com/iarna/unique-slug
-│     └─ publisher: Rebecca Turner
+│  ├─ unique-slug@2.0.2
+│  │  ├─ url: http://re-becca.org
+│  │  ├─ repository: https://github.com/iarna/unique-slug
+│  │  └─ publisher: Rebecca Turner
+│  └─ yallist@4.0.0
+│     ├─ url: http://blog.izs.me/
+│     ├─ repository: https://github.com/isaacs/yallist
+│     └─ publisher: Isaac Z. Schlueter
 ├─ BSD-3-Clause
 │  ├─ buffer-equal-constant-time@1.0.1
 │  │  ├─ repository: https://github.com/goinstant/buffer-equal-constant-time
@@ -2133,9 +2133,6 @@ Third-party licenses
 │  │  ├─ url: http://www.fknsrs.biz/
 │  │  ├─ repository: https://github.com/floatdrop/duplexer3
 │  │  └─ publisher: Conrad Pankoff
-│  ├─ highlight.js@10.0.3
-│  │  ├─ repository: https://github.com/highlightjs/highlight.js
-│  │  └─ publisher: Ivan Sagalaev
 │  ├─ ieee754@1.1.13
 │  │  ├─ url: http://feross.org
 │  │  ├─ repository: https://github.com/feross/ieee754
@@ -2143,12 +2140,6 @@ Third-party licenses
 │  ├─ qs@6.9.4
 │  │  ├─ repository: https://github.com/ljharb/qs
 │  │  └─ publisher
-│  ├─ shelljs@0.8.4
-│  │  ├─ repository: https://github.com/shelljs/shelljs
-│  │  └─ publisher
-│  ├─ source-map@0.6.1
-│  │  ├─ repository: https://github.com/mozilla/source-map
-│  │  └─ publisher: Nick Fitzgerald
 │  ├─ sprintf-js@1.0.3
 │  │  ├─ url: http://alexei.ro/
 │  │  ├─ repository: https://github.com/alexei/sprintf.js
@@ -2224,15 +2215,6 @@ Third-party licenses
 │  ├─ tslib@1.11.1
 │  │  ├─ repository: https://github.com/Microsoft/tslib
 │  │  └─ publisher: Microsoft Corp.
-│  ├─ typedoc-default-themes@0.10.1
-│  │  ├─ repository: https://github.com/TypeStrong/typedoc-default-themes
-│  │  └─ publisher
-│  ├─ typedoc@0.17.7
-│  │  ├─ repository: https://github.com/TypeStrong/TypeDoc
-│  │  └─ publisher
-│  ├─ typescript@3.9.3
-│  │  ├─ repository: https://github.com/Microsoft/TypeScript
-│  │  └─ publisher: Microsoft Corp.
 │  ├─ long@4.0.0
 │  │  ├─ repository: https://github.com/dcodeIO/long.js
 │  │  └─ publisher: Daniel Wirtz
@@ -2250,10 +2232,6 @@ Third-party licenses
 │  │  ├─ url: https://kornel.ski/
 │  │  ├─ repository: https://github.com/kornelski/http-cache-semantics
 │  │  └─ publisher: Kornel Lesiński
-│  ├─ uglify-js@3.9.4
-│  │  ├─ url: http://lisperator.net/
-│  │  ├─ repository: https://github.com/mishoo/UglifyJS
-│  │  └─ publisher: Mihai Bazon
 │  ├─ dotenv-expand@5.1.0
 │  │  ├─ repository
 │  │  └─ publisher: motdotla
@@ -2268,11 +2246,19 @@ Third-party licenses
 │  └─ google-libphonenumber@3.2.8
 │     ├─ repository: https://github.com/ruimarinho/google-libphonenumber
 │     └─ publisher: Rui Marinho
+├─ (MIT OR GPL-3.0)
+│  └─ jszip@3.5.0
+│     ├─ repository: https://github.com/Stuk/jszip
+│     └─ publisher: Stuart Knightley
 ├─ (BSD-3-Clause OR GPL-2.0)
 │  └─ node-forge@0.9.1
 │     ├─ url: http://digitalbazaar.com/
 │     ├─ repository: https://github.com/digitalbazaar/forge
 │     └─ publisher: Digital Bazaar, Inc.
+├─ (MIT AND Zlib)
+│  └─ pako@1.0.11
+│     ├─ repository: https://github.com/nodeca/pako
+│     └─ publisher
 ├─ WTFPL
 │  └─ password-prompt@1.1.2
 │     ├─ repository: https://github.com/jdxcode/password-prompt

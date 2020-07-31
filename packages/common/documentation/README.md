@@ -6,6 +6,7 @@
 
 ### Classes
 
+* [BackupAbstract](classes/backupabstract.md)
 * [DbmssAbstract](classes/dbmssabstract.md)
 * [DbsAbstract](classes/dbsabstract.md)
 * [EnvironmentAbstract](classes/environmentabstract.md)

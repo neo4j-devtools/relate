@@ -101,16 +101,16 @@
         "dev-cli": "cross-env NODE_PATH=./node_modules oclif-dev",
         "prepare": "npm run build",
         "postpack": "rimraf oclif.manifest.json",
-        "prepack": "run-s build:clean build:manifest build:readme",
+        "prepack": "run-s build:clean build:manifest generate:docs",
         "build": "npm run prepack",
         "build:clean": "run-s clean build:tsc",
         "build:tsc": "tsc -b",
         "build:manifest": "node -e '' | npm run dev-cli -- manifest",
-        "build:readme": "npm run dev-cli -- readme --multi --dir=./docs",
+        "generate:docs": "npm run dev-cli -- readme --multi --dir=./docs",
         "clean": "rimraf dist",
         "test": "jest",
         "add:readme": "git add README.md",
-        "version": "run-s build:readme add:readme",
+        "version": "run-s generate:docs add:readme",
         "watch": "tsc -w"
     }
 }

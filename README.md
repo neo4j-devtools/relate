@@ -44,3 +44,9 @@ $ npm run lint
 ```
 $ npm run prettify
 ```
+
+### Generate documentation
+
+```
+$ npm run generate:docs
+```

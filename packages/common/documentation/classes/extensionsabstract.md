@@ -12,10 +12,6 @@
 
 ## Index
 
-### Constructors
-
-* [constructor](extensionsabstract.md#constructor)
-
 ### Methods
 
 * [createAppLaunchToken](extensionsabstract.md#abstract-createapplaunchtoken)
@@ -28,39 +24,25 @@
 * [uninstall](extensionsabstract.md#abstract-uninstall)
 * [versions](extensionsabstract.md#abstract-versions)
 
-## Constructors
-
-###  constructor
-
-\+ **new ExtensionsAbstract**(`environment`: Env): *[ExtensionsAbstract](extensionsabstract.md)*
-
-*Defined in [extensions/extensions.abstract.ts:8](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L8)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`environment` | Env |
-
-**Returns:** *[ExtensionsAbstract](extensionsabstract.md)*
-
 ## Methods
 
 ### `Abstract` createAppLaunchToken
 
 ▸ **createAppLaunchToken**(`appName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string, `projectId?`: undefined | string): *Promise‹string›*
 
-*Defined in [extensions/extensions.abstract.ts:25](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L25)*
+*Defined in [extensions/extensions.abstract.ts:66](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L66)*
+
+Creates an app launch token, for passing DBMS info and credentials to app
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`appName` | string |
-`dbmsId` | string |
-`principal?` | undefined &#124; string |
-`accessToken?` | undefined &#124; string |
-`projectId?` | undefined &#124; string |
+Name | Type | Description |
+------ | ------ | ------ |
+`appName` | string | Installed app to create token for |
+`dbmsId` | string | - |
+`principal?` | undefined &#124; string | DBMS principal |
+`accessToken?` | undefined &#124; string | DBMS access token |
+`projectId?` | undefined &#124; string |   |
 
 **Returns:** *Promise‹string›*
 
@@ -70,14 +52,16 @@ ___
 
 ▸ **getAppPath**(`appName`: string, `appRoot?`: undefined | string): *Promise‹string›*
 
-*Defined in [extensions/extensions.abstract.ts:11](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L11)*
+*Defined in [extensions/extensions.abstract.ts:19](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L19)*
+
+Gets path to app entry point
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`appName` | string |
-`appRoot?` | undefined &#124; string |
+Name | Type | Description |
+------ | ------ | ------ |
+`appName` | string | - |
+`appRoot?` | undefined &#124; string |   |
 
 **Returns:** *Promise‹string›*
 
@@ -87,14 +71,16 @@ ___
 
 ▸ **install**(`name`: string, `version`: string): *Promise‹IExtensionMeta›*
 
-*Defined in [extensions/extensions.abstract.ts:21](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L21)*
+*Defined in [extensions/extensions.abstract.ts:50](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L50)*
+
+Install given extension
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`name` | string |
-`version` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`name` | string | - |
+`version` | string |   |
 
 **Returns:** *Promise‹IExtensionMeta›*
 
@@ -104,13 +90,15 @@ ___
 
 ▸ **link**(`filePath`: string): *Promise‹IExtensionMeta›*
 
-*Defined in [extensions/extensions.abstract.ts:17](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L17)*
+*Defined in [extensions/extensions.abstract.ts:37](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L37)*
+
+Link local extension (useful for development)
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`filePath` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`filePath` | string |   |
 
 **Returns:** *Promise‹IExtensionMeta›*
 
@@ -120,13 +108,15 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionMeta››*
 
-*Defined in [extensions/extensions.abstract.ts:13](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L13)*
+*Defined in [extensions/extensions.abstract.ts:25](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L25)*
+
+List all installed extensions
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
 **Returns:** *Promise‹List‹IExtensionMeta››*
 
@@ -136,13 +126,15 @@ ___
 
 ▸ **listApps**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionMeta››*
 
-*Defined in [extensions/extensions.abstract.ts:15](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L15)*
+*Defined in [extensions/extensions.abstract.ts:31](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L31)*
+
+List all installed apps
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
 **Returns:** *Promise‹List‹IExtensionMeta››*
 
@@ -152,14 +144,16 @@ ___
 
 ▸ **parseAppLaunchToken**(`appName`: string, `launchToken`: string): *Promise‹IAppLaunchToken›*
 
-*Defined in [extensions/extensions.abstract.ts:33](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L33)*
+*Defined in [extensions/extensions.abstract.ts:79](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L79)*
+
+Decodes app launch token
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`appName` | string |
-`launchToken` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`appName` | string | - |
+`launchToken` | string |   |
 
 **Returns:** *Promise‹IAppLaunchToken›*
 
@@ -169,13 +163,15 @@ ___
 
 ▸ **uninstall**(`name`: string): *Promise‹List‹IExtensionMeta››*
 
-*Defined in [extensions/extensions.abstract.ts:23](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L23)*
+*Defined in [extensions/extensions.abstract.ts:56](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L56)*
+
+Uninstall given extension
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`name` | string |
+Name | Type | Description |
+------ | ------ | ------ |
+`name` | string |   |
 
 **Returns:** *Promise‹List‹IExtensionMeta››*
 
@@ -185,12 +181,14 @@ ___
 
 ▸ **versions**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionVersion››*
 
-*Defined in [extensions/extensions.abstract.ts:19](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L19)*
+*Defined in [extensions/extensions.abstract.ts:43](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L43)*
+
+List all available extensions to install
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
 **Returns:** *Promise‹List‹IExtensionVersion››*
