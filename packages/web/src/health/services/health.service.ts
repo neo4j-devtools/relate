@@ -7,6 +7,7 @@ import {HEALTH_BASE_ENDPOINT, SystemProvider, STATIC_APP_BASE_ENDPOINT} from '@r
 import {IWebModuleConfig} from '../../web.module';
 
 export interface IHealthInfo {
+    relateEnvironmentId: string;
     appRoot: string;
     pid: number;
 }

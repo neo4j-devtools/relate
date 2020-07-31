@@ -45,7 +45,7 @@ relate env:use dev
 ```
 
 ## Installing a DBMS
-Currently we only support Neo4j 4.X enterprise. To install a DBMS, run:
+Currently we only support Neo4j >= 3.4. To install a DBMS, run:
 ```shell script
 relate dbms:install
 ```

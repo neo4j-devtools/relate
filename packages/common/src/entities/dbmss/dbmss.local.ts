@@ -137,9 +137,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             const requestedDistribution = beforeDownload.find(
                 (dist) => dist.version === coercedVersion && dist.edition === edition,
             );
-
             const found = await requestedDistribution.flatMap(async (dist) => {
-                if (None.isNone(dist)) {
+                const shouldDownload = noCaching || None.isNone(dist);
+
+                if (shouldDownload && !None.isNone(dist)) {
+                    await fse.remove(dist.dist);
+                }
+
+                if (shouldDownload) {
                     await downloadNeo4j(coercedVersion, edition, this.environment.dirPaths.dbmssCache, limited);
                     const afterDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
 
@@ -154,7 +159,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
-                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials, noCaching);
+                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials);
             });
         }
 
@@ -450,7 +455,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         dbmssDir: string,
         extractedDistPath: string,
         credentials?: string,
-        noCaching?: boolean,
     ): Promise<IDbmsInfo> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
@@ -463,10 +467,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
-
-        if (noCaching) {
-            await fse.remove(extractedDistPath);
-        }
 
         try {
             await this.setDbmsManifest(dbmsId, {name});

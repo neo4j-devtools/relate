@@ -3,7 +3,9 @@ import {AUTHENTICATOR_TYPES} from './authentication.constants';
 
 export interface IAuthentication {
     login(redirectTo?: string): Promise<IEnvironmentAuth>;
-    generateAuthToken(token: string): Promise<string>;
+
+    generateAuthToken(data: any): Promise<string>;
+
     verifyAuthToken(token: string): Promise<void>;
 }
 

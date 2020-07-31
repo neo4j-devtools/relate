@@ -90,8 +90,6 @@ export class AuthService {
             VALIDATION_ENDPOINT,
             async (req, res): Promise<void> => {
                 const queryObject = req.query;
-                // @todo: this is Google OAuth specific
-                const {state} = queryObject;
 
                 if (queryObject.error) {
                     res.status(401);
@@ -101,14 +99,15 @@ export class AuthService {
 
                 try {
                     const environment = await this.systemProvider.getEnvironment();
-                    const authToken = await environment.generateAuthToken(queryObject.code);
+                    const authToken = await environment.generateAuthToken(queryObject);
 
                     // @todo: use signed cookies
                     res.cookie(AUTH_TOKEN_KEY, authToken);
                     res.header(AUTH_TOKEN_KEY, authToken);
 
-                    if (state) {
-                        res.redirect(getAuthRedirect(environment.httpOrigin, state, authToken));
+                    // @todo: this is Google OAuth specific
+                    if (queryObject.state) {
+                        res.redirect(getAuthRedirect(environment.httpOrigin, queryObject.state, authToken));
                         return;
                     }
 

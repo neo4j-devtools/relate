@@ -142,12 +142,9 @@ export const googleAuthenticatorPrompt = async (): Promise<IGoogleAuthentication
 };
 
 export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
-    const needsWhitelist = await selectPrompt('Do you need to restrict access to the GraphQL API methods?', [
-        {name: 'Yes'},
-        {name: 'No'},
-    ]);
+    const needsWhitelist = await confirmPrompt('Do you need to restrict access to the GraphQL API methods?');
 
-    if (needsWhitelist === 'No') {
+    if (!needsWhitelist) {
         return [];
     }
 
@@ -158,9 +155,9 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
 };
 
 export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {
-    const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
+    const needsAuthentication = await confirmPrompt('Do you need to enable authentication?');
 
-    if (needsWhitelist === 'No') {
+    if (!needsAuthentication) {
         return undefined;
     }
 

@@ -98,7 +98,7 @@
         "keyword-spacing": "error",
         "line-comment-position": "error",
         "linebreak-style": "error",
-        "lines-around-comment": "error",
+        "lines-around-comment": "warn",
         "lines-between-class-members": "error",
         "max-depth": "error",
         "max-len": ["error", {"code": 120, "comments": 120, "ignoreUrls": true}],

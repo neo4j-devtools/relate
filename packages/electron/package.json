@@ -1,6 +1,6 @@
 {
     "name": "@relate/electron",
-    "version": "1.0.2-alpha.2",
+    "version": "1.0.2-alpha.3",
     "description": "Web",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -25,19 +25,19 @@
         "start": "run-s build:clean start:main"
     },
     "devDependencies": {
-        "@jest-runner/electron": "2.0.3",
+        "@jest-runner/electron": "3.0.0",
         "@nestjs/testing": "7.0.8",
         "@types/fs-extra": "8.0.1",
-        "@types/jest": "24.9.0",
+        "@types/jest": "26.0.7",
         "@types/node": "13.1.7",
         "@types/node-fetch": "2.5.7",
         "electron": "7.2.4",
         "fs-extra": "8.1.0",
-        "jest": "24.9.0",
+        "jest": "26.1.0",
         "npm-run-all": "4.1.5",
         "rimraf": "3.0.0",
-        "ts-jest": "24.3.0",
-        "typescript": "3.7.4"
+        "ts-jest": "26.1.3",
+        "typescript": "3.9.7"
     },
     "dependencies": {
         "@nestjs/common": "7.0.8",
@@ -45,14 +45,15 @@
         "@nestjs/core": "7.0.8",
         "@nestjs/graphql": "7.3.4",
         "@nestjs/platform-express": "7.0.8",
-        "@relate/common": "^1.0.2-alpha.2",
+        "@relate/common": "^1.0.2-alpha.3",
         "@relate/types": "^1.0.2-alpha.1",
-        "@relate/web": "^1.0.2-alpha.2",
+        "@relate/web": "^1.0.2-alpha.3",
         "apollo-server-express": "2.14.2",
-        "class-transformer": "0.2.3",
+        "class-transformer": "0.3.1",
         "class-validator": "0.12.1",
         "graphql": "14.6.0",
         "graphql-tools": "5.0.0",
+        "lodash": "4.17.19",
         "node-fetch": "2.6.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5"

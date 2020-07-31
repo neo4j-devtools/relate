@@ -15,6 +15,10 @@ export const ARGS = {
         description: 'Names or IDs of Neo4j instances',
         name: 'dbmss',
     },
+    ENVIRONMENT: {
+        description: 'Name of the environment to run the command against',
+        name: 'environment',
+    },
     VERSION: {
         description: 'Version to install (semver, url, or path)',
         name: 'version',

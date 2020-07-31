@@ -46,6 +46,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             credentials: 'include',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
             fetch: (url: string, opts: any) => {
                 // @todo: this could definitely be done better
                 const options = Dict.from(opts)

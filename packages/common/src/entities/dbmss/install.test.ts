@@ -3,7 +3,8 @@ import {List} from '@relate/types';
 
 import {envPaths} from '../../utils';
 import {InvalidArgumentError, NotFoundError, NotSupportedError} from '../../errors';
-import * as localUtils from '../../utils/dbmss';
+import * as versionUtils from '../../utils/dbmss/dbms-versions';
+import * as downloadUtils from '../../utils/dbmss/download-neo4j';
 import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 
@@ -55,7 +56,7 @@ describe('LocalDbmss - install', () => {
         const message = await testDbmss.environment.dbmss.get(dbmsID);
         expect(message.status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
+        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
     });
 
@@ -68,9 +69,9 @@ describe('LocalDbmss - install', () => {
     test('with valid, non cached version (semver)', async () => {
         // initially mock appearance of no downloaded neo4j dists
         const discoverNeo4jDistributionsSpy = jest
-            .spyOn(localUtils, 'discoverNeo4jDistributions')
+            .spyOn(versionUtils, 'discoverNeo4jDistributions')
             .mockImplementationOnce(() => Promise.resolve(List.from([])));
-        jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
+        jest.spyOn(downloadUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
         const {id: dbmsId} = await testDbmss.environment.dbmss.install(testDbmss.createName(), NEO4J_VERSION);
 
@@ -79,14 +80,14 @@ describe('LocalDbmss - install', () => {
         const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
+        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
     });
 
     test('with invalid, non cached version (semver)', async () => {
         const message = `Unable to find the requested version: ${NEO4J_VERSION}-${TestDbmss.NEO4J_EDITION} online`;
-        jest.spyOn(localUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve(List.from([])));
-        jest.spyOn(localUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
+        jest.spyOn(versionUtils, 'discoverNeo4jDistributions').mockImplementation(() => Promise.resolve(List.from([])));
+        jest.spyOn(downloadUtils, 'downloadNeo4j').mockImplementation(() => Promise.resolve());
 
         await expect(testDbmss.environment.dbmss.install(testDbmss.createName(), NEO4J_VERSION)).rejects.toThrow(
             new NotFoundError(message),
@@ -99,7 +100,7 @@ describe('LocalDbmss - install', () => {
         const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
+        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
         expect(info?.version).toEqual(NEO4J_VERSION);
 
         const {id: dbmsId2} = await testDbmss.environment.dbmss.install(testDbmss.createName(), NEO4J_VERSION);
@@ -107,7 +108,7 @@ describe('LocalDbmss - install', () => {
         const message2 = (await testDbmss.environment.dbmss.info([dbmsId2])).toArray();
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info2 = await localUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
+        const info2 = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
         expect(info2?.version).toEqual(NEO4J_VERSION);
     });
 });

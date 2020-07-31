@@ -17,9 +17,9 @@ export class LoginModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const {environment: environmentId} = this.parsed.flags;
+        const {args} = this.parsed;
+        const {environment: environmentId} = args;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-
         const login = await environment.login(LOCAL_OAUTH_REDIRECT);
 
         // @todo: local server needs time...
