@@ -1,4 +1,6 @@
 import {flags} from '@oclif/command';
+import {ENTITY_TYPES} from '@relate/common';
+
 import {isInteractive} from './stdin';
 
 export const REQUIRED_FOR_SCRIPTS = !isInteractive();
@@ -37,9 +39,18 @@ export const FLAGS = {
             required: REQUIRED_FOR_SCRIPTS,
         }),
     },
+    VERSION: {
+        version: flags.string({
+            char: 'v',
+            description: 'Version to install (semver, url, or path)',
+            required: REQUIRED_FOR_SCRIPTS,
+        }),
+    },
 };
 
 export interface IInputPromptOptions {
     initial?: string;
     required?: boolean;
 }
+
+export const VALID_BACKUP_TYPES = [ENTITY_TYPES.DBMS, ENTITY_TYPES.PROJECT];
