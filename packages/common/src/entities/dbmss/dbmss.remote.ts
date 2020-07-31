@@ -138,7 +138,13 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
-    upgrade(_dbmsId: string, _version: string, _backup?: boolean, _noCache?: boolean): Promise<IDbmsInfo> {
+    upgrade(
+        _dbmsId: string,
+        _version: string,
+        _migrate = true,
+        _backup?: boolean,
+        _noCache?: boolean,
+    ): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support upgrading DBMSs`);
     }
 

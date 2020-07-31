@@ -9,6 +9,7 @@ import {v4 as uuidv4} from 'uuid';
 import {DbmssAbstract} from './dbmss.abstract';
 import {IDbms, IDbmsConfig, IDbmsInfo, IDbmsVersion} from '../../models';
 import {
+    dbmsUpgradeConfigs,
     discoverNeo4jDistributions,
     downloadNeo4j,
     extractNeo4j,
@@ -34,7 +35,6 @@ import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic
 import {
     LocalEnvironment,
     LOCALHOST_IP_ADDRESS,
-    NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE,
     NEO4J_CERT_DIR,
     NEO4J_CONF_DIR,
     NEO4J_CONF_FILE,
@@ -45,6 +45,7 @@ import {
     NEO4J_JWT_CONF_FILE,
     NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
+    NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
 } from '../environments';
 import {
     BOLT_DEFAULT_PORT,
@@ -160,7 +161,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
-    async upgrade(dbmsId: string, version: string, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo> {
+    async upgrade(
+        dbmsId: string,
+        version: string,
+        migrate = true,
+        backup?: boolean,
+        noCache?: boolean,
+    ): Promise<IDbmsInfo> {
         if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
             throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
                 'Use valid version',
@@ -191,30 +198,31 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         try {
             const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
+            const upgradedConfig = await this.getDbmsConfig(upgradedDbms.id);
+
+            await dbmsUpgradeConfigs(dbms, upgradedDbms, upgradedConfig);
 
             /**
-             * Following copy operations moved over from Neo4j Desktop
+             * Run Neo4j migration?
              */
-            await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
-            await fse.copy(`${dbms.rootPath}/data`, `${upgradedDbms.rootPath}/data`);
-            await fse.copy(`${dbms.rootPath}/logs`, `${upgradedDbms.rootPath}/logs`);
-            await fse.copy(`${dbms.rootPath}/conf`, `${upgradedDbms.rootPath}/conf`);
-            await fse.copy(`${dbms.rootPath}/plugins`, `${upgradedDbms.rootPath}/plugins`);
+            if (migrate) {
+                upgradedConfig.set('dbms.allow_upgrade', 'true');
+                await upgradedConfig.flush();
+                const startMessage = await this.start([upgradedDbms.id]);
+                const {status} = await this.get(upgradedDbms.id);
 
-            const certExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.cert`);
-            const keyExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.key`);
+                if (status !== DBMS_STATUS.STARTED) {
+                    throw new DbmsUpgradeError('Failed to migrate DBMS.', startMessage.first.getOrElse(''));
+                }
 
-            if (certExists && keyExists) {
-                await fse.copy(
-                    `${dbms.rootPath}/certificates/neo4j.cert`,
-                    `${upgradedDbms.rootPath}/certificates/https/neo4j.cert`,
-                );
-                await fse.copy(
-                    `${dbms.rootPath}/certificates/neo4j.key`,
-                    `${upgradedDbms.rootPath}/certificates/https/neo4j.key`,
-                );
+                await this.stop([upgradedDbms.id]);
+                upgradedConfig.set('dbms.allow_upgrade', 'false');
+                await upgradedConfig.flush();
             }
 
+            /**
+             * Replace old installation
+             */
             await this.uninstall(dbms.id);
             await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
             await this.setDbmsManifest(dbms.id, {
@@ -244,7 +252,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 name: dbms.name,
             });
 
-            throw new DbmsUpgradeError(`Failed to upgrade dbms ${dbms.id}`, [
+            throw new DbmsUpgradeError(`Failed to upgrade dbms ${dbms.id}`, e.message, [
                 `DBMS was restored from backup ${completeBackup.id}`,
             ]);
         }
@@ -409,7 +417,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         if (!supportsAccessTokens(dbms)) {
             throw new NotSupportedError(
                 // eslint-disable-next-line max-len
-                `Only Neo4j ${NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE} ${NEO4J_EDITION.ENTERPRISE} can create access tokens.`,
+                `Only Neo4j ${NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE} ${NEO4J_EDITION.ENTERPRISE} can create access tokens.`,
             );
         }
 

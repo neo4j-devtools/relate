@@ -82,7 +82,7 @@
         "constructor-super": "error",
         "curly": ["error", "all"],
         "default-case": "error",
-        "default-param-last": "error",
+        "default-param-last": "warn",
         "dot-location": ["error", "property"],
         "dot-notation": "error",
         "eol-last": "error",

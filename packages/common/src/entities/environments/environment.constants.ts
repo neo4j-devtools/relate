@@ -52,7 +52,8 @@ export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shel
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
 export const NEO4J_JAVA_11_VERSION_RANGE = '>=3.5';
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=3.4';
-export const NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE = '>=4.x';
+export const NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE = '>=4.x';
+export const NEO4J_VERSION_4 = '4.0.0';
 export const NEO4J_JWT_ADDON_NAME = 'neo4j-jwt-addon';
 export const NEO4J_JWT_ADDON_VERSION = '1.0.0-SNAPSHOT';
 export const NEO4J_JWT_CONF_FILE = 'jwt-auth-addon.conf';
