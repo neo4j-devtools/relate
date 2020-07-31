@@ -18,7 +18,7 @@ interface IJavaName {
     archive: string;
 }
 
-const resolveJavaName = (dbmsVersion: string): IJavaName => {
+export const resolveJavaName = (dbmsVersion: string): IJavaName => {
     let platform: string;
     let ext: string;
 
