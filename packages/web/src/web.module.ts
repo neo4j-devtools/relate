@@ -10,7 +10,7 @@ import {ProjectModule} from './entities/project';
 import {AuthModule} from './auth';
 import {FilesModule} from './files';
 import {HealthModule} from './health';
-import {PATH_TO_EXECUTABLE_ROOT} from './constants';
+import {IS_ELECTRON, PATH_TO_EXECUTABLE_ROOT} from './constants';
 
 export interface IWebModuleConfig {
     protocol: string;
@@ -31,7 +31,8 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         HealthModule,
         ...dynamicModules,
         GraphQLModule.forRoot({
-            autoSchemaFile: path.join(PATH_TO_EXECUTABLE_ROOT, 'schema.graphql'),
+            autoSchemaFile: IS_ELECTRON ? true : path.join(PATH_TO_EXECUTABLE_ROOT, 'schema.graphql'),
+            sortSchema: true,
             installSubscriptionHandlers: true,
             playground: {
                 settings: {
