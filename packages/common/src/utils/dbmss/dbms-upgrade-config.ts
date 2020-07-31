@@ -13,11 +13,16 @@ export async function dbmsUpgradeConfigs(
     upgradedDbms: IDbmsInfo,
     upgradedConfig: PropertiesFile,
 ): Promise<IDbmsInfo> {
-    await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
     await fse.copy(`${dbms.rootPath}/data`, `${upgradedDbms.rootPath}/data`);
     await fse.copy(`${dbms.rootPath}/logs`, `${upgradedDbms.rootPath}/logs`);
     await fse.copy(`${dbms.rootPath}/conf`, `${upgradedDbms.rootPath}/conf`);
     await fse.copy(`${dbms.rootPath}/plugins`, `${upgradedDbms.rootPath}/plugins`);
+
+    const certsExists = await fse.pathExists(`${dbms.rootPath!}/certificates`);
+
+    if (certsExists) {
+        await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
+    }
 
     const certExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.cert`);
     const keyExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.key`);

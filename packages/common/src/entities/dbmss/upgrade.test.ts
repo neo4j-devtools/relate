@@ -7,11 +7,13 @@ describe('LocalDbmss - upgrade', () => {
     let testDbmss: TestDbmss;
     let env: EnvironmentAbstract;
     let dbms404: IDbmsInfo;
+    let dbms35: IDbmsInfo;
 
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
         env = testDbmss.environment;
         dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
+        dbms35 = await env.dbmss.install(testDbmss.createName(), '3.5.19');
     });
 
     afterAll(async () => {
@@ -50,5 +52,12 @@ describe('LocalDbmss - upgrade', () => {
 
         expect(upgraded.version).toEqual('4.0.5');
         expect(upgraded.id).toEqual(dbms404.id);
+    });
+
+    test('Upgrading major', async () => {
+        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', true, false, true);
+
+        expect(upgraded.version).toEqual('4.1.0');
+        expect(upgraded.id).toEqual(dbms35.id);
     });
 });
