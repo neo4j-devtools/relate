@@ -46,7 +46,7 @@ describe('LocalDbmss - upgrade', () => {
     });
 
     test('Upgrading to higher', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.5', false, true);
+        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.5', true, false, true);
 
         expect(upgraded.version).toEqual('4.0.5');
         expect(upgraded.id).toEqual(dbms404.id);

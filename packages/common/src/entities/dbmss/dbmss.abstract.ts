@@ -41,7 +41,13 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
-    abstract upgrade(dbmsId: string, version: string, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo>;
+    abstract upgrade(
+        dbmsId: string,
+        version: string,
+        migrate?: boolean,
+        backup?: boolean,
+        noCache?: boolean,
+    ): Promise<IDbmsInfo>;
 
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 
