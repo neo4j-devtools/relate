@@ -53,6 +53,7 @@ daedalus$ relate --help
 
 * [`relate app`](./docs/app.md) - Manage Graph Apps
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
+* [`relate backup`](./docs/backup.md) - Create a new backup
 * [`relate db`](./docs/db.md) - Manage Neo4j Databases
 * [`relate dbms`](./docs/dbms.md) - Manage Neo4j DBMSs
 * [`relate environment`](./docs/environment.md) - Manage relate environments

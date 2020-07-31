@@ -14,6 +14,7 @@ Manage Neo4j DBMSs
 * [`relate dbms:start [DBMSS]`](#relate-dbmsstart-dbmss)
 * [`relate dbms:stop [DBMSS]`](#relate-dbmsstop-dbmss)
 * [`relate dbms:uninstall DBMS`](#relate-dbmsuninstall-dbms)
+* [`relate dbms:upgrade DBMS`](#relate-dbmsupgrade-dbms)
 
 ## `relate dbms:access-token DBMS`
 
@@ -275,3 +276,27 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.3/dist/commands/dbms/uninstall.ts)_
+
+## `relate dbms:upgrade DBMS`
+
+Upgrade an installed DBMS's version
+
+```
+USAGE
+  $ relate dbms:upgrade DBMS
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+  -v, --version=version          (required) Version to install (semver, url, or path)
+  --no-caching                   Prevent caching of the downloaded DBMS
+
+EXAMPLES
+  $ relate dbms:upgrade
+  $ relate dbms:upgrade -e environment-name
+  relate dbms:upgrade <dbms-id> -v 4.0.5
+```
+
+_See code: [dist/commands/dbms/upgrade.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.3/dist/commands/dbms/upgrade.ts)_
