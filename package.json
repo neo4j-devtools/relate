@@ -23,7 +23,7 @@
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
-        "generate:docs": "lerna run generate:docs",
+        "generate:docs": "lerna run generate:doc",
         "watch": "lerna run watch --stream --parallel"
     },
     "devDependencies": {
@@ -37,7 +37,7 @@
         "eslint-plugin-prettier": "3.1.2",
         "fs-extra": "9.0.0",
         "husky": "4.0.9",
-        "lerna": "3.20.2",
+        "lerna": "3.22.1",
         "license-checker": "25.0.1",
         "lint-staged": "9.5.0",
         "npm-run-all": "4.1.5",
