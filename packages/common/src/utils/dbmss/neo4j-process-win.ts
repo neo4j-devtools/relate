@@ -9,7 +9,6 @@ import {
     NEO4J_LOGS_DIR,
     NEO4J_RUN_DIR,
     NEO4J_BIN_DIR,
-    NEO4J_BIN_FILE,
     NEO4J_RELATE_PID_FILE,
     NEO4J_LOG_FILE,
 } from '../../entities/environments';
@@ -45,9 +44,6 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
         return 'neo4j already running';
     }
 
-    const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
-    await fse.ensureFile(logFilePath);
-
     const dbmsVersion = await getDistributionVersion(dbmsRoot);
     const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
@@ -57,14 +53,23 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     // precedence over any user installed JAVA executable.
     env.set('PATH', relateJavaHome ? `${relateJavaHome}${path.delimiter}${process.env.PATH}` : process.env.PATH);
 
-    const neo4jBinPath = path.join(dbmsRoot, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
-    const child = spawn(neo4jBinPath, ['console'], {
-        detached: true,
-        shell: true,
-        windowsHide: true,
-        stdio: 'ignore',
-        env: env.toObject(),
-    });
+    const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
+    const neo4jPs1Path = path.join(dbmsRoot, NEO4J_BIN_DIR, 'neo4j.ps1');
+    const customNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
+
+    const child = spawn(
+        'powershell.exe',
+        [customNeo4jStarterPath, '-binPath', neo4jPs1Path, '-logsPath', logFilePath],
+        {
+            detached: true,
+            // Windows scripts are not executable on their own and need a shell to be able to run.
+            shell: true,
+            // stdio has to be set to 'ignore' or the node process will wait for the child
+            // process to exit first, effectively making it not detached.
+            stdio: 'ignore',
+            env: env.toObject(),
+        },
+    );
 
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
     await fse.writeFile(neo4jPidPath, child.pid);
