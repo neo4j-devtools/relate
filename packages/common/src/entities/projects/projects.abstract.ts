@@ -45,10 +45,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @param   projectId
      * @param   filters         Filters to apply
      */
-    abstract listFiles(
-        projectId: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IRelateFile>>;
+    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
 
     /**
      * Adds file (copy) to project
@@ -84,10 +81,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @param   projectId
      * @param   filters         Filters to apply
      */
-    abstract listDbmss(
-        projectId: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IProjectDbms>>;
+    abstract listDbmss(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
 
     /**
      * Adds DBMS to given project
