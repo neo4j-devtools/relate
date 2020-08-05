@@ -32,7 +32,7 @@
 
 ▸ **addDbms**(`projectId`: string, `dbmsName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:100](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L100)*
+*Defined in [projects/projects.abstract.ts:94](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L94)*
 
 Adds DBMS to given project
 
@@ -54,7 +54,7 @@ ___
 
 ▸ **addFile**(`projectId`: string, `source`: string, `destination?`: undefined | string): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:59](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L59)*
+*Defined in [projects/projects.abstract.ts:56](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L56)*
 
 Adds file (copy) to project
 
@@ -147,7 +147,7 @@ ___
 
 ▸ **listDbmss**(`projectId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProjectDbms››*
 
-*Defined in [projects/projects.abstract.ts:87](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L87)*
+*Defined in [projects/projects.abstract.ts:84](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L84)*
 
 Lists DBMSs for given project
 
@@ -185,7 +185,7 @@ ___
 
 ▸ **removeDbms**(`projectId`: string, `dbmsName`: string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:113](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L113)*
+*Defined in [projects/projects.abstract.ts:107](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L107)*
 
 removes DBMS from given project
 
@@ -204,7 +204,7 @@ ___
 
 ▸ **removeFile**(`projectId`: string, `relativePath`: string): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:80](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L80)*
+*Defined in [projects/projects.abstract.ts:77](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L77)*
 
 Removes file from given project
 
@@ -223,7 +223,7 @@ ___
 
 ▸ **writeFile**(`projectId`: string, `destination`: string, `data`: string | Buffer, `writeFlag?`: WriteFileFlag): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:68](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L68)*
+*Defined in [projects/projects.abstract.ts:65](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L65)*
 
 Adds file (write) to project
 
