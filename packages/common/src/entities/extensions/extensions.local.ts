@@ -3,28 +3,28 @@ import fse from 'fs-extra';
 import {coerce} from 'semver';
 import {promisify} from 'util';
 import path from 'path';
-import {List, None, Dict} from '@relate/types';
+import {List, None} from '@relate/types';
 
 import {
     AmbiguousTargetError,
-    InvalidArgumentError,
-    NotSupportedError,
-    NotFoundError,
     ExtensionExistsError,
+    InvalidArgumentError,
+    NotFoundError,
+    NotSupportedError,
     ValidationFailureError,
 } from '../../errors';
-import {EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
+import {ENTITY_TYPES, EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
 import {emitHookEvent} from '../../utils';
-import {isValidUrl, IRelateFilter, applyEntityFilters} from '../../utils/generic';
+import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
-    getAppBasePath,
     discoverExtension,
-    IExtensionMeta,
     discoverExtensionDistributions,
-    extractExtension,
     downloadExtension,
-    IExtensionVersion,
+    extractExtension,
     fetchExtensionVersions,
+    getAppBasePath,
+    IExtensionMeta,
+    IExtensionVersion,
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
@@ -43,11 +43,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     }
 
     async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
-        const allInstalledExtensions = await Dict.from(EXTENSION_TYPES)
-            .values.mapEach((type) =>
-                discoverExtensionDistributions(path.join(this.environment.dirPaths.extensionsData, type)),
-            )
-            .unwindPromises();
+        const allInstalledExtensions = await discoverExtensionDistributions(this.environment.dirPaths.extensionsData);
 
         return applyEntityFilters(allInstalledExtensions.flatten(), filters);
     }
@@ -60,13 +56,23 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
 
     async link(filePath: string): Promise<IExtensionMeta> {
         const extension = await discoverExtension(filePath);
-        const target = path.join(this.environment.dirPaths.extensionsData, extension.type, extension.name);
+        const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
         if (await fse.pathExists(target)) {
             throw new ExtensionExistsError(`${extension.name} is already installed`);
         }
 
-        await fse.symlink(filePath, target);
+        await fse.symlink(filePath, target, 'junction');
+
+        if (extension.type === EXTENSION_TYPES.STATIC) {
+            const staticTarget = path.join(
+                this.environment.dirPaths.extensionsData,
+                EXTENSION_TYPES.STATIC,
+                extension.name,
+            );
+
+            await fse.symlink(target, staticTarget, 'junction');
+        }
 
         return extension;
     }
@@ -135,7 +141,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         extensionsDir: string,
         extractedDistPath: string,
     ): Promise<IExtensionMeta> {
-        const target = path.join(extensionsDir, extension.type, extension.name);
+        const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to extension does not exist "${extractedDistPath}"`);
@@ -146,6 +152,12 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         }
 
         await fse.copy(extractedDistPath, target);
+
+        if (extension.type === EXTENSION_TYPES.STATIC) {
+            const staticTarget = path.join(extensionsDir, EXTENSION_TYPES.STATIC, extension.name);
+
+            await fse.symlink(target, staticTarget, 'junction');
+        }
 
         // @todo: need to look at our use of exec (and maybe child processes) in general
         // this does not account for all scenarios at the moment so needs more thought

@@ -25,8 +25,8 @@ export class OpenModule implements OnApplicationBootstrap {
     }
 
     async onApplicationBootstrap(): Promise<void> {
-        const {flags} = this.parsed;
-        const {environment: environmentId} = flags;
+        const {args} = this.parsed;
+        const {environment: environmentId} = args;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         this.logOrOpen(environment.configPath);

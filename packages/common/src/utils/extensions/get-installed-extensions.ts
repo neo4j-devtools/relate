@@ -3,6 +3,7 @@
 import * as path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
+import {List} from '@relate/types';
 
 import {envPaths} from '../env-paths';
 import {ExtensionModel, IInstalledExtension} from '../../models';
@@ -10,7 +11,7 @@ import {InvalidArgumentError} from '../../errors';
 import {
     EXTENSION_DIR_NAME,
     EXTENSION_MANIFEST_KEY,
-    EXTENSION_MANIFEST,
+    EXTENSION_MANIFEST_FILE,
     PACKAGE_JSON,
     EXTENSION_TYPES,
     EXTENSION_NPM_PREFIX,
@@ -19,33 +20,27 @@ import {
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
  */
-export function getInstalledExtensionsSync(): IInstalledExtension[] {
+export function getInstalledExtensionsSync(): List<IInstalledExtension> {
     const installationDir = path.join(envPaths().data, EXTENSION_DIR_NAME);
 
-    return _.compact(
-        _.flatMap(_.values(EXTENSION_TYPES), (type) => {
-            const dirPath = path.join(installationDir, type);
+    fse.ensureDirSync(installationDir);
 
-            fse.ensureDirSync(dirPath);
+    return List.from(fse.readdirSync(installationDir))
+        .mapEach((file) => {
+            const fullPath = path.join(installationDir, file);
 
-            const files = fse.readdirSync(dirPath);
-
-            return _.map(files, (file): IInstalledExtension | null => {
-                const fullPath = path.join(dirPath, file);
-
-                try {
-                    return mapContentsToExtension(fullPath);
-                } catch (e) {
-                    // @todo: error logging?
-                    return null;
-                }
-            });
-        }),
-    );
+            try {
+                return mapContentsToExtension(fullPath);
+            } catch (e) {
+                // @todo: error logging?
+                return null;
+            }
+        })
+        .compact();
 }
 
 function mapContentsToExtension(fullPath: string): IInstalledExtension {
-    const manifestPath = path.join(fullPath, EXTENSION_MANIFEST);
+    const manifestPath = path.join(fullPath, EXTENSION_MANIFEST_FILE);
     const packagePath = path.join(fullPath, PACKAGE_JSON);
     const info = fse.statSync(fullPath);
 

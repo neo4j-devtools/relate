@@ -1,16 +1,17 @@
-import {exec} from 'child_process';
 import fse from 'fs-extra';
 import path from 'path';
 
-import {NotAllowedError, NotFoundError, DependencyError} from '../../errors';
+import {NotFoundError, DependencyError} from '../../errors';
 import {NEO4J_BIN_DIR, NEO4J_BIN_FILE} from '../../entities/environments/environment.constants';
 import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
+import {getDistributionVersion} from './dbms-versions';
 
 export async function neo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
     const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
-    const relateJavaHome = await resolveRelateJavaHome();
+    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     await fse.access(neo4jBinPath, fse.constants.X_OK).catch(() => {
         throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
@@ -30,39 +31,9 @@ export async function neo4jCmd(dbmsRootPath: string, command: string): Promise<s
         throw new DependencyError('Unable to find Java executable');
     }
 
-    return output;
-}
-
-export async function elevatedNeo4jWindowsCmd(dbmsRootPath: string, command: string): Promise<string> {
-    const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
-
-    if (process.platform !== 'win32') {
-        throw new NotAllowedError('Elevated commands only allowed in windows environments');
+    if (output.includes('Neo4j cannot be started using java version')) {
+        throw new DependencyError(output);
     }
 
-    await fse.access(neo4jBinPath, fse.constants.X_OK).catch(() => {
-        throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);
-    });
-
-    return new Promise((resolve, reject) => {
-        // eslint-disable-next-line max-len
-        const elevatedCmd = `Start-Process PowerShell -Verb RunAs "-Command \`"cd '$pwd'; & '${neo4jBinPath}' ${command};\`"" -PassThru -Wait`;
-        // The JAVA_HOME env is not set here because this method should be
-        // used only for windows services, not for running the DBMS.
-        const execOptions = {shell: 'powershell'};
-
-        exec(elevatedCmd, execOptions, (err2, stdout, stderr) => {
-            if (err2) {
-                reject(err2.message);
-                return;
-            }
-
-            if (stderr) {
-                reject(stderr);
-                return;
-            }
-
-            resolve(stdout);
-        });
-    });
+    return output;
 }

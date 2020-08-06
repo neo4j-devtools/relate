@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import got from 'got';
 import path from 'path';
 import semver from 'semver';
-import {Dict, List, None, Str} from '@relate/types';
+import {Dict, List, None} from '@relate/types';
 
 import {DependencyError, InvalidArgumentError} from '../../errors';
 import {IDbmsVersion} from '../../models';
@@ -13,13 +13,14 @@ import {
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_DIST_LIMITED_VERSIONS_URL,
+    NEO4J_LIB_DIR,
 } from '../../entities/environments';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
         const version = await getDistributionVersion(dbmsRootDir);
         const isEnterprise = await fse.pathExists(
-            path.join(dbmsRootDir, 'lib', `neo4j-server-enterprise-${version}.jar`),
+            path.join(dbmsRootDir, NEO4J_LIB_DIR, `neo4j-server-enterprise-${version}.jar`),
         );
 
         return {
@@ -75,7 +76,7 @@ interface IVersionManifest {
 export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVersion>> => {
     const versionsUrls = [NEO4J_DIST_VERSIONS_URL];
 
-    if (limited === true) {
+    if (limited) {
         // @todo: this isn't an active url yet - https://trello.com/c/uVg2EuT5
         versionsUrls.push(NEO4J_DIST_LIMITED_VERSIONS_URL);
     }
@@ -109,35 +110,19 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
                 url = versionObj.dist.win;
             }
 
-            return [
-                {
-                    dist: url,
-                    edition: NEO4J_EDITION.ENTERPRISE,
-                    origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
-                    version: versionStr,
-                },
-                // @todo: remove this when manifest contains community dists
-                {
-                    dist: buildCommunityDistributionUrl(url),
-                    edition: NEO4J_EDITION.COMMUNITY,
-                    origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
-                    version: versionStr,
-                },
-            ];
-        })
-        .flatten();
+            return {
+                dist: url,
+                edition: NEO4J_EDITION.ENTERPRISE,
+                origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
+                version: versionStr,
+            };
+        });
 };
-
-export function buildCommunityDistributionUrl(enterpriseUrl: string): string {
-    return Str.from(enterpriseUrl)
-        .replace(`-${NEO4J_EDITION.ENTERPRISE}-`, `-${NEO4J_EDITION.COMMUNITY}-`)
-        .get();
-}
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
     const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
-    const neo4jJarRegex = /^neo4j-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
-    const libs = List.from(await fse.readdir(path.join(dbmsRoot, 'lib')));
+    const neo4jJarRegex = /^neo4j-server-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+    const libs = List.from(await fse.readdir(path.join(dbmsRoot, NEO4J_LIB_DIR)));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 
     return neo4jJar

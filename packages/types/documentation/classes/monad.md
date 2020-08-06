@@ -78,7 +78,7 @@ Indicates if Monad lacks a value
 
 ▸ **equals**(`other`: any): *boolean*
 
-*Defined in [src/monads/monad.ts:136](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L136)*
+*Defined in [src/monads/monad.ts:135](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L135)*
 
 Checks if other has the same raw value
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:177](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L177)*
+*Defined in [src/monads/monad.ts:176](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L176)*
 
 Unpack monad value and return anything.
 ```ts
@@ -130,7 +130,7 @@ ___
 
 *Implementation of [IMonad](../interfaces/imonad.md)*
 
-*Defined in [src/monads/monad.ts:111](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L111)*
+*Defined in [src/monads/monad.ts:110](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L110)*
 
 Get raw value of monad
 
@@ -142,7 +142,7 @@ ___
 
 ▸ **getOrElse**(`other`: T | function): *T*
 
-*Defined in [src/monads/monad.ts:125](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L125)*
+*Defined in [src/monads/monad.ts:124](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L124)*
 
 Get raw value of monad if not empty, else use other
 ```ts
@@ -192,7 +192,7 @@ ___
 
 ▸ **map**(`project`: function): *this*
 
-*Defined in [src/monads/monad.ts:162](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L162)*
+*Defined in [src/monads/monad.ts:161](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L161)*
 
 Modify monad value without changing the type.
 ```ts
@@ -220,7 +220,7 @@ ___
 
 ▸ **switchMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:188](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L188)*
+*Defined in [src/monads/monad.ts:187](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L187)*
 
 Unpack monad value and return new Monad (of any type).
 ```ts
@@ -252,7 +252,7 @@ ___
 
 ▸ **tap**(`project`: function): *this*
 
-*Defined in [src/monads/monad.ts:149](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L149)*
+*Defined in [src/monads/monad.ts:148](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L148)*
 
 Access value without modifying it. Useful when all you need is to log etc.
 ```ts
@@ -280,7 +280,7 @@ ___
 
 ▸ **toJSON**(): *any*
 
-*Defined in [src/monads/monad.ts:202](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L202)*
+*Defined in [src/monads/monad.ts:201](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L201)*
 
 When calling `.toJSON()`
 
@@ -292,7 +292,7 @@ ___
 
 ▸ **toString**(): *string*
 
-*Defined in [src/monads/monad.ts:195](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L195)*
+*Defined in [src/monads/monad.ts:194](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L194)*
 
 When calling `.toString()`
 
@@ -304,7 +304,7 @@ ___
 
 ▸ **valueOf**(): *T*
 
-*Defined in [src/monads/monad.ts:209](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L209)*
+*Defined in [src/monads/monad.ts:208](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L208)*
 
 When calling `.valueOf()`
 
@@ -314,7 +314,7 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**T**, **R**›(`val`: T): *[Monad](monad.md)‹R›*
+▸ **from**(`val`: any): *[Monad](monad.md)‹any›*
 
 *Defined in [src/monads/monad.ts:94](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L94)*
 
@@ -324,19 +324,13 @@ const strMonad: Monad<'foo'> = Monad.from('foo');
 const strMonadAgain: Monad<'foo'> = Monad.from(Monad.of('foo'));
 ```
 
-**Type parameters:**
-
-▪ **T**
-
-▪ **R**
-
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | T |
+`val` | any |
 
-**Returns:** *[Monad](monad.md)‹R›*
+**Returns:** *[Monad](monad.md)‹any›*
 
 ___
 
@@ -369,7 +363,7 @@ ___
 
 ### `Static` of
 
-▸ **of**‹**T**›(`val`: T): *[Monad](monad.md)‹T›*
+▸ **of**(`val`: any): *[Monad](monad.md)‹any›*
 
 *Defined in [src/monads/monad.ts:83](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L83)*
 
@@ -379,14 +373,10 @@ const strMonad: Monad<'foo'> = Monad.of('foo');
 const strMonadMonad: Monad<Monad<'foo'>> = Monad.of(Monad.of('foo'));
 ```
 
-**Type parameters:**
-
-▪ **T**
-
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | T |
+`val` | any |
 
-**Returns:** *[Monad](monad.md)‹T›*
+**Returns:** *[Monad](monad.md)‹any›*

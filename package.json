@@ -23,11 +23,12 @@
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
+        "generate:docs": "lerna run generate:doc",
         "watch": "lerna run watch --stream --parallel"
     },
     "devDependencies": {
         "@types/node-fetch": "2.5.7",
-        "@types/supertest": "2.0.8",
+        "@types/supertest": "2.0.10",
         "@typescript-eslint/eslint-plugin": "2.16.0",
         "@typescript-eslint/parser": "2.16.0",
         "eslint": "6.8.0",
@@ -36,7 +37,7 @@
         "eslint-plugin-prettier": "3.1.2",
         "fs-extra": "9.0.0",
         "husky": "4.0.9",
-        "lerna": "3.20.2",
+        "lerna": "3.22.1",
         "license-checker": "25.0.1",
         "lint-staged": "9.5.0",
         "npm-run-all": "4.1.5",
@@ -44,7 +45,8 @@
         "prettier": "1.19.1",
         "rxjs": "6.5.5",
         "supertest": "4.0.2",
-        "typescript": "3.7.4"
+        "tar": "6.0.2",
+        "typescript": "3.9.7"
     },
     "dependencies": {}
 }

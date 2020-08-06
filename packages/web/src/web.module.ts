@@ -1,16 +1,14 @@
 import {Module} from '@nestjs/common';
 import {GraphQLModule} from '@nestjs/graphql';
 import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
-import path from 'path';
 
-import {ExtensionsModule} from './extensions';
-import {DBMSModule} from './dbms';
-import {HealthModule} from './health';
-import {PATH_TO_EXECUTABLE_ROOT} from './constants';
+import {ExtensionModule} from './entities/extension';
+import {DBModule} from './entities/db';
+import {DBMSModule} from './entities/dbms';
+import {ProjectModule} from './entities/project';
 import {AuthModule} from './auth';
-import {ProjectsModule} from './projects/projects.module';
 import {FilesModule} from './files';
-import {DBModule} from './db';
+import {HealthModule} from './health';
 
 export interface IWebModuleConfig {
     protocol: string;
@@ -25,13 +23,13 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         SystemModule,
         DBMSModule,
         DBModule,
-        ExtensionsModule,
-        ProjectsModule,
+        ExtensionModule,
+        ProjectModule,
         FilesModule,
         HealthModule,
         ...dynamicModules,
         GraphQLModule.forRoot({
-            autoSchemaFile: path.join(PATH_TO_EXECUTABLE_ROOT, 'schema.graphql'),
+            autoSchemaFile: true,
             installSubscriptionHandlers: true,
             playground: {
                 settings: {

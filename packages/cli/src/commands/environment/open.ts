@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
-import {FLAGS} from '../../constants';
+import {ARGS} from '../../constants';
 import {OpenModule} from '../../modules/environment/open.module';
 
 export default class OpenCommand extends BaseCommand {
@@ -13,14 +13,15 @@ export default class OpenCommand extends BaseCommand {
 
     static examples = [
         '$ relate env:open',
-        '$ relate env:open -e environment-name',
-        '$ relate env:open -e environment-name -L',
+        '$ relate env:open environment-name',
+        '$ relate env:open environment-name -L',
     ];
 
     static aliases = ['env:open'];
 
+    static args = [ARGS.ENVIRONMENT];
+
     static flags = {
-        ...FLAGS.ENVIRONMENT,
         log: flags.boolean({
             char: 'L',
             description: 'If set, log the path instead',

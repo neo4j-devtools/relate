@@ -1,50 +1,108 @@
 import {List} from '@relate/types';
 
 import {EnvironmentAbstract} from '../environments';
-import {IRelateFile, IProjectManifest, IProject, IProjectDbms, WriteFileFlag} from '../../models';
+import {IRelateFile, IProject, IProjectDbms, WriteFileFlag, IProjectInput} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
+    /**
+     * @hidden
+     */
     public projects: {[id: string]: IProject} = {};
 
+    /**
+     * @hidden
+     */
     constructor(protected readonly environment: Env) {}
 
-    abstract create(manifest: IProjectManifest, path?: string): Promise<IProject>;
+    /**
+     * Creates new project
+     * @param   manifest        Project data
+     * @param   path            Path to project root
+     */
+    abstract create(manifest: IProjectInput, path?: string): Promise<IProject>;
 
-    abstract get(name: string): Promise<IProject>;
+    /**
+     * Gets a project by name
+     * @param   nameOrID
+     */
+    abstract get(nameOrID: string): Promise<IProject>;
 
+    /**
+     * List all available projects
+     * @param   filters     Filters to apply
+     */
     abstract list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>>;
 
+    /**
+     * Links an existing project
+     * @param   filePath    Path to project root
+     */
     abstract link(filePath: string): Promise<IProject>;
 
-    abstract listFiles(
-        projectName: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IRelateFile>>;
+    /**
+     * List files for given project
+     * @param   projectId
+     * @param   filters         Filters to apply
+     */
+    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
 
-    abstract addFile(projectName: string, source: string, destination?: string): Promise<IRelateFile>;
+    /**
+     * Adds file (copy) to project
+     * @param   projectId
+     * @param   source
+     * @param   destination
+     */
+    abstract addFile(projectId: string, source: string, destination?: string): Promise<IRelateFile>;
 
+    /**
+     * Adds file (write) to project
+     * @param   projectId
+     * @param   destination
+     * @param   data
+     * @param   writeFlag
+     */
     abstract writeFile(
-        projectName: string,
+        projectId: string,
         destination: string,
         data: string | Buffer,
         writeFlag?: WriteFileFlag,
     ): Promise<IRelateFile>;
 
-    abstract removeFile(projectName: string, relativePath: string): Promise<IRelateFile>;
+    /**
+     * Removes file from given project
+     * @param   projectId
+     * @param   relativePath    Path relative to project
+     */
+    abstract removeFile(projectId: string, relativePath: string): Promise<IRelateFile>;
 
-    abstract listDbmss(
-        projectName: string,
-        filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IProjectDbms>>;
+    /**
+     * Lists DBMSs for given project
+     * @param   projectId
+     * @param   filters         Filters to apply
+     */
+    abstract listDbmss(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
 
+    /**
+     * Adds DBMS to given project
+     * @param   projectId
+     * @param   dbmsName        Name to give DBMS in project
+     * @param   dbmsId
+     * @param   principal       DBMS principal
+     * @param   accessToken     DBMS access token
+     */
     abstract addDbms(
-        projectName: string,
+        projectId: string,
         dbmsName: string,
         dbmsId: string,
         principal?: string,
         accessToken?: string,
     ): Promise<IProjectDbms>;
 
-    abstract removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms>;
+    /**
+     * removes DBMS from given project
+     * @param   projectId
+     * @param   dbmsName
+     */
+    abstract removeDbms(projectId: string, dbmsName: string): Promise<IProjectDbms>;
 }

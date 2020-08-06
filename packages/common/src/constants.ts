@@ -1,14 +1,28 @@
 import {SignOptions} from 'jsonwebtoken';
+import {IRelateBackup} from './models';
+
+export enum ENTITY_TYPES {
+    DBMS = 'dbms',
+    PROJECT = 'project',
+    DB = 'db',
+    EXTENSION = 'extension',
+    ENVIRONMENT = 'environment',
+    BACKUP = 'backup',
+}
 
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
 
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 
-export const DEFAULT_ENVIRONMENT_NAME = 'default';
+export const BACKUP_MANIFEST_FILE = `relate.${ENTITY_TYPES.BACKUP}.json`;
+export const DBMS_MANIFEST_FILE = `relate.${ENTITY_TYPES.DBMS}.json`;
+export const PROJECT_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT}.json`;
+export const EXTENSION_MANIFEST_FILE = `relate.${ENTITY_TYPES.EXTENSION}.json`;
 
 export const RELATE_KNOWN_CONNECTIONS_FILE = 'known_connections';
 export const DBMS_DIR_NAME = 'dbmss';
+export const BACKUPS_DIR_NAME = 'backups';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing daedalus instance
@@ -17,7 +31,7 @@ export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
 
 export const EXTENSION_DIR_NAME = 'extensions';
 export const PACKAGE_JSON = 'package.json';
-export const EXTENSION_MANIFEST = 'relate.manifest.json';
+export const EXTENSION_MANIFEST_FILE_LEGACY = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_SHA_ALGORITHM = 'sha1';
 export const EXTENSION_NPM_PREFIX = '@relate-ext/';
@@ -66,10 +80,14 @@ export enum HOOK_EVENTS {
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP',
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
     RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
+    BACKUP_START = 'BACKUP_START',
+    BACKUP_COMPLETE = 'BACKUP_COMPLETE',
 }
 
 export interface IHookEventPayloads {
     [HOOK_EVENTS.RUN_QUERY_RETRY]: {query: string; params: any; retry: number};
+    [HOOK_EVENTS.BACKUP_START]: {entityType: ENTITY_TYPES; entityId: string};
+    [HOOK_EVENTS.BACKUP_COMPLETE]: {backup: IRelateBackup};
     [key: string]: any;
 }
 export type Listener<E extends HOOK_EVENTS> = (eventData: IHookEventPayloads[E]) => void | Promise<void>;
@@ -140,8 +158,6 @@ export const CONNECTION_RETRY_STEP = RELATE_IS_TESTING ? 12 : 4;
 export const MAX_CONNECTION_RETRIES = 5;
 
 export const PROJECTS_DIR_NAME = 'projects';
-export const PROJECTS_MANIFEST_FILE = 'relate.project.json';
-export const PROJECTS_PREFIX = 'project-';
 
 export enum FILTER_COMPARATORS {
     EQUALS = 'EQUALS',

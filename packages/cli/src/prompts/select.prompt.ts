@@ -10,7 +10,10 @@ import {
     NotFoundError,
     PUBLIC_GRAPHQL_METHODS,
     DBMS_STATUS,
+    ENTITY_TYPES,
+    InvalidArgumentError,
 } from '@relate/common';
+import {List} from '@relate/types';
 
 import {inputPrompt} from './input.prompt';
 import {getEntityDisplayName} from '../utils/display.utils';
@@ -32,6 +35,38 @@ export const selectPrompt = async (message: string, choices: string[] | IChoice[
     });
 
     return selection;
+};
+
+export const selectEntityPrompt = async (
+    message: string,
+    environment: Environment,
+    entityType: ENTITY_TYPES,
+): Promise<string> => {
+    let options: List<IChoice>;
+
+    switch (entityType) {
+        case ENTITY_TYPES.DBMS: {
+            options = (await environment.dbmss.list()).mapEach((dbms) => ({
+                name: dbms.name,
+                value: dbms.id,
+            }));
+            break;
+        }
+
+        case ENTITY_TYPES.PROJECT: {
+            options = (await environment.projects.list()).mapEach((project) => ({
+                name: project.name,
+                value: project.id,
+            }));
+            break;
+        }
+
+        default: {
+            throw new InvalidArgumentError(`Cannot select ${entityType} entities`);
+        }
+    }
+
+    return selectPrompt(message, options.toArray());
 };
 
 export const confirmPrompt = async (message: string): Promise<boolean> => {
@@ -142,12 +177,9 @@ export const googleAuthenticatorPrompt = async (): Promise<IGoogleAuthentication
 };
 
 export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
-    const needsWhitelist = await selectPrompt('Do you need to restrict access to the GraphQL API methods?', [
-        {name: 'Yes'},
-        {name: 'No'},
-    ]);
+    const needsWhitelist = await confirmPrompt('Do you need to restrict access to the GraphQL API methods?');
 
-    if (needsWhitelist === 'No') {
+    if (!needsWhitelist) {
         return [];
     }
 
@@ -158,9 +190,9 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
 };
 
 export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {
-    const needsWhitelist = await selectPrompt('Do you need to enable authentication?', [{name: 'Yes'}, {name: 'No'}]);
+    const needsAuthentication = await confirmPrompt('Do you need to enable authentication?');
 
-    if (needsWhitelist === 'No') {
+    if (!needsAuthentication) {
         return undefined;
     }
 
