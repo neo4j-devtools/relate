@@ -4,6 +4,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import {isInteractive, readStdin} from '../../stdin';
 import UninstallCommand from '../../commands/dbms/uninstall';
 import {selectDbmsPrompt} from '../../prompts';
+import {getEntityDisplayName} from '../../utils/display.utils';
 
 @Module({
     exports: [],
@@ -31,8 +32,8 @@ export class UninstallModule implements OnApplicationBootstrap {
             }
         }
 
-        return environment.dbmss.uninstall(dbms).then(() => {
-            this.utils.log(dbms);
+        return environment.dbmss.uninstall(dbms).then((uninstalled) => {
+            this.utils.log(getEntityDisplayName(uninstalled));
         });
     }
 }

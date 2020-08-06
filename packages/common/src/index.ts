@@ -17,7 +17,7 @@ export {
     NEO4J_EDITION,
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
-    NEO4J_ACCESS_TOKENS_SUPPORTED_VERSION_RANGE,
+    NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
 } from './entities/environments';
 export * from './entities/environments/authentication';
 export * from './token.service';

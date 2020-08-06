@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
-import {IProjectManifest, SystemModule, SystemProvider} from '@relate/common';
+import {IProjectInput, SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 
 import InitCommand from '../../commands/project/init';
@@ -28,7 +28,7 @@ export class InitModule implements OnApplicationBootstrap {
 
         name = name || (await inputPrompt('Enter project name'));
 
-        const config: IProjectManifest = {
+        const config: IProjectInput = {
             name,
             dbmss: [],
         };

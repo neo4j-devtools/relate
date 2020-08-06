@@ -35,7 +35,7 @@ describe('$relate db', () => {
             await AccessTokenCommand.run([testDbms.id, '--environment', testEnvironmentId, '--user=neo4j']);
 
             if (process.platform === 'win32') {
-                expect(ctx.stdout).toContain('Neo4j service started');
+                expect(ctx.stdout).toContain('neo4j started');
             } else {
                 expect(ctx.stdout).toContain('Directories in use');
                 expect(ctx.stdout).toContain('Starting Neo4j');

@@ -40,6 +40,7 @@ describe('$relate project', () => {
         TEST_DB_NAME = name;
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
 
+        await fse.ensureDir(TEST_PROJECT_DIR);
         await fse.ensureFile(TEST_PROJECT_FILE);
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
     });
@@ -47,6 +48,8 @@ describe('$relate project', () => {
     afterAll(async () => {
         await dbmss.teardown();
         await fse.remove(path.join(envPaths().data, PROJECTS_DIR_NAME, TEST_PROJECT_NAME));
+        await fse.remove(TEST_PROJECT_DIR);
+        await fse.remove(TEST_PROJECT_FILE);
     });
 
     test.stdout().it('lists no projects when none created', async (ctx) => {

@@ -40,7 +40,7 @@ export class GoogleAuthentication implements IAuthentication {
         });
     }
 
-    async generateAuthToken(code: string): Promise<string> {
+    async generateAuthToken({code}: {code: string}): Promise<string> {
         const {tokens} = await this.oAuth2Client.getToken({code});
 
         if (!tokens.id_token) {

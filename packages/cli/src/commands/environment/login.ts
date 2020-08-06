@@ -1,5 +1,5 @@
 import BaseCommand from '../../base.command';
-import {FLAGS} from '../../constants';
+import {ARGS} from '../../constants';
 import {LoginModule} from '../../modules/environment/login.module';
 
 export default class LoginCommand extends BaseCommand {
@@ -11,9 +11,7 @@ export default class LoginCommand extends BaseCommand {
 
     static aliases = ['env:login'];
 
-    static examples = ['$ relate env:login -e environment-supporting-login'];
+    static examples = ['$ relate env:login', '$ relate env:login environment-supporting-login'];
 
-    static flags = {
-        ...FLAGS.ENVIRONMENT,
-    };
+    static args = [ARGS.ENVIRONMENT];
 }

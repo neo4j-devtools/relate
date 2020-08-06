@@ -67,7 +67,7 @@ export class SystemProvider implements OnModuleInit {
             });
         }
 
-        const activeEnvironment = this.allEnvironments.values.find((env) => env.active);
+        const activeEnvironment = this.allEnvironments.values.find((env) => env.isActive);
 
         return activeEnvironment.flatMap((env) => {
             if (None.isNone(env)) {
@@ -145,7 +145,7 @@ export class SystemProvider implements OnModuleInit {
                             new EnvironmentConfigModel({
                                 ...config,
                                 configPath,
-                                neo4jDataPath: config.neo4jDataPath || this.dirPaths.data,
+                                relateDataPath: config.relateDataPath || this.dirPaths.data,
                             }),
                     )
                     .catch(() => None.EMPTY);

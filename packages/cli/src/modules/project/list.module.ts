@@ -25,6 +25,7 @@ export class ListModule implements OnApplicationBootstrap {
         cli.table(
             allProjects.toArray(),
             {
+                id: {},
                 name: {},
             },
             {

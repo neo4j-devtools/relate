@@ -10,10 +10,11 @@ import {
     EXTENSION_DIR_NAME,
     EXTENSION_NPM_PREFIX,
     EXTENSION_ORIGIN,
-    EXTENSION_MANIFEST,
+    EXTENSION_MANIFEST_FILE,
     EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
+    EXTENSION_MANIFEST_FILE_LEGACY,
 } from '../../constants';
 import {
     EXTENSION_REPO_NAME,
@@ -59,13 +60,17 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
         throw new NotFoundError(`Extension ${dirName} not found`);
     }
 
-    const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST);
+    const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE);
+    const extensionManifestLegacy = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE_LEGACY);
     const hasManifest = await fse.pathExists(extensionManifest);
+    const hasManifestLegacy = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
     const hasPackageJson = await fse.pathExists(extensionPackageJson);
 
-    if (hasManifest) {
-        const manifest = await fse.readJSON(extensionManifest);
+    if (hasManifest || hasManifestLegacy) {
+        const manifest = hasManifest
+            ? await fse.readJSON(extensionManifest)
+            : await fse.readJSON(extensionManifestLegacy);
 
         return {
             dist: extensionRootDir,

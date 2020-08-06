@@ -9,7 +9,9 @@ export interface IAppLaunchData {
         connectionUri: string;
     };
     principal?: string;
-    projectId?: string;
+    project?: {
+        name: string;
+    };
 }
 
 export interface IRelateClientConfig {

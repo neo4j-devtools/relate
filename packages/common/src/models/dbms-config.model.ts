@@ -1,4 +1,4 @@
-import {IsString, IsOptional} from 'class-validator';
+import {IsString, IsOptional, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {PropertiesFile} from '../system/files';
@@ -43,8 +43,7 @@ export interface IDbms extends IDbmsConfig {
 }
 
 export class DbmsConfigModel extends ModelAbstract<IDbmsConfig> implements IDbmsConfig {
-    // @todo: should be uuid
-    @IsString()
+    @IsUUID()
     public id!: string;
 
     @IsString()

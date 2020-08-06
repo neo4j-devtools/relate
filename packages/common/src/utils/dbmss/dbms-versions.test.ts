@@ -21,13 +21,10 @@ describe('DBMS versions (local environment)', () => {
     test('list cached distributions', async () => {
         const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
         const versions = (await discoverNeo4jDistributions(dbmssDataDir)).toArray();
-        expect(versions.length).toEqual(2);
-        expect(versions[0].edition).toEqual(NEO4J_EDITION.COMMUNITY);
+        expect(versions.length).toEqual(1);
+        expect(versions[0].edition).toEqual(NEO4J_EDITION.ENTERPRISE);
         expect(versions[0].origin).toEqual(NEO4J_ORIGIN.CACHED);
         expect(versions[0].dist).toContain(dbmssDataDir);
-        expect(versions[1].edition).toEqual(NEO4J_EDITION.ENTERPRISE);
-        expect(versions[1].origin).toEqual(NEO4J_ORIGIN.CACHED);
-        expect(versions[1].dist).toContain(dbmssDataDir);
     });
 
     test('list no cached distributions', async () => {
@@ -69,15 +66,9 @@ describe('DBMS versions (local environment)', () => {
                 },
             });
         const versions = (await fetchNeo4jVersions()).toArray();
-        expect(versions.length).toEqual(6);
+        expect(versions.length).toEqual(3);
         versions.forEach((v) => {
-            if (v.edition === NEO4J_EDITION.ENTERPRISE) {
-                expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
-                expect(v.dist).toContain('https://dist.neo4j.org/');
-                return;
-            }
-
-            expect(v.edition).toEqual(NEO4J_EDITION.COMMUNITY);
+            expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
             expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
             expect(v.dist).toContain('https://dist.neo4j.org/');
         });
@@ -147,19 +138,15 @@ describe('DBMS versions (local environment)', () => {
             .get(neo4jLimitedVersionsUrl.pathname)
             .reply(200, versionReply);
         const versions = (await fetchNeo4jVersions(true)).toArray();
-        expect(versions.length).toEqual(10);
+        expect(versions.length).toEqual(5);
         versions.forEach((v) => {
             if (!Object.keys(versionReply.versions).includes(v.version)) {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
             } else {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.LIMITED);
             }
-            if (v.edition === NEO4J_EDITION.ENTERPRISE) {
-                expect(v.dist).toContain('https://dist.neo4j.org/');
-                return;
-            }
-            expect(v.edition).toEqual(NEO4J_EDITION.COMMUNITY);
             expect(v.dist).toContain('https://dist.neo4j.org/');
+            expect(v.edition).toEqual(NEO4J_EDITION.ENTERPRISE);
         });
     });
 

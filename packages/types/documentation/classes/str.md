@@ -37,10 +37,13 @@ const plain: 'true' = str.get();
 
 ### Methods
 
+* [endsWith](str.md#endswith)
 * [includes](str.md#includes)
 * [replace](str.md#replace)
 * [split](str.md#split)
+* [startsWith](str.md#startswith)
 * [test](str.md#test)
+* [trim](str.md#trim)
 * [from](str.md#static-from)
 * [isStr](str.md#static-isstr)
 * [of](str.md#static-of)
@@ -51,7 +54,7 @@ const plain: 'true' = str.get();
 
 ▪ **EMPTY**: *[Str](str.md)‹string›* = new Str('')
 
-*Defined in [src/monads/primitive/str.monad.ts:19](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L19)*
+*Defined in [src/monads/primitive/str.monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L18)*
 
 ## Accessors
 
@@ -61,7 +64,7 @@ const plain: 'true' = str.get();
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/str.monad.ts:32](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L32)*
+*Defined in [src/monads/primitive/str.monad.ts:31](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L31)*
 
 Returns true if value is empty string
 
@@ -69,11 +72,27 @@ Returns true if value is empty string
 
 ## Methods
 
+###  endsWith
+
+▸ **endsWith**(`other`: string | [Str](str.md)): *boolean*
+
+*Defined in [src/monads/primitive/str.monad.ts:97](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L97)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`other` | string &#124; [Str](str.md) |
+
+**Returns:** *boolean*
+
+___
+
 ###  includes
 
 ▸ **includes**(`other`: string | [Str](str.md)): *boolean*
 
-*Defined in [src/monads/primitive/str.monad.ts:80](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L80)*
+*Defined in [src/monads/primitive/str.monad.ts:89](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L89)*
 
 **Parameters:**
 
@@ -89,7 +108,7 @@ ___
 
 ▸ **replace**(`pattern`: string | RegExp | [Str](str.md), `replacement`: string | [Str](str.md)): *[Str](str.md)*
 
-*Defined in [src/monads/primitive/str.monad.ts:88](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L88)*
+*Defined in [src/monads/primitive/str.monad.ts:105](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L105)*
 
 **Parameters:**
 
@@ -106,7 +125,7 @@ ___
 
 ▸ **split**(`sep`: string | [Str](str.md)): *[List](list.md)‹[Str](str.md)›*
 
-*Defined in [src/monads/primitive/str.monad.ts:84](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L84)*
+*Defined in [src/monads/primitive/str.monad.ts:101](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L101)*
 
 **Parameters:**
 
@@ -118,11 +137,27 @@ Name | Type |
 
 ___
 
+###  startsWith
+
+▸ **startsWith**(`other`: string | [Str](str.md)): *boolean*
+
+*Defined in [src/monads/primitive/str.monad.ts:93](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L93)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`other` | string &#124; [Str](str.md) |
+
+**Returns:** *boolean*
+
+___
+
 ###  test
 
 ▸ **test**(`regex`: RegExp): *boolean*
 
-*Defined in [src/monads/primitive/str.monad.ts:76](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L76)*
+*Defined in [src/monads/primitive/str.monad.ts:85](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L85)*
 
 **Parameters:**
 
@@ -134,13 +169,23 @@ Name | Type |
 
 ___
 
+###  trim
+
+▸ **trim**(): *[Str](str.md)*
+
+*Defined in [src/monads/primitive/str.monad.ts:109](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L109)*
+
+**Returns:** *[Str](str.md)*
+
+___
+
 ### `Static` from
 
-▸ **from**‹**T**›(`val?`: any): *[Str](str.md)‹T›*
+▸ **from**‹**T**, **R**›(`val?`: T): *[Str](str.md)‹R›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/str.monad.ts:72](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L72)*
+*Defined in [src/monads/primitive/str.monad.ts:70](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L70)*
 
 Coerces anything into a Str
 
@@ -150,13 +195,15 @@ Coerces anything into a Str
 
 ▪ **T**
 
+▪ **R**
+
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | any |
+`val?` | T |
 
-**Returns:** *[Str](str.md)‹T›*
+**Returns:** *[Str](str.md)‹R›*
 
 ___
 
@@ -164,7 +211,7 @@ ___
 
 ▸ **isStr**‹**T**›(`val`: any): *val is Str<T>*
 
-*Defined in [src/monads/primitive/str.monad.ts:44](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L44)*
+*Defined in [src/monads/primitive/str.monad.ts:43](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L43)*
 
 Indicates if passed value is an instance of `Str`
 ```ts
@@ -193,7 +240,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/str.monad.ts:63](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L63)*
+*Defined in [src/monads/primitive/str.monad.ts:62](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L62)*
 
 Returns Str representation of the passed value.
 
@@ -206,7 +253,7 @@ const strBool: Str<'foo'> = Str.of(strMonad);
 const strBool: Str<'1,2,3'> = Str.of([1,2,3]);
 
 const listMonad: List<string> = List.from([1,2,3]);
-const listBool: Str<'1,2,3'> = Str.of(listMonad);
+const listStr: Str<'1,2,3'> = Str.of(listMonad);
 ```
 
 **Type parameters:**

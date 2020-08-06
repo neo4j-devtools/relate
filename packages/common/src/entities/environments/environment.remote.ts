@@ -15,6 +15,7 @@ import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../../system/files';
 import {RemoteProjects} from '../projects';
 import {RemoteDbs} from '../dbs';
+import {RemoteBackups} from '../backups';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
@@ -24,6 +25,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly extensions = new RemoteExtensions(this);
 
     public readonly projects = new RemoteProjects(this);
+
+    public readonly backups = new RemoteBackups(this);
 
     private client: ApolloLink;
 
@@ -43,6 +46,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             credentials: 'include',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
             fetch: (url: string, opts: any) => {
                 // @todo: this could definitely be done better
                 const options = Dict.from(opts)

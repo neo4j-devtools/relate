@@ -47,12 +47,15 @@ async function globalTeardown() {
         await List.from(files)
             .mapEach(async (filename) => {
                 const filePath = path.join(dbmssPath, filename);
-                const stats = await fse.stat(filePath);
 
-                if (stats.isFile()) {
-                    await fse.remove(filePath);
+                try {
+                    // Try unlinking the path. This will work only if it's a
+                    // file or symlink. It's not possible to check this in advance
+                    // because if a symlink is pointing to a path that no longer
+                    // exists, fse.stat will fail.
+                    await fse.unlink(filePath);
                     return;
-                }
+                } catch {}
 
                 const pidPath = path.join(filePath, 'run', 'neo4j.pid');
 
