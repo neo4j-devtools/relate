@@ -133,7 +133,7 @@ export class SystemProvider implements OnModuleInit {
     }
 
     private async reloadEnvironments(): Promise<void> {
-        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig))
+        const configs = await List.from(await fse.readdir(this.dirPaths.environmentsConfig).catch(() => []))
             .filter((name) => name.endsWith('.json'))
             .mapEach((name) => {
                 const configPath = path.join(this.dirPaths.environmentsConfig, name);
