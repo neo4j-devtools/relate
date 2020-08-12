@@ -60,5 +60,6 @@ daedalus$ relate --help
 * [`relate extension`](./docs/extension.md) - Manage relate extensions
 * [`relate help`](./docs/help.md) - display help for relate
 * [`relate project`](./docs/project.md) - Manage relate projects
+* [`relate system`](./docs/system.md) - Delete all data, configuration and cache
 
 <!-- commandsstop -->
