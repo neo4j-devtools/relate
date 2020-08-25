@@ -221,7 +221,6 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 await this.stop([upgradedDbms.id]);
-                upgradedConfig.set('dbms.allow_upgrade', 'false');
                 await upgradedConfig.flush();
             }
 
