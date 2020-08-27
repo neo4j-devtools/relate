@@ -316,6 +316,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return this.get(newId);
     }
 
+    async clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo> {
+        await fse.copy(this.getDbmsRootPath(id), this.getDbmsRootPath(clonedId));
+        await this.setDbmsManifest(clonedId, manifest);
+
+        return this.get(clonedId);
+    }
+
     async uninstall(nameOrId: string): Promise<IDbmsInfo> {
         const {id} = resolveDbms(this.dbmss, nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));

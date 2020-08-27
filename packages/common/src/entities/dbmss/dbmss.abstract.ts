@@ -80,6 +80,14 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
 
     /**
+     * Clone a DBMS
+     * @param id
+     * @param clonedId
+     * @param manifest
+     */
+    abstract clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo>;
+
+    /**
      * Uninstall a DBMS
      * @param dbmsId
      */
