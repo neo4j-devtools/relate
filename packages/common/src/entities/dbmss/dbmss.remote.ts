@@ -386,6 +386,6 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
     }
 
     clone(_id: string, _clonedId: string, _manifest: {[key: string]: string}): Promise<IDbmsInfo> {
-        throw new NotSupportedError(`${RemoteDbmss.name} does not support removing DBMS tags`);
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support cloning`);
     }
 }

@@ -83,7 +83,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * Clone a DBMS
      * @param id
      * @param clonedId
-     * @param clonedName
+     * @param manifest
      */
     abstract clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo>;
 
