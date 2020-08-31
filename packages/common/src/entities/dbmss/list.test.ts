@@ -23,24 +23,24 @@ function generateDummyConf(dbms: string): PropertiesFile {
 }
 
 describe('LocalDbmss - list', () => {
+    const dbms1 = uuidv4();
+    const dbms2 = uuidv4();
     let environment: LocalEnvironment;
 
     beforeAll(async () => {
-        const dbms1 = 'dbms-6bb553ba';
-        const dbms2 = 'dbms-998f936e';
-        await fse.ensureDir(path.join(INSTALLATION_ROOT, dbms1));
-        await fse.writeJSON(path.join(INSTALLATION_ROOT, dbms1, DBMS_MANIFEST_FILE), {
+        await fse.ensureDir(path.join(INSTALLATION_ROOT, `dbms-${dbms1}`));
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-${dbms1}`, DBMS_MANIFEST_FILE), {
             description: 'DBMS with metadata',
-            id: '6bb553ba',
+            id: dbms1,
             name: 'Name',
-            rootPath: path.join(INSTALLATION_ROOT, dbms1),
+            rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms1}`),
         });
-        await fse.ensureDir(path.join(INSTALLATION_ROOT, dbms2));
-        await fse.writeJSON(path.join(INSTALLATION_ROOT, dbms2, DBMS_MANIFEST_FILE), {
+        await fse.ensureDir(path.join(INSTALLATION_ROOT, `dbms-${dbms2}`));
+        await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-${dbms2}`, DBMS_MANIFEST_FILE), {
             description: '',
-            id: '998f936e',
+            id: dbms2,
             name: '',
-            rootPath: path.join(INSTALLATION_ROOT, dbms2),
+            rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms2}`),
         });
 
         const config = new EnvironmentConfigModel({
@@ -66,37 +66,35 @@ describe('LocalDbmss - list', () => {
     test('list dbmss installed', async () => {
         const expected = [
             {
-                config: generateDummyConf('6bb553ba'),
+                config: generateDummyConf(dbms1),
                 connectionUri: 'neo4j://127.0.0.1:7687',
                 description: 'DBMS with metadata',
-                id: '6bb553ba',
+                id: dbms1,
                 name: 'Name',
-                rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+                rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms1}`),
                 tags: [],
                 secure: false,
             },
             {
-                config: generateDummyConf('998f936e'),
+                config: generateDummyConf(dbms2),
                 connectionUri: 'neo4j://127.0.0.1:7687',
                 description: '',
-                id: '998f936e',
+                id: dbms2,
                 name: '',
-                rootPath: path.join(INSTALLATION_ROOT, 'dbms-998f936e'),
+                rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms2}`),
                 tags: [],
                 secure: false,
             },
         ];
 
-        const dirs = ['dbms-6bb553ba', 'dbms-998f936e', 'not-a-dbms'];
+        const dirs = [`dbms-${dbms1}`, `dbms-${dbms2}`, 'not-a-dbms'];
 
         jest.spyOn(fse, 'pathExists').mockImplementation((p: string) => {
             return Promise.resolve(!p.includes('not-a-dbms'));
         });
 
         jest.spyOn(PropertiesFile, 'readFile').mockImplementation((p: string) => {
-            return Promise.resolve(
-                p.includes('6bb553ba') ? generateDummyConf('6bb553ba') : generateDummyConf('998f936e'),
-            );
+            return Promise.resolve(p.includes(dbms1) ? generateDummyConf(dbms1) : generateDummyConf(dbms2));
         });
 
         const createDirs = dirs.map((dbms) => fse.ensureDir(path.join(INSTALLATION_ROOT, dbms)));
@@ -116,16 +114,15 @@ describe('LocalDbmss - list', () => {
     });
 
     test('do not list removed dbmss', async () => {
-        const dbmsId = '998f936e';
-        await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbmsId}`));
+        await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbms2}`));
         const expected = [
             {
-                config: generateDummyConf('6bb553ba'),
+                config: generateDummyConf(dbms1),
                 connectionUri: 'neo4j://127.0.0.1:7687',
                 description: 'DBMS with metadata',
-                id: '6bb553ba',
+                id: dbms1,
                 name: 'Name',
-                rootPath: path.join(INSTALLATION_ROOT, 'dbms-6bb553ba'),
+                rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms1}`),
                 tags: [],
                 secure: false,
             },

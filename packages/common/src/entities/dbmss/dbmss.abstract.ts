@@ -3,7 +3,7 @@ import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQ
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -81,11 +81,10 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Clone a DBMS
-     * @param id
-     * @param clonedId
-     * @param manifest
+     * @param   id
+     * @param   name
      */
-    abstract clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo>;
+    abstract clone(id: string, name: string): Promise<IDbmsInfo>;
 
     /**
      * Uninstall a DBMS
@@ -156,6 +155,19 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   tags
      */
     abstract removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
+
+    /**
+     * Updates a DBMS manifest
+     * @param   dbmsId
+     * @param   update
+     */
+    abstract updateDbmsManifest(dbmsId: string, update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void>;
+
+    /**
+     * Gets a DBMS manifest
+     * @param   dbmsId
+     */
+    abstract getDbmsManifest(dbmsId: string): Promise<DbmsManifestModel>;
 
     /**
      * @hidden

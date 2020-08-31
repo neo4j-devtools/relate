@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {NEO4J_EDITION, RemoteEnvironment} from '../environments';
@@ -385,7 +385,15 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support removing DBMS tags`);
     }
 
-    clone(_id: string, _clonedId: string, _manifest: {[key: string]: string}): Promise<IDbmsInfo> {
+    clone(_id: string, _name: string): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support cloning`);
+    }
+
+    updateDbmsManifest(_id: string, _update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not updating DBMS manifest`);
+    }
+
+    getDbmsManifest(_id: string): Promise<DbmsManifestModel> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not getting DBMS manifest`);
     }
 }
