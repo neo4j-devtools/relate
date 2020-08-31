@@ -3,11 +3,30 @@ const tar = require('tar');
 const fse = require('fs-extra');
 
 const envSetup = require('../../e2e/jest-global.setup');
-const {TestDbmss, DBMS_DIR_NAME, envPaths} = require('../../packages/common');
+const {TestDbmss, DBMS_DIR_NAME, envPaths, download, PropertiesFile} = require('../../packages/common');
 const {List} = require('../../packages/types');
 
 envSetup();
 const dbmssCache = path.join(process.env.NEO4J_RELATE_CACHE_HOME, DBMS_DIR_NAME);
+
+// @todo - replace this with functionality from the common package once we're handling plugins there.
+async function downloadApoc(dbmsRootPath) {
+    await fse.ensureDir(path.join(dbmsRootPath, 'plugins'));
+    const tmpFilePath = await download(
+        'https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.0.0.17/apoc-4.0.0.17-all.jar',
+        path.join(dbmsRootPath, 'plugins'),
+    );
+    await fse.move(tmpFilePath, path.join(path.dirname(tmpFilePath), 'apoc-4.0.0.17-all.jar'), {
+        overwrite: true,
+    });
+}
+
+// @todo - replace with functionality from the common package once we're handling plugins there.
+async function setupApoc(dbmsRootPath) {
+    const config = await PropertiesFile.readFile(path.join(dbmsRootPath, 'conf', 'neo4j.conf'));
+    config.set('dbms.security.procedures.unrestricted', 'apoc.*');
+    await config.flush();
+}
 
 async function populateDistributionCache(env) {
     const versions = List.of([TestDbmss.NEO4J_VERSION, '3.5.19', '4.0.5', '4.1.0']);
@@ -60,6 +79,8 @@ async function globalSetup() {
         },
         [path.basename(version.dist)],
     );
+
+    await Promise.all([downloadApoc(version.dist), setupApoc(version.dist)]);
 }
 
 globalSetup().then(() => console.log('Setup complete'));
