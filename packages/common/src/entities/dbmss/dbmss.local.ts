@@ -96,7 +96,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
         credentials = '',
-        noCaching = false,
+        overrideCache = false,
         limited = false,
     ): Promise<IDbmsInfo> {
         if (!version) {
@@ -138,7 +138,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 (dist) => dist.version === coercedVersion && dist.edition === edition,
             );
             const found = await requestedDistribution.flatMap(async (dist) => {
-                const shouldDownload = noCaching || None.isNone(dist);
+                const shouldDownload = overrideCache || None.isNone(dist);
 
                 if (shouldDownload && !None.isNone(dist)) {
                     await fse.remove(dist.dist);

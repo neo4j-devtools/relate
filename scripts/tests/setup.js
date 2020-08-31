@@ -32,7 +32,6 @@ async function populateDistributionCache(env) {
 
 async function globalSetup() {
     await fse.emptyDir(envPaths().data);
-    await fse.emptyDir(envPaths().cache);
     await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
