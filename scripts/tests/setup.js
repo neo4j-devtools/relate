@@ -79,8 +79,6 @@ async function globalSetup() {
         },
         [path.basename(version.dist)],
     );
-
-    await Promise.all([downloadApoc(version.dist), setupApoc(version.dist)]);
 }
 
 globalSetup().then(() => console.log('Setup complete'));
