@@ -52,7 +52,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   credentials     Initial password to set
      * @param   version         neo4j version
      * @param   edition         neo4j edition
-     * @param   noCaching       Do not use distribution cache
+     * @param   overrideCache   Download distribution even if it's present in cache
      * @param   limited         Is limited version
      */
     abstract install(
@@ -60,7 +60,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         version: string,
         edition?: NEO4J_EDITION,
         credentials?: string,
-        noCaching?: boolean,
+        overrideCache?: boolean,
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
