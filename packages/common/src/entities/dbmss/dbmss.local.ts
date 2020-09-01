@@ -96,7 +96,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
         credentials = '',
-        noCaching = false,
+        overrideCache = false,
         limited = false,
     ): Promise<IDbmsInfo> {
         if (!version) {
@@ -138,7 +138,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 (dist) => dist.version === coercedVersion && dist.edition === edition,
             );
             const found = await requestedDistribution.flatMap(async (dist) => {
-                const shouldDownload = noCaching || None.isNone(dist);
+                const shouldDownload = overrideCache || None.isNone(dist);
 
                 if (shouldDownload && !None.isNone(dist)) {
                     await fse.remove(dist.dist);
@@ -221,6 +221,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 await this.stop([upgradedDbms.id]);
+                await upgradedConfig.flush();
+            } else {
                 upgradedConfig.set('dbms.allow_upgrade', 'false');
                 await upgradedConfig.flush();
             }
@@ -312,6 +314,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await this.discoverDbmss();
 
         return this.get(newId);
+    }
+
+    async clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo> {
+        await fse.copy(this.getDbmsRootPath(id), this.getDbmsRootPath(clonedId));
+        await this.setDbmsManifest(clonedId, manifest);
+
+        return this.get(clonedId);
     }
 
     async uninstall(nameOrId: string): Promise<IDbmsInfo> {

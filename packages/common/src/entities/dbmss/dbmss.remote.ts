@@ -83,7 +83,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         version: string,
         edition: NEO4J_EDITION = NEO4J_EDITION.ENTERPRISE,
         credentials = '',
-        noCaching = false,
+        overrideCache = false,
         limited = false,
     ): Promise<IDbmsInfo> {
         const {data, errors}: any = await this.environment.graphql({
@@ -94,7 +94,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                     $credentials: String!
                     $version: String!
                     $edition: String!
-                    $noCaching: String,
+                    $overrideCache: String,
                     $version: String,
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS}(
@@ -103,7 +103,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                         credentials: $credentials
                         version: $version
                         edition: $edition
-                        noCaching: $noCaching
+                        overrideCache: $overrideCache
                         limited: $limited
                     ) {
                         id
@@ -123,7 +123,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
                 name,
                 version,
                 edition,
-                noCaching,
+                overrideCache,
                 limited,
             },
         });
@@ -383,5 +383,9 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
 
     removeTags(_nameOrId: string, _tags: string[]): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support removing DBMS tags`);
+    }
+
+    clone(_id: string, _clonedId: string, _manifest: {[key: string]: string}): Promise<IDbmsInfo> {
+        throw new NotSupportedError(`${RemoteDbmss.name} does not support cloning`);
     }
 }

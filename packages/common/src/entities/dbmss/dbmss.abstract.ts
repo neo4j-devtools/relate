@@ -52,7 +52,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   credentials     Initial password to set
      * @param   version         neo4j version
      * @param   edition         neo4j edition
-     * @param   noCaching       Do not use distribution cache
+     * @param   overrideCache   Download distribution even if it's present in cache
      * @param   limited         Is limited version
      */
     abstract install(
@@ -60,7 +60,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         version: string,
         edition?: NEO4J_EDITION,
         credentials?: string,
-        noCaching?: boolean,
+        overrideCache?: boolean,
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
@@ -78,6 +78,14 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   rootPath    Path to DBMS root
      */
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
+
+    /**
+     * Clone a DBMS
+     * @param id
+     * @param clonedId
+     * @param manifest
+     */
+    abstract clone(id: string, clonedId: string, manifest: {[key: string]: string}): Promise<IDbmsInfo>;
 
     /**
      * Uninstall a DBMS
