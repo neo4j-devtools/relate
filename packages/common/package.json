@@ -67,7 +67,7 @@
         "apollo-link-http": "1.5.17",
         "class-validator": "0.12.1",
         "decompress": "4.2.1",
-        "fs-extra": "8.1.0",
+        "fs-extra": "9.0.1",
         "fstream": "1.0.12",
         "googleapis": "50.0.0",
         "got": "10.6.0",
