@@ -1,6 +1,6 @@
 {
     "name": "@relate/types",
-    "version": "1.0.2-alpha.3",
+    "version": "1.0.2-alpha.4",
     "description": "Relate type system",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
