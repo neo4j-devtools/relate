@@ -35,7 +35,7 @@
         "cli-ux": "5.4.5",
         "cross-env": "7.0.2",
         "enquirer": "2.3.4",
-        "fs-extra": "9.0.0",
+        "fs-extra": "9.0.1",
         "graphql": "15.1.0",
         "lodash": "4.17.19",
         "node-fetch": "2.6.0",
