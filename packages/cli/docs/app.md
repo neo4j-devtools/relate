@@ -27,4 +27,4 @@ EXAMPLES
   $ relate app:open app-name -D dbms-to-connect-to -e environment-name -L
 ```
 
-_See code: [dist/commands/app/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.7/dist/commands/app/open.ts)_
+_See code: [dist/commands/app/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.8/dist/commands/app/open.ts)_
