@@ -73,7 +73,8 @@ export const downloadJava = async (dbmsVersion: string): Promise<void> => {
 
 export const resolveRelateJavaHome = async (dbmsVersion: string): Promise<string | null> => {
     const javaDirPath = path.join(envPaths().cache, RUNTIME_DIR_NAME, resolveJavaName(dbmsVersion).dirname);
-    const existsLocally = await fse.pathExists(path.join(javaDirPath, 'bin', 'java'));
+    const javaExecutable = process.platform === 'win32' ? 'java.exe' : 'java';
+    const existsLocally = await fse.pathExists(path.join(javaDirPath, 'bin', javaExecutable));
 
     if (existsLocally) {
         return javaDirPath;
