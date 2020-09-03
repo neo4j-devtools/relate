@@ -1,6 +1,6 @@
 {
     "name": "@relate/common",
-    "version": "1.0.2-alpha.8",
+    "version": "1.0.2-alpha.9",
     "description": "JS toolkit",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -28,7 +28,7 @@
         "@nestjs/common": "7.0.8",
         "@nestjs/core": "7.0.8",
         "@nestjs/testing": "7.0.8",
-        "@relate/types": "^1.0.2-alpha.6",
+        "@relate/types": "^1.0.2-alpha.7",
         "@types/decompress": "4.2.3",
         "@types/fs-extra": "8.0.1",
         "@types/got": "9.6.10",
