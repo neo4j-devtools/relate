@@ -11,7 +11,7 @@
 8. [Connecting to remote environments](#connecting-to-remote-environments)
 
 ## Disclaimer
-`@relate` is currently in alpha and as such not stable. We are working hard to address any know bugs and will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by adding cards to our trello inbox: https://trello.com/b/rS7oLVQZ.
+`@relate` is currently in alpha and as such not stable. We are working hard to address any known bugs and will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by adding cards to our trello inbox: https://trello.com/b/rS7oLVQZ.
 
 ## Installation
 - **We require NodeJS LTS (v12)** https://nodejs.org/en/
@@ -26,7 +26,7 @@ We strongly recommend that you install both packages.
 
 ## Creating a local environment
 
-All `@relate` operations happen within an "environment" that manages Neo4j resources. You could configure separate environments for development, testing, staging and production. Start wih initializing a local environment then setting it as the current environment.
+All `@relate` operations happen within an "environment" that manages Neo4j resources. You could configure separate environments for development, testing, staging and production. Start with initializing a local environment then setting it as the current environment.
 
 To do so run:
 ```shell script
@@ -45,7 +45,7 @@ relate env:use dev
 ```
 
 ## Installing a DBMS
-Currently we only support Neo4j >= 3.4. To install a DBMS, run:
+Currently we only support Neo4j >= 3.5. To install a DBMS, run:
 ```shell script
 relate dbms:install
 ```
@@ -61,7 +61,7 @@ relate dbms --help
 ```
 
 ## Installing extensions (i.e. "Graph Apps")
-You can install Neo4j Browser and Neo4j Bloom by running:
+You can install Neo4j Browser or Neo4j Bloom by running:
 ```shell script
 relate extension:install
 ```
@@ -80,7 +80,7 @@ For extensions that support being served over HTTP, you can open them by running
 # relate app:open <app-name>
 relate app:open neo4j-browser
 ```
-Assuming the WEB package is running your app should open in a browser tab.
+Assuming the `@relate/web` package is running your app should open in a browser tab.
 
 You can also open an app for a specific DBMS by running:
 ```shell script
@@ -89,7 +89,7 @@ relate app:open neo4j-browser --dbmsId foo
 ```
 
 ## Creating access tokens
-`@relate` only supports credentials in the form of access tokens issued by neo4j. To generate an access token you can run:
+`@relate` only supports credentials in the form of access tokens issued by a Neo4j DBMS. To generate an access token you can run:
 ```shell script
 # relate dbms:access-token 
 relate dbms:access-token
@@ -104,7 +104,7 @@ relate app:open neo4j-browser --dbmsId foo --user neo4j
 
 
 ## Connecting to remote environments
-To connect to a remote environment, such as our demo server, you need to initialize a remote env:
+To connect to a remote environment, such as our demo server, you need to initialize a remote environment:
 ```shell script
 relate env:init
 ```
