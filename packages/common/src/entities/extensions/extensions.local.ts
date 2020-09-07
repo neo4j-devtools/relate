@@ -82,7 +82,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const {extensionsCache, extensionsData} = this.environment.dirPaths;
+        const {extensionsCache} = this.environment.dirPaths;
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
@@ -102,7 +102,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             try {
                 const discovered = await discoverExtension(destination);
 
-                return this.installRelateExtension(discovered, extensionsData, discovered.dist);
+                return this.installRelateExtension(discovered, discovered.dist);
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
@@ -130,7 +130,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
                     return requested;
                 });
 
-            return this.installRelateExtension(requestedDistribution, extensionsData, requestedDistribution.dist);
+            return this.installRelateExtension(requestedDistribution, requestedDistribution.dist);
         }
 
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
@@ -138,7 +138,6 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
 
     private async installRelateExtension(
         extension: IExtensionMeta,
-        extensionsDir: string,
         extractedDistPath: string,
     ): Promise<IExtensionMeta> {
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
@@ -154,7 +153,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         await fse.copy(extractedDistPath, target);
 
         if (extension.type === EXTENSION_TYPES.STATIC) {
-            const staticTarget = path.join(extensionsDir, EXTENSION_TYPES.STATIC, extension.name);
+            const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, extension.name);
 
             await fse.symlink(target, staticTarget, 'junction');
         }
@@ -192,6 +191,12 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return targets
             .mapEach(async (ext) => {
                 await fse.remove(ext.dist);
+
+                if (ext.type === EXTENSION_TYPES.STATIC) {
+                    const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, ext.name);
+
+                    await fse.remove(staticTarget);
+                }
 
                 return ext;
             })

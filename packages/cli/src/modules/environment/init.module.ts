@@ -1,7 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {
-    IAuthenticationOptions,
     ENVIRONMENT_TYPES,
     HEALTH_BASE_ENDPOINT,
     InvalidArgumentError,
@@ -55,15 +54,18 @@ export class InitModule implements OnApplicationBootstrap {
         }
 
         if (isInteractive()) {
-            const authentication: IAuthenticationOptions | undefined = await selectAuthenticatorPrompt();
-            const allowedMethods: string[] = await selectAllowedMethodsPrompt();
+            const authentication = await selectAuthenticatorPrompt();
+            const publicGraphQLMethods = await selectAllowedMethodsPrompt();
             const config: IEnvironmentConfigInput = {
                 type: type as ENVIRONMENT_TYPES,
                 name: name,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
                 remoteEnvironmentId,
                 authentication,
-                allowedMethods,
+                serverConfig: {
+                    publicGraphQLMethods,
+                    appProxies: [],
+                },
             };
 
             cli.action.start('Creating environment');

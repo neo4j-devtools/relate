@@ -7,7 +7,14 @@ import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../../utils';
 import {ensureDirs} from '../../system/files';
 import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} from './environment.constants';
-import {BACKUPS_DIR_NAME, DBMS_DIR_NAME, ENTITY_TYPES, EXTENSION_DIR_NAME, PROJECTS_DIR_NAME} from '../../constants';
+import {
+    BACKUPS_DIR_NAME,
+    DBMS_DIR_NAME,
+    ENTITY_TYPES,
+    EXTENSION_DIR_NAME,
+    EXTENSION_TYPES,
+    PROJECTS_DIR_NAME,
+} from '../../constants';
 import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
 import {LocalBackups} from '../backups';
@@ -33,6 +40,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         extensionsCache: path.join(this.cachePath, EXTENSION_DIR_NAME),
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
+        staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
     };
 
     public getEntityRootPath(entityType: ENTITY_TYPES, entityNameOrId: string): string {

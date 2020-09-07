@@ -1,9 +1,10 @@
-import {IsEnum, IsString, IsOptional, IsBoolean, IsUUID} from 'class-validator';
+import {IsEnum, IsString, IsOptional, IsBoolean, IsUUID, Validate} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
 import {IsValidUrl} from './custom-validators';
 import {IAuthenticationOptions} from '../entities/environments/authentication';
+import {PUBLIC_GRAPHQL_METHODS} from '../constants';
 
 export interface IEnvironmentAuth {
     authUrl: string;
@@ -13,6 +14,16 @@ export interface IEnvironmentAuth {
 export interface IEnvironmentConfig extends IEnvironmentConfigInput {
     id: string;
     configPath: string;
+}
+
+export interface IAppProxyConfig {
+    name: string;
+    origin: string;
+}
+
+export interface IServerConfig {
+    publicGraphQLMethods: PUBLIC_GRAPHQL_METHODS[];
+    appProxies: IAppProxyConfig[];
 }
 
 export interface IEnvironmentConfigInput {
@@ -25,7 +36,23 @@ export interface IEnvironmentConfigInput {
     remoteEnvironmentId?: string;
     authToken?: string;
     authentication?: IAuthenticationOptions;
-    allowedMethods?: string[];
+    serverConfig?: IServerConfig;
+}
+
+export class AppProxyConfigModel extends ModelAbstract<IAppProxyConfig> implements IAppProxyConfig {
+    @IsString()
+    public name!: string;
+
+    @IsValidUrl()
+    public origin!: string;
+}
+
+export class ServerConfigModel extends ModelAbstract<IServerConfig> implements IServerConfig {
+    @IsEnum(PUBLIC_GRAPHQL_METHODS, {each: true})
+    public publicGraphQLMethods!: PUBLIC_GRAPHQL_METHODS[];
+
+    @Validate(AppProxyConfigModel, {each: true})
+    public appProxies!: AppProxyConfigModel[];
 }
 
 export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {
@@ -67,8 +94,8 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     public authentication?: IAuthenticationOptions;
 
     @IsOptional()
-    @IsString({each: true})
-    public allowedMethods?: string[];
+    @Validate(ServerConfigModel)
+    public serverConfig?: ServerConfigModel;
 
     // @todo: move this to data
     @IsString()

@@ -176,7 +176,7 @@ export const googleAuthenticatorPrompt = async (): Promise<IGoogleAuthentication
     };
 };
 
-export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
+export const selectAllowedMethodsPrompt = async (): Promise<PUBLIC_GRAPHQL_METHODS[]> => {
     const needsWhitelist = await confirmPrompt('Do you need to restrict access to the GraphQL API methods?');
 
     if (!needsWhitelist) {
@@ -186,7 +186,7 @@ export const selectAllowedMethodsPrompt = async (): Promise<string[]> => {
     return selectMultiplePrompt(
         'Select allowed GraphQL API methods',
         _.map(_.values(PUBLIC_GRAPHQL_METHODS), (name) => ({name})),
-    );
+    ) as Promise<PUBLIC_GRAPHQL_METHODS[]>;
 };
 
 export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {

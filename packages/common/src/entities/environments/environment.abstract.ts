@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import {List} from '@relate/types';
+import {Dict, List} from '@relate/types';
 
 import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticationModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
@@ -18,6 +18,8 @@ import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {IAppProxyConfig} from '../../models/environment-config.model';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
@@ -86,6 +88,13 @@ export abstract class EnvironmentAbstract {
      */
     public get dataPath(): string {
         return this.config.relateDataPath || envPaths().data;
+    }
+
+    /**
+     * @hidden
+     */
+    public get appProxies(): List<IAppProxyConfig> {
+        return List.from(Dict.from(this.config.serverConfig).getValue('appProxies')).compact();
     }
 
     /**
@@ -163,14 +172,14 @@ export abstract class EnvironmentAbstract {
      * Checks if given GraphQL method is supported
      * @param   methodName
      */
-    supports(methodName: string): boolean {
-        const {allowedMethods} = this.config;
+    supports(methodName: PUBLIC_GRAPHQL_METHODS): boolean {
+        const {serverConfig: {publicGraphQLMethods} = {}} = this.config;
 
-        if (!arrayHasItems(allowedMethods)) {
+        if (!arrayHasItems(publicGraphQLMethods)) {
             return true;
         }
 
-        return List.from(allowedMethods).includes(methodName);
+        return List.from(publicGraphQLMethods).includes(methodName);
     }
 
     /**

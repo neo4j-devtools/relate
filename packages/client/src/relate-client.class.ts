@@ -16,15 +16,20 @@ export interface IAppLaunchData {
 
 export interface IRelateClientConfig {
     appName: string;
-    remote: string;
+    relateOrigin: string;
+}
+
+export interface IRelateClientParams {
+    appName: string;
+    relateOrigin?: string;
 }
 
 export class RelateClient {
     private readonly config: IRelateClientConfig;
 
-    constructor(config: Omit<IRelateClientConfig, 'remote'>) {
+    constructor(config: IRelateClientParams) {
         this.config = {
-            remote: DEFAULT_CLIENT_REMOTE,
+            relateOrigin: config.relateOrigin || DEFAULT_CLIENT_REMOTE,
             ...config,
         };
     }
@@ -32,7 +37,7 @@ export class RelateClient {
     getAppLaunchData(launchToken: string): Promise<IAppLaunchData> {
         const payload = getParseLaunchTokenPayload(this.config.appName, launchToken);
 
-        return fetch(this.config.remote, {
+        return fetch(this.config.relateOrigin, {
             body: JSON.stringify(payload),
             headers: {'Content-Type': 'application/json'},
             method: 'POST',
