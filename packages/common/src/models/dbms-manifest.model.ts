@@ -1,4 +1,4 @@
-import {IsString, IsOptional, IsUUID} from 'class-validator';
+import {IsString, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {PropertiesFile} from '../system/files';
@@ -28,21 +28,21 @@ export interface IDbmsVersion {
     origin: NEO4J_ORIGIN;
 }
 
-export interface IDbmsConfig {
+export interface IDbmsManifest {
     id: string;
     name: string;
     description: string;
     tags: string[];
-    rootPath?: string;
-    secure?: boolean;
 }
 
-export interface IDbms extends IDbmsConfig {
+export interface IDbms extends IDbmsManifest {
+    rootPath?: string;
+    secure?: boolean;
     connectionUri: string;
     config: PropertiesFile;
 }
 
-export class DbmsConfigModel extends ModelAbstract<IDbmsConfig> implements IDbmsConfig {
+export class DbmsManifestModel extends ModelAbstract<IDbmsManifest> implements IDbmsManifest {
     @IsUUID()
     public id!: string;
 
@@ -54,8 +54,4 @@ export class DbmsConfigModel extends ModelAbstract<IDbmsConfig> implements IDbms
 
     @IsString({each: true})
     public tags!: string[];
-
-    @IsString()
-    @IsOptional()
-    public rootPath?: string;
 }

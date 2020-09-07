@@ -48,14 +48,14 @@ describe('LocalDbmss - upgrade', () => {
     });
 
     test('Upgrading to higher', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.5', true, false, true);
+        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.5', true, false, false);
 
         expect(upgraded.version).toEqual('4.0.5');
         expect(upgraded.id).toEqual(dbms404.id);
     });
 
     test('Upgrading major', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', true, false, true);
+        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', true, false, false);
 
         expect(upgraded.version).toEqual('4.1.0');
         expect(upgraded.id).toEqual(dbms35.id);
