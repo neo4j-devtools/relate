@@ -16,14 +16,9 @@ export interface IEnvironmentConfig extends IEnvironmentConfigInput {
     configPath: string;
 }
 
-export interface IAppProxyConfig {
-    name: string;
-    origin: string;
-}
-
 export interface IServerConfig {
     publicGraphQLMethods: PUBLIC_GRAPHQL_METHODS[];
-    appProxies: IAppProxyConfig[];
+    requiresAPIToken?: boolean;
 }
 
 export interface IEnvironmentConfigInput {
@@ -39,20 +34,13 @@ export interface IEnvironmentConfigInput {
     serverConfig?: IServerConfig;
 }
 
-export class AppProxyConfigModel extends ModelAbstract<IAppProxyConfig> implements IAppProxyConfig {
-    @IsString()
-    public name!: string;
-
-    @IsValidUrl()
-    public origin!: string;
-}
-
 export class ServerConfigModel extends ModelAbstract<IServerConfig> implements IServerConfig {
     @IsEnum(PUBLIC_GRAPHQL_METHODS, {each: true})
     public publicGraphQLMethods!: PUBLIC_GRAPHQL_METHODS[];
 
-    @Validate(AppProxyConfigModel, {each: true})
-    public appProxies!: AppProxyConfigModel[];
+    @IsBoolean()
+    @IsOptional()
+    public requiresAPIToken?: boolean;
 }
 
 export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> implements IEnvironmentConfig {

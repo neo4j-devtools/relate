@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import {IAuthentication} from './authentication.types';
 import {authRedirectServer} from './auth-utils';
 import {AuthenticationError, NotAllowedError} from '../../../errors';
-import {AUTH_TOKEN_KEY} from '../../../constants';
+import {AUTH_TOKEN_HEADER} from '../../../constants';
 import {LOCALHOST_IP_ADDRESS} from '../environment.constants';
 import {EnvironmentAbstract} from '../environment.abstract';
 import {AUTHENTICATION_ENDPOINT, VERIFICATION_ENDPOINT} from './authentication.constants';
@@ -36,7 +36,7 @@ export class ClientAuthentication implements IAuthentication {
         try {
             await fetch(`${this.env.httpOrigin}${VERIFICATION_ENDPOINT}`, {
                 headers: {
-                    [AUTH_TOKEN_KEY]: token,
+                    [AUTH_TOKEN_HEADER]: token,
                 },
             }).then((res) => {
                 if (!res.ok) {

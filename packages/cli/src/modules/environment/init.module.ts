@@ -11,7 +11,13 @@ import {
 import fetch from 'node-fetch';
 
 import InitCommand from '../../commands/environment/init';
-import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
+import {
+    confirmPrompt,
+    inputPrompt,
+    selectAllowedMethodsPrompt,
+    selectAuthenticatorPrompt,
+    selectPrompt,
+} from '../../prompts';
 import {isInteractive} from '../../stdin';
 
 @Module({
@@ -56,6 +62,7 @@ export class InitModule implements OnApplicationBootstrap {
         if (isInteractive()) {
             const authentication = await selectAuthenticatorPrompt();
             const publicGraphQLMethods = await selectAllowedMethodsPrompt();
+            const requiresAPIToken = await confirmPrompt('Are HTTP consumers required to have an API key?');
             const config: IEnvironmentConfigInput = {
                 type: type as ENVIRONMENT_TYPES,
                 name: name,
@@ -64,7 +71,7 @@ export class InitModule implements OnApplicationBootstrap {
                 authentication,
                 serverConfig: {
                     publicGraphQLMethods,
-                    appProxies: [],
+                    requiresAPIToken,
                 },
             };
 

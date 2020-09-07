@@ -4,7 +4,6 @@ import {
     AUTHENTICATOR_TYPES,
     Environment,
     IAuthenticationOptions,
-    IExtensionMeta,
     IProjectDbms,
     IGoogleAuthenticationOptions,
     NotFoundError,
@@ -155,7 +154,9 @@ export const selectProjectDbmsPrompt = (message: string, projectDbmss: IProjectD
     );
 };
 
-export const selectAppPrompt = (message: string, installedApps: IExtensionMeta[]): Promise<string> => {
+export const selectAppPrompt = async (message: string, environment: Environment): Promise<string> => {
+    const installedApps = (await environment.extensions.listApps()).toArray();
+
     return selectPrompt(
         message,
         installedApps.map((app) => ({

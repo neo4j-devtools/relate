@@ -95,7 +95,9 @@ export type Actor<E extends HOOK_EVENTS, T = IHookEventPayloads[E]> = (eventData
 
 export const DEFAULT_JWT_SIGN_OPTIONS: SignOptions = {expiresIn: TWENTY_FOUR_HOURS_SECONDS};
 
-export const AUTH_TOKEN_KEY = 'X-Auth-Token';
+export const AUTH_TOKEN_HEADER = 'X-Auth-Token';
+export const API_TOKEN_HEADER = 'X-API-Token';
+export const APP_NAME_HEADER = 'X-App-Name';
 
 export enum DBMS_STATUS_FILTERS {
     STARTED = 'Neo4j is running',

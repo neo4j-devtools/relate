@@ -43,7 +43,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!appName) {
             if (isInteractive()) {
-                appName = await selectAppPrompt('Select an app to open', installedApps);
+                appName = await selectAppPrompt('Select an app to open', environment);
             } else {
                 appName = await readStdin();
             }

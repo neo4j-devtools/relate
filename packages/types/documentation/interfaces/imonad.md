@@ -39,6 +39,8 @@
 * [getOrElse](imonad.md#getorelse)
 * [isThis](imonad.md#isthis)
 * [map](imonad.md#map)
+* [switchMap](imonad.md#switchmap)
+* [tap](imonad.md#tap)
 * [toString](imonad.md#tostring)
 
 ## Properties
@@ -83,7 +85,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-*Defined in [src/monads/monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L18)*
+*Defined in [src/monads/monad.ts:20](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L20)*
 
 **Type parameters:**
 
@@ -166,6 +168,54 @@ Name | Type |
 `value` | T |
 
 **Returns:** *[IMonad](imonad.md)‹T›*
+
+___
+
+###  switchMap
+
+▸ **switchMap**‹**M**›(`project`: function): *M*
+
+*Defined in [src/monads/monad.ts:22](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L22)*
+
+**Type parameters:**
+
+▪ **M**
+
+**Parameters:**
+
+▪ **project**: *function*
+
+▸ (`value`: this): *M*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | this |
+
+**Returns:** *M*
+
+___
+
+###  tap
+
+▸ **tap**(`project`: function): *this*
+
+*Defined in [src/monads/monad.ts:18](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/monad.ts#L18)*
+
+**Parameters:**
+
+▪ **project**: *function*
+
+▸ (`value`: T): *void*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | T |
+
+**Returns:** *this*
 
 ___
 

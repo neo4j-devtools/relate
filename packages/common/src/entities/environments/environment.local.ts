@@ -19,6 +19,7 @@ import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
 import {LocalBackups} from '../backups';
 import {InvalidArgumentError} from '../../errors';
+import {TokenService} from '../../token.service';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
@@ -80,5 +81,13 @@ export class LocalEnvironment extends EnvironmentAbstract {
         if (!pluginInCache) {
             await fse.copy(securityPluginTmp, securityPluginCache);
         }
+    }
+
+    generateAPIToken(hostName: string, appName: string, data: any = {}): Promise<string> {
+        return TokenService.sign(data, `${hostName}-${appName}`);
+    }
+
+    async verifyAPIToken(hostName: string, appName: string, token = ''): Promise<void> {
+        await TokenService.verify(token, `${hostName}-${appName}`);
     }
 }

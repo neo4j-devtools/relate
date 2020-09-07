@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import {Dict, List} from '@relate/types';
+import {List} from '@relate/types';
 
 import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticationModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
@@ -19,7 +19,6 @@ import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
-import {IAppProxyConfig} from '../../models/environment-config.model';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
@@ -62,6 +61,10 @@ export abstract class EnvironmentAbstract {
         return this.config.httpOrigin || DEFAULT_ENVIRONMENT_HTTP_ORIGIN;
     }
 
+    get requiresAPIToken(): boolean {
+        return Boolean(this.config.serverConfig?.requiresAPIToken);
+    }
+
     /**
      * @hidden
      */
@@ -88,13 +91,6 @@ export abstract class EnvironmentAbstract {
      */
     public get dataPath(): string {
         return this.config.relateDataPath || envPaths().data;
-    }
-
-    /**
-     * @hidden
-     */
-    public get appProxies(): List<IAppProxyConfig> {
-        return List.from(Dict.from(this.config.serverConfig).getValue('appProxies')).compact();
     }
 
     /**
@@ -130,6 +126,23 @@ export abstract class EnvironmentAbstract {
      * Environment initialisation logic
      */
     abstract init(): Promise<void>;
+
+    /**
+     * Generates an API token
+     * @param   hostName    host name of token request
+     * @param   appName     app name of token request
+     * @param   data        API token data
+     * @return              token
+     */
+    abstract generateAPIToken(hostName: string, appName: string, data: any): Promise<string>;
+
+    /**
+     * Verifies an API token
+     * @param   hostName    host name of token request
+     * @param   appName     app name of token request
+     * @param   token       token to verify
+     */
+    abstract verifyAPIToken(hostName: string, appName: string, token?: string): Promise<void>;
 
     /**
      * Environment Authentication logic
