@@ -14,6 +14,7 @@ import {
 } from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
 import {getDistributionVersion} from './dbms-versions';
+import {envPaths} from '../env-paths';
 
 const getRunningNeo4jPid = async (dbmsRoot: string): Promise<number | null> => {
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
@@ -55,11 +56,19 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
 
     const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
     const neo4jPs1Path = path.join(dbmsRoot, NEO4J_BIN_DIR, 'neo4j.ps1');
-    const customNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
+
+    // When Relate is packaged as an Electron dependency, files inside the
+    // relate package are not executable. To avoid issues the starter script is
+    // copied in the cache directory and it's executed from there.
+    const cachedNeo4jStarterPath = path.join(envPaths().cache, 'neo4j-start.ps1');
+    if (!(await fse.pathExists(cachedNeo4jStarterPath))) {
+        const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
+        await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
+    }
 
     const child = spawn(
         'powershell.exe',
-        [customNeo4jStarterPath, '-binPath', neo4jPs1Path, '-logsPath', logFilePath],
+        ['-ExecutionPolicy', 'Bypass', cachedNeo4jStarterPath, '-binPath', neo4jPs1Path, '-logsPath', logFilePath],
         {
             detached: true,
             // Windows scripts are not executable on their own and need a shell to be able to run.

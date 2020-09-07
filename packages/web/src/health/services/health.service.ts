@@ -27,20 +27,21 @@ export class HealthService {
         @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
     ) {}
 
-    async register(httpAdapter: AbstractHttpAdapter): Promise<void> {
+    register(httpAdapter: AbstractHttpAdapter): void {
         if (!httpAdapter) {
             return;
         }
 
         const app = httpAdapter.getInstance();
-        const environment = await this.systemProvider.getEnvironment();
 
-        app.get(HEALTH_BASE_ENDPOINT, (_: Request, res: Response) =>
+        app.get(HEALTH_BASE_ENDPOINT, async (_: Request, res: Response) => {
+            const environment = await this.systemProvider.getEnvironment();
+
             res.json({
                 relateEnvironmentId: environment.id,
                 appRoot: STATIC_APP_BASE_ENDPOINT,
                 pid: process.pid,
-            }),
-        );
+            });
+        });
     }
 }

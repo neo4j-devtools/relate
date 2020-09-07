@@ -3,7 +3,7 @@ import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQ
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
-import {IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -52,7 +52,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   credentials     Initial password to set
      * @param   version         neo4j version
      * @param   edition         neo4j edition
-     * @param   noCaching       Do not use distribution cache
+     * @param   overrideCache   Download distribution even if it's present in cache
      * @param   limited         Is limited version
      */
     abstract install(
@@ -60,7 +60,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         version: string,
         edition?: NEO4J_EDITION,
         credentials?: string,
-        noCaching?: boolean,
+        overrideCache?: boolean,
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
@@ -78,6 +78,13 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   rootPath    Path to DBMS root
      */
     abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
+
+    /**
+     * Clone a DBMS
+     * @param   id
+     * @param   name
+     */
+    abstract clone(id: string, name: string): Promise<IDbmsInfo>;
 
     /**
      * Uninstall a DBMS
@@ -148,6 +155,19 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   tags
      */
     abstract removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
+
+    /**
+     * Updates a DBMS manifest
+     * @param   dbmsId
+     * @param   update
+     */
+    abstract updateDbmsManifest(dbmsId: string, update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void>;
+
+    /**
+     * Gets a DBMS manifest
+     * @param   dbmsId
+     */
+    abstract getDbmsManifest(dbmsId: string): Promise<DbmsManifestModel>;
 
     /**
      * @hidden
