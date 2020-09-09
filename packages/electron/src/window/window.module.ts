@@ -1,4 +1,4 @@
-import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
+import {Inject, Module} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {BrowserWindow} from 'electron';
 import {
@@ -13,23 +13,15 @@ import {
 import fetch from 'node-fetch';
 
 import {IElectronModuleConfig} from '../electron.module';
-import {ELECTRON_IS_READY} from '../constants';
 
 @Module({
     imports: [SystemModule],
 })
-export class WindowModule implements OnApplicationBootstrap {
+export class WindowModule {
     constructor(
         @Inject(ConfigService) private readonly configService: ConfigService<IElectronModuleConfig>,
         @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
     ) {}
-
-    onApplicationBootstrap(): Promise<void> {
-        return ELECTRON_IS_READY.then(() => {
-            // @todo: better wait for http server
-            setTimeout(() => this.createAppWindow(), 1000);
-        });
-    }
 
     async createAppWindow(): Promise<void> {
         // Create the browser window.
