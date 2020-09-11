@@ -3,7 +3,7 @@ This document contains all instructions for testing.
 
 ## Setup
 
-All tests run against the [e2e fixtures folder](../e2e/fixtures).
+All tests run against the [e2e fixtures folder](../e2e/relate%20fixtures).
 
 ### DBMS
 Tests are run concurrently, so never assume an exact amount of DBMSs installed at
