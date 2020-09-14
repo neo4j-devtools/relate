@@ -72,5 +72,7 @@ tmp/
 oclif.manifest.json
 
 # E2E generated dirs
+e2e/relate fixtures/data/
+e2e/relate fixtures/cache/
 e2e/fixtures/data/
 e2e/fixtures/cache/

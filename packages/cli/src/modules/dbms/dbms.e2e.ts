@@ -17,6 +17,7 @@ jest.mock('../../prompts', () => {
     };
 });
 
+const skipTestOnWindows = process.platform === 'win32' ? test.skip() : test;
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 let TEST_ENVIRONMENT_ID: string;
 let TEST_DB_NAME: string;
@@ -36,7 +37,7 @@ describe('$relate dbms', () => {
 
     afterAll(() => dbmss.teardown());
 
-    test.stdout().it('should log failed dump', async (ctx) => {
+    skipTestOnWindows.stdout().it('should log failed dump', async (ctx) => {
         await DumpCommand.run([TEST_DB_ID, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Failed to dump data.');
     });
@@ -72,7 +73,7 @@ describe('$relate dbms', () => {
     test.stdout().it('should import cypher', async (ctx) => {
         await ExecCommand.run([
             TEST_DB_ID,
-            `--from=${process.env.NEO4J_RELATE_CONFIG_HOME}/movies.cypher`,
+            `--from=${path.join(envPaths().config, 'movies.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
             `--environment=${TEST_ENVIRONMENT_ID}`,
@@ -88,7 +89,7 @@ describe('$relate dbms', () => {
             expect(ctx.stderr).toContain('done');
         });
 
-    test.stdout().it('should log successful dump', async (ctx) => {
+    skipTestOnWindows.stdout().it('should log successful dump', async (ctx) => {
         await DumpCommand.run([
             TEST_DB_ID,
             `--to=${path.join(envPaths().data, 'test-db.dump')}`,
@@ -97,7 +98,7 @@ describe('$relate dbms', () => {
         expect(ctx.stdout).toContain('Successfully dumped');
     });
 
-    test.stdout().it('should log successful load', async (ctx) => {
+    skipTestOnWindows.stdout().it('should log successful load', async (ctx) => {
         await LoadCommand.run([
             TEST_DB_ID,
             `--from=${path.join(envPaths().data, 'test-db.dump')}`,

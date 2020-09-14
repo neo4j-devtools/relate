@@ -68,7 +68,16 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
 
     const child = spawn(
         'powershell.exe',
-        ['-ExecutionPolicy', 'Bypass', cachedNeo4jStarterPath, '-binPath', neo4jPs1Path, '-logsPath', logFilePath],
+        [
+            '-ExecutionPolicy',
+            'Bypass',
+            '-File',
+            `"${cachedNeo4jStarterPath}"`,
+            '-binPath',
+            `"${neo4jPs1Path}"`,
+            '-logsPath',
+            `"${logFilePath}"`,
+        ],
         {
             detached: true,
             // Windows scripts are not executable on their own and need a shell to be able to run.

@@ -13,7 +13,7 @@ $ npm link # makes the relate command available globally
 
 #### Required files
 
-Environments (see [test folder](./e2e/fixtures/config/neo4j-relate/environments) for sample):
+Environments (see [test folder](./e2e/relate%20fixtures/config/neo4j-relate/environments) for sample):
 
 ```sh
 $ relate environment:init
