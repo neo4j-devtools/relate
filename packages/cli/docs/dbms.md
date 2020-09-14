@@ -38,7 +38,7 @@ EXAMPLES
   $ relate dbms:access-token my-dbms -u dbms-user
 ```
 
-_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/access-token.ts)_
+_See code: [dist/commands/dbms/access-token.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/access-token.ts)_
 
 ## `relate dbms:add-tag DBMS TAGNAME`
 
@@ -59,7 +59,7 @@ EXAMPLE
   $ relate dbms:add-tag dbmsId "foo bar"
 ```
 
-_See code: [dist/commands/dbms/add-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/add-tag.ts)_
+_See code: [dist/commands/dbms/add-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/add-tag.ts)_
 
 ## `relate dbms:info [DBMSS]`
 
@@ -91,7 +91,7 @@ EXAMPLES
   $ relate dbms:info --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/info.ts)_
+_See code: [dist/commands/dbms/info.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/info.ts)_
 
 ## `relate dbms:install VERSION`
 
@@ -118,7 +118,7 @@ EXAMPLES
   $ relate dbms:install 4.0.2 -n my-new-dbms -e environment-name --no-caching
 ```
 
-_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/install.ts)_
+_See code: [dist/commands/dbms/install.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/install.ts)_
 
 ## `relate dbms:link FILEPATH DBMSNAME`
 
@@ -135,7 +135,7 @@ EXAMPLE
   $ relate dbms:link /path/to/target/dbms/dir "foo bar"
 ```
 
-_See code: [dist/commands/dbms/link.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/link.ts)_
+_See code: [dist/commands/dbms/link.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/link.ts)_
 
 ## `relate dbms:list`
 
@@ -162,7 +162,7 @@ EXAMPLES
   $ relate dbms:list --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/list.ts)_
+_See code: [dist/commands/dbms/list.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/list.ts)_
 
 ## `relate dbms:open DBMS`
 
@@ -185,7 +185,7 @@ EXAMPLES
   $ relate dbms:open -L
 ```
 
-_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/open.ts)_
+_See code: [dist/commands/dbms/open.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/open.ts)_
 
 ## `relate dbms:remove-tag DBMS TAGNAME`
 
@@ -206,7 +206,7 @@ EXAMPLE
   $ relate dbms:remove-tag dbmsId "foo bar"
 ```
 
-_See code: [dist/commands/dbms/remove-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/remove-tag.ts)_
+_See code: [dist/commands/dbms/remove-tag.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/remove-tag.ts)_
 
 ## `relate dbms:start [DBMSS]`
 
@@ -229,7 +229,7 @@ EXAMPLES
   $ relate dbms:start -e environment-name
 ```
 
-_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/start.ts)_
+_See code: [dist/commands/dbms/start.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/start.ts)_
 
 ## `relate dbms:stop [DBMSS]`
 
@@ -252,7 +252,7 @@ EXAMPLES
   $ relate dbms:stop -e environment-name
 ```
 
-_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/stop.ts)_
+_See code: [dist/commands/dbms/stop.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/stop.ts)_
 
 ## `relate dbms:uninstall DBMS`
 
@@ -275,7 +275,7 @@ EXAMPLES
   $ relate dbms:uninstall my-dbms -u dbms-user
 ```
 
-_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/uninstall.ts)_
+_See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/uninstall.ts)_
 
 ## `relate dbms:upgrade DBMS`
 
@@ -299,4 +299,4 @@ EXAMPLES
   relate dbms:upgrade <dbms-id> -v 4.0.5
 ```
 
-_See code: [dist/commands/dbms/upgrade.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.9/dist/commands/dbms/upgrade.ts)_
+_See code: [dist/commands/dbms/upgrade.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/dbms/upgrade.ts)_
