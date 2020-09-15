@@ -28,5 +28,5 @@ export async function bootstrapElectronModule(env = 'dev'): Promise<void> {
     await app.listen(config.get('port'), config.get('host'));
     await ELECTRON_IS_READY;
 
-    return windowModule.createAppWindow();
+    return windowModule.createAppWindow('neo4j-browser');
 }

@@ -23,18 +23,17 @@ export class WindowModule {
         @Inject(SystemProvider) private readonly systemProvider: SystemProvider,
     ) {}
 
-    async createAppWindow(): Promise<void> {
+    async createAppWindow(appName: string): Promise<void> {
         // Create the browser window.
         const windowOptions = await emitHookEvent(HOOK_EVENTS.ELECTRON_WINDOW_OPTIONS, {
             height: 600,
             width: 800,
         });
         const mainWindow = await emitHookEvent(HOOK_EVENTS.ELECTRON_WINDOW_CREATED, new BrowserWindow(windowOptions));
-        const defaultApp = this.configService.get('defaultApp');
         const environment = await this.systemProvider.getEnvironment();
         const httpOrigin = this.getHttpOrigin(environment);
         const appRoot = await this.getAppRoot(httpOrigin);
-        const appPath = await environment.extensions.getAppPath(defaultApp, appRoot);
+        const appPath = await environment.extensions.getAppPath(appName, appRoot);
 
         // and load the index.html of the app.
         mainWindow.loadURL(`${httpOrigin}${appPath}`);

@@ -4,9 +4,8 @@ import {SystemModule, loadExtensionsFor, EXTENSION_TYPES} from '@relate/common';
 
 import {WindowModule} from './window';
 
-export interface IElectronModuleConfig extends IWebModuleConfig {
-    defaultApp: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IElectronModuleConfig extends IWebModuleConfig {}
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.ELECTRON);
 
