@@ -6,11 +6,11 @@ import {Dict} from '@relate/types';
 
 import {RemoteDbmss} from '../dbmss';
 import {RemoteExtensions} from '../extensions';
-import {InvalidConfigError, NotAllowedError} from '../../errors';
+import {InvalidConfigError, NotAllowedError, NotSupportedError} from '../../errors';
 import {EnvironmentAbstract} from './environment.abstract';
 import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
-import {AUTH_TOKEN_KEY} from '../../constants';
+import {AUTH_TOKEN_HEADER} from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {ensureDirs} from '../../system/files';
 import {RemoteProjects} from '../projects';
@@ -53,7 +53,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
                 const options = Dict.from(opts)
                     .merge({
                         credentials: 'include',
-                        headers: {[AUTH_TOKEN_KEY]: this.config.authToken},
+                        headers: {[AUTH_TOKEN_HEADER]: this.config.authToken},
                         mode: 'cors',
                     })
                     .toObject();
@@ -88,5 +88,13 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
             throw err;
         }
+    }
+
+    generateAPIToken(_hostName: string, _clientId: string, _data: any = {}): Promise<string> {
+        throw new NotSupportedError(`${RemoteEnvironment.name} does not support generating API tokens`);
+    }
+
+    verifyAPIToken(_hostName: string, _clientId: string, _token = ''): Promise<void> {
+        throw new NotSupportedError(`${RemoteEnvironment.name} does not support validating API tokens`);
     }
 }

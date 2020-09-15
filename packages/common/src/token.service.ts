@@ -9,7 +9,7 @@ import {InvalidArgumentError, ValidationFailureError} from './errors';
 import {envPaths} from './utils/env-paths';
 
 // @todo: find a better home
-export class TokenService {
+export abstract class TokenService {
     static INSTANCE_SALT_PATH = path.join(envPaths().data, RELATE_TOKEN_SALT_FILE_NAME);
 
     static UUID_V4_REGEX = /^[a-z0-9]{8}-[a-z0-9]{4}-4[a-z0-9]{3}-[a-z0-9]{4}-[a-z0-9]{12}$/;

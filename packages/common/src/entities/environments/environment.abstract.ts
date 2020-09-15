@@ -18,6 +18,7 @@ import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
@@ -58,6 +59,10 @@ export abstract class EnvironmentAbstract {
 
     get httpOrigin(): string {
         return this.config.httpOrigin || DEFAULT_ENVIRONMENT_HTTP_ORIGIN;
+    }
+
+    get requiresAPIToken(): boolean {
+        return Boolean(this.config.serverConfig?.requiresAPIToken);
     }
 
     /**
@@ -123,6 +128,23 @@ export abstract class EnvironmentAbstract {
     abstract init(): Promise<void>;
 
     /**
+     * Generates an API token
+     * @param   hostName    host name of token request
+     * @param   clientId    client ID of token request
+     * @param   data        API token data
+     * @return              token
+     */
+    abstract generateAPIToken(hostName: string, clientId: string, data: any): Promise<string>;
+
+    /**
+     * Verifies an API token
+     * @param   hostName    host name of token request
+     * @param   clientId    client ID of token request
+     * @param   token       token to verify
+     */
+    abstract verifyAPIToken(hostName: string, clientId: string, token?: string): Promise<void>;
+
+    /**
      * Environment Authentication logic
      */
     login(redirectTo?: string): Promise<IEnvironmentAuth> {
@@ -163,14 +185,14 @@ export abstract class EnvironmentAbstract {
      * Checks if given GraphQL method is supported
      * @param   methodName
      */
-    supports(methodName: string): boolean {
-        const {allowedMethods} = this.config;
+    supports(methodName: PUBLIC_GRAPHQL_METHODS): boolean {
+        const {serverConfig: {publicGraphQLMethods} = {}} = this.config;
 
-        if (!arrayHasItems(allowedMethods)) {
+        if (!arrayHasItems(publicGraphQLMethods)) {
             return true;
         }
 
-        return List.from(allowedMethods).includes(methodName);
+        return List.from(publicGraphQLMethods).includes(methodName);
     }
 
     /**

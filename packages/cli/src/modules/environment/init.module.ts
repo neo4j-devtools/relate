@@ -1,7 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {
-    IAuthenticationOptions,
     ENVIRONMENT_TYPES,
     HEALTH_BASE_ENDPOINT,
     InvalidArgumentError,
@@ -12,7 +11,13 @@ import {
 import fetch from 'node-fetch';
 
 import InitCommand from '../../commands/environment/init';
-import {inputPrompt, selectAllowedMethodsPrompt, selectAuthenticatorPrompt, selectPrompt} from '../../prompts';
+import {
+    confirmPrompt,
+    inputPrompt,
+    selectAllowedMethodsPrompt,
+    selectAuthenticatorPrompt,
+    selectPrompt,
+} from '../../prompts';
 import {isInteractive} from '../../stdin';
 
 @Module({
@@ -55,15 +60,19 @@ export class InitModule implements OnApplicationBootstrap {
         }
 
         if (isInteractive()) {
-            const authentication: IAuthenticationOptions | undefined = await selectAuthenticatorPrompt();
-            const allowedMethods: string[] = await selectAllowedMethodsPrompt();
+            const authentication = await selectAuthenticatorPrompt();
+            const publicGraphQLMethods = await selectAllowedMethodsPrompt();
+            const requiresAPIToken = await confirmPrompt('Are HTTP consumers required to have an API key?');
             const config: IEnvironmentConfigInput = {
                 type: type as ENVIRONMENT_TYPES,
                 name: name,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
                 remoteEnvironmentId,
                 authentication,
-                allowedMethods,
+                serverConfig: {
+                    publicGraphQLMethods,
+                    requiresAPIToken,
+                },
             };
 
             cli.action.start('Creating environment');

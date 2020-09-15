@@ -3,11 +3,39 @@
 
 Manage relate environments
 
+* [`relate environment:api-token [CLIENTID]`](#relate-environmentapi-token-clientid)
 * [`relate environment:init`](#relate-environmentinit)
 * [`relate environment:list`](#relate-environmentlist)
 * [`relate environment:login [ENVIRONMENT]`](#relate-environmentlogin-environment)
 * [`relate environment:open [ENVIRONMENT]`](#relate-environmentopen-environment)
 * [`relate environment:use ENVIRONMENT`](#relate-environmentuse-environment)
+
+## `relate environment:api-token [CLIENTID]`
+
+Generate API token for a relate web API calls
+
+```
+USAGE
+  $ relate environment:api-token [CLIENTID]
+
+ARGUMENTS
+  CLIENTID  Client ID
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+  -h, --hostName=hostName        Client host name (if other than current environment)
+
+ALIASES
+  $ relate env:api-token
+
+EXAMPLES
+  $ relate env:api-token
+  $ relate env:api-token -e environment-name
+  $ relate env:api-token my-app
+  $ relate env:api-token my-app -h localhost:3000
+```
+
+_See code: [dist/commands/environment/api-token.ts](https://github.com/neo-technology/relate/blob/v1.0.2-alpha.10/dist/commands/environment/api-token.ts)_
 
 ## `relate environment:init`
 

@@ -15,7 +15,11 @@ export interface IMonad<T> extends Iterable<T> {
 
     map(project: (value: T) => T): IMonad<T>;
 
+    tap(project: (value: T) => void): this;
+
     flatMap<M>(project: (value: T) => M): M;
+
+    switchMap<M>(project: (value: this) => M): M;
 }
 
 /**
@@ -178,13 +182,13 @@ export default class Monad<T> implements IMonad<T> {
     }
 
     /**
-     * Unpack monad value and return new Monad (of any type).
+     * Switch monad for Iterable (of any type).
      * ```ts
      * const foo: Monad<'foo'> = Monad.from('foo');
-     * const fooBar: Num<7> = foo.switchMap((val) => Num.from(val.length));
+     * const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
      * ```
      */
-    switchMap<M extends IMonad<any> = Monad<any>>(project: (value: this) => M): M {
+    switchMap<M>(project: (value: this) => M): M {
         return project(this);
     }
 
