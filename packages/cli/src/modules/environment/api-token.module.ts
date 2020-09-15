@@ -2,7 +2,7 @@ import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 
 import APITokenCommand from '../../commands/environment/api-token';
-import {inputPrompt, selectAppPrompt} from '../../prompts';
+import {inputPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -20,16 +20,15 @@ export class APITokenModule implements OnApplicationBootstrap {
         const {args, flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
-        const appName =
-            args.appName || (await selectAppPrompt('Select an App to create an API token for', environment));
+        const clientId = args.clientId || (await inputPrompt('Enter client ID for API token'));
         const hostName =
             flags.hostName ||
-            (await inputPrompt('Enter app host name', {
+            (await inputPrompt('Enter client host name', {
                 initial: new URL(environment.httpOrigin).host,
             }));
 
-        await environment.extensions.getAppPath(appName);
+        await environment.extensions.getAppPath(clientId);
 
-        return environment.generateAPIToken(hostName, appName, {}).then(this.utils.log);
+        return environment.generateAPIToken(hostName, clientId, {}).then(this.utils.log);
     }
 }

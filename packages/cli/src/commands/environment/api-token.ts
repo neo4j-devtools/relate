@@ -23,8 +23,8 @@ export default class APITokenCommand extends BaseCommand {
 
     static args = [
         {
-            description: 'App name',
-            name: 'appName',
+            description: 'Client ID',
+            name: 'clientId',
         },
     ];
 
@@ -32,7 +32,7 @@ export default class APITokenCommand extends BaseCommand {
         ...FLAGS.ENVIRONMENT,
         hostName: flags.string({
             char: 'h',
-            description: 'App host name (if other than current environment)',
+            description: 'Client host name (if other than current environment)',
         }),
     };
 }

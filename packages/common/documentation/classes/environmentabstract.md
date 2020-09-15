@@ -144,7 +144,7 @@ ___
 
 ### `Abstract` generateAPIToken
 
-▸ **generateAPIToken**(`hostName`: string, `appName`: string, `data`: any): *Promise‹string›*
+▸ **generateAPIToken**(`hostName`: string, `clientId`: string, `data`: any): *Promise‹string›*
 
 *Defined in [environments/environment.abstract.ts:137](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L137)*
 
@@ -155,7 +155,7 @@ Generates an API token
 Name | Type | Description |
 ------ | ------ | ------ |
 `hostName` | string | host name of token request |
-`appName` | string | app name of token request |
+`clientId` | string | client ID of token request |
 `data` | any | API token data |
 
 **Returns:** *Promise‹string›*
@@ -287,7 +287,7 @@ ___
 
 ### `Abstract` verifyAPIToken
 
-▸ **verifyAPIToken**(`hostName`: string, `appName`: string, `token?`: undefined | string): *Promise‹void›*
+▸ **verifyAPIToken**(`hostName`: string, `clientId`: string, `token?`: undefined | string): *Promise‹void›*
 
 *Defined in [environments/environment.abstract.ts:145](https://github.com/neo-technology/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L145)*
 
@@ -298,7 +298,7 @@ Verifies an API token
 Name | Type | Description |
 ------ | ------ | ------ |
 `hostName` | string | host name of token request |
-`appName` | string | app name of token request |
+`clientId` | string | client ID of token request |
 `token?` | undefined &#124; string | token to verify  |
 
 **Returns:** *Promise‹void›*

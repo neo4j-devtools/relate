@@ -130,19 +130,19 @@ export abstract class EnvironmentAbstract {
     /**
      * Generates an API token
      * @param   hostName    host name of token request
-     * @param   appName     app name of token request
+     * @param   clientId    client ID of token request
      * @param   data        API token data
      * @return              token
      */
-    abstract generateAPIToken(hostName: string, appName: string, data: any): Promise<string>;
+    abstract generateAPIToken(hostName: string, clientId: string, data: any): Promise<string>;
 
     /**
      * Verifies an API token
      * @param   hostName    host name of token request
-     * @param   appName     app name of token request
+     * @param   clientId    client ID of token request
      * @param   token       token to verify
      */
-    abstract verifyAPIToken(hostName: string, appName: string, token?: string): Promise<void>;
+    abstract verifyAPIToken(hostName: string, clientId: string, token?: string): Promise<void>;
 
     /**
      * Environment Authentication logic

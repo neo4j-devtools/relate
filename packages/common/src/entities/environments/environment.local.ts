@@ -83,11 +83,11 @@ export class LocalEnvironment extends EnvironmentAbstract {
         }
     }
 
-    generateAPIToken(hostName: string, appName: string, data: any = {}): Promise<string> {
-        return TokenService.sign(data, `${hostName}-${appName}`);
+    generateAPIToken(hostName: string, clientId: string, data: any = {}): Promise<string> {
+        return TokenService.sign(data, `${hostName}-${clientId}`);
     }
 
-    async verifyAPIToken(hostName: string, appName: string, token = ''): Promise<void> {
-        await TokenService.verify(token, `${hostName}-${appName}`);
+    async verifyAPIToken(hostName: string, clientId: string, token = ''): Promise<void> {
+        await TokenService.verify(token, `${hostName}-${clientId}`);
     }
 }

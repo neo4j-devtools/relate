@@ -3,27 +3,27 @@
 
 Manage relate environments
 
-* [`relate environment:api-token [APPNAME]`](#relate-environmentapi-token-appname)
+* [`relate environment:api-token [CLIENTID]`](#relate-environmentapi-token-clientid)
 * [`relate environment:init`](#relate-environmentinit)
 * [`relate environment:list`](#relate-environmentlist)
 * [`relate environment:login [ENVIRONMENT]`](#relate-environmentlogin-environment)
 * [`relate environment:open [ENVIRONMENT]`](#relate-environmentopen-environment)
 * [`relate environment:use ENVIRONMENT`](#relate-environmentuse-environment)
 
-## `relate environment:api-token [APPNAME]`
+## `relate environment:api-token [CLIENTID]`
 
 Generate API token for a relate web API calls
 
 ```
 USAGE
-  $ relate environment:api-token [APPNAME]
+  $ relate environment:api-token [CLIENTID]
 
 ARGUMENTS
-  APPNAME  App name
+  CLIENTID  Client ID
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
-  -h, --hostName=hostName        App host name (if other than current environment)
+  -h, --hostName=hostName        Client host name (if other than current environment)
 
 ALIASES
   $ relate env:api-token

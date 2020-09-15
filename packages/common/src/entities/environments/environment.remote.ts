@@ -90,11 +90,11 @@ export class RemoteEnvironment extends EnvironmentAbstract {
         }
     }
 
-    generateAPIToken(_hostName: string, _appName: string, _data: any = {}): Promise<string> {
+    generateAPIToken(_hostName: string, _clientId: string, _data: any = {}): Promise<string> {
         throw new NotSupportedError(`${RemoteEnvironment.name} does not support generating API tokens`);
     }
 
-    verifyAPIToken(_hostName: string, _appName: string, _token = ''): Promise<void> {
+    verifyAPIToken(_hostName: string, _clientId: string, _token = ''): Promise<void> {
         throw new NotSupportedError(`${RemoteEnvironment.name} does not support validating API tokens`);
     }
 }
