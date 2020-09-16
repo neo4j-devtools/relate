@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {
     AUTH_TOKEN_HEADER,
     API_TOKEN_HEADER,
-    APP_NAME_HEADER,
+    CLIENT_ID_HEADER,
     SystemProvider,
     AUTHENTICATION_BASE_ENDPOINT,
     AUTHENTICATION_ENDPOINT,
@@ -39,7 +39,7 @@ export class AuthService {
                 return;
             }
 
-            const appName = getRequestToken(req, APP_NAME_HEADER) || '';
+            const clientId = getRequestToken(req, CLIENT_ID_HEADER) || '';
             const apiToken = getRequestToken(req, API_TOKEN_HEADER) || '';
             const environment = await this.systemProvider.getEnvironment();
 
@@ -49,10 +49,10 @@ export class AuthService {
             }
 
             try {
-                await environment.verifyAPIToken(req.hostname, appName, apiToken);
+                await environment.verifyAPIToken(req.hostname, clientId, apiToken);
                 next();
             } catch (e) {
-                res.clearCookie(APP_NAME_HEADER);
+                res.clearCookie(CLIENT_ID_HEADER);
                 res.clearCookie(API_TOKEN_HEADER);
                 res.sendStatus(401);
             }
