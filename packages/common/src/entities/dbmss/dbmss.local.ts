@@ -634,7 +634,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     private throttledDiscoverDbmss = throttle(this.discoverDbmss, 1000);
 
     private async discoverDbmss(): Promise<void> {
-        this.dbmss = {};
+        const dbmss = {} as {[key: string]: IDbms};
 
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
@@ -672,13 +672,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         secure,
                     };
 
-                    this.dbmss[id] = {
+                    dbmss[id] = {
                         ...configDbmss,
                         ...overrides,
                     };
                 }
             })
             .unwindPromises();
+
+        // Set the new values all at once to prevent race conditions in case
+        // we're reading this value while we're scanning for DBMSs.
+        this.dbmss = dbmss;
     }
 
     public getDbmsConfig(dbmsId: string): Promise<PropertiesFile> {
