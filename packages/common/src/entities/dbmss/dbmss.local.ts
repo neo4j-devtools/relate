@@ -5,6 +5,7 @@ import path from 'path';
 import {IAuthToken} from '@huboneo/tapestry';
 import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
+import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
@@ -422,7 +423,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbms>> {
         // Discover DBMSs again in case there have been changes in the file system.
-        await this.discoverDbmss();
+        await this.throttledDiscoverDbmss();
 
         return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
@@ -629,6 +630,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.ensureDir(path.join(dbmsRoot, config.get('dbms.directories.logs')!));
         await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs')!, 'neo4j.log'));
     }
+
+    private throttledDiscoverDbmss = throttle(this.discoverDbmss, 1000);
 
     private async discoverDbmss(): Promise<void> {
         this.dbmss = {};
