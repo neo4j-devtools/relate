@@ -63,7 +63,7 @@
         "graphql": "15.3.0",
         "graphql-tools": "5.0.0",
         "lodash": "4.17.19",
-        "node-fetch": "2.6.0",
+        "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.5.5"
     }
