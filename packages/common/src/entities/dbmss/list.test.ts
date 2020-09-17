@@ -16,6 +16,11 @@ jest.mock('../../utils/files/read-properties-file', () => ({
     readPropertiesFile: (): Map<string, string> => new Map(),
 }));
 
+const sleep = (ms: number): Promise<void> =>
+    new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+
 function generateDummyConf(dbms: string): PropertiesFile {
     const configPath = path.join(INSTALLATION_ROOT, `dbms-${dbms}`, 'conf/neo4j.conf');
 
@@ -58,12 +63,20 @@ describe('LocalDbmss - list', () => {
     afterAll(() => fse.remove(TMP_HOME));
 
     test('list no dbmss installed', async () => {
+        // Calls to discoverDbmss are throttled, so it takes a second before
+        // changes are picked up.
+        await sleep(1000);
+
         const dbmss = await environment.dbmss.list();
         expect(dbmss.toArray()).toEqual([]);
     });
 
     // @todo: broken as we now check for conf existing
     test('list dbmss installed', async () => {
+        // Calls to discoverDbmss are throttled, so it takes a second before
+        // changes are picked up.
+        await sleep(1000);
+
         const expected = [
             {
                 config: generateDummyConf(dbms1),
@@ -114,6 +127,10 @@ describe('LocalDbmss - list', () => {
     });
 
     test('do not list removed dbmss', async () => {
+        // Calls to discoverDbmss are throttled, so it takes a second before
+        // changes are picked up.
+        await sleep(1000);
+
         await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbms2}`));
         const expected = [
             {
