@@ -28,6 +28,7 @@ export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing daedalus instance
 export const RELATE_TOKEN_SALT_FILE_NAME = 'relate.secret.key';
 export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
+export const DISCOVER_DBMS_THROTTLE_MS = 500;
 
 export const EXTENSION_DIR_NAME = 'extensions';
 export const PACKAGE_JSON = 'package.json';

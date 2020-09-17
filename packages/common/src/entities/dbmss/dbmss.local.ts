@@ -54,6 +54,7 @@ import {
     DBMS_STATUS,
     DBMS_STATUS_FILTERS,
     DBMS_TLS_LEVEL,
+    DISCOVER_DBMS_THROTTLE_MS,
     ENTITY_TYPES,
     HOOK_EVENTS,
 } from '../../constants';
@@ -631,7 +632,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.ensureFile(path.join(dbmsRoot, config.get('dbms.directories.logs')!, 'neo4j.log'));
     }
 
-    private throttledDiscoverDbmss = throttle(this.discoverDbmss, 1000);
+    private throttledDiscoverDbmss = throttle(this.discoverDbmss, DISCOVER_DBMS_THROTTLE_MS);
 
     private async discoverDbmss(): Promise<void> {
         const dbmss = {} as {[key: string]: IDbms};

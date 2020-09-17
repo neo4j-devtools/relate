@@ -7,7 +7,7 @@ import {EnvironmentConfigModel} from '../../models';
 import {envPaths} from '../../utils';
 import {LocalEnvironment} from '../environments/environment.local';
 import {PropertiesFile} from '../../system/files';
-import {DBMS_DIR_NAME, DBMS_MANIFEST_FILE} from '../../constants';
+import {DBMS_DIR_NAME, DBMS_MANIFEST_FILE, DISCOVER_DBMS_THROTTLE_MS} from '../../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
 const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
@@ -63,9 +63,9 @@ describe('LocalDbmss - list', () => {
     afterAll(() => fse.remove(TMP_HOME));
 
     test('list no dbmss installed', async () => {
-        // Calls to discoverDbmss are throttled, so it takes a second before
+        // Calls to discoverDbmss are throttled, so it takes some time before
         // changes are picked up.
-        await sleep(1000);
+        await sleep(DISCOVER_DBMS_THROTTLE_MS);
 
         const dbmss = await environment.dbmss.list();
         expect(dbmss.toArray()).toEqual([]);
@@ -73,9 +73,9 @@ describe('LocalDbmss - list', () => {
 
     // @todo: broken as we now check for conf existing
     test('list dbmss installed', async () => {
-        // Calls to discoverDbmss are throttled, so it takes a second before
+        // Calls to discoverDbmss are throttled, so it takes some time before
         // changes are picked up.
-        await sleep(1000);
+        await sleep(DISCOVER_DBMS_THROTTLE_MS);
 
         const expected = [
             {
@@ -127,9 +127,9 @@ describe('LocalDbmss - list', () => {
     });
 
     test('do not list removed dbmss', async () => {
-        // Calls to discoverDbmss are throttled, so it takes a second before
+        // Calls to discoverDbmss are throttled, so it takes some time before
         // changes are picked up.
-        await sleep(1000);
+        await sleep(DISCOVER_DBMS_THROTTLE_MS);
 
         await fse.remove(path.join(INSTALLATION_ROOT, `dbms-${dbms2}`));
         const expected = [
