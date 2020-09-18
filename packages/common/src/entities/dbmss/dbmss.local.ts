@@ -578,13 +578,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         );
         const authenticationProviders = Str.from(neo4jConfig.get('dbms.security.authentication_providers') || 'native')
             .split(',')
-            .filter(Boolean);
+            .filter((_) => !_.isEmpty);
         const authorizationProviders = Str.from(neo4jConfig.get('dbms.security.authorization_providers') || 'native')
             .split(',')
-            .filter(Boolean);
+            .filter((_) => !_.isEmpty);
         const unrestrictedProcedures = Str.from(neo4jConfig.get('dbms.security.procedures.unrestricted') || '')
             .split(',')
-            .filter(Boolean);
+            .filter((_) => !_.isEmpty);
 
         neo4jConfig.set(
             `dbms.security.authentication_providers`,
