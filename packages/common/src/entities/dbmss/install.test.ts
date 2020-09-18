@@ -111,4 +111,11 @@ describe('LocalDbmss - install', () => {
         const info2 = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
         expect(info2?.version).toEqual(NEO4J_VERSION);
     });
+
+    test('Has valid neo4j.conf, without leading commas in values', async () => {
+        const {id: dbmsId} = await testDbmss.environment.dbmss.install(testDbmss.createName(), NEO4J_VERSION);
+        const config = await testDbmss.environment.dbmss.getDbmsConfig(dbmsId);
+
+        expect(config.get('dbms.security.procedures.unrestricted')).toEqual('jwt.security.*');
+    });
 });
