@@ -17,7 +17,7 @@
 - **We require NodeJS LTS (v12)** https://nodejs.org/en/
 - **We require OpenJDK v11.** https://cdn.azul.com/zulu/bin/ (search for 11.35.13-ca-jdk11.0.5)
 
-Once authenticated you can install the CLI and WEB packages:
+Once dependencies are installed you can install the CLI and WEB packages:
 ```shell script
 npm install -g @relate/cli
 npm install -g @relate/web
