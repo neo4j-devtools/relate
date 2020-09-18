@@ -90,7 +90,7 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     );
 
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
-    await fse.writeFile(neo4jPidPath, child.pid);
+    await fse.writeFile(neo4jPidPath, `${child.pid}`);
     child.unref();
 
     return 'neo4j started';
