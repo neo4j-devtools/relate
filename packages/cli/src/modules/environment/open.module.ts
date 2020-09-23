@@ -3,7 +3,6 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import OpenCommand from '../../commands/environment/open';
-import {selectEnvironmentPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -27,9 +26,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args} = this.parsed;
-
-        const environmentId =
-            args.environment || (await selectEnvironmentPrompt('Choose an environment to update', this.systemProvider));
+        const {environment: environmentId} = args;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
         this.logOrOpen(environment.configPath);
