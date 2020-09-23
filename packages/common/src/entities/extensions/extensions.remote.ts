@@ -165,9 +165,9 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
                 mutation CreateAppLaunchToken(
                     $dbmsId: String!,
                     $appName: String!,
-                    $principal: String!,
-                    $accessToken: String!,
-                    $projectId: String!
+                    $principal: String,
+                    $accessToken: String,
+                    $projectId: String
                 ) {
                     ${PUBLIC_GRAPHQL_METHODS.CREATE_APP_LAUNCH_TOKEN}(
                         dbmsId: $dbmsId,

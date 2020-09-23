@@ -68,7 +68,7 @@ export class OpenModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
 
         if (!user) {
-            const launchToken = await environment.extensions.createAppLaunchToken(environment.id, appName, dbms.id);
+            const launchToken = await environment.extensions.createAppLaunchToken(appName, dbms.id);
             const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
 
             this.logOrOpen(tokenUrl);
