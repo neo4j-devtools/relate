@@ -11,6 +11,7 @@ import {
     DBMS_STATUS,
     ENTITY_TYPES,
     InvalidArgumentError,
+    SystemProvider,
 } from '@relate/common';
 import {List} from '@relate/types';
 
@@ -87,6 +88,22 @@ export const selectMultiplePrompt = async (message: string, choices: string[] | 
     });
 
     return selection;
+};
+
+export const selectEnvironmentPrompt = async (message: string, systemProvider: SystemProvider): Promise<string> => {
+    const environments = await systemProvider.listEnvironments();
+    if (!environments.length) {
+        throw new NotFoundError('No environment available', ['Run "relate env:init" and try again']);
+    }
+
+    const choices = environments
+        .mapEach((env) => ({
+            name: env.id,
+            message: getEntityDisplayName(env),
+        }))
+        .toArray();
+
+    return selectPrompt(message, choices);
 };
 
 export const selectDbmsPrompt = async (

@@ -2,6 +2,7 @@ import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 
 import UseCommand from '../../commands/environment/use';
+import {selectEnvironmentPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -17,7 +18,9 @@ export class UseModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args} = this.parsed;
-        const {environment: environmentId} = args;
+
+        const environmentId =
+            args.environment || (await selectEnvironmentPrompt('Select environment to activate', this.systemProvider));
         const environment = await this.systemProvider.useEnvironment(environmentId);
 
         this.utils.log(`Environment "${environment.name}" is now set as active.`);
