@@ -15,13 +15,15 @@ export interface IAppLaunchData {
 }
 
 export interface IRelateClientConfig {
-    appName: string;
+    clientId: string;
     relateOrigin: string;
+    apiToken?: string;
 }
 
 export interface IRelateClientParams {
-    appName: string;
+    clientId: string;
     relateOrigin?: string;
+    apiToken?: string;
 }
 
 export class RelateClient {
@@ -35,11 +37,19 @@ export class RelateClient {
     }
 
     getAppLaunchData(launchToken: string): Promise<IAppLaunchData> {
-        const payload = getParseLaunchTokenPayload(this.config.appName, launchToken);
+        const payload = getParseLaunchTokenPayload(this.config.clientId, launchToken);
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'X-Client-Id': this.config.clientId,
+        };
+
+        if (this.config.apiToken) {
+            headers['X-API-Token'] = this.config.apiToken;
+        }
 
         return fetch(this.config.relateOrigin, {
             body: JSON.stringify(payload),
-            headers: {'Content-Type': 'application/json'},
+            headers,
             method: 'POST',
         })
             .then((res) => {
