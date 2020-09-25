@@ -1,10 +1,11 @@
 import {Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
-import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
+import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
 import {HttpAdapterHost} from '@nestjs/core';
 import {Application} from 'express';
 import useSofa, {OpenAPI} from 'sofa-api';
 import swaggerUi from 'swagger-ui-express';
+import multer from 'multer';
 
 import {ExtensionModule} from './entities/extension';
 import {DBModule} from './entities/db';
@@ -13,6 +14,7 @@ import {ProjectModule} from './entities/project';
 import {AuthModule} from './auth';
 import {FilesModule} from './files';
 import {HealthModule} from './health';
+import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
 
 export interface IWebModuleConfig {
     protocol: string;
@@ -66,6 +68,22 @@ export class WebModule implements OnModuleInit {
             },
         });
 
+        // add multer to file upload endpoints
+        const uploads = multer({dest: envPaths().tmp});
+
+        app.use('/api/add-project-file', uploads.single('fileUpload'), (req, _, next) => {
+            req.body = {
+                ...req.body,
+                fileUpload: {
+                    // convert multer file object to the same shape as graphql-upload
+                    ...req.file,
+                    filename: req.file.originalname,
+                },
+            };
+            next();
+        });
+
+        // convert GraphQL API to REST using SOFA
         app.use(
             '/api',
             useSofa({
@@ -78,6 +96,12 @@ export class WebModule implements OnModuleInit {
             }),
         );
 
-        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApi.get()));
+        // add Swagger page for REST API
+        const openApiDefinitions = openApi.get();
+        openApiDefinitions.paths['/api/add-project-file'] = fixAddProjectFilesOpenAPIDef(
+            openApiDefinitions.paths['/api/add-project-file'],
+        );
+
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDefinitions));
     }
 }
