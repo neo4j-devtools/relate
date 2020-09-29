@@ -4,7 +4,6 @@ import fetch from 'node-fetch';
 
 import {HealthService, IHealthInfo} from './health';
 import {WebModule, IWebModuleConfig} from './web.module';
-import bodyParser from 'body-parser';
 
 export {WebModule, IWebModuleConfig, IHealthInfo};
 export {ExtensionModule} from './entities/extension';
@@ -21,8 +20,6 @@ export async function bootstrapWebModule(env = 'dev'): Promise<void> {
         module: WebModule,
     });
     const config = app.get(ConfigService);
-
-    app.use(bodyParser.urlencoded({extended: true}));
 
     return app.listen(config.get('port'), config.get('host'));
 }
