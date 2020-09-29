@@ -69,8 +69,8 @@ export const GraphQLUpload = new GraphQLScalarType({
                 ...upload,
                 path: uploadedFilePath,
             };
-        } catch (_e) {
-            throw new FileUploadError(`Failed to upload file ${upload.filename}`);
+        } catch (e) {
+            throw new FileUploadError(`Failed to upload file ${upload.filename}: ${e.message}`);
         }
     },
     parseLiteral(ast): void {
