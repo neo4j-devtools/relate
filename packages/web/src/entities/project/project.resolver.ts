@@ -107,10 +107,9 @@ export class ProjectResolver {
         @Context('environment') environment: Environment,
         @Args() {name, fileUpload, destination}: AddProjectFileArgs,
     ): Promise<RelateFile> {
-        const {filename, createReadStream} = await fileUpload;
-        const uploadedPath = await this.systemProvider.handleFileUpload(filename, createReadStream());
+        const {path: uploadPath} = await fileUpload;
 
-        return environment.projects.addFile(name, uploadedPath, destination);
+        return environment.projects.addFile(name, uploadPath, destination);
     }
 
     @Mutation(() => RelateFile)
