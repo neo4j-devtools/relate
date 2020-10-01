@@ -332,7 +332,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const dbms = await this.get(id);
         const clonedId = uuidv4();
 
-        await fse.copy(this.getDbmsRootPath(dbms.id), this.getDbmsRootPath(clonedId));
+        // If the DBMS is linked the target path should be copied, not the symlink.
+        const sourcePath = await fse.realpath(this.getDbmsRootPath(dbms.id));
+
+        await fse.copy(sourcePath, this.getDbmsRootPath(clonedId));
         await this.updateDbmsManifest(clonedId, {
             name,
         });
