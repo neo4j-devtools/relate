@@ -74,6 +74,18 @@ export class AddProjectFileArgs extends ProjectArgs {
 
     @Field(() => GraphQLUpload)
     fileUpload: Promise<IFileUpload>;
+
+    @Field(() => Boolean, {nullable: true})
+    overwrite?: boolean;
+}
+
+@ArgsType()
+export class UpdateProjectFileArgs extends ProjectArgs {
+    @Field(() => String, {nullable: true})
+    destination?: string;
+
+    @Field(() => GraphQLUpload)
+    fileUpload: Promise<IFileUpload>;
 }
 
 @ArgsType()

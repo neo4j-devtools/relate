@@ -148,6 +148,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     ADD_PROJECT_DBMS = 'addProjectDbms',
     REMOVE_PROJECT_DBMS = 'removeProjectDbms',
     ADD_PROJECT_FILE = 'addProjectFile',
+    UPDATE_PROJECT_FILE = 'updateProjectFile',
     REMOVE_PROJECT_FILE = 'removeProjectFile',
 
     // dump / import

@@ -83,6 +83,18 @@ export class WebModule implements OnModuleInit {
             next();
         });
 
+        app.use('/api/update-project-file', uploads.single('fileUpload'), (req, _, next) => {
+            req.body = {
+                ...req.body,
+                fileUpload: {
+                    // convert multer file object to the same shape as graphql-upload
+                    ...req.file,
+                    filename: req.file.originalname,
+                },
+            };
+            next();
+        });
+
         // convert GraphQL API to REST using SOFA
         app.use(
             '/api',
@@ -100,6 +112,9 @@ export class WebModule implements OnModuleInit {
         const openApiDefinitions = openApi.get();
         openApiDefinitions.paths['/api/add-project-file'] = fixAddProjectFilesOpenAPIDef(
             openApiDefinitions.paths['/api/add-project-file'],
+        );
+        openApiDefinitions.paths['/api/update-project-file'] = fixAddProjectFilesOpenAPIDef(
+            openApiDefinitions.paths['/api/update-project-file'],
         );
 
         app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDefinitions));
