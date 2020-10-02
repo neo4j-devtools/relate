@@ -53,7 +53,12 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @param   source
      * @param   destination
      */
-    abstract addFile(projectId: string, source: string, destination?: string): Promise<IRelateFile>;
+    abstract addFile(
+        projectId: string,
+        source: string,
+        destination?: string,
+        overwrite?: boolean,
+    ): Promise<IRelateFile>;
 
     /**
      * Adds file (write) to project

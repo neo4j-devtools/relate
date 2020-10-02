@@ -93,6 +93,45 @@ describe('LocalProjects', () => {
         );
     });
 
+    test('projects.addFile() - overwrite existing file', async () => {
+        const project = await environment.projects.get(projectId);
+        const content = 'This file will contain content.';
+        const newTestFileName = 'new-text.txt';
+        const newTestFile = path.join(envPaths().tmp, newTestFileName);
+
+        // create new tmp file with content
+        await fse.writeFile(newTestFile, content, 'utf8');
+        // create new file at root
+        expect(await environment.projects.addFile(projectId, newTestFile)).toEqual({
+            name: newTestFileName,
+            extension: '.txt',
+            downloadToken: expect.any(String),
+            directory: '.',
+        });
+        const originalContent = await fse.readFile(path.join(project.root, newTestFileName), 'utf8');
+        expect(originalContent).toBe(content);
+
+        // update tmp with new content
+        const newContent = 'This file will contain new content.';
+        await fse.writeFile(newTestFile, newContent, 'utf8');
+        // overwrite
+        expect(await environment.projects.addFile(projectId, newTestFile, undefined, true)).toEqual({
+            name: newTestFileName,
+            extension: '.txt',
+            downloadToken: expect.any(String),
+            directory: '.',
+        });
+        const actualContent = await fse.readFile(path.join(project.root, newTestFileName), 'utf8');
+        expect(actualContent).toBe(newContent);
+    });
+
+    test('projects.addFile() - overwrite non-existing file', () => {
+        const nonExistingFile = 'non-existing-file';
+        return expect(environment.projects.addFile(projectId, nonExistingFile, undefined, true)).rejects.toEqual(
+            new InvalidArgumentError(`File does not exist at that destination`),
+        );
+    });
+
     test('projects.writeFile() - override', async () => {
         const expectedContent = 'The file will contain this text.';
 
@@ -153,13 +192,13 @@ describe('LocalProjects', () => {
 
     test('projects.removeFile() - not exists', () => {
         return expect(environment.projects.removeFile(projectId, testFileName)).rejects.toEqual(
-            new InvalidArgumentError(`File ${testFileName} does not exists`),
+            new InvalidArgumentError(`File ${testFileName} does not exist`),
         );
     });
 
     test('projects.removeFile() - with dir but not provided', () => {
         return expect(environment.projects.removeFile(projectId, testOtherFileName)).rejects.toEqual(
-            new InvalidArgumentError(`File ${testOtherFileName} does not exists`),
+            new InvalidArgumentError(`File ${testOtherFileName} does not exist`),
         );
     });
 

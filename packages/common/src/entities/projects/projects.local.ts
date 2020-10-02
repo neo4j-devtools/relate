@@ -115,7 +115,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return files.find(({name, directory}) => name === fileName && directory === projectDir);
     }
 
-    async addFile(projectName: string, source: string, destination?: string): Promise<IRelateFile> {
+    async addFile(
+        projectName: string,
+        source: string,
+        destination?: string,
+        overwrite?: boolean,
+    ): Promise<IRelateFile> {
         const project = await this.get(projectName);
         const target = getAbsoluteProjectPath(project, destination || path.basename(source));
         const projectDir = path.dirname(target);
@@ -123,13 +128,16 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const fileExists = await this.getFile(project, target);
 
         fileExists.flatMap((file) => {
-            if (!None.isNone(file)) {
+            if (!overwrite && !None.isNone(file)) {
                 throw new InvalidArgumentError(`File ${file.name} already exists at that destination`);
+            }
+            if (overwrite && None.isNone(file)) {
+                throw new InvalidArgumentError(`File does not exist at that destination`);
             }
         });
 
         await fse.ensureDir(path.dirname(projectDir));
-        await fse.copy(source, target);
+        await fse.copy(source, target, {overwrite});
 
         const afterCopy = await this.getFile(project, target);
 
@@ -166,7 +174,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
         return maybeFile.flatMap(async (file) => {
             if (None.isNone(file)) {
-                throw new InvalidArgumentError(`File ${relativePath} does not exists`);
+                throw new InvalidArgumentError(`File ${relativePath} does not exist`);
             }
 
             await fse.unlink(path.join(project.root, file.directory, file.name));

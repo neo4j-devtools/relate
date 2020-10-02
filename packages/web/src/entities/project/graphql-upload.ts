@@ -30,7 +30,10 @@ export const GraphQLUpload = new GraphQLScalarType({
         const stream = upload.createReadStream();
         const fileType = await FileType.fromStream(stream);
 
-        if (fileType?.mime !== upload.mimetype) {
+        // if the file is, e.g .cypher (application/octet-stream) or .txt (text/plain)
+        // fileType returns undefined but we want to allow these
+        // assume undefined in this case means its some sort of text stream
+        if (fileType && fileType?.mime !== upload.mimetype) {
             throw new GraphQLError('Mime type does not match file content.');
         }
 
