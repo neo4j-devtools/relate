@@ -12,7 +12,6 @@ import {
     ProjectDbms,
     RemoveProjectDbmsArgs,
     RemoveProjectFileArgs,
-    UpdateProjectFileArgs,
 } from './project.types';
 import {EnvironmentArgs, FilterArgs, RelateFile} from '../../global.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
@@ -112,17 +111,6 @@ export class ProjectResolver {
         const uploadedPath = await this.systemProvider.handleFileUpload(filename, createReadStream());
 
         return environment.projects.addFile(name, uploadedPath, destination, overwrite);
-    }
-
-    @Mutation(() => RelateFile)
-    async [PUBLIC_GRAPHQL_METHODS.UPDATE_PROJECT_FILE](
-        @Context('environment') environment: Environment,
-        @Args() {name, fileUpload, destination}: UpdateProjectFileArgs,
-    ): Promise<RelateFile> {
-        const {filename, createReadStream} = await fileUpload;
-        const uploadedPath = await this.systemProvider.handleFileUpload(filename, createReadStream());
-
-        return environment.projects.updateFile(name, uploadedPath, destination);
     }
 
     @Mutation(() => RelateFile)

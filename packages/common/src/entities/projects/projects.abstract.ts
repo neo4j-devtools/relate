@@ -61,14 +61,6 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     ): Promise<IRelateFile>;
 
     /**
-     * Update a file (overwrite) in a project
-     * @param   projectId
-     * @param   source
-     * @param   destination
-     */
-    abstract updateFile(projectId: string, source: string, destination?: string): Promise<IRelateFile>;
-
-    /**
      * Adds file (write) to project
      * @param   projectId
      * @param   destination

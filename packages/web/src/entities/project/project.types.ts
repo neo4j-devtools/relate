@@ -80,15 +80,6 @@ export class AddProjectFileArgs extends ProjectArgs {
 }
 
 @ArgsType()
-export class UpdateProjectFileArgs extends ProjectArgs {
-    @Field(() => String, {nullable: true})
-    destination?: string;
-
-    @Field(() => GraphQLUpload)
-    fileUpload: Promise<IFileUpload>;
-}
-
-@ArgsType()
 export class RemoveProjectFileArgs extends ProjectArgs {
     @Field(() => String)
     filePath: string;

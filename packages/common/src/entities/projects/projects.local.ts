@@ -146,10 +146,6 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    updateFile(projectName: string, source: string, destination?: string): Promise<IRelateFile> {
-        return this.addFile(projectName, source, destination, true);
-    }
-
     async writeFile(
         projectName: string,
         destination: string,

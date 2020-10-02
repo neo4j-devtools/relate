@@ -31,10 +31,6 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project files`);
     }
 
-    updateFile(_name: string, _source: string, _destination?: string): Promise<IRelateFile> {
-        throw new NotSupportedError(`${RemoteProjects.name} does not support updating project files`);
-    }
-
     writeFile(_projectName: string, _destination: string, _data: string | Buffer): Promise<IRelateFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support writing to project files`);
     }
