@@ -6,12 +6,13 @@ import {v4 as uuidv4} from 'uuid';
 
 import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
-import {NotFoundError, TargetExistsError} from '../errors';
+import {FileUploadError, NotFoundError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
 import {ensureDirs, ensureFiles} from './files';
 import {verifyAcceptedTerms} from './verifyAcceptedTerms';
+import {Readable} from 'stream';
 
 @Injectable()
 export class SystemProvider implements OnModuleInit {
@@ -162,5 +163,31 @@ export class SystemProvider implements OnModuleInit {
         await this.reloadEnvironments();
 
         return this.allEnvironments.values;
+    }
+
+    async handleFileUpload(fileName: string, readStream: Readable): Promise<string> {
+        const tmpDir = path.join(envPaths().tmp, uuidv4());
+        const tmpFileName = path.join(tmpDir, `${uuidv4()}.rdownload`);
+
+        await fse.ensureDir(tmpDir);
+
+        try {
+            const uploadPromise = new Promise((resolve, reject) =>
+                readStream
+                    .pipe(fse.createWriteStream(tmpFileName))
+                    .on('finish', () => resolve())
+                    .on('error', (err) => reject(err)),
+            );
+
+            await uploadPromise;
+
+            const uploadedFileName = path.join(tmpDir, fileName);
+
+            await fse.move(tmpFileName, uploadedFileName);
+
+            return uploadedFileName;
+        } catch (_e) {
+            throw new FileUploadError(`Failed to upload file ${fileName}`);
+        }
     }
 }
