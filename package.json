@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/neo-technology/relate.git"
+        "url": "git+https://github.com/neo4j-devtools/relate.git"
     },
     "scripts": {
         "prettify": "prettier --write \"packages/**/*.ts\"",
@@ -23,7 +23,7 @@
         "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
-        "generate:docs": "lerna run generate:doc",
+        "generate:docs": "lerna run generate:docs",
         "watch": "lerna run watch --stream --parallel"
     },
     "devDependencies": {

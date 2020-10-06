@@ -11,7 +11,7 @@
 8. [Connecting to remote environments](#connecting-to-remote-environments)
 
 ## Disclaimer
-`@relate` is currently in alpha and as such not stable. We are working hard to address any known bugs and will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by adding cards to our trello inbox: https://trello.com/b/rS7oLVQZ.
+`@relate` is currently in alpha and as such not stable. We are working hard to address any known bugs and will definitely find more issues and cases as adoption increases. Please help us make `@relate` better by [contributing](../CONTRIBUTING.md).
 
 ## Installation
 - **We require NodeJS LTS (v12)** https://nodejs.org/en/
