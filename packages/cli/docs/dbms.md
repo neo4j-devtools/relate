@@ -129,7 +129,7 @@ USAGE
   $ relate dbms:link FILEPATH DBMSNAME
 
 OPTIONS
-  -y, --confirm=confirm  (required) Confirm DBMS configuration changes
+  -y, --confirm  (required) Confirm DBMS configuration changes
 
 EXAMPLE
   $ relate dbms:link /path/to/target/dbms/dir "foo bar"
@@ -292,6 +292,7 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -v, --version=version          (required) Version to install (semver, url, or path)
   --no-caching                   Prevent caching of the downloaded DBMS
+  --no-migration                 Prevent migrating the data to new formats
 
 EXAMPLES
   $ relate dbms:upgrade
