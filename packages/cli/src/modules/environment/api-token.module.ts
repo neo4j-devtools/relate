@@ -27,8 +27,6 @@ export class APITokenModule implements OnApplicationBootstrap {
                 initial: new URL(environment.httpOrigin).host,
             }));
 
-        await environment.extensions.getAppPath(clientId);
-
         return environment.generateAPIToken(hostName, clientId, {}).then(this.utils.log);
     }
 }

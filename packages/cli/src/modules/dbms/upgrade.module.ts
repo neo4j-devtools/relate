@@ -25,6 +25,7 @@ export class UpgradeModule implements OnApplicationBootstrap {
         const {environment: environmentId} = flags;
         let {version = ''} = flags;
         const noCaching = flags['no-caching'];
+        const noMigration = flags['no-migration'];
         const environment = await this.systemProvider.getEnvironment(environmentId);
         let {dbms: dbmsId = ''} = args;
 
@@ -56,7 +57,7 @@ export class UpgradeModule implements OnApplicationBootstrap {
             version = choices.get(selected)!.version;
         }
 
-        return environment.dbmss.upgrade(dbms.id, version, noCaching).then((res) => {
+        return environment.dbmss.upgrade(dbms.id, version, !noMigration, noCaching).then((res) => {
             this.utils.log(getEntityDisplayName(res));
         });
     }
