@@ -10,15 +10,20 @@ export {ExtensionModule} from './entities/extension';
 
 export async function bootstrapWebModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);
-    const app = await NestFactory.create({
-        imports: [
-            ConfigModule.forRoot({
-                isGlobal: true,
-                load: [configuration],
-            }),
-        ],
-        module: WebModule,
-    });
+    const app = await NestFactory.create(
+        {
+            imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [configuration],
+                }),
+            ],
+            module: WebModule,
+        },
+        {
+            cors: true,
+        },
+    );
     const config = app.get(ConfigService);
 
     return app.listen(config.get('port'), config.get('host'));
