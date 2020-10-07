@@ -1,4 +1,5 @@
 import fse from 'fs-extra';
+import path from 'path';
 import semver from 'semver';
 
 import {IDbmsInfo} from '../../models';
@@ -13,28 +14,39 @@ export async function dbmsUpgradeConfigs(
     upgradedDbms: IDbmsInfo,
     upgradedConfig: PropertiesFile,
 ): Promise<IDbmsInfo> {
-    await fse.copy(`${dbms.rootPath}/data`, `${upgradedDbms.rootPath}/data`);
-    await fse.copy(`${dbms.rootPath}/logs`, `${upgradedDbms.rootPath}/logs`);
-    await fse.copy(`${dbms.rootPath}/conf`, `${upgradedDbms.rootPath}/conf`);
-    await fse.copy(`${dbms.rootPath}/plugins`, `${upgradedDbms.rootPath}/plugins`);
-
-    const certsExists = await fse.pathExists(`${dbms.rootPath!}/certificates`);
-
-    if (certsExists) {
-        await fse.copy(`${dbms.rootPath}/certificates`, `${upgradedDbms.rootPath}/certificates`);
+    if (!dbms.rootPath) {
+        throw Error(`Cannot find root path for the original DBMS [${dbms.id}] "${dbms.name}"`);
     }
 
-    const certExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.cert`);
-    const keyExists = await fse.pathExists(`${dbms.rootPath!}/certificates/neo4j.key`);
+    if (!upgradedDbms.rootPath) {
+        throw Error(`Cannot find root path for the upgraded DBMS [${dbms.id}] "${dbms.name}"`);
+    }
+
+    const copyDBMSPath = (sourceRootPath: string, destinationRootPath: string, ...paths: string[]) =>
+        fse.copy(path.join(sourceRootPath, ...paths), path.join(destinationRootPath, ...paths));
+
+    await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'data');
+    await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'logs');
+    await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'conf');
+    await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'plugins');
+
+    const certsExists = await fse.pathExists(path.join(dbms.rootPath, 'certificates'));
+
+    if (certsExists) {
+        await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'certificates');
+    }
+
+    const certExists = await fse.pathExists(path.join(dbms.rootPath, 'certificates', 'neo4j.cert'));
+    const keyExists = await fse.pathExists(path.join(dbms.rootPath, 'certificates', 'neo4j.key'));
 
     if (certExists && keyExists) {
         await fse.copy(
-            `${dbms.rootPath}/certificates/neo4j.cert`,
-            `${upgradedDbms.rootPath}/certificates/https/neo4j.cert`,
+            path.join(dbms.rootPath, 'certificates', 'neo4j.cert'),
+            path.join(upgradedDbms.rootPath, 'certificates', 'https', 'neo4j.cert'),
         );
         await fse.copy(
-            `${dbms.rootPath}/certificates/neo4j.key`,
-            `${upgradedDbms.rootPath}/certificates/https/neo4j.key`,
+            path.join(dbms.rootPath, 'certificates', 'neo4j.key'),
+            path.join(upgradedDbms.rootPath, 'certificates', 'https', 'neo4j.key'),
         );
     }
 
