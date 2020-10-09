@@ -12,7 +12,7 @@ import {PropertiesFile} from '../../system/files';
 export async function dbmsUpgradeConfigs(
     dbms: IDbmsInfo,
     upgradedDbms: IDbmsInfo,
-    upgradedConfig: PropertiesFile,
+    upgradedConfigFileName: string,
 ): Promise<IDbmsInfo> {
     if (!dbms.rootPath) {
         throw Error(`Cannot find root path for the original DBMS [${dbms.id}] "${dbms.name}"`);
@@ -23,7 +23,7 @@ export async function dbmsUpgradeConfigs(
     }
 
     const copyDBMSPath = (sourceRootPath: string, destinationRootPath: string, ...paths: string[]) =>
-        fse.copy(path.join(sourceRootPath, ...paths), path.join(destinationRootPath, ...paths));
+        fse.copy(path.join(sourceRootPath, ...paths), path.join(destinationRootPath, ...paths), {overwrite: true});
 
     await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'data');
     await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, 'logs');
@@ -51,6 +51,8 @@ export async function dbmsUpgradeConfigs(
     }
 
     if (semver.lt(dbms.version!, NEO4J_VERSION_4) && semver.gte(upgradedDbms.version!, NEO4J_VERSION_4)) {
+        const upgradedConfig = await PropertiesFile.readFile(upgradedConfigFileName);
+
         if (dbms.secure) {
             upgradedConfig.set('dbms.default_database', 'graph.db');
             upgradedConfig.set('dbms.security.auth_enabled', 'true');
