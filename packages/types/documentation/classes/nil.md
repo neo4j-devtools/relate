@@ -43,7 +43,7 @@ const plain: null = nil.get();
 
 ▪ **NULL**: *[Nil](nil.md)‹›* = new Nil()
 
-*Defined in [src/monads/primitive/nil.monad.ts:15](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L15)*
+*Defined in [src/monads/primitive/nil.monad.ts:15](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L15)*
 
 ## Accessors
 
@@ -53,7 +53,7 @@ const plain: null = nil.get();
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:27](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L27)*
+*Defined in [src/monads/primitive/nil.monad.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L27)*
 
 Nil is always empty
 
@@ -67,7 +67,7 @@ Nil is always empty
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:61](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L61)*
+*Defined in [src/monads/primitive/nil.monad.ts:61](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L61)*
 
 **`see`** [Nil.of](nil.md#static-of)
 
@@ -85,7 +85,7 @@ ___
 
 ▸ **isNil**(`val`: any): *val is Nil*
 
-*Defined in [src/monads/primitive/nil.monad.ts:39](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L39)*
+*Defined in [src/monads/primitive/nil.monad.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L39)*
 
 Indicates if passed value is an instance of `Nil`
 ```ts
@@ -110,7 +110,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/nil.monad.ts:54](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L54)*
+*Defined in [src/monads/primitive/nil.monad.ts:54](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/nil.monad.ts#L54)*
 
 Returns a Nil, regardless of value.
 

@@ -64,7 +64,7 @@ const asObj: {foo: 'bar'} = dict.toObject();
 
 *Overrides [List](list.md).[isEmpty](list.md#isempty)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:79](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L79)*
+*Defined in [src/monads/primitive/dict.monad.ts:79](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L79)*
 
 Dict is empty if it has zero keys
 
@@ -76,7 +76,7 @@ ___
 
 • **get keys**(): *[List](list.md)‹K›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:60](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L60)*
+*Defined in [src/monads/primitive/dict.monad.ts:60](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L60)*
 
 **Returns:** *[List](list.md)‹K›*
 
@@ -86,7 +86,7 @@ ___
 
 • **get values**(): *[List](list.md)‹V›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:68](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L68)*
+*Defined in [src/monads/primitive/dict.monad.ts:68](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L68)*
 
 **Returns:** *[List](list.md)‹V›*
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **getKey**(`index`: number): *[Maybe](maybe.md)‹K›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:142](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L142)*
+*Defined in [src/monads/primitive/dict.monad.ts:142](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L142)*
 
 Gets key at index
 
@@ -114,7 +114,7 @@ ___
 
 ▸ **getValue**‹**O**, **R**›(`key`: O): *[Maybe](maybe.md)‹R›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:159](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L159)*
+*Defined in [src/monads/primitive/dict.monad.ts:159](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L159)*
 
 Gets value of named key
 
@@ -140,7 +140,7 @@ ___
 
 *Overrides [List](list.md).[hasIndex](list.md#hasindex)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:133](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L133)*
+*Defined in [src/monads/primitive/dict.monad.ts:133](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L133)*
 
 Checks if a key exists and a given index
 
@@ -158,7 +158,7 @@ ___
 
 ▸ **hasKey**(`key`: K): *boolean*
 
-*Defined in [src/monads/primitive/dict.monad.ts:151](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L151)*
+*Defined in [src/monads/primitive/dict.monad.ts:151](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L151)*
 
 Checks if named key exists
 
@@ -176,7 +176,7 @@ ___
 
 ▸ **merge**‹**O**›(`other`: O): *[Dict](dict.md)‹T & O›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:222](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L222)*
+*Defined in [src/monads/primitive/dict.monad.ts:222](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L222)*
 
 Merges two Dicts
 ```ts
@@ -204,7 +204,7 @@ ___
 
 ▸ **omit**‹**K2**, **R**›(`other`: K2): *[Dict](dict.md)‹R›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:202](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L202)*
+*Defined in [src/monads/primitive/dict.monad.ts:202](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L202)*
 
 Omits a key from the Dict
 ```ts
@@ -229,7 +229,7 @@ Name | Type |
 
 ▸ **omit**‹**K2**, **I**, **R**›(`other`: K2): *R*
 
-*Defined in [src/monads/primitive/dict.monad.ts:204](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L204)*
+*Defined in [src/monads/primitive/dict.monad.ts:204](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L204)*
 
 Omits a key from the Dict
 ```ts
@@ -260,7 +260,7 @@ ___
 
 ▸ **setValue**‹**O**›(`key`: O, `val`: V): *[Dict](dict.md)‹T›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:168](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L168)*
+*Defined in [src/monads/primitive/dict.monad.ts:168](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L168)*
 
 Sets value of named key
 
@@ -285,7 +285,7 @@ ___
 
 *Overrides [Monad](monad.md).[toJSON](monad.md#tojson)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:249](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L249)*
+*Defined in [src/monads/primitive/dict.monad.ts:249](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L249)*
 
 **Returns:** *any*
 
@@ -295,7 +295,7 @@ ___
 
 ▸ **toList**(): *[List](list.md)‹[K, V]›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:245](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L245)*
+*Defined in [src/monads/primitive/dict.monad.ts:245](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L245)*
 
 Converts Dict to List
 ```ts
@@ -311,7 +311,7 @@ ___
 
 ▸ **toObject**‹**O**, **R**›(): *R*
 
-*Defined in [src/monads/primitive/dict.monad.ts:182](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L182)*
+*Defined in [src/monads/primitive/dict.monad.ts:182](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L182)*
 
 Converts original value to it's Object representation
 
@@ -331,7 +331,7 @@ ___
 
 *Overrides [List](list.md).[toString](list.md#tostring)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:173](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L173)*
+*Defined in [src/monads/primitive/dict.monad.ts:173](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L173)*
 
 **Returns:** *string*
 
@@ -343,7 +343,7 @@ ___
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:121](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L121)*
+*Defined in [src/monads/primitive/dict.monad.ts:121](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L121)*
 
 Coerces any value to a Dict, if not one already
 
@@ -367,7 +367,7 @@ Name | Type |
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:122](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L122)*
+*Defined in [src/monads/primitive/dict.monad.ts:122](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L122)*
 
 **Type parameters:**
 
@@ -387,7 +387,7 @@ Name | Type |
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:123](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L123)*
+*Defined in [src/monads/primitive/dict.monad.ts:123](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L123)*
 
 **Type parameters:**
 
@@ -405,7 +405,7 @@ Name | Type |
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:124](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L124)*
+*Defined in [src/monads/primitive/dict.monad.ts:124](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L124)*
 
 **Type parameters:**
 
@@ -425,7 +425,7 @@ ___
 
 ▸ **isDict**‹**T**›(`val`: any): *val is Dict<T>*
 
-*Defined in [src/monads/primitive/dict.monad.ts:91](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L91)*
+*Defined in [src/monads/primitive/dict.monad.ts:91](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L91)*
 
 Indicates if passed value is an instance of `Dict`
 ```ts
@@ -454,7 +454,7 @@ ___
 
 *Overrides [List](list.md).[of](list.md#static-of)*
 
-*Defined in [src/monads/primitive/dict.monad.ts:109](https://github.com/neo-technology/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L109)*
+*Defined in [src/monads/primitive/dict.monad.ts:109](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L109)*
 
 Returns a Dict representing the passed value as a Map.
 

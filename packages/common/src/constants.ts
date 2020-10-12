@@ -25,7 +25,7 @@ export const DBMS_DIR_NAME = 'dbmss';
 export const BACKUPS_DIR_NAME = 'backups';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
-// @todo: this should be generated when installing daedalus instance
+// @todo: this should be generated when installing relate instance
 export const RELATE_TOKEN_SALT_FILE_NAME = 'relate.secret.key';
 export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60;
 export const DISCOVER_DBMS_THROTTLE_MS = 500;
