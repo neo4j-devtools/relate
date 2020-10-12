@@ -19,9 +19,11 @@
         "clean": "rimraf dist",
         "build": "tsc",
         "build:clean": "run-s clean build",
-        "generate:docs": "typedoc",
         "start": "tsc -w",
-        "test": "jest"
+        "test": "jest",
+        "generate:docs": "typedoc",
+        "add:docs": "git add documentation",
+        "version": "run-s generate:docs add:docs"
     },
     "dependencies": {
         "lodash": "4.17.19"

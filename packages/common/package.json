@@ -22,7 +22,9 @@
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
-        "generate:docs": "typedoc"
+        "generate:docs": "typedoc",
+        "add:docs": "git add documentation",
+        "version": "run-s generate:docs add:docs"
     },
     "devDependencies": {
         "@nestjs/common": "7.0.8",
