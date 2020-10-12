@@ -48,8 +48,13 @@ export class AuthService {
                 return;
             }
 
+            // Use the client URL otherwise fallback to the Relate server URL.
+            const requestUrl =
+                req.get('origin') && req.get('origin') !== 'null' ? req.get('origin')! : environment.httpOrigin;
+            const requestHost = new URL(requestUrl).host;
+
             try {
-                await environment.verifyAPIToken(req.hostname, clientId, apiToken);
+                await environment.verifyAPIToken(requestHost, clientId, apiToken);
                 next();
             } catch (e) {
                 res.clearCookie(CLIENT_ID_HEADER);

@@ -26,5 +26,9 @@ export default class UpgradeCommand extends BaseCommand {
             default: false,
             description: 'Prevent caching of the downloaded DBMS',
         }),
+        'no-migration': flags.boolean({
+            default: false,
+            description: 'Prevent migrating the data to new formats',
+        }),
     };
 }

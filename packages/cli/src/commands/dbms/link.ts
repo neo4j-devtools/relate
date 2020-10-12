@@ -25,7 +25,7 @@ export default class LinkCommand extends BaseCommand {
     ];
 
     static flags = {
-        confirm: flags.string({
+        confirm: flags.boolean({
             char: 'y',
             description: 'Confirm DBMS configuration changes',
             required: REQUIRED_FOR_SCRIPTS,
