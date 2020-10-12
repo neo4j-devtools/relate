@@ -3,9 +3,9 @@
 CLI tool for interacting with the Neo4j platform.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/cli.svg)](https://npmjs.org/package/cli)
-[![Downloads/week](https://img.shields.io/npm/dw/cli.svg)](https://npmjs.org/package/cli)
-[![License](https://img.shields.io/npm/l/cli.svg)](https://github.com/neo-technology/relate/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/cli.svg)](https://npmjs.org/package/@relate/cli)
+[![Downloads/week](https://img.shields.io/npm/dw/@relate/cli.svg)](https://npmjs.com/package/@relate/cli)
+[![License](https://img.shields.io/npm/l/@relate/cli.svg)](https://github.com/neo4j-devtools/relate/blob/master/package.json)
 
 - [@relate/cli](#relatecli)
 - [Usage](#usage)
@@ -34,7 +34,7 @@ To to run the CLI while developing, you can either execute the run script on the
 `cli` package
 
 ```shell
-daedalus$ cd packages/cli
+relate$ cd packages/cli
 cli$ npm run build
 cli$ ./bin/run --help
 ```
@@ -42,8 +42,8 @@ cli$ ./bin/run --help
 Or link the entire repository and have access to the `relate` command globally.
 
 ```shell
-daedalus$ npm link
-daedalus$ relate --help
+relate$ npm link
+relate$ relate --help
 ```
 
 # Commands

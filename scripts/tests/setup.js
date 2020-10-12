@@ -1,6 +1,7 @@
 const path = require('path');
 const tar = require('tar');
 const fse = require('fs-extra');
+const ora = require('ora');
 
 const envSetup = require('../../e2e/jest-global.setup');
 const {TestDbmss, DBMS_DIR_NAME, envPaths, download, PropertiesFile} = require('../../packages/common');
@@ -33,11 +34,13 @@ async function populateDistributionCache(env) {
 
     // Running the installations in sequence to avoid hogging resources
     // (we're decompressing archives during the installation).
-    for (let version of versions) {
+    for (const version of versions) {
         // This step is to populate the cache with the versions we want to test
         // (in case the cache is not already populated). The DBMS is uninstalled
         // right after as we're not really doing anything with it, we only care about
         // the cached directory we get during installation.
+
+        const spinner = ora(`Caching Neo4j ${version}`).start();
         await env.dbmss.install(
             `global-setup-${version}`,
             version,
@@ -46,16 +49,21 @@ async function populateDistributionCache(env) {
             false,
         );
         await env.dbmss.uninstall(`global-setup-${version}`);
+        spinner.succeed();
     }
 }
 
 async function globalSetup() {
+
+    const spinner = ora(`Preparing environment`).start();
     await fse.emptyDir(envPaths().data);
     await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
 
     const env = (await TestDbmss.init('relate')).environment;
+    spinner.succeed();
+
     await populateDistributionCache(env);
 
     // Some tests require an archive of the DBMS to be passed to them, and
@@ -81,4 +89,5 @@ async function globalSetup() {
     );
 }
 
+console.log("Setting up tests");
 globalSetup().then(() => console.log('Setup complete'));

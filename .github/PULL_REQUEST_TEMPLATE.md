@@ -1,5 +1,5 @@
 ### Please check if the PR fulfills these requirements
-- [ ] The commit message follows our [guidelines](https://github.com/neo-technology/relate/blob/master/CONTRIBUTING.md)
+- [ ] The commit message follows our [guidelines](https://github.com/neo4j-devtools/relate/blob/master/CONTRIBUTING.md)
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Docs have been added / updated (for bug fixes / features)
 

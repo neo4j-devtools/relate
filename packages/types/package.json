@@ -4,10 +4,10 @@
     "description": "Relate type system",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
-    "homepage": "https://github.com/neo-technology/relate#readme",
+    "homepage": "https://github.com/neo4j-devtools/relate#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/neo-technology/relate.git"
+        "url": "git+https://github.com/neo4j-devtools/relate.git"
     },
     "publishConfig": {
         "access": "public"
@@ -19,9 +19,11 @@
         "clean": "rimraf dist",
         "build": "tsc",
         "build:clean": "run-s clean build",
-        "generate:docs": "typedoc",
         "start": "tsc -w",
-        "test": "jest"
+        "test": "jest",
+        "generate:docs": "typedoc",
+        "add:docs": "git add documentation",
+        "version": "run-s generate:docs add:docs"
     },
     "dependencies": {
         "lodash": "4.17.19"

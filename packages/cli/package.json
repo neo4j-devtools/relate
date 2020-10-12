@@ -4,10 +4,10 @@
     "version": "1.0.2-alpha.11",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
-    "homepage": "https://github.com/neo-technology/relate#readme",
+    "homepage": "https://github.com/neo4j-devtools/relate#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/neo-technology/relate.git"
+        "url": "git+https://github.com/neo4j-devtools/relate.git"
     },
     "publishConfig": {
         "access": "public"
