@@ -32,7 +32,7 @@
 
 ▸ **addDbms**(`projectId`: string, `dbmsName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:99](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L99)*
+Defined in projects/projects.abstract.ts:99
 
 Adds DBMS to given project
 
@@ -54,7 +54,7 @@ ___
 
 ▸ **addFile**(`projectId`: string, `source`: string, `destination?`: undefined | string, `overwrite?`: undefined | false | true): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L56)*
+Defined in projects/projects.abstract.ts:56
 
 Adds file (copy) to project
 
@@ -75,7 +75,7 @@ ___
 
 ▸ **create**(`manifest`: IProjectInput, `path?`: undefined | string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:23](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L23)*
+Defined in projects/projects.abstract.ts:23
 
 Creates new project
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **get**(`nameOrID`: string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:29](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L29)*
+Defined in projects/projects.abstract.ts:29
 
 Gets a project by name
 
@@ -112,7 +112,7 @@ ___
 
 ▸ **link**(`filePath`: string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:41](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L41)*
+Defined in projects/projects.abstract.ts:41
 
 Links an existing project
 
@@ -130,7 +130,7 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProject››*
 
-*Defined in [projects/projects.abstract.ts:35](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L35)*
+Defined in projects/projects.abstract.ts:35
 
 List all available projects
 
@@ -148,7 +148,7 @@ ___
 
 ▸ **listDbmss**(`projectId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProjectDbms››*
 
-*Defined in [projects/projects.abstract.ts:89](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L89)*
+Defined in projects/projects.abstract.ts:89
 
 Lists DBMSs for given project
 
@@ -167,7 +167,7 @@ ___
 
 ▸ **listFiles**(`projectId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IRelateFile››*
 
-*Defined in [projects/projects.abstract.ts:48](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L48)*
+Defined in projects/projects.abstract.ts:48
 
 List files for given project
 
@@ -186,7 +186,7 @@ ___
 
 ▸ **removeDbms**(`projectId`: string, `dbmsName`: string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:112](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L112)*
+Defined in projects/projects.abstract.ts:112
 
 removes DBMS from given project
 
@@ -205,7 +205,7 @@ ___
 
 ▸ **removeFile**(`projectId`: string, `relativePath`: string): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:82](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L82)*
+Defined in projects/projects.abstract.ts:82
 
 Removes file from given project
 
@@ -224,7 +224,7 @@ ___
 
 ▸ **writeFile**(`projectId`: string, `destination`: string, `data`: string | Buffer, `writeFlag?`: WriteFileFlag): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:70](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L70)*
+Defined in projects/projects.abstract.ts:70
 
 Adds file (write) to project
 

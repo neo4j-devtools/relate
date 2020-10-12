@@ -26,7 +26,7 @@
 
 ▸ **create**(`entityType`: ENTITY_TYPES, `entityNameOrId`: string, `entityMeta?`: any): *Promise‹IRelateBackup›*
 
-*Defined in [backups/backup.abstract.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L20)*
+Defined in backups/backup.abstract.ts:20
 
 Creates a backup of a relate entity
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **get**(`backupNameOrId`: string): *Promise‹IRelateBackup›*
 
-*Defined in [backups/backup.abstract.ts:33](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L33)*
+Defined in backups/backup.abstract.ts:33
 
 Gets a backup
 
@@ -64,7 +64,7 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IRelateBackup››*
 
-*Defined in [backups/backup.abstract.ts:45](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L45)*
+Defined in backups/backup.abstract.ts:45
 
 List all backups
 
@@ -82,7 +82,7 @@ ___
 
 ▸ **remove**(`backupNameOrId`: string): *Promise‹IRelateBackup›*
 
-*Defined in [backups/backup.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L39)*
+Defined in backups/backup.abstract.ts:39
 
 Removes a backup
 
@@ -100,7 +100,7 @@ ___
 
 ▸ **restore**(`filePath`: string, `outputPath?`: undefined | string): *Promise‹object›*
 
-*Defined in [backups/backup.abstract.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L27)*
+Defined in backups/backup.abstract.ts:27
 
 Restores a backup from path
 
