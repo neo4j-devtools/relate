@@ -44,7 +44,7 @@ const plain: boolean = bool.get();
 
 ▪ **FALSE**: *[Bool](bool.md)‹›* = new Bool(false)
 
-*Defined in [src/monads/primitive/bool.monad.ts:17](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L17)*
+Defined in src/monads/primitive/bool.monad.ts:17
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 ▪ **TRUE**: *[Bool](bool.md)‹›* = new Bool(true)
 
-*Defined in [src/monads/primitive/bool.monad.ts:15](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L15)*
+Defined in src/monads/primitive/bool.monad.ts:15
 
 ## Accessors
 
@@ -62,7 +62,7 @@ ___
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:29](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L29)*
+Defined in src/monads/primitive/bool.monad.ts:29
 
 Bool is never empty
 
@@ -76,7 +76,7 @@ Bool is never empty
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:75](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L75)*
+Defined in src/monads/primitive/bool.monad.ts:75
 
 Coerces anything into a Bool
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **isBool**(`val`: any): *val is Bool*
 
-*Defined in [src/monads/primitive/bool.monad.ts:41](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L41)*
+Defined in src/monads/primitive/bool.monad.ts:41
 
 Indicates if passed value is an instance of `Bool`
 ```ts
@@ -121,7 +121,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-*Defined in [src/monads/primitive/bool.monad.ts:65](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L65)*
+Defined in src/monads/primitive/bool.monad.ts:65
 
 Returns a Bool representing if passed value is "empty".
 
