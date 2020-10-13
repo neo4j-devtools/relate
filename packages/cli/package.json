@@ -30,6 +30,7 @@
         "@oclif/config": "1.17.0",
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
+        "@oclif/plugin-update": "1.3.10",
         "@relate/common": "^1.0.2-alpha.12",
         "@relate/types": "^1.0.2-alpha.10",
         "cli-ux": "5.5.0",
@@ -53,7 +54,10 @@
         "@types/node": "10.17.13",
         "@types/node-fetch": "2.5.7",
         "@types/semver": "7.3.1",
+        "aws-sdk": "2.771.0",
         "chai": "4.2.0",
+        "cross-var": "1.1.0",
+        "dotenv-cli": "4.0.0",
         "globby": "10.0.2",
         "jest": "26.1.0",
         "npm-run-all": "4.1.5",
@@ -96,8 +100,14 @@
         "bin": "relate",
         "plugins": [
             "@oclif/plugin-help",
-            "@oclif/plugin-autocomplete"
-        ]
+            "@oclif/plugin-autocomplete",
+            "@oclif/plugin-update"
+        ],
+        "update": {
+            "s3": {
+                "bucket": "dist.neo4j.org/neo4j-relate"
+            }
+        }
     },
     "scripts": {
         "dev-cli": "cross-env NODE_PATH=./node_modules oclif-dev",
@@ -113,6 +123,9 @@
         "test": "jest",
         "add:docs": "git add README.md docs",
         "version": "run-s generate:docs add:docs",
-        "watch": "tsc -w"
+        "watch": "tsc -w",
+        "oclif:dist": "run-s oclif:pack oclif:s3",
+        "oclif:pack": "cross-env NODE_PATH=./node_modules oclif-dev pack",
+        "oclif:s3": "dotenv cross-var oclif-dev publish"
     }
 }

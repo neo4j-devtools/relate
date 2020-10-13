@@ -20,7 +20,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.12 linux-x64 node-v12.19.0
+@relate/cli/1.0.2-alpha.12 darwin-x64 node-v12.18.3
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -46,6 +46,18 @@ relate$ npm link
 relate$ relate --help
 ```
 
+## Packaging for distribution
+
+Packaging uses `oclif-dev` to prepare and distribute various installable packages.
+
+Requires:
+
+- `p7zip` 
+  - `brew install p7zip`
+  - windows? linux?
+- .. what else?
+
+
 # Commands
 
 <!-- commands -->
@@ -60,5 +72,6 @@ relate$ relate --help
 * [`relate extension`](./docs/extension.md) - Manage relate extensions
 * [`relate help`](./docs/help.md) - display help for relate
 * [`relate project`](./docs/project.md) - Manage relate projects
+* [`relate update`](./docs/update.md) - update the relate CLI
 
 <!-- commandsstop -->
