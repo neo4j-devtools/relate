@@ -12,7 +12,7 @@ Managed sets of related resources and services, which may be local or remote.
 
 ## `relate environment:api-token [CLIENTID]`
 
-Generate API token for GraphQL access to Relate
+Generate API token for HTTP access to Relate
 
 ```
 USAGE
