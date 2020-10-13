@@ -30,7 +30,7 @@ async function setupApoc(dbmsRootPath) {
 }
 
 async function populateDistributionCache(env) {
-    const versions = List.of([TestDbmss.NEO4J_VERSION, '3.5.19', '4.0.5', '4.1.0']);
+    const versions = List.of([TestDbmss.NEO4J_VERSION, '3.5.19', '4.0.5', '4.0.6', '4.1.0']);
 
     // Running the installations in sequence to avoid hogging resources
     // (we're decompressing archives during the installation).

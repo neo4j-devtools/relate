@@ -8,12 +8,14 @@ describe('LocalDbmss - upgrade', () => {
     let env: EnvironmentAbstract;
     let dbms404: IDbmsInfo;
     let dbms35: IDbmsInfo;
+    let dbms352: IDbmsInfo;
 
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
         env = testDbmss.environment;
         dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
         dbms35 = await env.dbmss.install(testDbmss.createName(), '3.5.19');
+        dbms352 = await env.dbmss.install(testDbmss.createName(), '3.5.19');
     });
 
     afterAll(async () => {
@@ -54,10 +56,38 @@ describe('LocalDbmss - upgrade', () => {
         expect(upgraded.id).toEqual(dbms404.id);
     });
 
+    test('Preserves config when upgrading to higher', async () => {
+        const config = await env.dbmss.getDbmsConfig(dbms404.id);
+
+        config.set('foo', 'bar');
+        await config.flush();
+
+        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.6', true, false, false);
+        const upgradedConfig = await env.dbmss.getDbmsConfig(dbms404.id);
+
+        expect(upgraded.version).toEqual('4.0.6');
+        expect(upgraded.id).toEqual(dbms404.id);
+        expect(upgradedConfig.get('foo')).toEqual('bar');
+    });
+
     test('Upgrading major', async () => {
         const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', true, false, false);
 
         expect(upgraded.version).toEqual('4.1.0');
         expect(upgraded.id).toEqual(dbms35.id);
+    });
+
+    test('Preserves config when upgrading major', async () => {
+        const config = await env.dbmss.getDbmsConfig(dbms352.id);
+
+        config.set('foo', 'bar');
+        await config.flush();
+
+        const upgraded = await env.dbmss.upgrade(dbms352.id, '4.1.0', true, false, false);
+        const upgradedConfig = await env.dbmss.getDbmsConfig(dbms352.id);
+
+        expect(upgraded.version).toEqual('4.1.0');
+        expect(upgraded.id).toEqual(dbms352.id);
+        expect(upgradedConfig.get('foo')).toEqual('bar');
     });
 });
