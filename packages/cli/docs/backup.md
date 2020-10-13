@@ -1,7 +1,7 @@
 `relate backup`
 ===============
 
-Archives of Relate-managed resources (though not Neo4j DBMS; see "db:dump").
+Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
 
 * [`relate backup:create ENTITYNAMEORID`](#relate-backupcreate-entitynameorid)
 * [`relate backup:list`](#relate-backuplist)

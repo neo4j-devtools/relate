@@ -20,7 +20,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.12 linux-x64 node-v12.19.0
+@relate/cli/1.0.2-alpha.12 darwin-x64 node-v12.18.3
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -53,7 +53,7 @@ relate$ relate --help
 
 * [`relate app`](./docs/app.md) - Single page web apps.
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
-* [`relate backup`](./docs/backup.md) - Archives of Relate-managed resources (though not Neo4j DBMS; see "db:dump").
+* [`relate backup`](./docs/backup.md) - Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
 * [`relate db`](./docs/db.md) - Individual databases within a DBMS.
 * [`relate dbms`](./docs/dbms.md) - Neo4j DBMS installations.
 * [`relate environment`](./docs/environment.md) - Managed sets of related resources and services, which may be local or remote.
