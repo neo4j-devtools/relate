@@ -10,7 +10,7 @@ export default class APITokenCommand extends BaseCommand {
     commandModule = APITokenModule;
 
     // eslint-disable-next-line max-len
-    static description = `Generate API token for GraphQL access to Relate`;
+    static description = `Generate API token for HTTP access to Relate`;
 
     static examples = [
         '$ relate env:api-token',

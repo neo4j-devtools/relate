@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "Create, manage and use Neo4j graphs from the command line.",
-    "version": "1.0.2-alpha.11",
+    "version": "1.0.2-alpha.12",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo4j-devtools/relate#readme",
@@ -30,23 +30,20 @@
         "@oclif/config": "1.17.0",
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
-        "@relate/common": "^1.0.2-alpha.11",
-        "@relate/types": "^1.0.2-alpha.9",
+        "@relate/common": "^1.0.2-alpha.12",
+        "@relate/types": "^1.0.2-alpha.10",
         "chalk": "4.1.0",
         "cli-ux": "5.5.0",
         "cross-env": "7.0.2",
         "enquirer": "2.3.6",
         "fs-extra": "9.0.1",
         "graphql": "15.1.0",
-        "indent-string": "4.0.0",
         "lodash": "4.17.20",
         "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.3",
         "semver": "7.3.2",
-        "strip-ansi": "6.0.0",
-        "tslib": "1.10.0",
-        "wrap-ansi": "7.0.0"
+        "tslib": "1.10.0"
     },
     "devDependencies": {
         "@oclif/dev-cli": "1.22.2",
@@ -81,7 +78,7 @@
                 "description": "Single page web apps.\nApps can easily connect to any Neo4j which is managed by Relate. Install the @relate/web package for local hosting."
             },
             "backup": {
-                "description": "Archives of Relate-managed resources (though not Neo4j DBMS; see \"db:dump\")."
+                "description": "Archives of Relate-managed resources (though not Neo4j databases; see \"db:dump\")."
             },
             "db": {
                 "description": "Individual databases within a DBMS."
