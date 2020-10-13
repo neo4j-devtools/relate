@@ -205,9 +205,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         try {
             const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
-            const upgradedConfig = await this.getDbmsConfig(upgradedDbms.id);
+            const upgradedConfigFileName = path.join(
+                this.getDbmsRootPath(upgradedDbms.id),
+                NEO4J_CONF_DIR,
+                NEO4J_CONF_FILE,
+            );
 
-            await dbmsUpgradeConfigs(dbms, upgradedDbms, upgradedConfig);
+            await dbmsUpgradeConfigs(dbms, upgradedDbms, upgradedConfigFileName);
+
+            const upgradedConfig = await this.getDbmsConfig(upgradedDbms.id);
 
             /**
              * Run Neo4j migration?
