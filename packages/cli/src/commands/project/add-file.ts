@@ -10,7 +10,7 @@ export default class AddFileCommand extends BaseCommand {
 
     commandModule = AddFileModule;
 
-    static description = 'Adds a file to a project';
+    static description = 'Add a file to a project\nUseful for remote environments.';
 
     static examples = [
         '$ relate project:add-file',

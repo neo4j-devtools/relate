@@ -9,7 +9,7 @@ export default class UpgradeCommand extends BaseCommand {
 
     commandModule = UpgradeModule;
 
-    static description = "Upgrade an installed DBMS's version";
+    static description = 'Upgrade an installed DBMS to a newer version';
 
     static examples = [
         '$ relate dbms:upgrade',

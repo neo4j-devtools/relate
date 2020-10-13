@@ -8,7 +8,7 @@ export default class RemoveFileCommand extends BaseCommand {
 
     commandModule = RemoveFileModule;
 
-    static description = 'Removes a file from a project';
+    static description = 'Remove a file from a project';
 
     static examples = [
         '$ relate project:remove-file',

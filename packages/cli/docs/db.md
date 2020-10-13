@@ -1,7 +1,7 @@
 `relate db`
 ===========
 
-Manage Neo4j Databases
+Individual databases within a DBMS.
 
 * [`relate db:create NAME`](#relate-dbcreate-name)
 * [`relate db:drop [NAME]`](#relate-dbdrop-name)
@@ -12,7 +12,7 @@ Manage Neo4j Databases
 
 ## `relate db:create NAME`
 
-Create a new database
+Create a new database in a DBMS
 
 ```
 USAGE
@@ -41,7 +41,7 @@ _See code: [dist/commands/db/create.ts](https://github.com/neo4j-devtools/relate
 
 ## `relate db:drop [NAME]`
 
-Drop a database
+Drop a database from a DBMS
 
 ```
 USAGE
@@ -70,7 +70,7 @@ _See code: [dist/commands/db/drop.ts](https://github.com/neo4j-devtools/relate/b
 
 ## `relate db:dump DBMS`
 
-Dump a database from a Neo4j DBMS
+Dump data from database
 
 ```
 USAGE
@@ -95,7 +95,7 @@ _See code: [dist/commands/db/dump.ts](https://github.com/neo4j-devtools/relate/b
 
 ## `relate db:exec DBMS`
 
-Dump a database from a Neo4j DBMS
+Execute a query against a database
 
 ```
 USAGE
@@ -121,7 +121,7 @@ _See code: [dist/commands/db/exec.ts](https://github.com/neo4j-devtools/relate/b
 
 ## `relate db:list`
 
-List a database
+List databases within a DBMS
 
 ```
 USAGE

@@ -7,7 +7,7 @@ export default class RemoveCommand extends BaseCommand {
 
     commandModule = RemoveModule;
 
-    static description = 'Removes a backup';
+    static description = 'Remove a resource backup';
 
     static examples = ['$ relate backup:remove <backup-id-or-path>', '$ relate backup:remove -e environment-name'];
 

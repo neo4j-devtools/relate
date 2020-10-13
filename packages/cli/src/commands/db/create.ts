@@ -9,7 +9,7 @@ export default class CreateCommand extends BaseCommand {
 
     commandModule = CreateModule;
 
-    static description = 'Create a new database';
+    static description = 'Create a new database in a DBMS';
 
     static examples = [
         '$ relate db:create',

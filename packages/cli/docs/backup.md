@@ -1,7 +1,7 @@
 `relate backup`
 ===============
 
-Create a new backup
+Archives of Relate-managed resources (though not Neo4j DBMS; see "db:dump").
 
 * [`relate backup:create ENTITYNAMEORID`](#relate-backupcreate-entitynameorid)
 * [`relate backup:list`](#relate-backuplist)
@@ -10,7 +10,7 @@ Create a new backup
 
 ## `relate backup:create ENTITYNAMEORID`
 
-Create a new backup
+Create a new resource backup
 
 ```
 USAGE
@@ -33,7 +33,7 @@ _See code: [dist/commands/backup/create.ts](https://github.com/neo4j-devtools/re
 
 ## `relate backup:list`
 
-Lists backups
+List resource backups
 
 ```
 USAGE
@@ -60,7 +60,7 @@ _See code: [dist/commands/backup/list.ts](https://github.com/neo4j-devtools/rela
 
 ## `relate backup:remove BACKUPID`
 
-Removes a backup
+Remove a resource backup
 
 ```
 USAGE
@@ -81,7 +81,7 @@ _See code: [dist/commands/backup/remove.ts](https://github.com/neo4j-devtools/re
 
 ## `relate backup:restore BACKUPIDORPATH [OUTPUTPATH]`
 
-Restore backup
+Restore resource from a backup
 
 ```
 USAGE

@@ -1,13 +1,14 @@
 `relate app`
 ============
 
-Manage Graph Apps
+Single page web apps.
+Apps can easily connect to any Neo4j which is managed by Relate. Install the @relate/web package for local hosting.
 
 * [`relate app:open [APPNAME]`](#relate-appopen-appname)
 
 ## `relate app:open [APPNAME]`
 
-Open Graph App
+Open app using your default web browser.
 
 ```
 USAGE
@@ -19,6 +20,9 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -p, --project=project          Name of a project context to connect with
   -u, --user=user                The Neo4j DBMS user to automatically connect with, assuming an access token exists
+
+DESCRIPTION
+  @relate/web must already be installed and running for this to work.
 
 EXAMPLES
   $ relate app:open

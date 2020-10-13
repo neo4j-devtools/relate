@@ -12,7 +12,7 @@ export default class InstallCommand extends BaseCommand {
 
     static aliases = ['ext:install'];
 
-    static description = 'Install an extension';
+    static description = 'Install a Relate extension';
 
     static examples = [
         '$ relate ext:install',

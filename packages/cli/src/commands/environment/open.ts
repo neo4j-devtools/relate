@@ -9,7 +9,7 @@ export default class OpenCommand extends BaseCommand {
 
     commandModule = OpenModule;
 
-    static description = "Open an environment's configuration with the default editor";
+    static description = "Open an environment's configuration with your default editor";
 
     static examples = [
         '$ relate env:open',
