@@ -9,7 +9,7 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static description = 'List available Neo4j DBMSs in the selected environment';
+    static description = 'List installed Neo4j DBMSs';
 
     static examples = [
         '$ relate dbms:list',

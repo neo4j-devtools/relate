@@ -8,7 +8,7 @@ export default class ListFilesCommand extends BaseCommand {
 
     commandModule = ListFilesModule;
 
-    static description = 'Lists project files';
+    static description = 'List project files';
 
     static examples = [
         '$ relate project:list-files',

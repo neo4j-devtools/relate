@@ -9,7 +9,7 @@ export default class InstallCommand extends BaseCommand {
 
     commandModule = InstallModule;
 
-    static description = 'Install a Neo4j DBMS in the selected environment';
+    static description = 'Install a new Neo4j DBMS';
 
     static examples = [
         '$ relate dbms:install',

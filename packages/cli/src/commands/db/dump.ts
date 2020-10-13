@@ -9,7 +9,7 @@ export default class DumpCommand extends BaseCommand {
 
     commandModule = DumpModule;
 
-    static description = 'Dump a database from a Neo4j DBMS';
+    static description = 'Dump data from database';
 
     static examples = [
         '$ relate db:dump',

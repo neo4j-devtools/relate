@@ -7,9 +7,9 @@ export default class RemoveTagCommand extends BaseCommand {
 
     commandModule = RemoveTagModule;
 
-    static description = 'Remove tag from an existing DBMS';
+    static description = 'Remove tag from a DBMS';
 
-    static examples = ['$ relate dbms:remove-tag dbmsId "foo bar"'];
+    static examples = ['$ relate dbms:remove-tag dbmsId "waiting for approval"'];
 
     static args = [
         ARGS.DBMS,

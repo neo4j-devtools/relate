@@ -7,7 +7,7 @@ export default class RestoreCommand extends BaseCommand {
 
     commandModule = RestoreModule;
 
-    static description = 'Restore backup';
+    static description = 'Restore resource from a backup';
 
     static examples = [
         '$ relate backup:restore <backup-id-or-path>',

@@ -10,7 +10,7 @@ export default class OpenCommand extends BaseCommand {
 
     commandModule = OpenModule;
 
-    static description = 'Opens a project folder';
+    static description = "Open a project's folder";
 
     static examples = [
         '$ relate project:open',

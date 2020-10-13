@@ -10,7 +10,7 @@ export default class ListCommand extends BaseCommand {
 
     static aliases = ['ext:list'];
 
-    static description = 'Lists installed extensions';
+    static description = 'List installed Relate extensions';
 
     static examples = ['$ relate ext:list', '$ relate ext:list -e environment-name'];
 

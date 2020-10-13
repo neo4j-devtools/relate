@@ -9,9 +9,9 @@ export default class LinkCommand extends BaseCommand {
 
     commandModule = LinkModule;
 
-    static description = 'Link an existing DBMS (useful for development)';
+    static description = 'Link to an existing DBMS installation\nLinking a DBMS enables relate to manage it.';
 
-    static examples = ['$ relate dbms:link /path/to/target/dbms/dir "foo bar"'];
+    static examples = ['$ relate dbms:link /path/to/target/dbms/dir "related DBMS"'];
 
     static args = [
         {

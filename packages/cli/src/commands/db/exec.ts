@@ -9,7 +9,7 @@ export default class DumpCommand extends BaseCommand {
 
     commandModule = ExecModule;
 
-    static description = 'Dump a database from a Neo4j DBMS';
+    static description = 'Execute a query against a database';
 
     static examples = [
         '$ relate db:exec -f /path/to/cypher/file',

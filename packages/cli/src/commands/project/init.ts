@@ -9,7 +9,7 @@ export default class InitCommand extends BaseCommand {
 
     commandModule = InitModule;
 
-    static description = 'Create a new project';
+    static description = 'Initialize a new project';
 
     static examples = [
         '$ relate project:init /path/to/target/project/dir',

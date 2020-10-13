@@ -1,7 +1,7 @@
 `relate dbms`
 =============
 
-Manage Neo4j DBMSs
+Neo4j DBMS installations.
 
 * [`relate dbms:access-token DBMS`](#relate-dbmsaccess-token-dbms)
 * [`relate dbms:add-tag DBMS TAGNAME`](#relate-dbmsadd-tag-dbms-tagname)
@@ -42,7 +42,7 @@ _See code: [dist/commands/dbms/access-token.ts](https://github.com/neo4j-devtool
 
 ## `relate dbms:add-tag DBMS TAGNAME`
 
-Tag an existing DBMS
+Tag a DBMS
 
 ```
 USAGE
@@ -56,7 +56,7 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
 
 EXAMPLE
-  $ relate dbms:add-tag dbmsId "foo bar"
+  $ relate dbms:add-tag dbmsId "production"
 ```
 
 _See code: [dist/commands/dbms/add-tag.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.12/dist/commands/dbms/add-tag.ts)_
@@ -95,7 +95,7 @@ _See code: [dist/commands/dbms/info.ts](https://github.com/neo4j-devtools/relate
 
 ## `relate dbms:install VERSION`
 
-Install a Neo4j DBMS in the selected environment
+Install a new Neo4j DBMS
 
 ```
 USAGE
@@ -122,7 +122,7 @@ _See code: [dist/commands/dbms/install.ts](https://github.com/neo4j-devtools/rel
 
 ## `relate dbms:link FILEPATH DBMSNAME`
 
-Link an existing DBMS (useful for development)
+Link to an existing DBMS installation
 
 ```
 USAGE
@@ -131,15 +131,18 @@ USAGE
 OPTIONS
   -y, --confirm  (required) Confirm DBMS configuration changes
 
+DESCRIPTION
+  Linking a DBMS enables relate to manage it.
+
 EXAMPLE
-  $ relate dbms:link /path/to/target/dbms/dir "foo bar"
+  $ relate dbms:link /path/to/target/dbms/dir "related DBMS"
 ```
 
 _See code: [dist/commands/dbms/link.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.12/dist/commands/dbms/link.ts)_
 
 ## `relate dbms:list`
 
-List available Neo4j DBMSs in the selected environment
+List installed Neo4j DBMSs
 
 ```
 USAGE
@@ -189,7 +192,7 @@ _See code: [dist/commands/dbms/open.ts](https://github.com/neo4j-devtools/relate
 
 ## `relate dbms:remove-tag DBMS TAGNAME`
 
-Remove tag from an existing DBMS
+Remove tag from a DBMS
 
 ```
 USAGE
@@ -203,7 +206,7 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
 
 EXAMPLE
-  $ relate dbms:remove-tag dbmsId "foo bar"
+  $ relate dbms:remove-tag dbmsId "waiting for approval"
 ```
 
 _See code: [dist/commands/dbms/remove-tag.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.12/dist/commands/dbms/remove-tag.ts)_
@@ -256,7 +259,7 @@ _See code: [dist/commands/dbms/stop.ts](https://github.com/neo4j-devtools/relate
 
 ## `relate dbms:uninstall DBMS`
 
-Uninstall a Neo4j DBMS from the selected environment
+Uninstall a Neo4j DBMS
 
 ```
 USAGE
@@ -279,7 +282,7 @@ _See code: [dist/commands/dbms/uninstall.ts](https://github.com/neo4j-devtools/r
 
 ## `relate dbms:upgrade DBMS`
 
-Upgrade an installed DBMS's version
+Upgrade an installed DBMS to a newer version
 
 ```
 USAGE

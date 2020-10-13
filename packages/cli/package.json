@@ -1,6 +1,6 @@
 {
     "name": "@relate/cli",
-    "description": "CLI tool for interacting with the Neo4j platform.",
+    "description": "Create, manage and use Neo4j graphs from the command line.",
     "version": "1.0.2-alpha.12",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -32,6 +32,7 @@
         "@oclif/plugin-help": "3.2.0",
         "@relate/common": "^1.0.2-alpha.12",
         "@relate/types": "^1.0.2-alpha.10",
+        "chalk": "4.1.0",
         "cli-ux": "5.5.0",
         "cross-env": "7.0.2",
         "enquirer": "2.3.6",
@@ -70,24 +71,29 @@
     ],
     "oclif": {
         "commands": "./dist/commands",
+        "helpClass": "./dist/help",
+        "description": "Create, manage and use Neo4j graphs from the command line.\nNeo4j Relate is a set of project-oriented tools and services for working with the Neo4j graph platform.",
         "topics": {
             "app": {
-                "description": "Manage Graph Apps"
+                "description": "Single page web apps.\nApps can easily connect to any Neo4j which is managed by Relate. Install the @relate/web package for local hosting."
+            },
+            "backup": {
+                "description": "Archives of Relate-managed resources (though not Neo4j databases; see \"db:dump\")."
             },
             "db": {
-                "description": "Manage Neo4j Databases"
+                "description": "Individual databases within a DBMS."
             },
             "dbms": {
-                "description": "Manage Neo4j DBMSs"
+                "description": "Neo4j DBMS installations."
             },
             "environment": {
-                "description": "Manage relate environments"
+                "description": "Managed sets of related resources and services, which may be local or remote."
             },
             "extension": {
-                "description": "Manage relate extensions"
+                "description": "Extensions to the Relate framework."
             },
             "project": {
-                "description": "Manage relate projects"
+                "description": "Projects bring files and data together."
             }
         },
         "hooks": {

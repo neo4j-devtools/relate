@@ -9,7 +9,7 @@ export default class DropCommand extends BaseCommand {
 
     commandModule = DropModule;
 
-    static description = 'Drop a database';
+    static description = 'Drop a database from a DBMS';
 
     static examples = [
         '$ relate db:drop',

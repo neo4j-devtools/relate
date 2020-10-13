@@ -1,7 +1,7 @@
 `relate extension`
 ==================
 
-Manage relate extensions
+Extensions to the Relate framework.
 
 * [`relate extension:install [NAME]`](#relate-extensioninstall-name)
 * [`relate extension:link [FILEPATH]`](#relate-extensionlink-filepath)
@@ -10,7 +10,7 @@ Manage relate extensions
 
 ## `relate extension:install [NAME]`
 
-Install an extension
+Install a Relate extension
 
 ```
 USAGE
@@ -34,11 +34,14 @@ _See code: [dist/commands/extension/install.ts](https://github.com/neo4j-devtool
 
 ## `relate extension:link [FILEPATH]`
 
-Link an extension (useful for development)
+Link a Relate extension.
 
 ```
 USAGE
   $ relate extension:link [FILEPATH]
+
+DESCRIPTION
+  Useful for development.
 
 ALIASES
   $ relate ext:link
@@ -51,7 +54,7 @@ _See code: [dist/commands/extension/link.ts](https://github.com/neo4j-devtools/r
 
 ## `relate extension:list`
 
-Lists installed extensions
+List installed Relate extensions
 
 ```
 USAGE
@@ -72,7 +75,7 @@ _See code: [dist/commands/extension/list.ts](https://github.com/neo4j-devtools/r
 
 ## `relate extension:uninstall [EXTENSION]`
 
-Uninstall an extension
+Uninstall a Relate extension
 
 ```
 USAGE

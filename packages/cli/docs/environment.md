@@ -1,7 +1,7 @@
 `relate environment`
 ====================
 
-Manage relate environments
+Managed sets of related resources and services, which may be local or remote.
 
 * [`relate environment:api-token [CLIENTID]`](#relate-environmentapi-token-clientid)
 * [`relate environment:init`](#relate-environmentinit)
@@ -12,7 +12,7 @@ Manage relate environments
 
 ## `relate environment:api-token [CLIENTID]`
 
-Generate API token for a relate web API calls
+Generate API token for HTTP access to Relate
 
 ```
 USAGE
@@ -39,7 +39,7 @@ _See code: [dist/commands/environment/api-token.ts](https://github.com/neo4j-dev
 
 ## `relate environment:init`
 
-Create a new environment
+Initialize a new relate environment
 
 ```
 USAGE
@@ -63,7 +63,7 @@ _See code: [dist/commands/environment/init.ts](https://github.com/neo4j-devtools
 
 ## `relate environment:list`
 
-Lists all available environments
+List all available environments
 
 ```
 USAGE
@@ -80,7 +80,7 @@ _See code: [dist/commands/environment/list.ts](https://github.com/neo4j-devtools
 
 ## `relate environment:login [ENVIRONMENT]`
 
-Login into an environment
+Log in to an environment
 
 ```
 USAGE
@@ -101,7 +101,7 @@ _See code: [dist/commands/environment/login.ts](https://github.com/neo4j-devtool
 
 ## `relate environment:open [ENVIRONMENT]`
 
-Open an environment's configuration with the default editor
+Open an environment's configuration with your default editor
 
 ```
 USAGE

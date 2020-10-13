@@ -7,7 +7,7 @@ export default class RemoveDbmsCommand extends BaseCommand {
 
     commandModule = RemoveDbmsModule;
 
-    static description = 'Removes a dbms from a project';
+    static description = 'Remove a DBMS connection from a project';
 
     static examples = [
         '$ relate project:remove-dbms',

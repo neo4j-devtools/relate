@@ -9,7 +9,8 @@ export default class OpenCommand extends BaseCommand {
 
     commandModule = OpenModule;
 
-    static description = 'Open Graph App';
+    static description =
+        'Open app using your default web browser.\n@relate/web must already be installed and running for this to work.';
 
     static examples = [
         '$ relate app:open',

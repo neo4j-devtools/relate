@@ -20,7 +20,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.12 linux-x64 node-v12.19.0
+@relate/cli/1.0.2-alpha.12 darwin-x64 node-v12.18.3
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -51,14 +51,14 @@ relate$ relate --help
 <!-- commands -->
 # Command Topics
 
-* [`relate app`](./docs/app.md) - Manage Graph Apps
+* [`relate app`](./docs/app.md) - Single page web apps.
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
-* [`relate backup`](./docs/backup.md) - Create a new backup
-* [`relate db`](./docs/db.md) - Manage Neo4j Databases
-* [`relate dbms`](./docs/dbms.md) - Manage Neo4j DBMSs
-* [`relate environment`](./docs/environment.md) - Manage relate environments
-* [`relate extension`](./docs/extension.md) - Manage relate extensions
+* [`relate backup`](./docs/backup.md) - Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
+* [`relate db`](./docs/db.md) - Individual databases within a DBMS.
+* [`relate dbms`](./docs/dbms.md) - Neo4j DBMS installations.
+* [`relate environment`](./docs/environment.md) - Managed sets of related resources and services, which may be local or remote.
+* [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
 * [`relate help`](./docs/help.md) - display help for relate
-* [`relate project`](./docs/project.md) - Manage relate projects
+* [`relate project`](./docs/project.md) - Projects bring files and data together.
 
 <!-- commandsstop -->
