@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "Create, manage and use Neo4j graphs from the command line.",
-    "version": "1.0.2-alpha.12",
+    "version": "1.0.2-alpha.13",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo4j-devtools/relate#readme",
