@@ -10,7 +10,7 @@ export default class CreateCommand extends BaseCommand {
 
     commandModule = CreateModule;
 
-    static description = 'Create a new backup';
+    static description = 'Create a new resource backup';
 
     static examples = [
         '$ relate backup:create',

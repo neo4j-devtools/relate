@@ -7,7 +7,7 @@ export default class UninstallCommand extends BaseCommand {
 
     commandModule = UninstallModule;
 
-    static description = 'Uninstall a Neo4j DBMS from the selected environment';
+    static description = 'Uninstall a Neo4j DBMS';
 
     static examples = [
         '$ relate dbms:uninstall',

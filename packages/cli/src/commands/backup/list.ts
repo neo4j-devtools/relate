@@ -11,7 +11,7 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static description = 'Lists backups';
+    static description = 'List resource backups';
 
     static examples = [
         '$ relate backup:list',

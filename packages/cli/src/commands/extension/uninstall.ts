@@ -10,7 +10,7 @@ export default class UninstallCommand extends BaseCommand {
 
     static aliases = ['ext:uninstall'];
 
-    static description = 'Uninstall an extension';
+    static description = 'Uninstall a Relate extension';
 
     static examples = [
         '$ relate ext:uninstall',

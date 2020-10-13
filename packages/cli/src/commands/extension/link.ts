@@ -8,7 +8,7 @@ export default class LinkCommand extends BaseCommand {
 
     static aliases = ['ext:link'];
 
-    static description = 'Link an extension (useful for development)';
+    static description = 'Link a Relate extension.\nUseful for development.';
 
     static examples = ['$ relate ext:link file/path/to/extension'];
 

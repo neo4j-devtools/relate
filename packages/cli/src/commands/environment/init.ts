@@ -10,7 +10,7 @@ export default class InitCommand extends BaseCommand {
 
     commandModule = InitModule;
 
-    static description = 'Create a new environment';
+    static description = 'Initialize a new relate environment';
 
     static examples = [
         '$ relate env:init',

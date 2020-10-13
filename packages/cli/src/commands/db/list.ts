@@ -10,7 +10,7 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static description = 'List a database';
+    static description = 'List databases within a DBMS';
 
     static examples = [
         '$ relate db:list',

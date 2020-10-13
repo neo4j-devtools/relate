@@ -9,7 +9,7 @@ export default class AddDbmsCommand extends BaseCommand {
 
     commandModule = AddDbmsModule;
 
-    static description = 'Adds a dbms to a project';
+    static description = 'Add a DBMS connection to a project';
 
     static examples = [
         '$ relate project:add-dbms',

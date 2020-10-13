@@ -6,7 +6,7 @@ export default class ListCommand extends BaseCommand {
 
     commandModule = ListModule;
 
-    static description = 'Lists all available environments';
+    static description = 'List all available environments';
 
     static examples = ['$ relate env:list'];
 

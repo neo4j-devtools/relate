@@ -6,7 +6,7 @@ export default class LinkCommand extends BaseCommand {
 
     commandModule = LinkModule;
 
-    static description = 'Link a project (useful for development)';
+    static description = 'Link a project';
 
     static examples = ['$ relate project:link /path/to/target/project/dir'];
 

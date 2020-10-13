@@ -7,9 +7,9 @@ export default class AddTagCommand extends BaseCommand {
 
     commandModule = AddTagModule;
 
-    static description = 'Tag an existing DBMS';
+    static description = 'Tag a DBMS';
 
-    static examples = ['$ relate dbms:add-tag dbmsId "foo bar"'];
+    static examples = ['$ relate dbms:add-tag dbmsId "production"'];
 
     static args = [
         ARGS.DBMS,

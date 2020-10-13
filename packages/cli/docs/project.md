@@ -1,7 +1,7 @@
 `relate project`
 ================
 
-Manage relate projects
+Projects bring files and data together.
 
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
@@ -16,7 +16,7 @@ Manage relate projects
 
 ## `relate project:add-dbms DBMS`
 
-Adds a dbms to a project
+Add a DBMS connection to a project
 
 ```
 USAGE
@@ -42,7 +42,7 @@ _See code: [dist/commands/project/add-dbms.ts](https://github.com/neo4j-devtools
 
 ## `relate project:add-file SOURCE`
 
-Adds a file to a project
+Add a file to a project
 
 ```
 USAGE
@@ -52,6 +52,9 @@ OPTIONS
   -d, --destination=destination  The relative path of the file (including name) in the project
   -e, --environment=environment  Name of the environment to run the command against
   -p, --project=project          (required) Name of the project to run the command against
+
+DESCRIPTION
+  Useful for remote environments.
 
 EXAMPLES
   $ relate project:add-file
@@ -63,7 +66,7 @@ _See code: [dist/commands/project/add-file.ts](https://github.com/neo4j-devtools
 
 ## `relate project:init TARGETDIR`
 
-Create a new project
+Initialize a new project
 
 ```
 USAGE
@@ -83,7 +86,7 @@ _See code: [dist/commands/project/init.ts](https://github.com/neo4j-devtools/rel
 
 ## `relate project:link FILEPATH`
 
-Link a project (useful for development)
+Link a project
 
 ```
 USAGE
@@ -97,7 +100,7 @@ _See code: [dist/commands/project/link.ts](https://github.com/neo4j-devtools/rel
 
 ## `relate project:list`
 
-Lists all projects
+List all projects
 
 ```
 USAGE
@@ -115,7 +118,7 @@ _See code: [dist/commands/project/list.ts](https://github.com/neo4j-devtools/rel
 
 ## `relate project:list-dbmss`
 
-Lists project dbmss
+List project DBMS connections
 
 ```
 USAGE
@@ -135,7 +138,7 @@ _See code: [dist/commands/project/list-dbmss.ts](https://github.com/neo4j-devtoo
 
 ## `relate project:list-files`
 
-Lists project files
+List project files
 
 ```
 USAGE
@@ -155,7 +158,7 @@ _See code: [dist/commands/project/list-files.ts](https://github.com/neo4j-devtoo
 
 ## `relate project:open`
 
-Opens a project folder
+Open a project's folder
 
 ```
 USAGE
@@ -177,7 +180,7 @@ _See code: [dist/commands/project/open.ts](https://github.com/neo4j-devtools/rel
 
 ## `relate project:remove-dbms DBMS`
 
-Removes a dbms from a project
+Remove a DBMS connection from a project
 
 ```
 USAGE
@@ -201,7 +204,7 @@ _See code: [dist/commands/project/remove-dbms.ts](https://github.com/neo4j-devto
 
 ## `relate project:remove-file FILE`
 
-Removes a file from a project
+Remove a file from a project
 
 ```
 USAGE

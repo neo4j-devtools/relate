@@ -8,7 +8,7 @@ export default class ListDbmssCommand extends BaseCommand {
 
     commandModule = ListDbmssModule;
 
-    static description = 'Lists project dbmss';
+    static description = 'List project DBMS connections';
 
     static examples = [
         '$ relate project:list-dbmss',
