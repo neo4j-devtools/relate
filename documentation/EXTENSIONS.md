@@ -13,8 +13,31 @@ Extensions installed under the `Data` directory
 %appdata%\Local\Neo4j\Relate\Data\extensions
 ```
 
+## Installing extensions
+Extensions are installed through the CLI:
+```sh
+$ relate extension:install <name> -V <version>
+```
+Where version can be semver or a file path. Please see the install command for more information:
+```sh
+$ relate extension:install --help
+```
+
+## Developing extensions
+Extensions can be linked (much like `npm link`) during development to facilitate work.
+```sh
+$ relate extension:link <file-path>
+```
+Please see the link command for more information:
+```sh
+$ relate extension:link --help
+```
+
+## Publishing extensions
+Official extensions are published under our `@relate-ext` npm organisation and require both a formal code-review by a core contributor as well as code-signing by us (Neo4j).
+
 ## STATIC extensions
-Static extensions simply need to be a directory containing at least an `index.html` file.
+Static extensions simply need to be a directory containing at least an `index.html` file as well as a `package.json file` containing `name`, `version`, and `main` properties.
 
 Static extensions are installed under:
 ```sh
@@ -25,10 +48,18 @@ Static extensions are installed under:
 # Win32
 %appdata%\Local\Neo4j\Relate\Data\extensions\STATIC
 ```
+A sample `package.json`
+```JSON
+{
+  "name": "<name>",
+  "version": "<semver>",
+  "main": "dist"
+}
+```
 
 ## Application extensions
 Application extensions simply need to be a directory containing at least an `index.js` file.
-The entrypoint of application extensions are defined in their `relate.manifest.json` file:
+The entry point of application extensions are defined in their `relate.manifest.json` file:
 ```JSON
 {
   "name": "ext-grand-web",
@@ -36,7 +67,7 @@ The entrypoint of application extensions are defined in their `relate.manifest.j
   "main": "dist/index.js"
 }
 ```
-The entrypoint **must have a default export** of a `@nestjs` module. Please see https://github.com/huboneo/grandql-extension for a simple example.
+The entry point **must have a default export** of a `@nestjs` module. Please see https://github.com/huboneo/grandql-extension for a simple example.
 
 Application extensions are installed under:
 ```sh
@@ -48,7 +79,7 @@ Application extensions are installed under:
 %appdata%\Local\Neo4j\Relate\Data\extensions\<APP_TYPE>
 ```
 Where `<APP_TYPE>` is one of:
-- `System` Targeting the core system API (shared across all other APIs)
+- `SYSTEM` Targeting the core system API (shared across all other APIs)
 - `WEB` Targeting the HTTP API
 - `CLI` Targeting the CLI API
 - `ELECTRON` Targeting the Electron API
