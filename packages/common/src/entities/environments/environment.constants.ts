@@ -23,8 +23,8 @@ export enum NEO4J_ORIGIN {
 }
 
 export enum ZULU_JAVA_VERSION {
-    JAVA_8 = '8.42.0.21-ca-jdk8.0.232',
-    JAVA_11 = '11.35.13-ca-jdk11.0.5',
+    JAVA_8 = '8.48.0.53-ca-jdk8.0.265',
+    JAVA_11 = '11.41.23-ca-jdk11.0.8',
 }
 
 export const ZULU_JAVA_DOWNLOAD_URL = 'https://cdn.azul.com/zulu/bin/';
