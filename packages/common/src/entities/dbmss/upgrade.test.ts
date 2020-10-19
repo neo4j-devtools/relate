@@ -3,6 +3,8 @@ import {TestDbmss} from '../../utils/system';
 import {IDbmsInfo} from '../../models';
 import {EnvironmentAbstract} from '../environments';
 
+jest.setTimeout(240000);
+
 describe('LocalDbmss - upgrade', () => {
     let testDbmss: TestDbmss;
     let env: EnvironmentAbstract;
