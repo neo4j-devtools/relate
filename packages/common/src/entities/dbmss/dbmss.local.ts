@@ -22,6 +22,7 @@ import {
     resolveDbms,
     supportsAccessTokens,
     isDbmsOnline,
+    waitForDbmsToBeOnline,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -206,16 +207,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
 
         try {
-            const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
+            const upgradedDbmsInfo = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
             const upgradedConfigFileName = path.join(
-                this.getDbmsRootPath(upgradedDbms.id),
+                this.getDbmsRootPath(upgradedDbmsInfo.id),
                 NEO4J_CONF_DIR,
                 NEO4J_CONF_FILE,
             );
 
-            await dbmsUpgradeConfigs(dbms, upgradedDbms, upgradedConfigFileName);
+            await dbmsUpgradeConfigs(dbms, upgradedDbmsInfo, upgradedConfigFileName);
 
-            const upgradedConfig = await this.getDbmsConfig(upgradedDbms.id);
+            const upgradedConfig = await this.getDbmsConfig(upgradedDbmsInfo.id);
 
             /**
              * Run Neo4j migration?
@@ -223,14 +224,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             if (migrate) {
                 upgradedConfig.set('dbms.allow_upgrade', 'true');
                 await upgradedConfig.flush();
-                const startMessage = await this.start([upgradedDbms.id]);
-                const {status} = await this.get(upgradedDbms.id);
+                const upgradedDbms = resolveDbms(this.dbmss, upgradedDbmsInfo.id);
 
-                if (status !== DBMS_STATUS.STARTED) {
-                    throw new DbmsUpgradeError('Failed to migrate DBMS.', startMessage.first.getOrElse(''));
-                }
-
+                await this.start([upgradedDbms.id]);
+                await waitForDbmsToBeOnline(upgradedDbms);
                 await this.stop([upgradedDbms.id]);
+
                 await upgradedConfig.flush();
             } else {
                 upgradedConfig.set('dbms.allow_upgrade', 'false');
@@ -241,7 +240,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
              * Replace old installation
              */
             await this.uninstall(dbms.id);
-            await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
+            await fse.move(upgradedDbmsInfo.rootPath!, dbms.rootPath!);
             await this.updateDbmsManifest(dbms.id, {
                 ...dbmsManifest,
                 name: dbms.name,

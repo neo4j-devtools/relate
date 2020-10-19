@@ -25,7 +25,7 @@ export class InfoModule implements OnApplicationBootstrap {
             : await Promise.all(namesOrIds.map((n) => environment.dbmss.get(n)));
         const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        await environment.dbmss.info(dbmsIds).then((res) => {
+        await environment.dbmss.info(dbmsIds, true).then((res) => {
             const table = res
                 .mapEach((dbms) => {
                     return {
@@ -33,7 +33,9 @@ export class InfoModule implements OnApplicationBootstrap {
                         name: dbms.name,
                         version: dbms.version,
                         edition: dbms.edition,
-                        status: dbms.status.trim(),
+                        status: dbms.status,
+                        // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+                        server_status: dbms.serverStatus,
                         uri: dbms.connectionUri,
                         path: dbms.rootPath,
                     };
@@ -48,6 +50,8 @@ export class InfoModule implements OnApplicationBootstrap {
                     version: {},
                     edition: {},
                     status: {},
+                    // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+                    server_status: {},
                     uri: {
                         extended: true,
                     },
