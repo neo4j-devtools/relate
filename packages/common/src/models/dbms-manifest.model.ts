@@ -2,7 +2,7 @@ import {IsString, IsUUID} from 'class-validator';
 
 import {ModelAbstract} from './model.abstract';
 import {PropertiesFile} from '../system/files';
-import {DBMS_STATUS} from '../constants';
+import {DBMS_STATUS, DBMS_SERVER_STATUS} from '../constants';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../entities/environments';
 
 export interface IDb {
@@ -16,6 +16,7 @@ export interface IDb {
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
     status: DBMS_STATUS;
+    serverStatus: DBMS_SERVER_STATUS;
     config?: null | undefined;
     edition?: NEO4J_EDITION;
     version?: string;

@@ -110,6 +110,12 @@ export enum DBMS_STATUS {
     STOPPED = 'stopped',
 }
 
+export enum DBMS_SERVER_STATUS {
+    ONLINE = 'online',
+    OFFLINE = 'offline',
+    UNKNOWN = 'unknown',
+}
+
 export enum PUBLIC_GRAPHQL_METHODS {
     // dbmss
     INSTALL_DBMS = 'installDbms',

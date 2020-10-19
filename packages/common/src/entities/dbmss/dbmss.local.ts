@@ -21,6 +21,7 @@ import {
     neo4jCmd,
     resolveDbms,
     supportsAccessTokens,
+    isDbmsOnline,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -51,6 +52,7 @@ import {
 import {
     BOLT_DEFAULT_PORT,
     DBMS_MANIFEST_FILE,
+    DBMS_SERVER_STATUS,
     DBMS_STATUS,
     DBMS_STATUS_FILTERS,
     DBMS_TLS_LEVEL,
@@ -386,7 +388,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    info(nameOrIds: string[] | List<string>): Promise<List<IDbmsInfo>> {
+    info(nameOrIds: string[] | List<string>, onlineCheck?: boolean): Promise<List<IDbmsInfo>> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
             .mapEach(async (dbms) => {
@@ -403,6 +405,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         : DBMS_STATUS.STOPPED;
                 }
 
+                let serverStatus: DBMS_SERVER_STATUS = DBMS_SERVER_STATUS.UNKNOWN;
+
+                if (onlineCheck && status === DBMS_STATUS.STOPPED) {
+                    serverStatus = DBMS_SERVER_STATUS.OFFLINE;
+                }
+
+                if (onlineCheck && status === DBMS_STATUS.STARTED) {
+                    serverStatus = (await isDbmsOnline(dbms)) ? DBMS_SERVER_STATUS.ONLINE : DBMS_SERVER_STATUS.OFFLINE;
+                }
+
                 return {
                     connectionUri: dbms.connectionUri,
                     description: dbms.description,
@@ -412,6 +424,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     rootPath: dbms.rootPath,
                     tags: dbms.tags,
                     status,
+                    serverStatus,
                     version: v?.version,
                 };
             })
@@ -438,11 +451,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
 
-    async get(nameOrId: string): Promise<IDbmsInfo> {
+    async get(nameOrId: string, onlineCheck?: boolean): Promise<IDbmsInfo> {
         await this.discoverDbmss();
 
         try {
-            const info = await this.info([nameOrId]);
+            const info = await this.info([nameOrId], onlineCheck);
 
             return info.first.getOrElse(() => {
                 throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
