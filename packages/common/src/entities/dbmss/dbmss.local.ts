@@ -226,9 +226,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 await upgradedConfig.flush();
                 const upgradedDbms = resolveDbms(this.dbmss, upgradedDbmsInfo.id);
 
+                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbms});
+
                 await this.start([upgradedDbms.id]);
                 await waitForDbmsToBeOnline(upgradedDbms);
                 await this.stop([upgradedDbms.id]);
+
+                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbms});
 
                 await upgradedConfig.flush();
             } else {
