@@ -21,6 +21,8 @@ import {
     neo4jCmd,
     resolveDbms,
     supportsAccessTokens,
+    isDbmsOnline,
+    waitForDbmsToBeOnline,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -51,6 +53,7 @@ import {
 import {
     BOLT_DEFAULT_PORT,
     DBMS_MANIFEST_FILE,
+    DBMS_SERVER_STATUS,
     DBMS_STATUS,
     DBMS_STATUS_FILTERS,
     DBMS_TLS_LEVEL,
@@ -204,16 +207,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
 
         try {
-            const upgradedDbms = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
+            const upgradedDbmsInfo = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
             const upgradedConfigFileName = path.join(
-                this.getDbmsRootPath(upgradedDbms.id),
+                this.getDbmsRootPath(upgradedDbmsInfo.id),
                 NEO4J_CONF_DIR,
                 NEO4J_CONF_FILE,
             );
 
-            await dbmsUpgradeConfigs(dbms, upgradedDbms, upgradedConfigFileName);
+            await dbmsUpgradeConfigs(dbms, upgradedDbmsInfo, upgradedConfigFileName);
 
-            const upgradedConfig = await this.getDbmsConfig(upgradedDbms.id);
+            const upgradedConfig = await this.getDbmsConfig(upgradedDbmsInfo.id);
 
             /**
              * Run Neo4j migration?
@@ -221,14 +224,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             if (migrate) {
                 upgradedConfig.set('dbms.allow_upgrade', 'true');
                 await upgradedConfig.flush();
-                const startMessage = await this.start([upgradedDbms.id]);
-                const {status} = await this.get(upgradedDbms.id);
+                const upgradedDbms = resolveDbms(this.dbmss, upgradedDbmsInfo.id);
 
-                if (status !== DBMS_STATUS.STARTED) {
-                    throw new DbmsUpgradeError('Failed to migrate DBMS.', startMessage.first.getOrElse(''));
-                }
+                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbms});
 
+                await this.start([upgradedDbms.id]);
+                await waitForDbmsToBeOnline(upgradedDbms);
                 await this.stop([upgradedDbms.id]);
+
+                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbms});
+
                 await upgradedConfig.flush();
             } else {
                 upgradedConfig.set('dbms.allow_upgrade', 'false');
@@ -239,7 +244,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
              * Replace old installation
              */
             await this.uninstall(dbms.id);
-            await fse.move(upgradedDbms.rootPath!, dbms.rootPath!);
+            await fse.move(upgradedDbmsInfo.rootPath!, dbms.rootPath!);
             await this.updateDbmsManifest(dbms.id, {
                 ...dbmsManifest,
                 name: dbms.name,
@@ -386,7 +391,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    info(nameOrIds: string[] | List<string>): Promise<List<IDbmsInfo>> {
+    info(nameOrIds: string[] | List<string>, onlineCheck?: boolean): Promise<List<IDbmsInfo>> {
         return List.from(nameOrIds)
             .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
             .mapEach(async (dbms) => {
@@ -403,6 +408,16 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         : DBMS_STATUS.STOPPED;
                 }
 
+                let serverStatus: DBMS_SERVER_STATUS = DBMS_SERVER_STATUS.UNKNOWN;
+
+                if (onlineCheck && status === DBMS_STATUS.STOPPED) {
+                    serverStatus = DBMS_SERVER_STATUS.OFFLINE;
+                }
+
+                if (onlineCheck && status === DBMS_STATUS.STARTED) {
+                    serverStatus = (await isDbmsOnline(dbms)) ? DBMS_SERVER_STATUS.ONLINE : DBMS_SERVER_STATUS.OFFLINE;
+                }
+
                 return {
                     connectionUri: dbms.connectionUri,
                     description: dbms.description,
@@ -412,6 +427,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     rootPath: dbms.rootPath,
                     tags: dbms.tags,
                     status,
+                    serverStatus,
                     version: v?.version,
                 };
             })
@@ -438,11 +454,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
 
-    async get(nameOrId: string): Promise<IDbmsInfo> {
+    async get(nameOrId: string, onlineCheck?: boolean): Promise<IDbmsInfo> {
         await this.discoverDbmss();
 
         try {
-            const info = await this.info([nameOrId]);
+            const info = await this.info([nameOrId], onlineCheck);
 
             return info.first.getOrElse(() => {
                 throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);

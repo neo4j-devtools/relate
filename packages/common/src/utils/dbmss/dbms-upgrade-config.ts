@@ -51,21 +51,19 @@ export async function dbmsUpgradeConfigs(
     const certExists = await fse.pathExists(path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.cert'));
     const keyExists = await fse.pathExists(path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.key'));
 
-    if (certExists && keyExists) {
-        await fse.copy(
-            path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.cert'),
-            path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'https', 'neo4j.cert'),
-        );
-        await fse.copy(
-            path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.key'),
-            path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'https', 'neo4j.key'),
-        );
-    }
-
     if (semver.lt(dbms.version!, NEO4J_VERSION_4) && semver.gte(upgradedDbms.version!, NEO4J_VERSION_4)) {
         const upgradedConfig = await PropertiesFile.readFile(upgradedConfigFileName);
 
-        if (dbms.secure) {
+        if (certExists && keyExists) {
+            await fse.copy(
+                path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.cert'),
+                path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'https', 'neo4j.cert'),
+            );
+            await fse.copy(
+                path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.key'),
+                path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'https', 'neo4j.key'),
+            );
+
             upgradedConfig.set('dbms.default_database', 'graph.db');
             upgradedConfig.set('dbms.security.auth_enabled', 'true');
             upgradedConfig.set('dbms.ssl.policy.https.enabled', 'true');

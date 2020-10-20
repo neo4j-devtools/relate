@@ -3,6 +3,8 @@ import {TestDbmss} from '../../utils/system';
 import {IDbmsInfo} from '../../models';
 import {EnvironmentAbstract} from '../environments';
 
+jest.setTimeout(240000);
+
 describe('LocalDbmss - upgrade', () => {
     let testDbmss: TestDbmss;
     let env: EnvironmentAbstract;
@@ -71,7 +73,7 @@ describe('LocalDbmss - upgrade', () => {
     });
 
     test('Upgrading major', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', true, false, false);
+        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', false, false, false);
 
         expect(upgraded.version).toEqual('4.1.0');
         expect(upgraded.id).toEqual(dbms35.id);
@@ -83,7 +85,7 @@ describe('LocalDbmss - upgrade', () => {
         config.set('foo', 'bar');
         await config.flush();
 
-        const upgraded = await env.dbmss.upgrade(dbms352.id, '4.1.0', true, false, false);
+        const upgraded = await env.dbmss.upgrade(dbms352.id, '4.1.0', false, false, false);
         const upgradedConfig = await env.dbmss.getDbmsConfig(dbms352.id);
 
         expect(upgraded.version).toEqual('4.1.0');

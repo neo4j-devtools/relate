@@ -83,6 +83,8 @@ export enum HOOK_EVENTS {
     RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
     BACKUP_START = 'BACKUP_START',
     BACKUP_COMPLETE = 'BACKUP_COMPLETE',
+    DBMS_MIGRATION_START = 'DBMS_MIGRATION_START',
+    DBMS_MIGRATION_STOP = 'DBMS_MIGRATION_STOP',
 }
 
 export interface IHookEventPayloads {
@@ -108,6 +110,12 @@ export enum DBMS_STATUS_FILTERS {
 export enum DBMS_STATUS {
     STARTED = 'started',
     STOPPED = 'stopped',
+}
+
+export enum DBMS_SERVER_STATUS {
+    ONLINE = 'online',
+    OFFLINE = 'offline',
+    UNKNOWN = 'unknown',
 }
 
 export enum PUBLIC_GRAPHQL_METHODS {

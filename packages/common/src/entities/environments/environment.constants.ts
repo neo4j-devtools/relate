@@ -9,6 +9,11 @@ export enum ENVIRONMENT_TYPES {
 export enum NEO4J_CONFIG_KEYS {
     DEFAULT_LISTEN_ADDRESS = 'dbms.default_listen_address',
     BOLT_LISTEN_ADDRESS = 'dbms.connector.bolt.listen_address',
+    BOLT_CONNECTOR = 'dbms.connector.bolt',
+    HTTP_CONNECTOR = 'dbms.connector.http',
+    HTTPS_CONNECTOR = 'dbms.connector.https',
+    ENABLED = '.enabled',
+    LISTEN_ADDRESS = '.listen_address',
 }
 
 export enum NEO4J_EDITION {
@@ -48,6 +53,8 @@ export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const DEFAULT_ENVIRONMENT_HTTP_ORIGIN = `http://${LOCALHOST_IP_ADDRESS}:3000`;
 export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
+export const DEFAULT_NEO4J_HTTP_PORT = ':7474';
+export const DEFAULT_NEO4J_HTTPS_PORT = ':7473';
 export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;

@@ -34,6 +34,12 @@ export class UpgradeModule implements OnApplicationBootstrap {
         );
         registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val));
         registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop());
+
+        registerHookListener(HOOK_EVENTS.BACKUP_START, () => cli.action.start('Creating backup of the original DBMS'));
+        registerHookListener(HOOK_EVENTS.BACKUP_COMPLETE, () => cli.action.stop());
+
+        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_START, () => cli.action.start('Migrating DBMS data'));
+        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_STOP, () => cli.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {
