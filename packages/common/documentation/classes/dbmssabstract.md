@@ -149,7 +149,7 @@ ___
 
 ### `Abstract` info
 
-▸ **info**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹IDbmsInfo››*
+▸ **info**(`dbmsIds`: string[] | List‹string›, `onlineCheck?`: undefined | false | true): *Promise‹List‹IDbmsInfo››*
 
 Defined in dbmss/dbmss.abstract.ts:123
 
@@ -160,6 +160,7 @@ Get info for one or more DBMSs
 Name | Type | Description |
 ------ | ------ | ------ |
 `dbmsIds` | string[] &#124; List‹string› |   |
+`onlineCheck?` | undefined &#124; false &#124; true | - |
 
 **Returns:** *Promise‹List‹IDbmsInfo››*
 
