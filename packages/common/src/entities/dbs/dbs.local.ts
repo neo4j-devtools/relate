@@ -96,7 +96,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
                 return key === 'accessToken' ? `--password=${val}` : `--${key}=${val}`;
             }),
         ];
-        const result = await cypherShellCmd(await this.resolveDbmsRootPath(dbmsId), params, from);
+        const result = await cypherShellCmd(await this.resolveDbmsRootPath(dbms.id), params, from);
 
         return result;
     }

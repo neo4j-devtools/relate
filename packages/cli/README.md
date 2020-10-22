@@ -20,7 +20,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.15 linux-x64 node-v12.19.0
+@relate/cli/1.0.2-alpha.15 darwin-x64 node-v12.18.3
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND

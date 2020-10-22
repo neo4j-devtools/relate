@@ -28,7 +28,7 @@ export class ExecModule implements OnApplicationBootstrap {
         let {dbms: dbmsId} = this.parsed.args;
         if (!dbmsId) {
             if (isInteractive()) {
-                dbmsId = await selectDbmsPrompt('Select a DBMS to import data to', environment);
+                dbmsId = await selectDbmsPrompt('Select a DBMS to query', environment);
             } else {
                 dbmsId = await readStdin();
             }
@@ -53,18 +53,17 @@ export class ExecModule implements OnApplicationBootstrap {
                 accessToken,
             })
             .then((res: string) => {
-                const message = ['------------------------------------------'];
+                const message = [];
+
+                message.push(res.trim());
+
                 if (res.search(/unauthorized|Invalid input/) !== -1) {
-                    message.push(chalk.red('Failed to import'));
-                    message.push(res.trim());
+                    message.push(chalk.red('ERROR'));
+                    this.utils.error(message.join('\n'), {exit: -1});
                 } else {
-                    message.push(
-                        `Successfully imported '${chalk.cyan(from)}' to ${chalk.cyan(dbms.name)}->${chalk.cyan(
-                            database,
-                        )}`,
-                    );
+                    message.push(chalk.green('OK'));
+                    this.utils.log(message.join('\n'));
                 }
-                this.utils.log(message.join('\n'));
             });
     }
 }

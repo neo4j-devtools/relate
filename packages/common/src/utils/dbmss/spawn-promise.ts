@@ -1,11 +1,12 @@
 import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
 import {ReadStream} from 'fs-extra';
+import {Transform} from 'stream';
 
 export const spawnPromise = (
     command: string,
     args: string[] = [],
     options: SpawnOptionsWithoutStdio = {},
-    stream: ReadStream | undefined = undefined,
+    stream: ReadStream | Transform | undefined = undefined,
 ): Promise<string> => {
     return new Promise((resolve, reject) => {
         let commandEscaped = command;
