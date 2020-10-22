@@ -48,9 +48,10 @@ export class AuthService {
                 return;
             }
 
+            const origin = req.get('origin');
             // Use the client URL otherwise fallback to the Relate server URL.
-            const requestUrl =
-                req.get('origin') && req.get('origin') !== 'null' ? req.get('origin')! : environment.httpOrigin;
+            // Requests coming from files might contain either 'null' or 'file://' in the Origin header.
+            const requestUrl = origin && origin !== 'null' && new URL(origin).host ? origin : environment.httpOrigin;
             const requestHost = new URL(requestUrl).host;
 
             try {
