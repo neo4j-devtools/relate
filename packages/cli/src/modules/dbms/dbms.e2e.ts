@@ -70,15 +70,59 @@ describe('$relate dbms', () => {
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
-    test.stdout().it('should import cypher', async (ctx) => {
+    test.stdout().it('should execute cypher', async (ctx) => {
         await ExecCommand.run([
             TEST_DB_ID,
-            `--from=${path.join(envPaths().config, 'movies.cypher')}`,
+            `--from=${path.join(envPaths().config, 'return-true.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        expect(ctx.stdout).toContain('Successfully imported');
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stdout().it('should execute unterminated cypher', async (ctx) => {
+        await ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(envPaths().config, 'return-without-semicolon.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stdout().it('should execute blank cypher', async (ctx) => {
+        await ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(envPaths().config, 'blank.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stderr().it('should execute but complain about bad cypher syntax', async () => {
+        const command = ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(envPaths().config, 'bad-syntax.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(command).rejects.toThrow(/Invalid input/);
+    });
+
+    test.stderr().it('should execute but complain about missing parameters', async () => {
+        const command = ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(envPaths().config, 'missing-param.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(command).rejects.toThrow(/Expected param/);
     });
 
     test.stdout()

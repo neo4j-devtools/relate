@@ -9,25 +9,28 @@ import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
 import {getDistributionVersion} from './dbms-versions';
 
-const appendSemicolon = () => {
-    let finalChunk: any;
+const appendSemicolon = (): Transform => {
+    let finalChunk: string;
     return new Transform({
-        transform: (data, _, callback) => {
+        emitClose: true,
+        transform: (data, _, next) => {
             finalChunk = data;
-            callback(null, data);
+            next(null, data);
         },
-        flush: (callback) => {
+        flush: (next) => {
             if (finalChunk !== undefined) {
-                const finalChunkString = Buffer.from(finalChunk).toString();
-                if (!finalChunkString.trim().endsWith(';')) {
-                    callback(null, ';');
+                if (!finalChunk.trim().endsWith(';')) {
+                    next(null, ';');
                 } else {
-                    callback();
+                    next();
                 }
+            } else {
+                next();
             }
         },
     });
 };
+
 export async function cypherShellCmd(
     dbmsRootPath: string,
     args: string[],

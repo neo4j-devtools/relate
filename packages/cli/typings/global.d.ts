@@ -19,11 +19,14 @@ declare global {
                 | {
                       code?: string;
                       exit?: number;
+                      suggestions?: string[];
                   }
                 | {
                       code?: string | undefined;
                       exit: false;
+                      suggestions?: string[];
                   },
         ) => void;
+        exit: (code?: number) => void;
     };
 }
