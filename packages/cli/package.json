@@ -28,7 +28,6 @@
         "@nestjs/core": "7.0.8",
         "@oclif/command": "1.8.0",
         "@oclif/config": "1.17.0",
-        "@oclif/errors": "1.3.3",
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
         "@relate/common": "^1.0.2-alpha.15",

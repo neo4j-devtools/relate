@@ -7,7 +7,6 @@ import {isInteractive, readStdin} from '../../stdin';
 import ExecCommand from '../../commands/db/exec';
 
 import {selectDbmsPrompt, passwordPrompt} from '../../prompts';
-import {CLIError} from '@oclif/errors';
 
 @Module({
     exports: [],
@@ -62,10 +61,8 @@ export class ExecModule implements OnApplicationBootstrap {
                     message.push(chalk.red('ERROR'));
                     this.utils.error(message.join('\n'), {
                         exit: 1,
-                        code: 'ABK!',
                         suggestions: ['https://neo4j.com/docs/cypher-manual/current/'],
                     });
-                    throw new CLIError('UGH', {exit: 1});
                 } else {
                     message.push(chalk.green('OK'));
                     this.utils.log(message.join('\n'));
