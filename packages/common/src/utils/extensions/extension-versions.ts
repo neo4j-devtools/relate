@@ -4,24 +4,19 @@ import {promises as fs} from 'fs';
 import _ from 'lodash';
 import fse from 'fs-extra';
 import path from 'path';
-import {List, None, Str} from '@relate/types';
+import {List, Str} from '@relate/types';
 
 import {
     EXTENSION_DIR_NAME,
-    EXTENSION_NPM_PREFIX,
     EXTENSION_ORIGIN,
     EXTENSION_MANIFEST_FILE,
     EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
     EXTENSION_MANIFEST_FILE_LEGACY,
+    RELATE_NPM_PREFIX,
 } from '../../constants';
-import {
-    EXTENSION_REPO_NAME,
-    EXTENSION_SEARCH_PATH,
-    JFROG_PRIVATE_REGISTRY_PASSWORD,
-    JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../entities/environments';
+import {EXTENSION_KEYWORD_NAME, EXTENSION_SEARCH_PATH} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {ExtensionModel, IInstalledExtension} from '../../models';
 import {envPaths} from '../env-paths';
@@ -29,6 +24,7 @@ import {envPaths} from '../env-paths';
 export interface IExtensionMeta {
     type: EXTENSION_TYPES;
     name: string;
+    official: boolean;
     version: string;
     dist: string;
     manifest: IInstalledExtension;
@@ -78,7 +74,8 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
                 root: extensionRootDir,
                 ...manifest,
             }),
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
+            name: manifest.name,
+            official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
             version: manifest.version,
@@ -100,7 +97,8 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
         return {
             dist: extensionRootDir,
             manifest,
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
+            name: manifest.name,
+            official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
             // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
@@ -120,7 +118,8 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
             type: EXTENSION_TYPES.STATIC,
             version,
         }),
-        name: _.replace(extensionName, EXTENSION_NPM_PREFIX, ''),
+        official: Str.from(name).startsWith(RELATE_NPM_PREFIX),
+        name: extensionName,
         // @todo: whut?
         origin: EXTENSION_ORIGIN.CACHED,
         type: EXTENSION_TYPES.STATIC,
@@ -131,26 +130,17 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
 export interface IExtensionVersion {
     name: string;
     version: string;
+    official: boolean;
     origin: EXTENSION_ORIGIN;
 }
 
 export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>> {
     const cached = List.from(await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME)));
-    const search = {
-        path: {$match: `${EXTENSION_NPM_PREFIX}*`},
-        repo: {$eq: EXTENSION_REPO_NAME},
-    };
 
     try {
-        const {results} = await got(EXTENSION_SEARCH_PATH, {
-            // @todo: handle env vars
-            body: `items.find(${JSON.stringify(search)})`,
-            method: 'POST',
-            password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-            username: JFROG_PRIVATE_REGISTRY_USERNAME,
-        }).json();
+        const {objects} = await got(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`).json();
 
-        return cached.concat(mapArtifactoryResponse(List.from(results)));
+        return cached.concat(mapArtifactoryResponse(List.from<any>(objects).mapEach((obj) => obj.package)));
     } catch (e) {
         return List.from();
     }
@@ -158,39 +148,13 @@ export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>>
 
 function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {
     return results
-        .mapEach(({name}) => {
-            const nameVal = Str.from(name);
-
-            return nameVal
-                .replace('.tgz', '')
-                .split('-')
-                .last.map((versionPart) => {
-                    if (None.isNone(versionPart) || versionPart.isEmpty) {
-                        return None.EMPTY;
-                    }
-
-                    const found = semver.coerce(`${versionPart}`);
-
-                    return found ? Str.from(found.version) : None.EMPTY;
-                })
-                .flatMap((version) => {
-                    // @todo: discuss if mapping maybes should not exec if empty?
-                    if (None.isNone(version)) {
-                        return version;
-                    }
-
-                    return nameVal.split(`-${version}`).first.flatMap((extName) => {
-                        if (None.isNone(extName)) {
-                            return extName;
-                        }
-
-                        return {
-                            name: `${extName}`,
-                            origin: EXTENSION_ORIGIN.ONLINE,
-                            version: `${version}`,
-                        };
-                    });
-                });
+        .mapEach(({name, version}) => {
+            return {
+                name,
+                official: Str.from(name).startsWith(RELATE_NPM_PREFIX),
+                origin: EXTENSION_ORIGIN.ONLINE,
+                version: `${version}`,
+            };
         })
         .compact();
 }

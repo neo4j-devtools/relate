@@ -14,7 +14,7 @@ import {
     EXTENSION_MANIFEST_FILE,
     PACKAGE_JSON,
     EXTENSION_TYPES,
-    EXTENSION_NPM_PREFIX,
+    RELATE_NPM_PREFIX,
 } from '../../constants';
 
 /**
@@ -58,7 +58,7 @@ function mapContentsToExtension(fullPath: string): IInstalledExtension {
 
         return new ExtensionModel({
             ...manifest,
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
+            name: _.replace(manifest.name, RELATE_NPM_PREFIX, ''),
             root: fullPath,
         });
     }
@@ -66,7 +66,7 @@ function mapContentsToExtension(fullPath: string): IInstalledExtension {
     if (hasPackageJson) {
         return new ExtensionModel({
             ...contents,
-            name: _.replace(contents.name, EXTENSION_NPM_PREFIX, ''),
+            name: _.replace(contents.name, RELATE_NPM_PREFIX, ''),
             root: fullPath,
             type: EXTENSION_TYPES.STATIC,
         });

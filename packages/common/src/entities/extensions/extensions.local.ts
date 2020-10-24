@@ -1,6 +1,6 @@
 import {exec} from 'child_process';
 import fse from 'fs-extra';
-import {coerce} from 'semver';
+import {valid} from 'semver';
 import {promisify} from 'util';
 import path from 'path';
 import {List, None} from '@relate/types';
@@ -113,7 +113,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
-        const coercedVersion = coerce(version)?.version;
+        const coercedVersion = valid(version);
         if (coercedVersion) {
             const dists = List.from(await discoverExtensionDistributions(extensionsCache));
             const requestedDistribution = await dists

@@ -7,10 +7,6 @@ import {FetchError, NotFoundError, IntegrityError} from '../../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../constants';
 import {discoverExtension, IExtensionMeta} from './extension-versions';
-import {
-    JFROG_PRIVATE_REGISTRY_PASSWORD,
-    JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../entities/environments/environment.constants';
 import {download} from '../download';
 import {emitHookEvent} from '../event-hooks';
 
@@ -38,12 +34,9 @@ export interface IFetchExtensionInfo {
 
 const fetchExtensionInfo = async (extensionName: string, version: string): Promise<IFetchExtensionInfo> => {
     let res: IExtensionRegistryManifest;
+
     try {
-        res = await got(`${EXTENSION_URL_PATH}${extensionName}`, {
-            // @todo: handle env vars
-            password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-            username: JFROG_PRIVATE_REGISTRY_USERNAME,
-        }).json();
+        res = await got(`${EXTENSION_URL_PATH}${extensionName}`).json();
     } catch (_error) {
         throw new FetchError(`Unable to find the requested extension: ${extensionName} online`);
     }
@@ -84,10 +77,7 @@ export const downloadExtension = async (
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
-    const downloadFilePath = await download(tarball, extensionDistributionsPath, {
-        password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-        username: JFROG_PRIVATE_REGISTRY_USERNAME,
-    });
+    const downloadFilePath = await download(tarball, extensionDistributionsPath);
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
 
     await verifyHash(shasum, downloadFilePath);

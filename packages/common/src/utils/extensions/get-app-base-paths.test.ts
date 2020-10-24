@@ -18,6 +18,7 @@ const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
 const TEST_EXTENSION_META: extensionVersions.IExtensionMeta = {
     name: TEST_APP_NAME,
     manifest: TEST_INSTALLED_EXTENSION,
+    official: true,
     type: EXTENSION_TYPES.STATIC,
     version: '',
     dist: '',
