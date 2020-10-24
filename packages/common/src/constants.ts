@@ -184,3 +184,11 @@ export enum FILTER_CONNECTORS {
 
 export const HEALTH_BASE_ENDPOINT = '/health';
 export const STATIC_APP_BASE_ENDPOINT = '/static';
+
+export enum EXTENSION_VERIFICATION_STATUS {
+    UNKNOWN = 'UNKNOWN',
+    UNSIGNED = 'UNSIGNED',
+    TRUSTED = 'TRUSTED',
+    UNTRUSTED = 'UNTRUSTED',
+    REVOKED = 'REVOKED',
+}

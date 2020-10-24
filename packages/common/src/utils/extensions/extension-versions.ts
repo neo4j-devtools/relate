@@ -15,16 +15,20 @@ import {
     PACKAGE_JSON,
     EXTENSION_MANIFEST_FILE_LEGACY,
     RELATE_NPM_PREFIX,
+    EXTENSION_VERIFICATION_STATUS,
 } from '../../constants';
 import {EXTENSION_KEYWORD_NAME, EXTENSION_SEARCH_PATH} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {ExtensionModel, IInstalledExtension} from '../../models';
 import {envPaths} from '../env-paths';
+import {verifyApp} from '@neo4j/code-signer';
+import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
 
 export interface IExtensionMeta {
     type: EXTENSION_TYPES;
     name: string;
     official: boolean;
+    verification: EXTENSION_VERIFICATION_STATUS;
     version: string;
     dist: string;
     manifest: IInstalledExtension;
@@ -62,6 +66,20 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     const hasManifestLegacy = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
     const hasPackageJson = await fse.pathExists(extensionPackageJson);
+    const appResult = await verifyApp({
+        appPath: extensionRootDir,
+        rootCertificatePem: RELATE_ROOT_CERT,
+        checkRevocationStatus: true,
+    });
+    const verificationStatus = Str.from(EXTENSION_VERIFICATION_STATUS.UNKNOWN)
+        .map(() => {
+            if (appResult.revocationStatus !== 'OK') {
+                return EXTENSION_VERIFICATION_STATUS[appResult.revocationStatus];
+            }
+
+            return EXTENSION_VERIFICATION_STATUS[appResult.status];
+        })
+        .get();
 
     if (hasManifest || hasManifestLegacy) {
         const manifest = hasManifest
@@ -76,6 +94,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
             }),
             name: manifest.name,
             official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
+            verification: verificationStatus,
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
             version: manifest.version,
@@ -99,6 +118,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
             manifest,
             name: manifest.name,
             official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
+            verification: verificationStatus,
             // @todo: whut?
             origin: EXTENSION_ORIGIN.CACHED,
             type: manifest.type,
@@ -107,19 +127,19 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     }
 
     const {name, main = '.', version} = packageJson;
-    const extensionName = name.split(path.sep)[1] || name;
 
     return {
         dist: extensionRootDir,
         manifest: new ExtensionModel({
             main,
-            name: extensionName,
+            name,
             root: extensionRootDir,
             type: EXTENSION_TYPES.STATIC,
             version,
         }),
         official: Str.from(name).startsWith(RELATE_NPM_PREFIX),
-        name: extensionName,
+        verification: verificationStatus,
+        name,
         // @todo: whut?
         origin: EXTENSION_ORIGIN.CACHED,
         type: EXTENSION_TYPES.STATIC,
@@ -140,13 +160,13 @@ export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>>
     try {
         const {objects} = await got(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`).json();
 
-        return cached.concat(mapArtifactoryResponse(List.from<any>(objects).mapEach((obj) => obj.package)));
+        return cached.concat(mapNPMResponse(List.from<any>(objects).mapEach((obj) => obj.package)));
     } catch (e) {
         return List.from();
     }
 }
 
-function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {
+function mapNPMResponse(results: List<any>): List<IExtensionVersion> {
     return results
         .mapEach(({name, version}) => {
             return {

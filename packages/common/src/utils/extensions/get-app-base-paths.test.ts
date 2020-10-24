@@ -4,7 +4,7 @@ import {getAppBasePath} from './get-app-base-path';
 import * as installExtensions from './get-installed-extensions';
 import * as extensionVersions from './extension-versions';
 import {NotFoundError} from '../../errors';
-import {EXTENSION_TYPES, EXTENSION_ORIGIN} from '../../constants';
+import {EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
 import {IInstalledExtension} from '../../models';
 
 const TEST_APP_NAME = 'testApp';
@@ -19,6 +19,7 @@ const TEST_EXTENSION_META: extensionVersions.IExtensionMeta = {
     name: TEST_APP_NAME,
     manifest: TEST_INSTALLED_EXTENSION,
     official: true,
+    verification: EXTENSION_VERIFICATION_STATUS.TRUSTED,
     type: EXTENSION_TYPES.STATIC,
     version: '',
     dist: '',

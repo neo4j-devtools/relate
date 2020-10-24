@@ -65,6 +65,7 @@
     },
     "dependencies": {
         "@huboneo/tapestry": "1.0.1-1",
+        "@neo4j/code-signer": "1.1.1",
         "apollo-link": "1.2.14",
         "apollo-link-http": "1.5.17",
         "class-validator": "0.12.1",

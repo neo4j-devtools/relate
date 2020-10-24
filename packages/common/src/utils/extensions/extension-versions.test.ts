@@ -4,7 +4,7 @@ import * as extensionVersions from './extension-versions';
 import {TestExtensions} from '../system/test-extensions';
 import {IInstalledExtension} from '../../models/extension.model';
 import {envPaths} from '../env-paths';
-import {EXTENSION_DIR_NAME, EXTENSION_ORIGIN, EXTENSION_TYPES} from '../../constants';
+import {EXTENSION_DIR_NAME, EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
 import {NotFoundError} from '../../errors';
 
 const TEST_EXTENSION = 'test-extension';
@@ -23,10 +23,13 @@ jest.mock('got', () => ({
         .mockImplementation(() => {
             return {
                 json: jest.fn().mockResolvedValue({
-                    results: [
+                    objects: [
                         {
-                            repo: TEST_REPO,
-                            name: `${TEST_EXTENSION}-${TEST_EXTENSION_VERSION}.tgz`,
+                            package: {
+                                repo: TEST_REPO,
+                                name: TEST_EXTENSION,
+                                version: TEST_EXTENSION_VERSION,
+                            },
                         },
                     ],
                 }),
@@ -69,6 +72,7 @@ describe('extension versions', () => {
             expect(extensionVersionList).toEqual([
                 {
                     name: TEST_EXTENSION,
+                    official: false,
                     origin: EXTENSION_ORIGIN.ONLINE,
                     version: TEST_EXTENSION_VERSION,
                 },
@@ -95,6 +99,8 @@ describe('extension versions', () => {
                     main: testExtension.main,
                     root: testExtension.root,
                 },
+                official: false,
+                verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
                 type: testExtension.type,
                 version: testExtension.version,
@@ -117,6 +123,8 @@ describe('extension versions', () => {
                     main: testExtension.main,
                     root: testExtension.root,
                 },
+                official: false,
+                verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
                 type: testExtension.type,
                 version: testExtension.version,
@@ -137,12 +145,15 @@ describe('extension versions', () => {
                         main: testExtension.main,
                         root: testExtension.root,
                     },
+                    official: false,
+                    verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                     origin: EXTENSION_ORIGIN.CACHED,
                     type: testExtension.type,
                     version: testExtension.version,
                 },
                 {
                     name: TEST_EXTENSION,
+                    official: false,
                     origin: EXTENSION_ORIGIN.ONLINE,
                     version: TEST_EXTENSION_VERSION,
                 },
