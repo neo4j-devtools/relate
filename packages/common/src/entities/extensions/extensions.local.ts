@@ -3,6 +3,7 @@ import fse from 'fs-extra';
 import {valid} from 'semver';
 import {promisify} from 'util';
 import path from 'path';
+import {v4 as uuidv4} from 'uuid';
 import {List, None} from '@relate/types';
 
 import {
@@ -10,11 +11,10 @@ import {
     ExtensionExistsError,
     InvalidArgumentError,
     NotFoundError,
-    NotSupportedError,
     ValidationFailureError,
 } from '../../errors';
 import {ENTITY_TYPES, EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
-import {emitHookEvent} from '../../utils';
+import {download, emitHookEvent} from '../../utils';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
     discoverExtension,
@@ -81,35 +81,43 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const {extensionsCache} = this.environment.dirPaths;
+        const {extensionsCache, tmp} = this.environment.dirPaths;
+        const isFilePath = (await fse.pathExists(version)) && (await fse.stat(version)).isFile();
 
-        // version as a file path.
-        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            // extract extension to cache dir first
+        // version as a file path or URL.
+        if (isFilePath || isValidUrl(version)) {
+            let toExtract = version;
+
+            if (isValidUrl(version)) {
+                const tmpDownloadPath = path.join(tmp, uuidv4());
+
+                await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
+
+                toExtract = await download(version, tmpDownloadPath);
+
+                await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
+            }
+
+            // extract extension to tmp first
+            const tmpExtractPath = path.join(tmp, uuidv4());
             const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-                version,
-                extensionsCache,
+                toExtract,
+                tmpExtractPath,
             );
+            const cacheDir = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
 
-            // move the extracted dir
-            const destination = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
-
-            await fse.move(dist, destination, {
+            // move the extracted dir to cache
+            await fse.move(dist, cacheDir, {
                 overwrite: true,
             });
 
             try {
-                const discovered = await discoverExtension(destination);
+                const discovered = await discoverExtension(cacheDir);
 
-                return this.installRelateExtension(discovered, discovered.dist);
+                return this.installRelateExtension(discovered, discovered.dist).finally(() => fse.remove(cacheDir));
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
-        }
-
-        // @todo: version as a URL.
-        if (isValidUrl(version)) {
-            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
         }
 
         const coercedVersion = valid(version);
@@ -161,17 +169,15 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         // this does not account for all scenarios at the moment so needs more thought
         const execute = promisify(exec);
 
-        try {
+        if (extension.type !== EXTENSION_TYPES.STATIC) {
             await emitHookEvent(
                 HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START,
                 `installing dependencies for ${extension.name}`,
             );
-            const output = await execute('npm install --production', {
+            const output = await execute('npm ci --production', {
                 cwd: target,
             });
             await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, output);
-        } catch (err) {
-            throw new Error(err);
         }
 
         return extension;
