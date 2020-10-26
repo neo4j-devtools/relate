@@ -6,9 +6,10 @@ import hasha from 'hasha';
 import {FetchError, NotFoundError, IntegrityError} from '../../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../constants';
-import {discoverExtension, IExtensionMeta} from './extension-versions';
+import {discoverExtension} from './extension-versions';
 import {download} from '../download';
 import {emitHookEvent} from '../event-hooks';
+import {IExtensionMeta} from '../../models';
 
 export interface IExtensionRegistryManifest {
     name: string;

@@ -23,12 +23,11 @@ import {
     extractExtension,
     fetchExtensionVersions,
     getAppBasePath,
-    IExtensionMeta,
     IExtensionVersion,
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
-import {AppLaunchTokenModel, IAppLaunchToken} from '../../models';
+import {AppLaunchTokenModel, IAppLaunchToken, IExtensionMeta} from '../../models';
 import {TokenService} from '../../token.service';
 
 export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {

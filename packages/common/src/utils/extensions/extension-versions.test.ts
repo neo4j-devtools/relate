@@ -72,7 +72,6 @@ describe('extension versions', () => {
             expect(extensionVersionList).toEqual([
                 {
                     name: TEST_EXTENSION,
-                    official: false,
                     origin: EXTENSION_ORIGIN.ONLINE,
                     version: TEST_EXTENSION_VERSION,
                 },
@@ -92,13 +91,8 @@ describe('extension versions', () => {
             expect(extensionMeta).toEqual({
                 name: testExtension.name,
                 dist: path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, testExtension.name),
-                manifest: {
-                    name: testExtension.name,
-                    type: testExtension.type,
-                    version: testExtension.version,
-                    main: testExtension.main,
-                    root: testExtension.root,
-                },
+                main: testExtension.main,
+                root: testExtension.root,
                 official: false,
                 verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
@@ -116,13 +110,8 @@ describe('extension versions', () => {
             expect(extensionMeta[0]).toEqual({
                 name: testExtension.name,
                 dist: path.join(path.join(envPaths().cache, EXTENSION_DIR_NAME), testExtension.name),
-                manifest: {
-                    name: testExtension.name,
-                    type: testExtension.type,
-                    version: testExtension.version,
-                    main: testExtension.main,
-                    root: testExtension.root,
-                },
+                main: testExtension.main,
+                root: testExtension.root,
                 official: false,
                 verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
@@ -137,23 +126,11 @@ describe('extension versions', () => {
             expect(extensionVersionList).toEqual([
                 {
                     name: testExtension.name,
-                    dist: path.join(path.join(envPaths().cache, EXTENSION_DIR_NAME), testExtension.name),
-                    manifest: {
-                        name: testExtension.name,
-                        type: testExtension.type,
-                        version: testExtension.version,
-                        main: testExtension.main,
-                        root: testExtension.root,
-                    },
-                    official: false,
-                    verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                     origin: EXTENSION_ORIGIN.CACHED,
-                    type: testExtension.type,
                     version: testExtension.version,
                 },
                 {
                     name: TEST_EXTENSION,
-                    official: false,
                     origin: EXTENSION_ORIGIN.ONLINE,
                     version: TEST_EXTENSION_VERSION,
                 },

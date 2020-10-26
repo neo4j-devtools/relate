@@ -3,11 +3,11 @@ import {Dict, List, None} from '@relate/types';
 
 import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
-import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
+import {IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
 import {IRelateFilter} from '../../utils/generic';
-import {IAppLaunchToken} from '../../models';
+import {IAppLaunchToken, IExtensionMeta} from '../../models';
 
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {

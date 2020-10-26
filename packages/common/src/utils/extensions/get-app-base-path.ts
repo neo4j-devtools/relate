@@ -13,10 +13,10 @@ export async function getAppBasePath(appName: string): Promise<string> {
             throw new NotFoundError(`App ${appName} not found`);
         });
 
-    const {name, manifest} = await discoverExtension(app.root);
+    const {name, main: mainExtension} = await discoverExtension(app.root);
     const appBase = `/${name}`;
 
-    return Str.from(manifest.main)
+    return Str.from(mainExtension)
         .map((main) => (main.startsWith('.') ? main.substr(1) : main))
         .map((main) => (main.startsWith('/') ? main.substr(1) : main))
         .flatMap((main) => `${appBase}/${main}`);

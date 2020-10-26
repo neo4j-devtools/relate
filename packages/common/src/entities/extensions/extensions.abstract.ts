@@ -1,9 +1,9 @@
 import {List} from '@relate/types';
 
-import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
+import {IExtensionVersion} from '../../utils/extensions';
 import {EnvironmentAbstract} from '../environments';
 import {IRelateFilter} from '../../utils/generic';
-import {IAppLaunchToken} from '../../models';
+import {IAppLaunchToken, IExtensionMeta} from '../../models';
 
 export abstract class ExtensionsAbstract<Env extends EnvironmentAbstract> {
     /**

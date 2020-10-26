@@ -32,7 +32,6 @@ export const DISCOVER_DBMS_THROTTLE_MS = 500;
 
 export const EXTENSION_DIR_NAME = 'extensions';
 export const PACKAGE_JSON = 'package.json';
-export const EXTENSION_MANIFEST_FILE_LEGACY = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_SHA_ALGORITHM = 'sha1';
 export const RELATE_NPM_PREFIX = '@relate/';

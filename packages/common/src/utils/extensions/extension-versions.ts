@@ -4,7 +4,7 @@ import {promises as fs} from 'fs';
 import _ from 'lodash';
 import fse from 'fs-extra';
 import path from 'path';
-import {List, Str} from '@relate/types';
+import {List, Str, Dict} from '@relate/types';
 
 import {
     EXTENSION_DIR_NAME,
@@ -13,29 +13,17 @@ import {
     EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
-    EXTENSION_MANIFEST_FILE_LEGACY,
     RELATE_NPM_PREFIX,
     EXTENSION_VERIFICATION_STATUS,
 } from '../../constants';
 import {EXTENSION_KEYWORD_NAME, EXTENSION_SEARCH_PATH} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
-import {ExtensionModel, IInstalledExtension} from '../../models';
+import {ExtensionMetaModel} from '../../models';
 import {envPaths} from '../env-paths';
 import {verifyApp} from '@neo4j/code-signer';
 import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
 
-export interface IExtensionMeta {
-    type: EXTENSION_TYPES;
-    name: string;
-    official: boolean;
-    verification: EXTENSION_VERIFICATION_STATUS;
-    version: string;
-    dist: string;
-    manifest: IInstalledExtension;
-    origin: EXTENSION_ORIGIN;
-}
-
-export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<IExtensionMeta>> => {
+export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionMetaModel>> => {
     const dirFiles = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
     const files = await dirFiles
         .mapEach(async (dir) => {
@@ -52,7 +40,7 @@ export const discoverExtensionDistributions = async (distributionsRoot: string):
     return dists.compact().filter((dist) => Boolean(dist.version === '*' || semver.valid(dist.version)));
 };
 
-export async function discoverExtension(extensionRootDir: string): Promise<IExtensionMeta> {
+export async function discoverExtension(extensionRootDir: string): Promise<ExtensionMetaModel> {
     const exists = await fse.pathExists(extensionRootDir);
     const dirName = path.basename(extensionRootDir);
 
@@ -61,11 +49,15 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     }
 
     const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE);
-    const extensionManifestLegacy = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE_LEGACY);
-    const hasManifest = await fse.pathExists(extensionManifest);
-    const hasManifestLegacy = await fse.pathExists(extensionManifest);
+    const hasManifestFile = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
     const hasPackageJson = await fse.pathExists(extensionPackageJson);
+
+    if (!hasPackageJson) {
+        throw new InvalidArgumentError(`${dirName} contains no package.json`);
+    }
+
+    const packageJson = await fse.readJSON(extensionPackageJson);
     const appResult = await verifyApp({
         appPath: extensionRootDir,
         rootCertificatePem: RELATE_ROOT_CERT,
@@ -81,86 +73,58 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
         })
         .get();
 
-    if (hasManifest || hasManifestLegacy) {
-        const manifest = hasManifest
-            ? await fse.readJSON(extensionManifest)
-            : await fse.readJSON(extensionManifestLegacy);
-
-        return {
-            dist: extensionRootDir,
-            manifest: new ExtensionModel({
-                root: extensionRootDir,
-                ...manifest,
-            }),
-            name: manifest.name,
-            official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
-            verification: verificationStatus,
-            origin: EXTENSION_ORIGIN.CACHED,
-            type: manifest.type,
-            version: manifest.version,
-        };
-    }
-
-    if (!hasPackageJson) {
-        throw new InvalidArgumentError(`${dirName} contains no valid manifest`);
-    }
-
-    const packageJson = await fse.readJSON(extensionPackageJson);
-
-    if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {
-        const manifest = new ExtensionModel({
-            root: extensionRootDir,
-            ...packageJson[EXTENSION_MANIFEST_KEY],
-        });
-
-        return {
-            dist: extensionRootDir,
-            manifest,
-            name: manifest.name,
-            official: Str.from(manifest.name).startsWith(RELATE_NPM_PREFIX),
-            verification: verificationStatus,
-            // @todo: whut?
-            origin: EXTENSION_ORIGIN.CACHED,
-            type: manifest.type,
-            version: manifest.version,
-        };
-    }
-
     const {name, main = '.', version} = packageJson;
-
-    return {
-        dist: extensionRootDir,
-        manifest: new ExtensionModel({
-            main,
-            name,
-            root: extensionRootDir,
-            type: EXTENSION_TYPES.STATIC,
-            version,
-        }),
-        official: Str.from(name).startsWith(RELATE_NPM_PREFIX),
-        verification: verificationStatus,
+    const defaultManifest = Dict.from({
+        main,
         name,
-        // @todo: whut?
-        origin: EXTENSION_ORIGIN.CACHED,
-        type: EXTENSION_TYPES.STATIC,
         version,
-    };
+        root: extensionRootDir,
+    });
+
+    const manifest = await defaultManifest.switchMap(async (m) => {
+        if (hasManifestFile) {
+            return defaultManifest.merge(await fse.readJSON(extensionManifest));
+        }
+
+        if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {
+            return defaultManifest.merge(packageJson[EXTENSION_MANIFEST_KEY]);
+        }
+
+        return m;
+    });
+
+    return new ExtensionMetaModel(
+        manifest
+            .switchMap((m) =>
+                m.merge({
+                    dist: extensionRootDir,
+                    official: m
+                        .getValue('name')
+                        .getOrElse('')
+                        .startsWith(RELATE_NPM_PREFIX),
+                    type: m.getValue('type').getOrElse(EXTENSION_TYPES.STATIC),
+                    verification: verificationStatus,
+                    // @todo: how?
+                    origin: EXTENSION_ORIGIN.CACHED,
+                }),
+            )
+            .toObject(),
+    );
 }
 
 export interface IExtensionVersion {
     name: string;
     version: string;
-    official: boolean;
     origin: EXTENSION_ORIGIN;
 }
 
 export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>> {
-    const cached = List.from(await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME)));
+    const cached = await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME));
 
     try {
         const {objects} = await got(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`).json();
 
-        return cached.concat(mapNPMResponse(List.from<any>(objects).mapEach((obj) => obj.package)));
+        return mapNPMResponse(cached.concat(List.from<any>(objects).mapEach((obj) => obj.package)));
     } catch (e) {
         return List.from();
     }
@@ -168,11 +132,10 @@ export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>>
 
 function mapNPMResponse(results: List<any>): List<IExtensionVersion> {
     return results
-        .mapEach(({name, version}) => {
+        .mapEach(({name, origin, version}) => {
             return {
                 name,
-                official: Str.from(name).startsWith(RELATE_NPM_PREFIX),
-                origin: EXTENSION_ORIGIN.ONLINE,
+                origin: origin || EXTENSION_ORIGIN.ONLINE,
                 version: `${version}`,
             };
         })
