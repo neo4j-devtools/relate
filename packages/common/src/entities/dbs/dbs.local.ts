@@ -80,7 +80,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
     }
 
     async exec(
-        dbmsId: string,
+        nameOrId: string,
         from: string | ReadStream,
         args: {
             database: string;
@@ -88,7 +88,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             accessToken: string;
         },
     ): Promise<string> {
-        const dbms = await this.environment.dbmss.get(dbmsId);
+        const dbms = await this.environment.dbmss.get(nameOrId);
         const params = [
             '--format=plain',
             `--address=${dbms.connectionUri}`,
