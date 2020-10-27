@@ -19,7 +19,8 @@ const appendSemicolon = (): Transform => {
         },
         flush: (next) => {
             if (finalChunk !== undefined) {
-                if (!finalChunk.trim().endsWith(';')) {
+                const finalChunkString = Buffer.isBuffer(finalChunk) ? finalChunk.toString() : finalChunk;
+                if (!finalChunkString.trim().endsWith(';')) {
                     next(null, ';');
                 } else {
                     next();
