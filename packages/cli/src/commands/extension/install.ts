@@ -31,7 +31,7 @@ export default class InstallCommand extends BaseCommand {
         ...FLAGS.ENVIRONMENT,
         version: flags.string({
             char: 'V',
-            description: 'Version to install',
+            description: 'Version to install (semver), or path to tarball',
         }),
     };
 }

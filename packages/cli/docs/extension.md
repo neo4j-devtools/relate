@@ -17,7 +17,7 @@ USAGE
   $ relate extension:install [NAME]
 
 OPTIONS
-  -V, --version=version          Version to install
+  -V, --version=version          Version to install (semver), or path to tarball
   -e, --environment=environment  Name of the environment to run the command against
 
 ALIASES

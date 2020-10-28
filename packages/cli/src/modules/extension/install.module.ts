@@ -1,5 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {
+    arrayHasItems,
     EXTENSION_ORIGIN,
     IExtensionVersion,
     InvalidArgumentError,
@@ -12,6 +13,7 @@ import path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
 import cli from 'cli-ux';
+import semver from 'semver';
 
 import InstallCommand from '../../commands/extension/install';
 import {selectPrompt} from '../../prompts';
@@ -57,9 +59,10 @@ export class InstallModule implements OnApplicationBootstrap {
         let {version = ''} = flags;
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
+
         this.registerHookListeners();
 
-        if (!(name && version)) {
+        if (!version || (semver.valid(version) && !name)) {
             const versions = (await environment.extensions.versions()).toArray();
             const cached = _.filter(versions, ({origin}) => origin === EXTENSION_ORIGIN.CACHED);
             const onlineNotCached = _.filter(versions, (v) => {
@@ -80,6 +83,11 @@ export class InstallModule implements OnApplicationBootstrap {
             const maybeWithName = name
                 ? _.filter([...choices.values()], (v) => v.name === name)
                 : [...choices.values()];
+
+            if (!arrayHasItems(maybeWithName)) {
+                throw new InvalidArgumentError(`Could not find installable extension with name: ${name}`);
+            }
+
             const selected = await selectPrompt(
                 'Select a version to install',
                 _.map(maybeWithName, (v) => ({
