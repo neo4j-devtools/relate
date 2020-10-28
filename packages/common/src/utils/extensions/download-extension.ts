@@ -9,7 +9,7 @@ import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../co
 import {discoverExtension} from './extension-versions';
 import {download} from '../download';
 import {emitHookEvent} from '../event-hooks';
-import {IExtensionMeta} from '../../models';
+import {IExtensionInfo} from '../../models';
 
 export interface IExtensionRegistryManifest {
     name: string;
@@ -74,7 +74,7 @@ export const downloadExtension = async (
     name: string,
     version: string,
     extensionDistributionsPath: string,
-): Promise<IExtensionMeta> => {
+): Promise<IExtensionInfo> => {
     const {tarball, shasum} = await fetchExtensionInfo(name, version);
 
     await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);

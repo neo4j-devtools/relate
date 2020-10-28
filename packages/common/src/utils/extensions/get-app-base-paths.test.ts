@@ -5,7 +5,7 @@ import * as installExtensions from './get-installed-extensions';
 import * as extensionVersions from './extension-versions';
 import {NotFoundError} from '../../errors';
 import {EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
-import {ExtensionMetaModel, IInstalledExtension} from '../../models';
+import {ExtensionInfoModel, IInstalledExtension} from '../../models';
 
 const TEST_APP_NAME = 'testApp';
 const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
@@ -15,7 +15,7 @@ const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
     main: 'path/to/main',
     root: 'path/to/root',
 };
-const TEST_EXTENSION_META = new ExtensionMetaModel({
+const TEST_EXTENSION_META = new ExtensionInfoModel({
     ...TEST_INSTALLED_EXTENSION,
     name: TEST_APP_NAME,
     official: true,
@@ -69,7 +69,7 @@ describe('extract', () => {
             List.from([TEST_INSTALLED_EXTENSION]),
         );
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
-            new ExtensionMetaModel({
+            new ExtensionInfoModel({
                 ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `.${TEST_INSTALLED_EXTENSION.main}`,
@@ -83,7 +83,7 @@ describe('extract', () => {
             List.from([TEST_INSTALLED_EXTENSION]),
         );
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
-            new ExtensionMetaModel({
+            new ExtensionInfoModel({
                 ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `/${TEST_INSTALLED_EXTENSION.main}`,
@@ -97,7 +97,7 @@ describe('extract', () => {
             List.from([TEST_INSTALLED_EXTENSION]),
         );
         jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
-            new ExtensionMetaModel({
+            new ExtensionInfoModel({
                 ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `./${TEST_INSTALLED_EXTENSION.main}`,

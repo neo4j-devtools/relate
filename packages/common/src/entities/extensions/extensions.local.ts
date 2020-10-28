@@ -27,7 +27,7 @@ import {
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
-import {AppLaunchTokenModel, IAppLaunchToken, IExtensionMeta} from '../../models';
+import {AppLaunchTokenModel, IAppLaunchToken, IExtensionInfo} from '../../models';
 import {TokenService} from '../../token.service';
 
 export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
@@ -41,19 +41,19 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return applyEntityFilters(await fetchExtensionVersions(), filters);
     }
 
-    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const allInstalledExtensions = await discoverExtensionDistributions(this.environment.dirPaths.extensionsData);
 
         return applyEntityFilters(allInstalledExtensions.flatten(), filters);
     }
 
-    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const extensions = await this.list(filters);
 
         return extensions.filter(({type}) => type === EXTENSION_TYPES.STATIC);
     }
 
-    async link(filePath: string): Promise<IExtensionMeta> {
+    async link(filePath: string): Promise<IExtensionInfo> {
         const extension = await discoverExtension(filePath);
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
@@ -76,7 +76,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return extension;
     }
 
-    async install(name: string, version: string): Promise<IExtensionMeta> {
+    async install(name: string, version: string): Promise<IExtensionInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
@@ -110,6 +110,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             await fse.move(dist, cacheDir, {
                 overwrite: true,
             });
+            await fse.remove(tmpExtractPath);
 
             try {
                 const discovered = await discoverExtension(cacheDir);
@@ -144,9 +145,9 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     }
 
     private async installRelateExtension(
-        extension: IExtensionMeta,
+        extension: IExtensionInfo,
         extractedDistPath: string,
-    ): Promise<IExtensionMeta> {
+    ): Promise<IExtensionInfo> {
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
         if (!(await fse.pathExists(extractedDistPath))) {
@@ -183,7 +184,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return extension;
     }
 
-    async uninstall(name: string): Promise<List<IExtensionMeta>> {
+    async uninstall(name: string): Promise<List<IExtensionInfo>> {
         // @todo: this is uninstalling only static extensions
         const installedExtensions = await this.list();
         // @todo: if more than one version installed, would need to filter version too

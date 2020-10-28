@@ -18,12 +18,12 @@ import {
 } from '../../constants';
 import {EXTENSION_KEYWORD_NAME, EXTENSION_SEARCH_PATH} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
-import {ExtensionMetaModel} from '../../models';
+import {ExtensionInfoModel} from '../../models';
 import {envPaths} from '../env-paths';
 import {verifyApp} from '@neo4j/code-signer';
 import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
 
-export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionMetaModel>> => {
+export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionInfoModel>> => {
     const dirFiles = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
     const files = await dirFiles
         .mapEach(async (dir) => {
@@ -40,7 +40,7 @@ export const discoverExtensionDistributions = async (distributionsRoot: string):
     return dists.compact().filter((dist) => Boolean(dist.version === '*' || semver.valid(dist.version)));
 };
 
-export async function discoverExtension(extensionRootDir: string): Promise<ExtensionMetaModel> {
+export async function discoverExtension(extensionRootDir: string): Promise<ExtensionInfoModel> {
     const exists = await fse.pathExists(extensionRootDir);
     const dirName = path.basename(extensionRootDir);
 
@@ -93,7 +93,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<Exten
         return m;
     });
 
-    return new ExtensionMetaModel(
+    return new ExtensionInfoModel(
         manifest
             .switchMap((m) =>
                 m.merge({

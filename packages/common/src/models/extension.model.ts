@@ -45,14 +45,14 @@ export class InstalledExtensionModel extends ModelAbstract<IInstalledExtension> 
     root!: string;
 }
 
-export interface IExtensionMeta extends IInstalledExtension {
+export interface IExtensionInfo extends IInstalledExtension {
     official: boolean;
     verification: EXTENSION_VERIFICATION_STATUS;
     dist: string;
     origin: EXTENSION_ORIGIN;
 }
 
-export class ExtensionMetaModel extends ModelAbstract<IExtensionMeta> implements IExtensionMeta {
+export class ExtensionInfoModel extends ModelAbstract<IExtensionInfo> implements IExtensionInfo {
     @IsString()
     name!: string;
 
