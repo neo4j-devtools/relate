@@ -24,7 +24,10 @@
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
         "generate:docs": "lerna run generate:docs",
-        "watch": "lerna run watch --stream --parallel"
+        "watch": "lerna run watch --stream --parallel",
+        "fix:locks": "lerna exec \"npm install --ignore-scripts --no-audit\"",
+        "add:locks": "git add packages/*/package-lock.json",
+        "version": "run-s lerna:clean fix:locks add:locks"
     },
     "devDependencies": {
         "@types/node-fetch": "2.5.7",
