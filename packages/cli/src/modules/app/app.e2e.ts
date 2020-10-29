@@ -5,7 +5,7 @@ import AccessTokenCommand from '../../commands/dbms/access-token';
 import OpenCommand from '../../commands/app/open';
 import StartCommand from '../../commands/dbms/start';
 
-const appRoot = 'fakeRoot';
+const appRoot = '/fakeRoot';
 
 jest.mock('cli-ux', () => {
     return {

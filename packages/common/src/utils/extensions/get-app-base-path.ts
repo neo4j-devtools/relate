@@ -4,6 +4,7 @@ import {getInstalledExtensionsSync} from './get-installed-extensions';
 import {EXTENSION_TYPES} from '../../constants';
 import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';
+import {isValidUrl} from '../generic';
 
 export async function getAppBasePath(appName: string): Promise<string> {
     const installed = getInstalledExtensionsSync();
@@ -15,6 +16,10 @@ export async function getAppBasePath(appName: string): Promise<string> {
 
     const {name, main: mainExtension} = await discoverExtension(app.root);
     const appBase = `/${name}`;
+
+    if (isValidUrl(mainExtension)) {
+        return mainExtension;
+    }
 
     return Str.from(mainExtension)
         .map((main) => (main.startsWith('.') ? main.substr(1) : main))

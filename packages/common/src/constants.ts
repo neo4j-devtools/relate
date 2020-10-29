@@ -191,3 +191,7 @@ export enum EXTENSION_VERIFICATION_STATUS {
     UNTRUSTED = 'UNTRUSTED',
     REVOKED = 'REVOKED',
 }
+
+export const RELATE_URL_PARAM_NAME = 'relateUrl';
+export const RELATE_API_TOKEN_PARAM_NAME = 'relateApiToken';
+export const RELATE_LAUNCH_TOKEN_PARAM_NAME = 'relateLaunchToken';

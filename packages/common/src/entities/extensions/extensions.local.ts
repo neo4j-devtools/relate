@@ -34,7 +34,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     async getAppPath(appName: string, appRoot = ''): Promise<string> {
         const appBase = await getAppBasePath(appName);
 
-        return `${appRoot}${appBase}`;
+        return isValidUrl(appBase) ? appBase : `${appRoot}${appBase}`;
     }
 
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
@@ -160,7 +160,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
 
         await fse.copy(extractedDistPath, target);
 
-        if (extension.type === EXTENSION_TYPES.STATIC) {
+        if (extension.type === EXTENSION_TYPES.STATIC && !isValidUrl(extension.main)) {
             const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, extension.name);
 
             await fse.symlink(target, staticTarget, 'junction');
@@ -198,7 +198,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             .mapEach(async (ext) => {
                 await fse.remove(ext.dist);
 
-                if (ext.type === EXTENSION_TYPES.STATIC) {
+                if (ext.type === EXTENSION_TYPES.STATIC && !isValidUrl(ext.main)) {
                     const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, ext.name);
 
                     await fse.remove(staticTarget);

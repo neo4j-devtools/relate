@@ -6,6 +6,22 @@ type GraphQLQuery = {
     query: string;
 };
 
+type RelateURLParams = {
+    relateUrl: string | null;
+    relateLaunchToken: string | null;
+    relateApiToken: string | null;
+};
+
+export function getURLParameters(url: string): RelateURLParams {
+    const queryParam = new URL(url).searchParams;
+
+    return {
+        relateUrl: queryParam.get('relateUrl'),
+        relateLaunchToken: queryParam.get('relateLaunchToken'),
+        relateApiToken: queryParam.get('relateApiToken'),
+    };
+}
+
 export function getParseLaunchTokenPayload(appName: string, launchToken: string): GraphQLQuery {
     const operationName = 'launchData';
 
