@@ -16,7 +16,7 @@
         "lint": "eslint . --ext .ts",
         "test:teardown": "node scripts/tests/teardown.js",
         "test:setup": "node scripts/tests/setup.js",
-        "lerna:test": "lerna run test",
+        "lerna:test": "lerna run test --concurrency 1",
         "test": "run-s --continue-on-error test:setup lerna:test test:teardown",
         "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
