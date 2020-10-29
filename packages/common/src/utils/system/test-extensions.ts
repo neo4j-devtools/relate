@@ -21,21 +21,22 @@ export class TestExtensions {
 
     private async createExtension(type: EXTENSION_TYPES, extensionPath: string): Promise<IInstalledExtension> {
         const name = this.createName();
+        const root = path.join(extensionPath, name);
         const manifest: IInstalledExtension = {
             name,
             type,
             version: '1.0.0',
             main: '',
-            root: '',
+            root,
         };
         const packageJson = {
             name,
             version: '1.0.0',
         };
 
-        const manifestPath = path.join(extensionPath, name, EXTENSION_MANIFEST_FILE);
-        const packageJsonPath = path.join(extensionPath, name, 'package.json');
-        const indexPath = path.join(extensionPath, name, 'index.html');
+        const manifestPath = path.join(root, EXTENSION_MANIFEST_FILE);
+        const packageJsonPath = path.join(root, 'package.json');
+        const indexPath = path.join(root, 'index.html');
 
         await fse.ensureFile(manifestPath);
         await fse.ensureFile(packageJsonPath);
@@ -45,7 +46,7 @@ export class TestExtensions {
 
         if (type === EXTENSION_TYPES.STATIC) {
             await fse.ensureDir(path.join(extensionPath, type));
-            await fse.symlink(path.join(extensionPath, name), path.join(extensionPath, type, name), 'junction');
+            await fse.symlink(root, path.join(extensionPath, type, name), 'junction');
         }
 
         this.extensions.push(manifest);

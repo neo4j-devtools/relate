@@ -4,6 +4,7 @@ import {getInstalledExtensionsSync} from './get-installed-extensions';
 import {EXTENSION_TYPES} from '../../constants';
 import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';
+import {isValidUrl} from '../generic';
 
 export async function getAppBasePath(appName: string): Promise<string> {
     const installed = getInstalledExtensionsSync();
@@ -13,10 +14,14 @@ export async function getAppBasePath(appName: string): Promise<string> {
             throw new NotFoundError(`App ${appName} not found`);
         });
 
-    const {name, manifest} = await discoverExtension(app.root);
+    const {name, main: mainExtension} = await discoverExtension(app.root);
     const appBase = `/${name}`;
 
-    return Str.from(manifest.main)
+    if (isValidUrl(mainExtension)) {
+        return mainExtension;
+    }
+
+    return Str.from(mainExtension)
         .map((main) => (main.startsWith('.') ? main.substr(1) : main))
         .map((main) => (main.startsWith('/') ? main.substr(1) : main))
         .flatMap((main) => `${appBase}/${main}`);

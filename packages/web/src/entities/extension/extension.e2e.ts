@@ -10,13 +10,13 @@ import {
     STATIC_APP_BASE_ENDPOINT,
     envPaths,
     PROJECTS_DIR_NAME,
+    getAppLaunchUrl,
 } from '@relate/common';
 import fse from 'fs-extra';
 import path from 'path';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
-import {createAppLaunchUrl} from './extension.utils';
 
 let TEST_DB_ID: string;
 const TEST_ACCESS_TOKEN =
@@ -43,7 +43,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
                 projectId: $projectId,
             ) {
                 token
-                path
+                url
             }
         }
     `,
@@ -128,10 +128,11 @@ describe('AppsModule', () => {
                 },
             })
             .expect(HTTP_OK)
-            .expect((res: request.Response) => {
+            .expect(async (res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
-                const {token, path: tokenPath} = createAppLaunchToken;
-                const expectedPath = createAppLaunchUrl(`${STATIC_APP_BASE_ENDPOINT}/${testExtension.name}/`, token);
+                const {token, url: tokenPath} = createAppLaunchToken;
+                const appUrl = `${testEnvironment.httpOrigin}${STATIC_APP_BASE_ENDPOINT}/${testExtension.name}/`;
+                const expectedPath = await getAppLaunchUrl(testEnvironment, appUrl, testExtension.name, token);
 
                 expect(token).toEqual(expect.stringMatching(JWT_REGEX));
                 expect(tokenPath).toEqual(expectedPath);

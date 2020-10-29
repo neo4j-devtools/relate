@@ -1,8 +1,8 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {Environment, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
+import {Environment, getAppLaunchUrl, isValidUrl, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 import _ from 'lodash';
-import fetch, {Response} from 'node-fetch';
+import fetch from 'node-fetch';
 
 import OpenCommand from '../../commands/app/open';
 import {isInteractive, readStdin} from '../../stdin';
@@ -58,10 +58,16 @@ export class OpenModule implements OnApplicationBootstrap {
 
         const appRoot = await this.getServerAppRoot(environment);
         const appPath = await environment.extensions.getAppPath(appName, appRoot);
-        const appUrl = `${environment.httpOrigin}${appPath}`;
+
+        if (!appRoot && !isValidUrl(appPath)) {
+            throw new NotFoundError(`Could not connect to the @relate/web server`, [
+                'If you are connecting locally, run "relate-web start" and try again.',
+                'If you are connecting to a remote, ensure that you are logged in',
+            ]);
+        }
 
         if (!dbmsId) {
-            this.logOrOpen(appUrl);
+            this.logOrOpen(await getAppLaunchUrl(environment, appPath, appName));
             return;
         }
 
@@ -69,9 +75,9 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!user) {
             const launchToken = await environment.extensions.createAppLaunchToken(appName, dbms.id);
-            const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
+            const appUrl = await getAppLaunchUrl(environment, appPath, appName, launchToken);
 
-            this.logOrOpen(tokenUrl);
+            this.logOrOpen(appUrl);
             return;
         }
 
@@ -83,31 +89,24 @@ export class OpenModule implements OnApplicationBootstrap {
             accessToken,
             project,
         );
+        const appUrl = await getAppLaunchUrl(environment, appPath, appName, launchToken);
 
-        const tokenUrl = `${appUrl}?_appLaunchToken=${launchToken}`;
-        this.logOrOpen(tokenUrl);
+        this.logOrOpen(appUrl);
     }
 
-    private async getServerAppRoot(environment: Environment): Promise<string> {
-        let res: Response;
-
-        const error = new NotFoundError(`Could not connect to the @relate/web server`, [
-            'If you are connecting locally, run "relate-web start" and try again.',
-            'If you are connecting to a remote, ensure that you are logged in',
-        ]);
-
+    private async getServerAppRoot(environment: Environment): Promise<string | undefined> {
         try {
-            res = await fetch(`${environment.httpOrigin}/health`);
+            const res = await fetch(`${environment.httpOrigin}/health`);
 
             if (!res.ok) {
-                throw error;
+                return undefined;
             }
+
+            const {appRoot} = await res.json();
+
+            return appRoot;
         } catch (_error) {
-            throw error;
+            return undefined;
         }
-
-        const {appRoot} = await res.json();
-
-        return appRoot;
     }
 }

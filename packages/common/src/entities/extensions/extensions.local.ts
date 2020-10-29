@@ -1,8 +1,9 @@
 import {exec} from 'child_process';
 import fse from 'fs-extra';
-import {coerce} from 'semver';
+import {valid} from 'semver';
 import {promisify} from 'util';
 import path from 'path';
+import {v4 as uuidv4} from 'uuid';
 import {List, None} from '@relate/types';
 
 import {
@@ -10,11 +11,10 @@ import {
     ExtensionExistsError,
     InvalidArgumentError,
     NotFoundError,
-    NotSupportedError,
     ValidationFailureError,
 } from '../../errors';
 import {ENTITY_TYPES, EXTENSION_TYPES, HOOK_EVENTS} from '../../constants';
-import {emitHookEvent} from '../../utils';
+import {download, emitHookEvent} from '../../utils';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
     discoverExtension,
@@ -23,38 +23,37 @@ import {
     extractExtension,
     fetchExtensionVersions,
     getAppBasePath,
-    IExtensionMeta,
     IExtensionVersion,
 } from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {LocalEnvironment} from '../environments/environment.local';
-import {AppLaunchTokenModel, IAppLaunchToken} from '../../models';
+import {AppLaunchTokenModel, IAppLaunchToken, IExtensionInfo} from '../../models';
 import {TokenService} from '../../token.service';
 
 export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     async getAppPath(appName: string, appRoot = ''): Promise<string> {
         const appBase = await getAppBasePath(appName);
 
-        return `${appRoot}${appBase}`;
+        return isValidUrl(appBase) ? appBase : `${appRoot}${appBase}`;
     }
 
     async versions(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionVersion>> {
         return applyEntityFilters(await fetchExtensionVersions(), filters);
     }
 
-    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const allInstalledExtensions = await discoverExtensionDistributions(this.environment.dirPaths.extensionsData);
 
         return applyEntityFilters(allInstalledExtensions.flatten(), filters);
     }
 
-    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const extensions = await this.list(filters);
 
         return extensions.filter(({type}) => type === EXTENSION_TYPES.STATIC);
     }
 
-    async link(filePath: string): Promise<IExtensionMeta> {
+    async link(filePath: string): Promise<IExtensionInfo> {
         const extension = await discoverExtension(filePath);
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
@@ -77,43 +76,52 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         return extension;
     }
 
-    async install(name: string, version: string): Promise<IExtensionMeta> {
+    async install(name: string, version: string): Promise<IExtensionInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
         }
 
-        const {extensionsCache} = this.environment.dirPaths;
+        const {extensionsCache, tmp} = this.environment.dirPaths;
+        const isFilePath = (await fse.pathExists(version)) && (await fse.stat(version)).isFile();
 
-        // version as a file path.
-        if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            // extract extension to cache dir first
+        // version as a file path or URL.
+        if (isFilePath || isValidUrl(version)) {
+            let toExtract = version;
+
+            if (isValidUrl(version)) {
+                const tmpDownloadPath = path.join(tmp, uuidv4());
+
+                await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_START, null);
+
+                toExtract = await download(version, tmpDownloadPath);
+
+                await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DOWNLOAD_STOP, null);
+            }
+
+            // extract extension to tmp first
+            const tmpExtractPath = path.join(tmp, uuidv4());
             const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-                version,
-                extensionsCache,
+                toExtract,
+                tmpExtractPath,
             );
+            const cacheDir = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
 
-            // move the extracted dir
-            const destination = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
-
-            await fse.move(dist, destination, {
+            // move the extracted dir to cache
+            await fse.move(dist, cacheDir, {
                 overwrite: true,
             });
+            await fse.remove(tmpExtractPath);
 
             try {
-                const discovered = await discoverExtension(destination);
+                const discovered = await discoverExtension(cacheDir);
 
-                return this.installRelateExtension(discovered, discovered.dist);
+                return this.installRelateExtension(discovered, discovered.dist).finally(() => fse.remove(cacheDir));
             } catch (e) {
                 throw new NotFoundError(`Unable to find the requested version: ${version}`);
             }
         }
 
-        // @todo: version as a URL.
-        if (isValidUrl(version)) {
-            throw new NotSupportedError(`fetch and install extension ${name}@${version}`);
-        }
-
-        const coercedVersion = coerce(version)?.version;
+        const coercedVersion = valid(version);
         if (coercedVersion) {
             const dists = List.from(await discoverExtensionDistributions(extensionsCache));
             const requestedDistribution = await dists
@@ -137,9 +145,9 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     }
 
     private async installRelateExtension(
-        extension: IExtensionMeta,
+        extension: IExtensionInfo,
         extractedDistPath: string,
-    ): Promise<IExtensionMeta> {
+    ): Promise<IExtensionInfo> {
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.EXTENSION, extension.name);
 
         if (!(await fse.pathExists(extractedDistPath))) {
@@ -152,7 +160,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
 
         await fse.copy(extractedDistPath, target);
 
-        if (extension.type === EXTENSION_TYPES.STATIC) {
+        if (extension.type === EXTENSION_TYPES.STATIC && !isValidUrl(extension.main)) {
             const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, extension.name);
 
             await fse.symlink(target, staticTarget, 'junction');
@@ -162,23 +170,21 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
         // this does not account for all scenarios at the moment so needs more thought
         const execute = promisify(exec);
 
-        try {
+        if (extension.type !== EXTENSION_TYPES.STATIC) {
             await emitHookEvent(
                 HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START,
                 `installing dependencies for ${extension.name}`,
             );
-            const output = await execute('npm install --production', {
+            const output = await execute('npm ci --production', {
                 cwd: target,
             });
             await emitHookEvent(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, output);
-        } catch (err) {
-            throw new Error(err);
         }
 
         return extension;
     }
 
-    async uninstall(name: string): Promise<List<IExtensionMeta>> {
+    async uninstall(name: string): Promise<List<IExtensionInfo>> {
         // @todo: this is uninstalling only static extensions
         const installedExtensions = await this.list();
         // @todo: if more than one version installed, would need to filter version too
@@ -192,7 +198,7 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
             .mapEach(async (ext) => {
                 await fse.remove(ext.dist);
 
-                if (ext.type === EXTENSION_TYPES.STATIC) {
+                if (ext.type === EXTENSION_TYPES.STATIC && !isValidUrl(ext.main)) {
                     const staticTarget = path.join(this.environment.dirPaths.staticExtensionsData, ext.name);
 
                     await fse.remove(staticTarget);

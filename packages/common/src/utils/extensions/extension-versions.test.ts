@@ -4,7 +4,7 @@ import * as extensionVersions from './extension-versions';
 import {TestExtensions} from '../system/test-extensions';
 import {IInstalledExtension} from '../../models/extension.model';
 import {envPaths} from '../env-paths';
-import {EXTENSION_DIR_NAME, EXTENSION_ORIGIN, EXTENSION_TYPES} from '../../constants';
+import {EXTENSION_DIR_NAME, EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
 import {NotFoundError} from '../../errors';
 
 const TEST_EXTENSION = 'test-extension';
@@ -23,10 +23,13 @@ jest.mock('got', () => ({
         .mockImplementation(() => {
             return {
                 json: jest.fn().mockResolvedValue({
-                    results: [
+                    objects: [
                         {
-                            repo: TEST_REPO,
-                            name: `${TEST_EXTENSION}-${TEST_EXTENSION_VERSION}.tgz`,
+                            package: {
+                                repo: TEST_REPO,
+                                name: TEST_EXTENSION,
+                                version: TEST_EXTENSION_VERSION,
+                            },
                         },
                     ],
                 }),
@@ -88,13 +91,10 @@ describe('extension versions', () => {
             expect(extensionMeta).toEqual({
                 name: testExtension.name,
                 dist: path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, testExtension.name),
-                manifest: {
-                    name: testExtension.name,
-                    type: testExtension.type,
-                    version: testExtension.version,
-                    main: testExtension.main,
-                    root: testExtension.root,
-                },
+                main: testExtension.main,
+                root: testExtension.root,
+                official: false,
+                verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
                 type: testExtension.type,
                 version: testExtension.version,
@@ -110,13 +110,10 @@ describe('extension versions', () => {
             expect(extensionMeta[0]).toEqual({
                 name: testExtension.name,
                 dist: path.join(path.join(envPaths().cache, EXTENSION_DIR_NAME), testExtension.name),
-                manifest: {
-                    name: testExtension.name,
-                    type: testExtension.type,
-                    version: testExtension.version,
-                    main: testExtension.main,
-                    root: testExtension.root,
-                },
+                main: testExtension.main,
+                root: testExtension.root,
+                official: false,
+                verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
                 type: testExtension.type,
                 version: testExtension.version,
@@ -129,16 +126,7 @@ describe('extension versions', () => {
             expect(extensionVersionList).toEqual([
                 {
                     name: testExtension.name,
-                    dist: path.join(path.join(envPaths().cache, EXTENSION_DIR_NAME), testExtension.name),
-                    manifest: {
-                        name: testExtension.name,
-                        type: testExtension.type,
-                        version: testExtension.version,
-                        main: testExtension.main,
-                        root: testExtension.root,
-                    },
                     origin: EXTENSION_ORIGIN.CACHED,
-                    type: testExtension.type,
                     version: testExtension.version,
                 },
                 {

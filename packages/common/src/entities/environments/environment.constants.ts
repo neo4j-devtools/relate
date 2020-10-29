@@ -1,3 +1,5 @@
+import {EXTENSION_URL_PATH} from '../../constants';
+
 export const ENVIRONMENTS_DIR_NAME = 'environments';
 export const RUNTIME_DIR_NAME = 'runtime';
 
@@ -88,8 +90,5 @@ export const NEO4J_JWT_CERT_ATTRS = [
     },
 ];
 
-// @todo: needs to be removed and handled by env vars
-export const EXTENSION_SEARCH_PATH = 'https://neo.jfrog.io/artifactory/api/search/aql';
-export const EXTENSION_REPO_NAME = 'npm-local-private';
-export const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
-export const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';
+export const EXTENSION_SEARCH_PATH = `${EXTENSION_URL_PATH}-/v1/search`;
+export const EXTENSION_KEYWORD_NAME = 'neo4j-relate-extension';

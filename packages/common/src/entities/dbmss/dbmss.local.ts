@@ -122,8 +122,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
-            const {extractedDistPath} = await extractNeo4j(version, this.environment.dirPaths.dbmssCache);
-            return this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
+            const tmpPath = path.join(this.environment.dirPaths.tmp, uuidv4());
+            const {extractedDistPath} = await extractNeo4j(version, tmpPath);
+            const dbms = await this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
+
+            await fse.remove(tmpPath);
+
+            return dbms;
         }
 
         // @todo: version as a URL.
