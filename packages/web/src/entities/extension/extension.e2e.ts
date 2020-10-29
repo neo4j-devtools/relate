@@ -43,7 +43,7 @@ const CREATE_APP_LAUNCH_TOKEN = {
                 projectId: $projectId,
             ) {
                 token
-                path
+                url
             }
         }
     `,
@@ -130,7 +130,7 @@ describe('AppsModule', () => {
             .expect(HTTP_OK)
             .expect(async (res: request.Response) => {
                 const {createAppLaunchToken = {}} = res.body.data;
-                const {token, path: tokenPath} = createAppLaunchToken;
+                const {token, url: tokenPath} = createAppLaunchToken;
                 const appUrl = `${testEnvironment.httpOrigin}${STATIC_APP_BASE_ENDPOINT}/${testExtension.name}/`;
                 const expectedPath = await getAppLaunchUrl(testEnvironment, appUrl, testExtension.name, token);
 
