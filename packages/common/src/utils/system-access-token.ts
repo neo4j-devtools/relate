@@ -1,32 +1,31 @@
-import {PropertiesFile} from '../system/files';
+import fse from 'fs-extra';
+import path from 'path';
 
-export function getAccessTokenRCKey(environmentNameOrId: string, dbmsId: string, dbmsUser: string): string {
-    return `//${environmentNameOrId}/${dbmsId}/${dbmsUser}/:_accessToken`;
+import {ENTITY_TYPES} from '../constants';
+
+export function getAccessTokenFileName(environmentNameOrId: string, dbmsId: string, dbmsUser: string): string {
+    return `${environmentNameOrId}-${ENTITY_TYPES.DBMS}-${dbmsId}-${dbmsUser}`;
 }
 
 export async function registerSystemAccessToken(
-    knownConnectionsPath: string,
+    tokenDirPath: string,
     environmentNameOrId: string,
     dbmsId: string,
     dbmsUser: string,
     accessToken: string,
 ): Promise<void> {
-    const key = getAccessTokenRCKey(environmentNameOrId, dbmsId, dbmsUser);
-    const properties = await PropertiesFile.readFile(knownConnectionsPath);
+    const fileName = getAccessTokenFileName(environmentNameOrId, dbmsId, dbmsUser);
 
-    properties.set(key, accessToken);
-
-    return properties.flush();
+    await fse.writeFile(path.join(tokenDirPath, fileName), accessToken, 'utf8');
 }
 
-export async function getSystemAccessToken(
-    knownConnectionsPath: string,
+export function getSystemAccessToken(
+    tokenDirPath: string,
     environmentNameOrId: string,
     dbmsId: string,
     dbmsUser: string,
 ): Promise<string | undefined> {
-    const key = getAccessTokenRCKey(environmentNameOrId, dbmsId, dbmsUser);
-    const properties = await PropertiesFile.readFile(knownConnectionsPath);
+    const fileName = getAccessTokenFileName(environmentNameOrId, dbmsId, dbmsUser);
 
-    return properties.get(key);
+    return fse.readFile(path.join(tokenDirPath, fileName), 'utf8').catch(() => undefined);
 }
