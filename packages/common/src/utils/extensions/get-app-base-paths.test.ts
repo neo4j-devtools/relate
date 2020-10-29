@@ -4,8 +4,8 @@ import {getAppBasePath} from './get-app-base-path';
 import * as installExtensions from './get-installed-extensions';
 import * as extensionVersions from './extension-versions';
 import {NotFoundError} from '../../errors';
-import {EXTENSION_TYPES, EXTENSION_ORIGIN} from '../../constants';
-import {IInstalledExtension} from '../../models';
+import {EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
+import {ExtensionInfoModel, IInstalledExtension} from '../../models';
 
 const TEST_APP_NAME = 'testApp';
 const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
@@ -15,14 +15,16 @@ const TEST_INSTALLED_EXTENSION: IInstalledExtension = {
     main: 'path/to/main',
     root: 'path/to/root',
 };
-const TEST_EXTENSION_META: extensionVersions.IExtensionMeta = {
+const TEST_EXTENSION_META = new ExtensionInfoModel({
+    ...TEST_INSTALLED_EXTENSION,
     name: TEST_APP_NAME,
-    manifest: TEST_INSTALLED_EXTENSION,
+    official: true,
+    verification: EXTENSION_VERIFICATION_STATUS.TRUSTED,
     type: EXTENSION_TYPES.STATIC,
     version: '',
     dist: '',
     origin: EXTENSION_ORIGIN.CACHED,
-};
+});
 
 describe('extract', () => {
     afterEach(() => jest.restoreAllMocks());
@@ -66,13 +68,13 @@ describe('extract', () => {
         jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() =>
             List.from([TEST_INSTALLED_EXTENSION]),
         );
-        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
-            ...TEST_EXTENSION_META,
-            manifest: {
+        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
+            new ExtensionInfoModel({
+                ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `.${TEST_INSTALLED_EXTENSION.main}`,
-            },
-        });
+            }),
+        );
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 
@@ -80,13 +82,13 @@ describe('extract', () => {
         jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() =>
             List.from([TEST_INSTALLED_EXTENSION]),
         );
-        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
-            ...TEST_EXTENSION_META,
-            manifest: {
+        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
+            new ExtensionInfoModel({
+                ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `/${TEST_INSTALLED_EXTENSION.main}`,
-            },
-        });
+            }),
+        );
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 
@@ -94,13 +96,13 @@ describe('extract', () => {
         jest.spyOn(installExtensions, 'getInstalledExtensionsSync').mockImplementation(() =>
             List.from([TEST_INSTALLED_EXTENSION]),
         );
-        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue({
-            ...TEST_EXTENSION_META,
-            manifest: {
+        jest.spyOn(extensionVersions, 'discoverExtension').mockResolvedValue(
+            new ExtensionInfoModel({
+                ...TEST_EXTENSION_META,
                 ...TEST_INSTALLED_EXTENSION,
                 main: `./${TEST_INSTALLED_EXTENSION.main}`,
-            },
-        });
+            }),
+        );
         await expect(getAppBasePath(TEST_APP_NAME)).resolves.toBe(`/${TEST_APP_NAME}/${TEST_INSTALLED_EXTENSION.main}`);
     });
 

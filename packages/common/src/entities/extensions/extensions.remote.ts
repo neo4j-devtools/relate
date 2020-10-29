@@ -3,11 +3,11 @@ import {Dict, List, None} from '@relate/types';
 
 import {GraphqlError, NotAllowedError, NotFoundError} from '../../errors';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
-import {IExtensionMeta, IExtensionVersion} from '../../utils/extensions';
+import {IExtensionVersion} from '../../utils/extensions';
 import {ExtensionsAbstract} from './extensions.abstract';
 import {RemoteEnvironment} from '../environments';
 import {IRelateFilter} from '../../utils/generic';
-import {IAppLaunchToken} from '../../models';
+import {IAppLaunchToken, IExtensionInfo} from '../../models';
 
 export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
     async getAppPath(appName: string): Promise<string> {
@@ -49,7 +49,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSION_VERSIONS]);
     }
 
-    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query InstalledExtensions($filters: [RelateSimpleFilter!]) {
@@ -74,7 +74,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_EXTENSIONS]);
     }
 
-    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionMeta>> {
+    async listApps(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IExtensionInfo>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 query InstalledExtensions($filters: [RelateSimpleFilter!]) {
@@ -98,11 +98,11 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         return List.from(data[PUBLIC_GRAPHQL_METHODS.LIST_APPS]);
     }
 
-    link(_filePath: string): Promise<IExtensionMeta> {
+    link(_filePath: string): Promise<IExtensionInfo> {
         throw new NotAllowedError(`${RemoteEnvironment.name} does not support linking extensions`);
     }
 
-    async install(name: string, version: string): Promise<IExtensionMeta> {
+    async install(name: string, version: string): Promise<IExtensionInfo> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation InstallExtension($name: String!, version: String!) {
@@ -129,7 +129,7 @@ export class RemoteExtensions extends ExtensionsAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION];
     }
 
-    async uninstall(name: string): Promise<List<IExtensionMeta>> {
+    async uninstall(name: string): Promise<List<IExtensionInfo>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation UninstallExtension($name: String!) {

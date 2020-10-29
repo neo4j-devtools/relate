@@ -1,5 +1,4 @@
 /* eslint-disable no-sync */
-
 import * as path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
@@ -14,7 +13,6 @@ import {
     EXTENSION_MANIFEST_FILE,
     PACKAGE_JSON,
     EXTENSION_TYPES,
-    EXTENSION_NPM_PREFIX,
 } from '../../constants';
 
 /**
@@ -48,29 +46,31 @@ function mapContentsToExtension(fullPath: string): IInstalledExtension {
         throw new InvalidArgumentError('Installed extensions must be a directory');
     }
 
-    const hasManifestFile = fse.pathExistsSync(manifestPath);
     const hasPackageJson = fse.pathExistsSync(packagePath);
-    const contents = fse.readJSONSync(hasManifestFile ? manifestPath : packagePath);
-    const hasManifest = hasManifestFile || _.has(contents, EXTENSION_MANIFEST_KEY);
+
+    if (!hasPackageJson) {
+        throw new InvalidArgumentError('Unable to parse extension manifest');
+    }
+
+    const hasManifestFile = fse.pathExistsSync(manifestPath);
+    const packageJson = fse.readJSONSync(hasManifestFile ? manifestPath : packagePath);
+    const hasManifest = hasManifestFile || _.has(packageJson, EXTENSION_MANIFEST_KEY);
+    const defaultManifest = {
+        name: packageJson.name,
+        type: EXTENSION_TYPES.STATIC,
+        root: fullPath,
+        version: packageJson.version,
+        main: packageJson.main,
+    };
 
     if (hasManifest) {
-        const manifest = hasManifestFile ? contents : contents[EXTENSION_MANIFEST_KEY];
+        const manifest = hasManifestFile ? packageJson : packageJson[EXTENSION_MANIFEST_KEY];
 
         return new ExtensionModel({
+            ...defaultManifest,
             ...manifest,
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
-            root: fullPath,
         });
     }
 
-    if (hasPackageJson) {
-        return new ExtensionModel({
-            ...contents,
-            name: _.replace(contents.name, EXTENSION_NPM_PREFIX, ''),
-            root: fullPath,
-            type: EXTENSION_TYPES.STATIC,
-        });
-    }
-
-    throw new InvalidArgumentError('Unable to parse extension contents');
+    return new ExtensionModel(defaultManifest);
 }

@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {IExtensionMeta, SystemModule, SystemProvider, InvalidArgumentError} from '@relate/common';
+import {IExtensionInfo, SystemModule, SystemProvider, InvalidArgumentError} from '@relate/common';
 import _ from 'lodash';
 
 import UninstallCommand from '../../commands/extension/uninstall';
@@ -45,7 +45,7 @@ export class UninstallModule implements OnApplicationBootstrap {
         return environment.extensions.uninstall(name).then((exts) => {
             // @todo: will we have more than 1 version installed? If so, will
             // need to pass in / select version to uninstall
-            const extFormatter = (ext: IExtensionMeta): string => `${ext.name}@${ext.version}`;
+            const extFormatter = (ext: IExtensionInfo): string => `${ext.name}@${ext.version}`;
 
             this.utils.log(`Uninstalled ${_.join(_.map(exts.toArray(), extFormatter), ', ')}`);
         });
