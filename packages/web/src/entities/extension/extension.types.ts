@@ -22,7 +22,7 @@ export class ExtensionData {
 @ObjectType()
 export class AppData extends ExtensionData {
     @Field(() => String)
-    path!: string;
+    url!: string;
 }
 
 @ObjectType()
@@ -52,7 +52,7 @@ export class AppLaunchToken {
     token: string;
 
     @Field(() => String)
-    path: string;
+    url: string;
 }
 
 @ArgsType()
