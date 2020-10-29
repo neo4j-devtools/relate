@@ -41,28 +41,32 @@ async function populateDistributionCache(env) {
         // the cached directory we get during installation.
 
         const spinner = ora(`Caching Neo4j ${version}`).start();
-        await env.dbmss.install(
-            `global-setup-${version}`,
-            version,
-            TestDbmss.NEO4J_EDITION,
-            TestDbmss.DBMS_CREDENTIALS,
-            false,
-        );
-        await env.dbmss.uninstall(`global-setup-${version}`);
+
+        try {
+            await env.dbmss.install(
+                `global-setup-${version}`,
+                version,
+                TestDbmss.NEO4J_EDITION,
+                TestDbmss.DBMS_CREDENTIALS,
+                false,
+            );
+            await env.dbmss.uninstall(`global-setup-${version}`);
+        } catch (err) {
+            spinner.fail(err.message);
+            throw err;
+        }
         spinner.succeed();
     }
 }
 
 async function globalSetup() {
-
-    const spinner = ora(`Preparing environment`).start();
+    console.log('Preparing environment');
     await fse.emptyDir(envPaths().data);
     await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
 
     const env = (await TestDbmss.init('relate')).environment;
-    spinner.succeed();
 
     await populateDistributionCache(env);
 
@@ -89,5 +93,5 @@ async function globalSetup() {
     );
 }
 
-console.log("Setting up tests");
+console.log('Setting up tests');
 globalSetup().then(() => console.log('Setup complete'));
