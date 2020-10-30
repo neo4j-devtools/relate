@@ -18,14 +18,16 @@ export class InfoModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const environment = await this.systemProvider.getEnvironment(flags.environment);
+        const {environment: environmentId, onlineCheck} = flags;
+
+        const environment = await this.systemProvider.getEnvironment(environmentId);
         const namesOrIds = this.parsed.argv;
         const dbmss: Omit<IDbms, 'config'>[] = !namesOrIds.length
             ? (await environment.dbmss.list()).toArray()
             : await Promise.all(namesOrIds.map((n) => environment.dbmss.get(n)));
         const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        await environment.dbmss.info(dbmsIds, true).then((res) => {
+        await environment.dbmss.info(dbmsIds, onlineCheck).then((res) => {
             const table = res
                 .mapEach((dbms) => {
                     return {

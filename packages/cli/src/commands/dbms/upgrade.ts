@@ -22,11 +22,11 @@ export default class UpgradeCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.VERSION,
-        'no-caching': flags.boolean({
+        noCaching: flags.boolean({
             default: false,
             description: 'Prevent caching of the downloaded DBMS',
         }),
-        'no-migration': flags.boolean({
+        noMigration: flags.boolean({
             default: false,
             description: 'Prevent migrating the data to new formats',
         }),

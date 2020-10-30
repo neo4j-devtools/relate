@@ -79,6 +79,7 @@ OPTIONS
   --filter=filter                filter property by partial string matching, ex: name=foo
   --no-header                    hide table header from output
   --no-truncate                  do not truncate output to fit screen
+  --onlineCheck                  Check if the DBMS is online
   --output=csv|json|yaml         output in a more machine friendly format
   --sort=sort                    property to sort by (prepend '-' for descending)
 
@@ -108,7 +109,7 @@ OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -n, --name=name                (required) Name to give the newly installed DBMS
   --limited                      Display limited versions of DBMSs
-  --no-caching                   Prevent caching of the downloaded DBMS
+  --noCaching                    Prevent caching of the downloaded DBMS
 
 EXAMPLES
   $ relate dbms:install
@@ -294,8 +295,8 @@ ARGUMENTS
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
   -v, --version=version          (required) Version to install (semver, url, or path)
-  --no-caching                   Prevent caching of the downloaded DBMS
-  --no-migration                 Prevent migrating the data to new formats
+  --noCaching                    Prevent caching of the downloaded DBMS
+  --noMigration                  Prevent migrating the data to new formats
 
 EXAMPLES
   $ relate dbms:upgrade
