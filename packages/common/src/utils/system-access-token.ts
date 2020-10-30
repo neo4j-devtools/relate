@@ -19,13 +19,18 @@ export async function registerSystemAccessToken(
     await fse.writeFile(path.join(tokenDirPath, fileName), accessToken, 'utf8');
 }
 
-export function getSystemAccessToken(
+export async function getSystemAccessToken(
     tokenDirPath: string,
     environmentNameOrId: string,
     dbmsId: string,
     dbmsUser: string,
 ): Promise<string | undefined> {
     const fileName = getAccessTokenFileName(environmentNameOrId, dbmsId, dbmsUser);
+    const filePath = path.join(tokenDirPath, fileName);
 
-    return fse.readFile(path.join(tokenDirPath, fileName), 'utf8').catch(() => undefined);
+    if (await fse.pathExists(filePath)) {
+        return fse.readFile(filePath, 'utf8');
+    }
+
+    return undefined;
 }
