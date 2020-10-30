@@ -1,5 +1,6 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
-import {IDbms, SystemModule, SystemProvider} from '@relate/common';
+import {IDbmsInfo, SystemModule, SystemProvider} from '@relate/common';
+import {List} from '@relate/types';
 import cli from 'cli-ux';
 
 import InfoCommand from '../../commands/dbms/info';
@@ -22,50 +23,40 @@ export class InfoModule implements OnApplicationBootstrap {
 
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const namesOrIds = this.parsed.argv;
-        const dbmss: Omit<IDbms, 'config'>[] = !namesOrIds.length
-            ? (await environment.dbmss.list()).toArray()
-            : await Promise.all(namesOrIds.map((n) => environment.dbmss.get(n)));
-        const dbmsIds = dbmss.map((dbms) => dbms.id);
 
-        await environment.dbmss.info(dbmsIds, onlineCheck).then((res) => {
-            const table = res
-                .mapEach((dbms) => {
-                    return {
-                        id: dbms.id,
-                        name: dbms.name,
-                        version: dbms.version,
-                        edition: dbms.edition,
-                        status: dbms.status,
-                        // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-                        server_status: dbms.serverStatus,
-                        uri: dbms.connectionUri,
-                        path: dbms.rootPath,
-                    };
-                })
-                .toArray();
+        let dbmss: List<IDbmsInfo>;
+        if (namesOrIds.length === 0) {
+            const ids = await environment.dbmss.list().then((dbmsList) => dbmsList.mapEach((dbms) => dbms.id));
+            dbmss = await environment.dbmss.info(ids, onlineCheck);
+        } else {
+            dbmss = await environment.dbmss.info(namesOrIds, onlineCheck);
+        }
 
-            cli.table(
-                table,
-                {
-                    id: {},
-                    name: {},
-                    version: {},
-                    edition: {},
-                    status: {},
-                    // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-                    server_status: {},
-                    uri: {
-                        extended: true,
-                    },
-                    path: {
-                        extended: true,
-                    },
+        cli.table(
+            dbmss.toArray(),
+            {
+                id: {},
+                name: {},
+                version: {},
+                edition: {},
+                status: {},
+                serverStatus: {
+                    header: 'Server status',
+                    extended: !onlineCheck,
                 },
-                {
-                    printLine: this.utils.log,
-                    ...flags,
+                uri: {
+                    get: (dbms) => dbms.connectionUri,
+                    extended: true,
                 },
-            );
-        });
+                path: {
+                    get: (dbms) => dbms.rootPath,
+                    extended: true,
+                },
+            },
+            {
+                printLine: this.utils.log,
+                ...flags,
+            },
+        );
     }
 }
