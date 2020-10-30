@@ -1,6 +1,6 @@
 export {IAuthToken} from '@huboneo/tapestry';
 // @todo: better way of handling types
-export {IExtensionVersion, IExtensionMeta, loadExtensionsFor} from './utils/extensions';
+export {IExtensionVersion, loadExtensionsFor, getAppLaunchUrl} from './utils/extensions';
 export {TestDbmss, TestExtensions} from './utils/system';
 export * from './system';
 export * from './models';

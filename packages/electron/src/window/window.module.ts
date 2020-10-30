@@ -5,6 +5,7 @@ import {
     Environment,
     ENVIRONMENT_TYPES,
     emitHookEvent,
+    getAppLaunchUrl,
     HOOK_EVENTS,
     NotFoundError,
     SystemModule,
@@ -34,9 +35,10 @@ export class WindowModule {
         const httpOrigin = this.getHttpOrigin(environment);
         const appRoot = await this.getAppRoot(httpOrigin);
         const appPath = await environment.extensions.getAppPath(appName, appRoot);
+        const appUrl = await getAppLaunchUrl(environment, appPath, appName);
 
         // and load the index.html of the app.
-        mainWindow.loadURL(`${httpOrigin}${appPath}`);
+        mainWindow.loadURL(appUrl);
     }
 
     private async getAppRoot(httpOrigin: string): Promise<string> {

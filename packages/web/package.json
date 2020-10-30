@@ -1,6 +1,6 @@
 {
     "name": "@relate/web",
-    "version": "1.0.2-alpha.13",
+    "version": "1.0.2-alpha.16",
     "description": "Web",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -55,7 +55,7 @@
         "@nestjs/core": "7.0.8",
         "@nestjs/graphql": "7.6.0",
         "@nestjs/platform-express": "7.0.8",
-        "@relate/common": "^1.0.2-alpha.13",
+        "@relate/common": "^1.0.2-alpha.15",
         "@relate/types": "^1.0.2-alpha.10",
         "apollo-server-express": "2.14.2",
         "class-transformer": "0.3.1",

@@ -38,13 +38,11 @@ export class InstallModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {environment: environmentId, limited} = flags;
+        const {environment: environmentId, limited, noCaching} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         this.registerHookListeners();
 
         const name = flags.name || (await inputPrompt('Enter the DBMS name'));
-
-        const noCaching = flags['no-caching'];
 
         let {version = ''} = args;
         let edition: NEO4J_EDITION | undefined;

@@ -28,6 +28,8 @@ export class ListModule implements OnApplicationBootstrap {
             {
                 name: {},
                 type: {},
+                official: {},
+                verification: {header: 'Verified'},
                 version: {},
             },
             {

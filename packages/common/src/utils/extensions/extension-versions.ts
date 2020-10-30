@@ -4,38 +4,26 @@ import {promises as fs} from 'fs';
 import _ from 'lodash';
 import fse from 'fs-extra';
 import path from 'path';
-import {List, None, Str} from '@relate/types';
+import {List, Str, Dict} from '@relate/types';
 
 import {
     EXTENSION_DIR_NAME,
-    EXTENSION_NPM_PREFIX,
     EXTENSION_ORIGIN,
     EXTENSION_MANIFEST_FILE,
     EXTENSION_MANIFEST_KEY,
     EXTENSION_TYPES,
     PACKAGE_JSON,
-    EXTENSION_MANIFEST_FILE_LEGACY,
+    RELATE_NPM_PREFIX,
+    EXTENSION_VERIFICATION_STATUS,
 } from '../../constants';
-import {
-    EXTENSION_REPO_NAME,
-    EXTENSION_SEARCH_PATH,
-    JFROG_PRIVATE_REGISTRY_PASSWORD,
-    JFROG_PRIVATE_REGISTRY_USERNAME,
-} from '../../entities/environments';
+import {EXTENSION_KEYWORD_NAME, EXTENSION_SEARCH_PATH} from '../../entities/environments';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
-import {ExtensionModel, IInstalledExtension} from '../../models';
+import {ExtensionInfoModel} from '../../models';
 import {envPaths} from '../env-paths';
+import {verifyApp} from '@neo4j/code-signer';
+import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
 
-export interface IExtensionMeta {
-    type: EXTENSION_TYPES;
-    name: string;
-    version: string;
-    dist: string;
-    manifest: IInstalledExtension;
-    origin: EXTENSION_ORIGIN;
-}
-
-export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<IExtensionMeta>> => {
+export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionInfoModel>> => {
     const dirFiles = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
     const files = await dirFiles
         .mapEach(async (dir) => {
@@ -52,7 +40,7 @@ export const discoverExtensionDistributions = async (distributionsRoot: string):
     return dists.compact().filter((dist) => Boolean(dist.version === '*' || semver.valid(dist.version)));
 };
 
-export async function discoverExtension(extensionRootDir: string): Promise<IExtensionMeta> {
+export async function discoverExtension(extensionRootDir: string): Promise<ExtensionInfoModel> {
     const exists = await fse.pathExists(extensionRootDir);
     const dirName = path.basename(extensionRootDir);
 
@@ -61,71 +49,67 @@ export async function discoverExtension(extensionRootDir: string): Promise<IExte
     }
 
     const extensionManifest = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE);
-    const extensionManifestLegacy = path.join(extensionRootDir, EXTENSION_MANIFEST_FILE_LEGACY);
-    const hasManifest = await fse.pathExists(extensionManifest);
-    const hasManifestLegacy = await fse.pathExists(extensionManifest);
+    const hasManifestFile = await fse.pathExists(extensionManifest);
     const extensionPackageJson = path.join(extensionRootDir, PACKAGE_JSON);
     const hasPackageJson = await fse.pathExists(extensionPackageJson);
 
-    if (hasManifest || hasManifestLegacy) {
-        const manifest = hasManifest
-            ? await fse.readJSON(extensionManifest)
-            : await fse.readJSON(extensionManifestLegacy);
-
-        return {
-            dist: extensionRootDir,
-            manifest: new ExtensionModel({
-                root: extensionRootDir,
-                ...manifest,
-            }),
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
-            origin: EXTENSION_ORIGIN.CACHED,
-            type: manifest.type,
-            version: manifest.version,
-        };
-    }
-
     if (!hasPackageJson) {
-        throw new InvalidArgumentError(`${dirName} contains no valid manifest`);
+        throw new InvalidArgumentError(`${dirName} contains no package.json`);
     }
 
     const packageJson = await fse.readJSON(extensionPackageJson);
+    const appResult = await verifyApp({
+        appPath: extensionRootDir,
+        rootCertificatePem: RELATE_ROOT_CERT,
+        checkRevocationStatus: true,
+    });
+    const verificationStatus = Str.from(EXTENSION_VERIFICATION_STATUS.UNKNOWN)
+        .map(() => {
+            if (appResult.revocationStatus !== 'OK') {
+                return EXTENSION_VERIFICATION_STATUS[appResult.revocationStatus];
+            }
 
-    if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {
-        const manifest = new ExtensionModel({
-            root: extensionRootDir,
-            ...packageJson[EXTENSION_MANIFEST_KEY],
-        });
-
-        return {
-            dist: extensionRootDir,
-            manifest,
-            name: _.replace(manifest.name, EXTENSION_NPM_PREFIX, ''),
-            // @todo: whut?
-            origin: EXTENSION_ORIGIN.CACHED,
-            type: manifest.type,
-            version: manifest.version,
-        };
-    }
+            return EXTENSION_VERIFICATION_STATUS[appResult.status];
+        })
+        .get();
 
     const {name, main = '.', version} = packageJson;
-    const extensionName = name.split(path.sep)[1] || name;
-
-    return {
-        dist: extensionRootDir,
-        manifest: new ExtensionModel({
-            main,
-            name: extensionName,
-            root: extensionRootDir,
-            type: EXTENSION_TYPES.STATIC,
-            version,
-        }),
-        name: _.replace(extensionName, EXTENSION_NPM_PREFIX, ''),
-        // @todo: whut?
-        origin: EXTENSION_ORIGIN.CACHED,
-        type: EXTENSION_TYPES.STATIC,
+    const defaultManifest = Dict.from({
+        main,
+        name,
         version,
-    };
+        root: extensionRootDir,
+    });
+
+    const manifest = await defaultManifest.switchMap(async (m) => {
+        if (hasManifestFile) {
+            return defaultManifest.merge(await fse.readJSON(extensionManifest));
+        }
+
+        if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {
+            return defaultManifest.merge(packageJson[EXTENSION_MANIFEST_KEY]);
+        }
+
+        return m;
+    });
+
+    return new ExtensionInfoModel(
+        manifest
+            .switchMap((m) =>
+                m.merge({
+                    dist: extensionRootDir,
+                    official: m
+                        .getValue('name')
+                        .getOrElse('')
+                        .startsWith(RELATE_NPM_PREFIX),
+                    type: m.getValue('type').getOrElse(EXTENSION_TYPES.STATIC),
+                    verification: verificationStatus,
+                    // @todo: how?
+                    origin: EXTENSION_ORIGIN.CACHED,
+                }),
+            )
+            .toObject(),
+    );
 }
 
 export interface IExtensionVersion {
@@ -135,62 +119,25 @@ export interface IExtensionVersion {
 }
 
 export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>> {
-    const cached = List.from(await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME)));
-    const search = {
-        path: {$match: `${EXTENSION_NPM_PREFIX}*`},
-        repo: {$eq: EXTENSION_REPO_NAME},
-    };
+    const cached = await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME));
 
     try {
-        const {results} = await got(EXTENSION_SEARCH_PATH, {
-            // @todo: handle env vars
-            body: `items.find(${JSON.stringify(search)})`,
-            method: 'POST',
-            password: JFROG_PRIVATE_REGISTRY_PASSWORD,
-            username: JFROG_PRIVATE_REGISTRY_USERNAME,
-        }).json();
+        const {objects} = await got(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`).json();
 
-        return cached.concat(mapArtifactoryResponse(List.from(results)));
+        return mapNPMResponse(cached.concat(List.from<any>(objects).mapEach((obj) => obj.package)));
     } catch (e) {
         return List.from();
     }
 }
 
-function mapArtifactoryResponse(results: List<any>): List<IExtensionVersion> {
+function mapNPMResponse(results: List<any>): List<IExtensionVersion> {
     return results
-        .mapEach(({name}) => {
-            const nameVal = Str.from(name);
-
-            return nameVal
-                .replace('.tgz', '')
-                .split('-')
-                .last.map((versionPart) => {
-                    if (None.isNone(versionPart) || versionPart.isEmpty) {
-                        return None.EMPTY;
-                    }
-
-                    const found = semver.coerce(`${versionPart}`);
-
-                    return found ? Str.from(found.version) : None.EMPTY;
-                })
-                .flatMap((version) => {
-                    // @todo: discuss if mapping maybes should not exec if empty?
-                    if (None.isNone(version)) {
-                        return version;
-                    }
-
-                    return nameVal.split(`-${version}`).first.flatMap((extName) => {
-                        if (None.isNone(extName)) {
-                            return extName;
-                        }
-
-                        return {
-                            name: `${extName}`,
-                            origin: EXTENSION_ORIGIN.ONLINE,
-                            version: `${version}`,
-                        };
-                    });
-                });
+        .mapEach(({name, origin, version}) => {
+            return {
+                name,
+                origin: origin || EXTENSION_ORIGIN.ONLINE,
+                version: `${version}`,
+            };
         })
         .compact();
 }

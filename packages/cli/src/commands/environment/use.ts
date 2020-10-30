@@ -1,4 +1,5 @@
 import BaseCommand from '../../base.command';
+import {REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {UseModule} from '../../modules/environment/use.module';
 
 export default class UseCommand extends BaseCommand {
@@ -16,7 +17,7 @@ export default class UseCommand extends BaseCommand {
         {
             name: 'environment',
             description: 'Name of the environment to set as active',
-            required: true,
+            required: REQUIRED_FOR_SCRIPTS,
         },
     ];
 }

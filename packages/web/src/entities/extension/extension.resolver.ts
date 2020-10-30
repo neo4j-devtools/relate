@@ -1,6 +1,12 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
-import {PUBLIC_GRAPHQL_METHODS, SystemProvider, Environment, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
+import {
+    PUBLIC_GRAPHQL_METHODS,
+    getAppLaunchUrl,
+    SystemProvider,
+    Environment,
+    STATIC_APP_BASE_ENDPOINT,
+} from '@relate/common';
 import {List} from '@relate/types';
 
 import {
@@ -14,7 +20,6 @@ import {
     ExtensionArgs,
     InstallExtensionArgs,
 } from './extension.types';
-import {createAppLaunchUrl} from './extension.utils';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 import {EnvironmentArgs, FilterArgs} from '../../global.types';
@@ -32,7 +37,6 @@ export class ExtensionResolver {
     ): Promise<AppLaunchData> {
         const {dbmsId, projectId, ...rest} = await environment.extensions.parseAppLaunchToken(appName, launchToken);
         const dbms = await environment.dbmss.get(dbmsId);
-
         const appLaunchData: AppLaunchData = {
             ...rest,
             dbms,
@@ -60,10 +64,11 @@ export class ExtensionResolver {
         return installedApps
             .mapEach(async (app) => {
                 const appPath = await environment.extensions.getAppPath(app.name, STATIC_APP_BASE_ENDPOINT);
+                const appUrl = await getAppLaunchUrl(environment, appPath, app.name);
 
                 return {
                     ...app,
-                    path: appPath,
+                    url: appUrl,
                 };
             })
             .unwindPromises();
@@ -81,16 +86,15 @@ export class ExtensionResolver {
             accessToken,
             projectId,
         );
-        const appBasePath = await environment.extensions.getAppPath(appName, STATIC_APP_BASE_ENDPOINT);
+        const appPath = await environment.extensions.getAppPath(appName, STATIC_APP_BASE_ENDPOINT);
+        const appUrl = await getAppLaunchUrl(environment, appPath, appName, token);
 
         return {
-            path: createAppLaunchUrl(appBasePath, token),
+            url: appUrl,
             token,
         };
     }
 
-    // @todo: need to add tests here and in common for:
-    // INSTALL_EXTENSION, UNINSTALL_EXTENSION, LIST_EXTENSION_VERSIONS, INSTALLED_EXTENSIONS
     @Mutation(() => AppData)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION](
         @Context('environment') environment: Environment,

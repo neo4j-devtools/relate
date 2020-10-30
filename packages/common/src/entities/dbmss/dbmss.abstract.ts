@@ -120,7 +120,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * Get info for one or more DBMSs
      * @param   dbmsIds
      */
-    abstract info(dbmsIds: string[] | List<string>): Promise<List<IDbmsInfo>>;
+    abstract info(dbmsIds: string[] | List<string>, onlineCheck?: boolean): Promise<List<IDbmsInfo>>;
 
     /**
      * Creates an access token for a given app, DBMS, and DBMS credentials

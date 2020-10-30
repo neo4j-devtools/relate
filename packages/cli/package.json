@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "Create, manage and use Neo4j graphs from the command line.",
-    "version": "1.0.2-alpha.13",
+    "version": "1.0.2-alpha.15",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo4j-devtools/relate#readme",
@@ -31,7 +31,7 @@
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
         "@oclif/plugin-update": "1.3.10",
-        "@relate/common": "^1.0.2-alpha.13",
+        "@relate/common": "^1.0.2-alpha.15",
         "@relate/types": "^1.0.2-alpha.10",
         "chalk": "4.1.0",
         "cli-ux": "5.5.0",
@@ -74,6 +74,7 @@
         "oclif"
     ],
     "oclif": {
+        "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<% print(commandPath.replace('dist', 'src')) %>",
         "commands": "./dist/commands",
         "helpClass": "./dist/help",
         "description": "Create, manage and use Neo4j graphs from the command line.\nNeo4j Relate is a set of project-oriented tools and services for working with the Neo4j graph platform.",

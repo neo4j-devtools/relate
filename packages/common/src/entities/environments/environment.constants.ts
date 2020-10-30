@@ -1,3 +1,5 @@
+import {EXTENSION_URL_PATH} from '../../constants';
+
 export const ENVIRONMENTS_DIR_NAME = 'environments';
 export const RUNTIME_DIR_NAME = 'runtime';
 
@@ -9,6 +11,11 @@ export enum ENVIRONMENT_TYPES {
 export enum NEO4J_CONFIG_KEYS {
     DEFAULT_LISTEN_ADDRESS = 'dbms.default_listen_address',
     BOLT_LISTEN_ADDRESS = 'dbms.connector.bolt.listen_address',
+    BOLT_CONNECTOR = 'dbms.connector.bolt',
+    HTTP_CONNECTOR = 'dbms.connector.http',
+    HTTPS_CONNECTOR = 'dbms.connector.https',
+    ENABLED = '.enabled',
+    LISTEN_ADDRESS = '.listen_address',
 }
 
 export enum NEO4J_EDITION {
@@ -23,8 +30,8 @@ export enum NEO4J_ORIGIN {
 }
 
 export enum ZULU_JAVA_VERSION {
-    JAVA_8 = '8.42.0.21-ca-jdk8.0.232',
-    JAVA_11 = '11.35.13-ca-jdk11.0.5',
+    JAVA_8 = '8.48.0.53-ca-jdk8.0.265',
+    JAVA_11 = '11.41.23-ca-jdk11.0.8',
 }
 
 export const ZULU_JAVA_DOWNLOAD_URL = 'https://cdn.azul.com/zulu/bin/';
@@ -48,6 +55,8 @@ export const NEO4J_CONF_FILE_BACKUP = 'neo4j.conf-default';
 export const LOCALHOST_IP_ADDRESS = '127.0.0.1';
 export const DEFAULT_ENVIRONMENT_HTTP_ORIGIN = `http://${LOCALHOST_IP_ADDRESS}:3000`;
 export const DEFAULT_NEO4J_BOLT_PORT = ':7687';
+export const DEFAULT_NEO4J_HTTP_PORT = ':7474';
+export const DEFAULT_NEO4J_HTTPS_PORT = ':7473';
 export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
@@ -81,8 +90,5 @@ export const NEO4J_JWT_CERT_ATTRS = [
     },
 ];
 
-// @todo: needs to be removed and handled by env vars
-export const EXTENSION_SEARCH_PATH = 'https://neo.jfrog.io/artifactory/api/search/aql';
-export const EXTENSION_REPO_NAME = 'npm-local-private';
-export const JFROG_PRIVATE_REGISTRY_PASSWORD = 'zaFwod-rypvyh-3mohka';
-export const JFROG_PRIVATE_REGISTRY_USERNAME = 'devtools-reader';
+export const EXTENSION_SEARCH_PATH = `${EXTENSION_URL_PATH}-/v1/search`;
+export const EXTENSION_KEYWORD_NAME = 'neo4j-relate-extension';

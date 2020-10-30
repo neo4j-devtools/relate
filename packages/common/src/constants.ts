@@ -32,11 +32,10 @@ export const DISCOVER_DBMS_THROTTLE_MS = 500;
 
 export const EXTENSION_DIR_NAME = 'extensions';
 export const PACKAGE_JSON = 'package.json';
-export const EXTENSION_MANIFEST_FILE_LEGACY = 'relate.manifest.json';
 export const EXTENSION_MANIFEST_KEY = 'relate';
 export const EXTENSION_SHA_ALGORITHM = 'sha1';
-export const EXTENSION_NPM_PREFIX = '@relate-ext/';
-export const EXTENSION_URL_PATH = `https://neo.jfrog.io/artifactory/api/npm/npm-local-private/${EXTENSION_NPM_PREFIX}`;
+export const RELATE_NPM_PREFIX = '@relate/';
+export const EXTENSION_URL_PATH = `https://registry.npmjs.org/`;
 
 export const BOLT_DEFAULT_PORT = ':7687';
 
@@ -83,6 +82,8 @@ export enum HOOK_EVENTS {
     RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
     BACKUP_START = 'BACKUP_START',
     BACKUP_COMPLETE = 'BACKUP_COMPLETE',
+    DBMS_MIGRATION_START = 'DBMS_MIGRATION_START',
+    DBMS_MIGRATION_STOP = 'DBMS_MIGRATION_STOP',
 }
 
 export interface IHookEventPayloads {
@@ -108,6 +109,12 @@ export enum DBMS_STATUS_FILTERS {
 export enum DBMS_STATUS {
     STARTED = 'started',
     STOPPED = 'stopped',
+}
+
+export enum DBMS_SERVER_STATUS {
+    ONLINE = 'online',
+    OFFLINE = 'offline',
+    UNKNOWN = 'unknown',
 }
 
 export enum PUBLIC_GRAPHQL_METHODS {
@@ -176,3 +183,15 @@ export enum FILTER_CONNECTORS {
 
 export const HEALTH_BASE_ENDPOINT = '/health';
 export const STATIC_APP_BASE_ENDPOINT = '/static';
+
+export enum EXTENSION_VERIFICATION_STATUS {
+    UNKNOWN = 'UNKNOWN',
+    UNSIGNED = 'UNSIGNED',
+    TRUSTED = 'TRUSTED',
+    UNTRUSTED = 'UNTRUSTED',
+    REVOKED = 'REVOKED',
+}
+
+export const RELATE_URL_PARAM_NAME = 'relateUrl';
+export const RELATE_API_TOKEN_PARAM_NAME = 'relateApiToken';
+export const RELATE_LAUNCH_TOKEN_PARAM_NAME = 'relateLaunchToken';

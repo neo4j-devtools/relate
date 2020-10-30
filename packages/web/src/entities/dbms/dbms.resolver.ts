@@ -63,9 +63,9 @@ export class DBMSResolver {
     @Query(() => [DbmsInfo])
     async [PUBLIC_GRAPHQL_METHODS.INFO_DBMSS](
         @Context('environment') environment: Environment,
-        @Args() {dbmsIds}: DbmssArgs,
+        @Args() {dbmsIds, onlineCheck}: DbmssArgs,
     ): Promise<List<IDbmsInfo>> {
-        return environment.dbmss.info(dbmsIds);
+        return environment.dbmss.info(dbmsIds, onlineCheck);
     }
 
     @Mutation(() => [String])
