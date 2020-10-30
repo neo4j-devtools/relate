@@ -64,8 +64,8 @@ export class InitModule implements OnApplicationBootstrap {
             const publicGraphQLMethods = await selectAllowedMethodsPrompt();
             const requiresAPIToken = await confirmPrompt('Are HTTP consumers required to have an API key?');
             const config: IEnvironmentConfigInput = {
-                type: type as ENVIRONMENT_TYPES,
-                name: name,
+                type,
+                name,
                 httpOrigin: httpOrigin && new URL(httpOrigin).origin,
                 remoteEnvironmentId,
                 authentication,
@@ -80,8 +80,8 @@ export class InitModule implements OnApplicationBootstrap {
         }
 
         const config: IEnvironmentConfigInput = {
-            type: type as ENVIRONMENT_TYPES,
-            name: name,
+            type,
+            name,
             httpOrigin: httpOrigin && new URL(httpOrigin).origin,
             remoteEnvironmentId,
         };

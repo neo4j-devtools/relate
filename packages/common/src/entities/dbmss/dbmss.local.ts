@@ -665,8 +665,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     private throttledDiscoverDbmss = throttle(this.discoverDbmss, DISCOVER_DBMS_THROTTLE_MS);
 
     private async discoverDbmss(): Promise<void> {
-        const dbmss = {} as {[key: string]: IDbms};
-
+        const dbmss: {[key: string]: IDbms} = {};
         const root = this.getDbmsRootPath();
         const files = await List.from(await fse.readdir(root))
             .filter((file) => file.startsWith(`${ENTITY_TYPES.DBMS}-`))

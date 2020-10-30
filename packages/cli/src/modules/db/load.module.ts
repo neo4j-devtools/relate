@@ -73,6 +73,7 @@ export class LoadModule implements OnApplicationBootstrap {
                     message.push(`Select another database or use flag '--force' to overwrite existing database.`);
                 }
                 message.push(chalk.red(`Failed to load dump.`));
+                message.push(chalk.red(`Logs:\n${res}`));
             }
 
             cli.action.stop(result);

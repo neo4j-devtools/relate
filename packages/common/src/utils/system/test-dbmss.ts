@@ -1,6 +1,7 @@
 import {v4 as uuid} from 'uuid';
 import path from 'path';
 import fse from 'fs-extra';
+import {Dict} from '@relate/types';
 
 import {EnvironmentConfigModel, IDbmsInfo} from '../../models';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment, NEO4J_EDITION} from '../../entities/environments';
@@ -14,7 +15,9 @@ export class TestDbmss {
 
     static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
 
-    static NEO4J_EDITION = (process.env.TEST_NEO4J_EDITION || NEO4J_EDITION.ENTERPRISE) as NEO4J_EDITION;
+    static NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
+        .values.find((e) => e === process.env.TEST_NEO4J_EDITION)
+        .getOrElse(NEO4J_EDITION.ENTERPRISE);
 
     static ARCHIVE_PATH = path.join(envPaths().cache, DBMS_DIR_NAME, `neo4j-enterprise-${TestDbmss.NEO4J_VERSION}.tgz`);
 

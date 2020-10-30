@@ -107,7 +107,10 @@ export abstract class EnvironmentAbstract {
 
         switch (authentication.type) {
             case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2: {
-                const googleOptions = new GoogleAuthenticationModel(authentication as IGoogleAuthenticationOptions);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                const authOptions: IGoogleAuthenticationOptions = authentication;
+                const googleOptions = new GoogleAuthenticationModel(authOptions);
 
                 return new GoogleAuthentication(this, googleOptions);
             }
