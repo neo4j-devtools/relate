@@ -166,19 +166,19 @@ function getRequestToken(req: Request, key: string): string | undefined {
     const lowerCased = key.toLowerCase();
 
     if (_.has(req.headers, key)) {
-        return req.headers[key] as string;
+        return `${req.headers[key]}`;
     }
 
     if (_.has(req.headers, lowerCased)) {
-        return req.headers[lowerCased] as string;
+        return `${req.headers[lowerCased]}`;
     }
 
     if (_.has(req.cookies, key)) {
-        return req.cookies[key] as string;
+        return `${req.cookies[key]}`;
     }
 
     if (_.has(req.cookies, lowerCased)) {
-        return req.cookies[lowerCased] as string;
+        return `${req.cookies[lowerCased]}`;
     }
 
     return undefined;

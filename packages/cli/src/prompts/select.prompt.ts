@@ -79,7 +79,10 @@ export const confirmPrompt = async (message: string): Promise<boolean> => {
     return confirmed;
 };
 
-export const selectMultiplePrompt = async (message: string, choices: string[] | IChoice[]): Promise<string[]> => {
+export const selectMultiplePrompt = async <R = string>(
+    message: string,
+    choices: string[] | IChoice[],
+): Promise<R[]> => {
     const {selection} = await prompt({
         message,
         choices,
@@ -200,11 +203,12 @@ export const selectAllowedMethodsPrompt = async (): Promise<PUBLIC_GRAPHQL_METHO
     if (!needsWhitelist) {
         return [];
     }
+    const choices: {name: PUBLIC_GRAPHQL_METHODS}[] = _.map(
+        _.values(PUBLIC_GRAPHQL_METHODS),
+        (name: PUBLIC_GRAPHQL_METHODS) => ({name}),
+    );
 
-    return selectMultiplePrompt(
-        'Select allowed GraphQL API methods',
-        _.map(_.values(PUBLIC_GRAPHQL_METHODS), (name) => ({name})),
-    ) as Promise<PUBLIC_GRAPHQL_METHODS[]>;
+    return selectMultiplePrompt<PUBLIC_GRAPHQL_METHODS>('Select allowed GraphQL API methods', choices);
 };
 
 export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {
