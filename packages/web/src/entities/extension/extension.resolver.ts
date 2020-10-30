@@ -95,8 +95,6 @@ export class ExtensionResolver {
         };
     }
 
-    // @todo: need to add tests here and in common for:
-    // INSTALL_EXTENSION, UNINSTALL_EXTENSION, LIST_EXTENSION_VERSIONS, INSTALLED_EXTENSIONS
     @Mutation(() => AppData)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_EXTENSION](
         @Context('environment') environment: Environment,
