@@ -28,7 +28,7 @@ export default class InstallCommand extends BaseCommand {
             description: 'Name to give the newly installed DBMS',
             required: REQUIRED_FOR_SCRIPTS,
         }),
-        'no-caching': flags.boolean({
+        noCaching: flags.boolean({
             default: false,
             description: 'Prevent caching of the downloaded DBMS',
         }),

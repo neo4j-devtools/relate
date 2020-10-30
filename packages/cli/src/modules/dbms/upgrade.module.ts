@@ -44,10 +44,8 @@ export class UpgradeModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
-        const {environment: environmentId} = flags;
+        const {environment: environmentId, noCaching, noMigration} = flags;
         let {version = ''} = flags;
-        const noCaching = flags['no-caching'];
-        const noMigration = flags['no-migration'];
         const environment = await this.systemProvider.getEnvironment(environmentId);
         let {dbms: dbmsId = ''} = args;
 

@@ -1,4 +1,5 @@
 import {cli} from 'cli-ux';
+import {flags} from '@oclif/command';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -26,6 +27,9 @@ export default class InfoCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
+        onlineCheck: flags.boolean({
+            description: 'Check if the DBMS is online',
+        }),
         ...cli.table.flags({except: ['csv']}),
     };
 }

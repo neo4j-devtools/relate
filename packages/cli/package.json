@@ -70,6 +70,7 @@
         "oclif"
     ],
     "oclif": {
+        "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<% print(commandPath.replace('dist', 'src')) %>",
         "commands": "./dist/commands",
         "helpClass": "./dist/help",
         "description": "Create, manage and use Neo4j graphs from the command line.\nNeo4j Relate is a set of project-oriented tools and services for working with the Neo4j graph platform.",
