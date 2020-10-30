@@ -107,14 +107,14 @@ ARGUMENTS
 OPTIONS
   -d, --database=database        [default: neo4j] Database
   -e, --environment=environment  Name of the environment to run the command against
-  -f, --from=from                (required) Cypher file to load data from
+  -f, --from=from                (required) Cypher file to run
   -u, --user=user                [default: neo4j] DBMS user
 
 EXAMPLES
   $ relate db:exec -f /path/to/cypher/file
   $ relate db:exec -f /path/to/cypher/file -e environment-name
-  $ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into
-  $ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into --force
+  $ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query
+  $ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query --force
 ```
 
 _See code: [dist/commands/db/exec.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.15/dist/commands/db/exec.ts)_

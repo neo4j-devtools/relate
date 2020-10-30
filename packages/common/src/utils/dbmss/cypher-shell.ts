@@ -1,5 +1,6 @@
 import fse, {ReadStream} from 'fs-extra';
 import path from 'path';
+import {Transform} from 'stream';
 
 import {NotFoundError, DependencyError} from '../../errors';
 import {NEO4J_BIN_DIR, CYPHER_SHELL_BIN_FILE} from '../../entities/environments/environment.constants';
@@ -7,6 +8,29 @@ import {resolveRelateJavaHome} from './resolve-java';
 import {spawnPromise} from './spawn-promise';
 import {EnvVars} from '../env-vars';
 import {getDistributionVersion} from './dbms-versions';
+
+const appendSemicolon = (): Transform => {
+    let finalChunk: string;
+    return new Transform({
+        emitClose: true,
+        transform: (data, _, next) => {
+            finalChunk = data;
+            next(null, data);
+        },
+        flush: (next) => {
+            if (finalChunk !== undefined) {
+                const finalChunkString = Buffer.isBuffer(finalChunk) ? finalChunk.toString() : finalChunk;
+                if (!finalChunkString.trim().endsWith(';')) {
+                    next(null, ';');
+                } else {
+                    next();
+                }
+            } else {
+                next();
+            }
+        },
+    });
+};
 
 export async function cypherShellCmd(
     dbmsRootPath: string,
@@ -30,6 +54,8 @@ export async function cypherShellCmd(
     } else {
         stream = from;
     }
+
+    stream = stream.pipe(appendSemicolon());
 
     await fse.access(cypherShellBinPath, fse.constants.X_OK).catch(() => {
         throw new NotFoundError(`No DBMS found at "${dbmsRootPath}"`);

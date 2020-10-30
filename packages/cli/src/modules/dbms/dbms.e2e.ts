@@ -1,6 +1,6 @@
 import path from 'path';
 import {test} from '@oclif/test';
-import {TestDbmss, DBMS_STATUS, envPaths, NotFoundError} from '@relate/common';
+import {TestDbmss, DBMS_STATUS, envPaths, NotFoundError, IProject} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
@@ -10,6 +10,7 @@ import StopCommand from '../../commands/dbms/stop';
 import DumpCommand from '../../commands/db/dump';
 import LoadCommand from '../../commands/db/load';
 import ExecCommand from '../../commands/db/exec';
+import {EnvironmentAbstract} from '@relate/common/dist/entities/environments';
 
 jest.mock('../../prompts', () => {
     return {
@@ -23,8 +24,23 @@ let TEST_ENVIRONMENT_ID: string;
 let TEST_DB_NAME: string;
 let TEST_DB_ID: string;
 
+async function createTestProject(env: EnvironmentAbstract) {
+    const projectName = 'Test Project';
+    const testProject = await env.projects.create({
+        name: projectName,
+        dbmss: [],
+    });
+    env.projects.writeFile(projectName, 'blank.cypher', '');
+    env.projects.writeFile(projectName, 'return-true.cypher', 'RETURN true;');
+    env.projects.writeFile(projectName, 'return-without-semicolon.cypher', 'RETURN 42');
+    env.projects.writeFile(projectName, 'bad-syntax.cypher', 'RERUN never works');
+    env.projects.writeFile(projectName, 'missing-param.cypher', 'MATCH (n) WHERE n.name = $name RETURN n');
+    return testProject;
+}
+
 describe('$relate dbms', () => {
     let dbmss: TestDbmss;
+    let testProject: IProject;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
@@ -33,6 +49,8 @@ describe('$relate dbms', () => {
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
         TEST_DB_NAME = name;
         TEST_DB_ID = id;
+
+        testProject = await createTestProject(dbmss.environment);
     });
 
     afterAll(() => dbmss.teardown());
@@ -70,15 +88,59 @@ describe('$relate dbms', () => {
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
-    test.stdout().it('should import cypher', async (ctx) => {
+    test.stdout().it('should execute cypher', async (ctx) => {
         await ExecCommand.run([
             TEST_DB_ID,
-            `--from=${path.join(envPaths().config, 'movies.cypher')}`,
+            `--from=${path.join(testProject.root, 'return-true.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        expect(ctx.stdout).toContain('Successfully imported');
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stdout().it('should execute unterminated cypher', async (ctx) => {
+        await ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(testProject.root, 'return-without-semicolon.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stdout().it('should execute blank cypher', async (ctx) => {
+        await ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(testProject.root, 'blank.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        expect(ctx.stdout).toContain('OK');
+    });
+
+    test.stderr().it('should execute but complain about bad cypher syntax', async () => {
+        const command = ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(testProject.root, 'bad-syntax.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(command).rejects.toThrow(/Invalid input/);
+    });
+
+    test.stderr().it('should execute but complain about missing parameters', async () => {
+        const command = ExecCommand.run([
+            TEST_DB_ID,
+            `--from=${path.join(testProject.root, 'missing-param.cypher')}`,
+            '--database=neo4j',
+            '--user=neo4j',
+            `--environment=${TEST_ENVIRONMENT_ID}`,
+        ]);
+        await expect(command).rejects.toThrow(/Expected param/);
     });
 
     test.stdout()
