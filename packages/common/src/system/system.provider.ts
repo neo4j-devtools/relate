@@ -4,13 +4,13 @@ import fse from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 
-import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_KNOWN_CONNECTIONS_FILE} from '../constants';
+import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {FileUploadError, NotFoundError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
 import {envPaths, getSystemAccessToken, registerSystemAccessToken} from '../utils';
 import {createEnvironmentInstance} from '../utils/system';
-import {ensureDirs, ensureFiles} from './files';
+import {ensureDirs} from './files';
 import {verifyAcceptedTerms} from './verifyAcceptedTerms';
 import {Readable} from 'stream';
 
@@ -21,17 +21,13 @@ export class SystemProvider implements OnModuleInit {
         dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
         dbmssData: path.join(envPaths().data, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-    };
-
-    protected readonly filePaths = {
-        knownConnections: path.join(envPaths().data, RELATE_KNOWN_CONNECTIONS_FILE),
+        accessTokens: path.join(envPaths().data, RELATE_ACCESS_TOKENS_DIR_NAME),
     };
 
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
 
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
-        await ensureFiles(this.filePaths);
         await verifyAcceptedTerms();
         await this.reloadEnvironments();
     }
@@ -86,13 +82,7 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(
-            this.filePaths.knownConnections,
-            environmentNameOrId,
-            dbmsId,
-            dbmsUser,
-            accessToken,
-        );
+        await registerSystemAccessToken(this.dirPaths.accessTokens, environmentNameOrId, dbmsId, dbmsUser, accessToken);
 
         return accessToken;
     }
@@ -100,7 +90,7 @@ export class SystemProvider implements OnModuleInit {
     async getAccessToken(environmentNameOrId: string, dbmsId: string, dbmsUser: string): Promise<string> {
         const environment = await this.getEnvironment(environmentNameOrId);
         const dbms = await environment.dbmss.get(dbmsId);
-        const token = await getSystemAccessToken(this.filePaths.knownConnections, environment.id, dbms.id, dbmsUser);
+        const token = await getSystemAccessToken(this.dirPaths.accessTokens, environment.id, dbms.id, dbmsUser);
 
         if (!token) {
             throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);

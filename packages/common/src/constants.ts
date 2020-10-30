@@ -20,7 +20,7 @@ export const DBMS_MANIFEST_FILE = `relate.${ENTITY_TYPES.DBMS}.json`;
 export const PROJECT_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT}.json`;
 export const EXTENSION_MANIFEST_FILE = `relate.${ENTITY_TYPES.EXTENSION}.json`;
 
-export const RELATE_KNOWN_CONNECTIONS_FILE = 'known_connections';
+export const RELATE_ACCESS_TOKENS_DIR_NAME = 'access-tokens';
 export const DBMS_DIR_NAME = 'dbmss';
 export const BACKUPS_DIR_NAME = 'backups';
 export const NEW_LINE = '\n';

@@ -62,6 +62,7 @@
         }
     ],
     "rules": {
+        "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "never"}],
         "@typescript-eslint/interface-name-prefix": ["error", "always"],
         "@typescript-eslint/no-unused-vars": ["error", {"args": "none"}],
         "array-bracket-spacing": ["error", "never"],

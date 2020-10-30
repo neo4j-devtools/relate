@@ -43,8 +43,8 @@ export async function cypherShellCmd(
     const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     let stream;
-    if (typeof from === 'string' || from instanceof String) {
-        const file = path.resolve(from as string);
+    if (typeof from === 'string') {
+        const file = path.resolve(from);
         try {
             await fse.ensureFile(file);
         } catch (e) {
