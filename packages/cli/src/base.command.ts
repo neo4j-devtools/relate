@@ -22,6 +22,7 @@ export default abstract class BaseCommand extends Command {
             debug: this.debug,
             error: this.error,
             log: this.log,
+            exit: this.exit,
         };
 
         const options = IS_DEVELOPMENT_ENV ? {} : {logger: false};
@@ -53,18 +54,22 @@ export default abstract class BaseCommand extends Command {
                 throw err;
             }
 
-            // If passed an error object CLIError will show the full stack trace
-            // even when not in debug mode. If it's passed a message it will display
-            // the error message nicely to the user, and if debug mode is enabled
-            // it will display the stack trace too.
-            const cliError = new CLIError(err.message);
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-            // @ts-ignore
-            cliError.name = err.name;
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-            // @ts-ignore
-            cliError.stack = err.stack;
-            throw cliError;
+            if (!('oclif' in err)) {
+                // If passed a generic error object, wrap it in CLIError to show the full stack trace
+                // even when not in debug mode. If it's passed a message it will display
+                // the error message nicely to the user, and if debug mode is enabled
+                // it will display the stack trace too.
+                const cliError = new CLIError(err.message);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                cliError.name = err.name;
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                cliError.stack = err.stack;
+                throw cliError;
+            } else {
+                throw err;
+            }
         });
     }
 }

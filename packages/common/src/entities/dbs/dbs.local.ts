@@ -12,7 +12,8 @@ import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 import {DbsAbstract} from './dbs.abstract';
 
 export class LocalDbs extends DbsAbstract<LocalEnvironment> {
-    async create(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+    async create(nameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        const dbms = await this.environment.dbmss.get(nameOrId);
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
@@ -20,7 +21,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         await systemDbQuery(
             {
                 accessToken,
-                dbmsId,
+                dbmsId: dbms.id,
                 dbmsUser,
                 environment: this.environment,
             },
@@ -28,7 +29,8 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         );
     }
 
-    async drop(dbmsId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+    async drop(nameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
+        const dbms = await this.environment.dbmss.get(nameOrId);
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
@@ -36,7 +38,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         await systemDbQuery(
             {
                 accessToken,
-                dbmsId,
+                dbmsId: dbms.id,
                 dbmsUser,
                 environment: this.environment,
             },
@@ -44,11 +46,12 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         );
     }
 
-    async list(dbmsId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
+    async list(nameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
+        const dbms = await this.environment.dbmss.get(nameOrId);
         const dbs = await systemDbQuery(
             {
                 accessToken,
-                dbmsId,
+                dbmsId: dbms.id,
                 dbmsUser,
                 environment: this.environment,
             },
@@ -67,20 +70,22 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         });
     }
 
-    async dump(dbmsId: string, database: string, to: string, javaPath?: string): Promise<string> {
+    async dump(nameOrId: string, database: string, to: string, javaPath?: string): Promise<string> {
+        const dbms = await this.environment.dbmss.get(nameOrId);
         const params = ['dump', `--database=${database}`, `--to=${to}`];
-        const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbmsId), params, '', javaPath);
+        const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);
         return result;
     }
 
-    async load(dbmsId: string, database: string, from: string, force?: boolean, javaPath?: string): Promise<string> {
+    async load(nameOrId: string, database: string, from: string, force?: boolean, javaPath?: string): Promise<string> {
+        const dbms = await this.environment.dbmss.get(nameOrId);
         const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
-        const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbmsId), params, '', javaPath);
+        const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);
         return result;
     }
 
     async exec(
-        dbmsId: string,
+        nameOrId: string,
         from: string | ReadStream,
         args: {
             database: string;
@@ -88,7 +93,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             accessToken: string;
         },
     ): Promise<string> {
-        const dbms = await this.environment.dbmss.get(dbmsId);
+        const dbms = await this.environment.dbmss.get(nameOrId);
         const params = [
             '--format=plain',
             `--address=${dbms.connectionUri}`,
@@ -96,7 +101,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
                 return key === 'accessToken' ? `--password=${val}` : `--${key}=${val}`;
             }),
         ];
-        const result = await cypherShellCmd(await this.resolveDbmsRootPath(dbmsId), params, from);
+        const result = await cypherShellCmd(await this.resolveDbmsRootPath(dbms.id), params, from);
 
         return result;
     }

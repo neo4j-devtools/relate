@@ -4,8 +4,8 @@ import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
 import {ExecModule} from '../../modules/db/exec.module';
 
-export default class DumpCommand extends BaseCommand {
-    commandClass = DumpCommand;
+export default class ExecCommand extends BaseCommand {
+    commandClass = ExecCommand;
 
     commandModule = ExecModule;
 
@@ -14,8 +14,8 @@ export default class DumpCommand extends BaseCommand {
     static examples = [
         '$ relate db:exec -f /path/to/cypher/file',
         '$ relate db:exec -f /path/to/cypher/file -e environment-name',
-        '$ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into',
-        '$ relate db:exec dbms-containing-db-to-load-into -f /path/to/cypher/file -d db-to-load-into --force',
+        '$ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query',
+        '$ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query --force',
     ];
 
     static args = [ARGS.DBMS];
@@ -31,7 +31,7 @@ export default class DumpCommand extends BaseCommand {
         }),
         from: flags.string({
             char: 'f',
-            description: 'Cypher file to load data from',
+            description: 'Cypher file to run',
             required: true,
         }),
         user: flags.string({

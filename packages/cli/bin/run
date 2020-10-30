@@ -4,7 +4,11 @@ const path = require('path');
 
 const NODE_PATH = path.join(__dirname, '../node_modules');
 
-childProcess.fork(path.join(__dirname, './run.js'), process.argv.slice(2), {
+const relate = childProcess.fork(path.join(__dirname, './run.js'), process.argv.slice(2), {
     stdio: 'inherit',
     env: {...process.env, NODE_PATH},
+});
+
+relate.on('close', (code) => {
+    process.exit(code);
 });
