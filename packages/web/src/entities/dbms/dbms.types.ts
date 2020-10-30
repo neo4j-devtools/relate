@@ -27,6 +27,9 @@ export class DbmsInfo extends Dbms {
     @Field(() => String)
     status: string;
 
+    @Field(() => String)
+    serverStatus: string;
+
     @Field(() => String, {nullable: true})
     version?: string;
 
@@ -44,6 +47,9 @@ export class DbmsArgs extends EnvironmentArgs {
 export class DbmssArgs extends EnvironmentArgs {
     @Field(() => [String])
     dbmsIds: string[];
+
+    @Field(() => Boolean, {nullable: true})
+    onlineCheck?: boolean;
 }
 
 @ArgsType()
