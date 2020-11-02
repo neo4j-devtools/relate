@@ -21,7 +21,7 @@ export class AddFileModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {args, flags} = this.parsed;
         let {source} = args;
-        const {environment: environmentId, destination} = flags;
+        const {environment: environmentId, destination, overwrite} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const projectId = flags.project || (await selectProjectPrompt('Select a Project', environment));
 
@@ -33,7 +33,7 @@ export class AddFileModule implements OnApplicationBootstrap {
             }
         }
 
-        return environment.projects.addFile(projectId, path.resolve(source), destination).then((added) => {
+        return environment.projects.addFile(projectId, path.resolve(source), destination, overwrite).then((added) => {
             this.utils.log(`Added "${added.name}" to "${added.directory}" in project`);
         });
     }

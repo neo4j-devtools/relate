@@ -52,6 +52,7 @@ OPTIONS
   -d, --destination=destination  The relative path of the file (including name) in the project
   -e, --environment=environment  Name of the environment to run the command against
   -p, --project=project          (required) Name of the project to run the command against
+  --overwrite                    Overwrite existing destination file
 
 DESCRIPTION
   Useful for remote environments.
@@ -59,7 +60,8 @@ DESCRIPTION
 EXAMPLES
   $ relate project:add-file
   $ relate project:add-file -e environment-name
-  $ relate project:add-file -p my-project -d /path/to/name.file
+  $ relate project:add-file -p my-project -d relative/path/to/destination.file /path/to/source.file
+  $ relate project:add-file -p my-project -d /path/to/existing-destination.file /path/to/source.file --overwrite
 ```
 
 _See code: [dist/commands/project/add-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.15/packages/cli/src/commands/project/add-file.ts)_
