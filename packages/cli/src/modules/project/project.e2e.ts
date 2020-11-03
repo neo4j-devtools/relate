@@ -97,6 +97,19 @@ describe('$relate project', () => {
         ).rejects.toEqual(new InvalidArgumentError(`File ${TEST_FILE_NAME} already exists at that destination`));
     });
 
+    test.stdout().it('does overwrite file with overwite flag', async (ctx) => {
+        await AddFileCommand.run([
+            TEST_PROJECT_FILE,
+            '--environment',
+            TEST_ENVIRONMENT_ID,
+            '--project',
+            TEST_PROJECT_NAME,
+            '--overwrite',
+        ]);
+        expect(ctx.stdout).toContain(TEST_FILE_NAME);
+        expect(ctx.stdout).not.toContain(TEST_FILE_OTHER_NAME);
+    });
+
     test.stdout().it('adds file with destination', async (ctx) => {
         await AddFileCommand.run([
             TEST_PROJECT_FILE,

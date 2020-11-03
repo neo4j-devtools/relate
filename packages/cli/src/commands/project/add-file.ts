@@ -15,7 +15,8 @@ export default class AddFileCommand extends BaseCommand {
     static examples = [
         '$ relate project:add-file',
         '$ relate project:add-file -e environment-name',
-        '$ relate project:add-file -p my-project -d /path/to/name.file',
+        '$ relate project:add-file -p my-project -d relative/path/to/dest.file /path/to/source.file',
+        '$ relate project:add-file -p my-project -d /path/to/existing-dest.file /path/to/source.file --overwrite',
     ];
 
     static args = [
@@ -31,6 +32,10 @@ export default class AddFileCommand extends BaseCommand {
         destination: flags.string({
             char: 'd',
             description: 'The relative path of the file (including name) in the project',
+        }),
+        overwrite: flags.boolean({
+            default: false,
+            description: 'Overwrite existing destination file',
         }),
     };
 }
