@@ -44,22 +44,22 @@ export class LocalEnvironment extends EnvironmentAbstract {
         staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
     };
 
-    public getEntityRootPath(entityType: ENTITY_TYPES, entityNameOrId: string): string {
+    public getEntityRootPath(entityType: ENTITY_TYPES, id: string): string {
         switch (entityType) {
             case ENTITY_TYPES.BACKUP:
-                return path.join(this.dirPaths.backupsData, `${ENTITY_TYPES.BACKUP}-${entityNameOrId}`);
+                return path.join(this.dirPaths.backupsData, `${ENTITY_TYPES.BACKUP}-${id}`);
 
             case ENTITY_TYPES.DBMS:
-                return path.join(this.dirPaths.dbmssData, `${ENTITY_TYPES.DBMS}-${entityNameOrId}`);
+                return path.join(this.dirPaths.dbmssData, `${ENTITY_TYPES.DBMS}-${id}`);
 
             case ENTITY_TYPES.PROJECT:
-                return path.join(this.dirPaths.projectsData, `${ENTITY_TYPES.PROJECT}-${entityNameOrId}`);
+                return path.join(this.dirPaths.projectsData, `${ENTITY_TYPES.PROJECT}-${id}`);
 
             case ENTITY_TYPES.EXTENSION:
-                return path.join(this.dirPaths.extensionsData, `${ENTITY_TYPES.EXTENSION}-${entityNameOrId}`);
+                return path.join(this.dirPaths.extensionsData, `${ENTITY_TYPES.EXTENSION}-${id}`);
 
             case ENTITY_TYPES.ENVIRONMENT:
-                return path.join(this.dirPaths.environmentsConfig, `${entityNameOrId}`);
+                return path.join(this.dirPaths.environmentsConfig, `${id}`);
 
             case ENTITY_TYPES.DB:
             default:
