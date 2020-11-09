@@ -1,10 +1,11 @@
 import path from 'path';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Inject, Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
+import {ConfigService} from '@nestjs/config';
 
-import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
+import {JSON_FILE_EXTENSION, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {FileUploadError, NotFoundError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
@@ -18,13 +19,13 @@ import {Readable} from 'stream';
 export class SystemProvider implements OnModuleInit {
     protected readonly dirPaths = {
         ...envPaths(),
-        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
-        dbmssData: path.join(envPaths().data, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
         accessTokens: path.join(envPaths().data, RELATE_ACCESS_TOKENS_DIR_NAME),
     };
 
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
+
+    constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
 
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
@@ -57,6 +58,21 @@ export class SystemProvider implements OnModuleInit {
             return environment.flatMap((env) => {
                 if (None.isNone(env)) {
                     throw new NotFoundError(`Environment "${nameOrId}" not found`);
+                }
+
+                return env;
+            });
+        }
+
+        const configId = this.configService.get('defaultEnvironmentNameOrId');
+        if (configId) {
+            const environment: Maybe<EnvironmentAbstract> = this.allEnvironments.values.find(
+                (env) => env.id === configId || env.name === configId,
+            );
+
+            return environment.flatMap((env) => {
+                if (None.isNone(env)) {
+                    throw new NotFoundError(`Environment "${configId}" not found`);
                 }
 
                 return env;

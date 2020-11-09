@@ -6,6 +6,10 @@ import {EXTENSION_TYPES} from '../constants';
 
 const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.SYSTEM);
 
+export interface ISystemModuleConfig {
+    defaultEnvironmentNameOrId?: string;
+}
+
 @Module({
     exports: [SystemProvider],
     imports: [...dynamicModules],

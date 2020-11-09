@@ -1,3 +1,4 @@
+import {RELATE_DEFAULT_ENVIRONMENT} from '@relate/common';
 import {IElectronModuleConfig} from '../electron.module';
 
 const DEFAULT_PORT = 3001;
@@ -8,4 +9,5 @@ export default (): IElectronModuleConfig => ({
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : DEFAULT_PORT,
     // @todo: https?
     protocol: 'http://',
+    defaultEnvironmentNameOrId: RELATE_DEFAULT_ENVIRONMENT,
 });

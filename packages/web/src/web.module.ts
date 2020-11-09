@@ -1,6 +1,6 @@
 import {Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
-import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
+import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
 import {HttpAdapterHost} from '@nestjs/core';
 import {Application} from 'express';
 import useSofa, {OpenAPI} from 'sofa-api';
@@ -16,7 +16,7 @@ import {FilesModule} from './files';
 import {HealthModule} from './health';
 import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
 
-export interface IWebModuleConfig {
+export interface IWebModuleConfig extends ISystemModuleConfig {
     protocol: string;
     host: string;
     port: number;

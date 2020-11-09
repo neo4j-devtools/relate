@@ -4,6 +4,7 @@ import {CLIError} from '@oclif/errors';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
+import {ConfigModule} from '@nestjs/config';
 
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 
@@ -29,7 +30,7 @@ export default abstract class BaseCommand extends Command {
 
         return NestFactory.createApplicationContext(
             {
-                imports: [SystemModule, ...dynamicModules],
+                imports: [ConfigModule.forRoot({isGlobal: true}), SystemModule, ...dynamicModules],
                 module: this.commandModule,
                 providers: [
                     {

@@ -37,7 +37,12 @@ describe('LocalBackups', () => {
 
         const expected: IRelateBackup = {
             id: backupId,
-            directory: path.join(envPaths().data, BACKUPS_DIR_NAME, `${ENTITY_TYPES.BACKUP}-${backupId}`),
+            directory: path.join(
+                envPaths().data,
+                `environment-${environment.id}`,
+                BACKUPS_DIR_NAME,
+                `${ENTITY_TYPES.BACKUP}-${backupId}`,
+            ),
             name: expect.stringContaining(`${ENTITY_TYPES.BACKUP}_${backupId}_${ENTITY_TYPES.DBMS}_${dbmsId}_`),
             entityMeta: {},
             entityType: ENTITY_TYPES.DBMS,
@@ -51,7 +56,12 @@ describe('LocalBackups', () => {
     test('backups.get() - one created', async () => {
         const expected: IRelateBackup = {
             id: backupId,
-            directory: path.join(envPaths().data, BACKUPS_DIR_NAME, `${ENTITY_TYPES.BACKUP}-${backupId}`),
+            directory: path.join(
+                envPaths().data,
+                `environment-${environment.id}`,
+                BACKUPS_DIR_NAME,
+                `${ENTITY_TYPES.BACKUP}-${backupId}`,
+            ),
             name: expect.stringContaining(`${ENTITY_TYPES.BACKUP}_${backupId}_${ENTITY_TYPES.DBMS}_${dbmsId}_`),
             entityMeta: {},
             entityType: ENTITY_TYPES.DBMS,
@@ -67,7 +77,12 @@ describe('LocalBackups', () => {
         backupId2 = created.id;
         const expected: IRelateBackup = {
             id: backupId2,
-            directory: path.join(envPaths().data, BACKUPS_DIR_NAME, `${ENTITY_TYPES.BACKUP}-${backupId2}`),
+            directory: path.join(
+                envPaths().data,
+                `environment-${environment.id}`,
+                BACKUPS_DIR_NAME,
+                `${ENTITY_TYPES.BACKUP}-${backupId2}`,
+            ),
             name: expect.stringContaining(`${ENTITY_TYPES.BACKUP}_${backupId2}_${ENTITY_TYPES.DBMS}_${dbmsId}_`),
             entityMeta: {foo: 'bar'},
             entityType: ENTITY_TYPES.DBMS,

@@ -39,7 +39,7 @@ describe('LocalProjects', () => {
 
     afterAll(async () => {
         await testDbmss.teardown();
-        await fse.emptyDir(path.join(envPaths().data, PROJECTS_DIR_NAME));
+        await fse.emptyDir(path.join(environment.dataPath, PROJECTS_DIR_NAME));
     });
 
     test('projects.list() - none created', async () => {

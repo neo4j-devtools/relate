@@ -1,3 +1,4 @@
+import {ConfigModule} from '@nestjs/config';
 import {Test, TestingModule} from '@nestjs/testing';
 
 import {SystemModule} from './system.module';
@@ -8,7 +9,7 @@ describe('System Provider', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [SystemModule],
+            imports: [ConfigModule.forRoot({isGlobal: true}), SystemModule],
         }).compile();
 
         provider = module.get(SystemProvider);
