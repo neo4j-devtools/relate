@@ -31,12 +31,12 @@ Helpful Resources
 We have our own monadic type system which is continuously under development. The aim of this system is to ensure type-safety, reduce complexity of logic and control-flows, improve legibility of code, and improve TypeScripts ability to do type-inference et al.
 
 We currently have the main data types of JS represented
--   [None (`undefined`)](./src/monads/primitive/none.monad.ts)
--   [Nil (`null`)](./src/monads/primitive/nil.monad.ts)
--   [Num (`Number`)](src/monads/primitive/num.monad.ts)
--   [Str (`String`)](./src/monads/primitive/str.monad.ts)
--   [Bool (`Boolean`)](./src/monads/primitive/bool.monad.ts)
--   [List (`Array`)](./src/monads/primitive/list.monad.ts)
--   [Dict (`Object || Map`)](./src/monads/primitive/dict.monad.ts)
+-   [None (`undefined`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/none.md)
+-   [Nil (`null`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/nil.md)
+-   [Num (`Number`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/num.md)
+-   [Str (`String`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/str.md)
+-   [Bool (`Boolean`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/bool.md)
+-   [List (`Array`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/list.md)
+-   [Dict (`Object || Map`)](https://github.com/neo4j-devtools/relate/blob/master/packages/types/documentation/classes/dict.md)
 
 ** See the [docs](./documentation/README.md) for detailed usage **
