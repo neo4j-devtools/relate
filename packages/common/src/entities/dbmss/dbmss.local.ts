@@ -8,7 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
 import {
     dbmsUpgradeConfigs,
     discoverNeo4jDistributions,
@@ -64,8 +64,17 @@ import {
 import {PropertiesFile} from '../../system/files';
 import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
 import {emitHookEvent} from '../../utils';
+import {ManifestLocal} from '../manifest';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
+    public manifest = new ManifestLocal(
+        this.environment,
+        ENTITY_TYPES.DBMS,
+        DbmsManifestModel,
+        (nameOrId: string) => this.get(nameOrId),
+        () => this.discoverDbmss(),
+    );
+
     async versions(limited?: boolean, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsVersion>> {
         const cached = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
         const online = await fetchNeo4jVersions(limited);
@@ -190,7 +199,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const dbms = await this.get(dbmsId);
-        const dbmsManifest = await this.getDbmsManifest(dbmsId);
+        const dbmsManifest = await this.manifest.get(dbmsId);
 
         if (semver.lte(version, dbms.version!)) {
             throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, [
@@ -250,7 +259,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
              */
             await this.uninstall(dbms.id);
             await fse.move(upgradedDbmsInfo.rootPath!, dbms.rootPath!);
-            await this.updateDbmsManifest(dbms.id, {
+            await this.manifest.update(dbms.id, {
                 ...dbmsManifest,
                 name: dbms.name,
             });
@@ -273,7 +282,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             const restored = await this.environment.backups.restore(completeBackup.directory);
 
             await fse.move(this.getDbmsRootPath(restored.entityId)!, dbms.rootPath!);
-            await this.updateDbmsManifest(dbms.id, {
+            await this.manifest.update(dbms.id, {
                 name: dbms.name,
             });
 
@@ -323,7 +332,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, newId);
 
         await fse.symlink(rootPath, target, 'junction');
-        await this.updateDbmsManifest(newId, {name});
+        await this.manifest.update(newId, {name});
 
         if (supportsAccessTokens(info)) {
             await this.installSecurityPlugin(newId);
@@ -352,7 +361,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const sourcePath = await fse.realpath(this.getDbmsRootPath(dbms.id));
 
         await fse.copy(sourcePath, this.getDbmsRootPath(clonedId));
-        await this.updateDbmsManifest(clonedId, {
+        await this.manifest.update(clonedId, {
             name,
         });
 
@@ -526,7 +535,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
 
         try {
-            await this.updateDbmsManifest(dbmsId, {name});
+            await this.manifest.update(dbmsId, {name});
 
             const neo4jConfig = await PropertiesFile.readFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -693,7 +702,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     const protocol = secure ? 'neo4j+s://' : 'neo4j://';
                     const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
                     const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
-                    const configDbmss = await this.getDbmsManifest(id);
+                    const configDbmss = await this.manifest.get(id);
                     const overrides = {
                         config: neo4jConfig,
                         connectionUri: `${protocol}${host}${port}`,
@@ -724,70 +733,5 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         );
 
         return PropertiesFile.readFile(configFileName);
-    }
-
-    public async addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
-        const {id, tags: existing} = await this.get(nameOrId);
-
-        await this.updateDbmsManifest(id, {
-            tags: List.from(existing)
-                .concat(tags)
-                .unique()
-                .toArray(),
-        });
-
-        return this.get(id);
-    }
-
-    public async removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo> {
-        const {id, tags: existing} = await this.get(nameOrId);
-
-        await this.updateDbmsManifest(id, {
-            tags: List.from(existing)
-                .without(...tags)
-                .toArray(),
-        });
-
-        return this.get(id);
-    }
-
-    public async getDbmsManifest(dbmsId: string): Promise<DbmsManifestModel> {
-        const defaultValues = {
-            description: '',
-            name: '',
-            tags: [],
-        };
-
-        const configFileName = path.join(
-            this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, dbmsId),
-            DBMS_MANIFEST_FILE,
-        );
-
-        try {
-            const config = await fse.readJson(configFileName);
-
-            return new DbmsManifestModel({
-                ...defaultValues,
-                ...config,
-                id: dbmsId,
-            });
-        } catch (e) {
-            return new DbmsManifestModel({
-                ...defaultValues,
-                id: dbmsId,
-            });
-        }
-    }
-
-    public async updateDbmsManifest(dbmsId: string, update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void> {
-        const configFileName = path.join(this.getDbmsRootPath(dbmsId), DBMS_MANIFEST_FILE);
-        const config = Dict.from(await this.getDbmsManifest(dbmsId));
-        const updated = config.merge(update).merge({
-            id: dbmsId,
-        });
-
-        await fse.writeJson(configFileName, new DbmsManifestModel(updated.toObject()));
-
-        return this.discoverDbmss();
     }
 }
