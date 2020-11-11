@@ -7,6 +7,7 @@ import tar from 'tar';
 import {LocalEnvironment} from '../environments';
 import {IRelateBackup, RelateBackupModel} from '../../models';
 import {
+    BACKUP_ARCHIVE_FILE_EXTENSION,
     BACKUP_MANIFEST_FILE,
     DBMS_MANIFEST_FILE,
     ENTITY_TYPES,
@@ -18,8 +19,6 @@ import {BackupAbstract} from './backup.abstract';
 import {InvalidArgumentError, RelateBackupError, ValidationFailureError} from '../../errors';
 import {updateRestoredEntityManifest} from '../../utils/backups';
 import {envPaths, extract} from '../../utils';
-
-const BACKUP_FILE_EXTENSION = '.tgz';
 
 export class LocalBackups extends BackupAbstract<LocalEnvironment> {
     async create(entityType: ENTITY_TYPES, entityNameOrId: string, entityMeta: any = {}): Promise<IRelateBackup> {
@@ -36,7 +35,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         const entityDir = path.dirname(entityRoot);
         const backupName = `${
             ENTITY_TYPES.BACKUP
-        }_${backupId}_${entityType}_${entityNameOrId}_${createdAt.getTime()}${BACKUP_FILE_EXTENSION}`;
+        }_${backupId}_${entityType}_${entityNameOrId}_${createdAt.getTime()}${BACKUP_ARCHIVE_FILE_EXTENSION}`;
         const archiveTarget = path.join(entityDir, backupName);
         const backupTarget = path.join(backupDir, backupName);
 
@@ -120,9 +119,9 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         const backups = await List.from(await fse.readdir(this.environment.dirPaths.backupsData))
             .filter((file) => file.startsWith(`${ENTITY_TYPES.BACKUP}-`))
             .mapEach((file) => {
-                return this.readManifestFile(
-                    path.join(this.environment.dirPaths.backupsData, file, BACKUP_MANIFEST_FILE),
-                ).catch(() => null);
+                return this.resolveRestorationManifest(path.join(this.environment.dirPaths.backupsData, file)).catch(
+                    () => null,
+                );
             })
             .unwindPromises();
 
@@ -154,7 +153,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             return this.readManifestFile(manifestPath);
         } catch (e) {
             const fileName = path.basename(filePath);
-            const parts = Str.from(path.basename(filePath, BACKUP_FILE_EXTENSION))
+            const parts = Str.from(path.basename(filePath, BACKUP_ARCHIVE_FILE_EXTENSION))
                 .split('_')
                 .mapEach((s) => s.get());
             const [, backupId, entityType, entityNameOrId, createdAt] = parts;
