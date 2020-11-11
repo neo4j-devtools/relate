@@ -93,11 +93,11 @@ describe('extension versions', () => {
 
     describe('extensions installed', () => {
         let testCachedExtension: IInstalledExtension;
-        let testDataExtension: IInstalledExtension;
+        let testInstalledExtension: IInstalledExtension;
 
         beforeAll(async () => {
             testCachedExtension = await extensions.cacheNew(EXTENSION_TYPES.STATIC);
-            testDataExtension = await extensions.installNew(EXTENSION_TYPES.STATIC);
+            testInstalledExtension = await extensions.installNew(EXTENSION_TYPES.STATIC);
         });
 
         test('extensions discovered (if existing and with a package.json)', async () => {
@@ -106,32 +106,32 @@ describe('extension versions', () => {
                     extensions.environment.dataPath,
                     EXTENSION_DIR_NAME,
                     EXTENSION_TYPES.STATIC,
-                    testDataExtension.name,
+                    testInstalledExtension.name,
                 ),
             );
 
             expect(extensionMeta).toEqual({
-                name: testDataExtension.name,
+                name: testInstalledExtension.name,
                 dist: path.join(
                     extensions.environment.dataPath,
                     EXTENSION_DIR_NAME,
                     EXTENSION_TYPES.STATIC,
-                    testDataExtension.name,
+                    testInstalledExtension.name,
                 ),
-                main: testDataExtension.main,
-                root: testDataExtension.root,
+                main: testInstalledExtension.main,
+                root: testInstalledExtension.root,
                 official: false,
                 verification: EXTENSION_VERIFICATION_STATUS.UNSIGNED,
                 origin: EXTENSION_ORIGIN.CACHED,
-                type: testDataExtension.type,
-                version: testDataExtension.version,
+                type: testInstalledExtension.type,
+                version: testInstalledExtension.version,
             });
         });
 
         test('extension distributions discovered (if existing)', async () => {
             const extensionMeta = (
                 await extensionVersions.discoverExtensionDistributions(
-                    path.join(extensions.environment.dataPath, EXTENSION_DIR_NAME),
+                    path.join(extensions.environment.cachePath, EXTENSION_DIR_NAME),
                 )
             )
                 .toArray()
@@ -141,7 +141,10 @@ describe('extension versions', () => {
 
             expect(extensionMeta[0]).toEqual({
                 name: testCachedExtension.name,
-                dist: path.join(path.join(extensions.environment.dataPath, EXTENSION_DIR_NAME), testCachedExtension.name),
+                dist: path.join(
+                    path.join(extensions.environment.cachePath, EXTENSION_DIR_NAME),
+                    testCachedExtension.name,
+                ),
                 main: testCachedExtension.main,
                 root: testCachedExtension.root,
                 official: false,
