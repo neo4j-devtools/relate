@@ -213,4 +213,15 @@ describe('LocalProjects', () => {
             directory: testProjectDir,
         });
     });
+
+    test('projects.listSampleProjects()', async () => {
+        const result = (await environment.projects.listSampleProjects()).toArray();
+        const [first] = result;
+
+        // This test ensures that the structure of the response from GitHub is correct
+        // @TODO: Handle cases where GitHub might be unreachable?
+
+        expect(result.length).toBeGreaterThan(0);
+        expect(Object.keys(first)).toEqual(expect.arrayContaining(['name', 'description', 'downloadUrl']));
+    });
 });

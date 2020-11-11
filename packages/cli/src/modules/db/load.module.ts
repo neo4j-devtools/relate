@@ -25,13 +25,14 @@ export class LoadModule implements OnApplicationBootstrap {
         const {flags} = this.parsed;
         const {from, database, force} = flags;
 
+        const filePath = path.resolve(from);
+
         try {
-            await fse.ensureFile(from);
+            await fse.ensureFile(filePath);
         } catch (e) {
-            throw new NotFoundError(`File not found (${from})`);
+            throw new NotFoundError(`File not found (${filePath})`);
         }
 
-        const filePath = path.resolve(from);
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         let {dbms: dbmsId} = this.parsed.args;

@@ -1,24 +1,47 @@
 import path from 'path';
 import fse from 'fs-extra';
 import {from} from 'rxjs';
+import semver from 'semver';
 import {flatMap, map} from 'rxjs/operators';
-import {List, Maybe, None, Str} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
+import got, {Got} from 'got';
+import {List, Maybe, None, Str} from '@relate/types';
 
-import {IProject, IProjectDbms, IProjectInput, IRelateFile, ProjectManifestModel, WriteFileFlag} from '../../models';
+import {
+    IProject,
+    IProjectDbms,
+    IProjectInput,
+    IRelateFile,
+    ProjectManifestModel,
+    ProjectInstallManifestModel,
+    WriteFileFlag,
+    ISampleProjectDbms,
+    ISampleProjectInput,
+    IDbmsInfo,
+    IDbmsVersion,
+    ISampleProjectRest,
+} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
 import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
-import {InvalidArgumentError, NotFoundError} from '../../errors';
+import {FetchError, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
+import {download, extract} from '../../utils';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     public readonly manifest = new ManifestLocal(
         this.environment,
         ENTITY_TYPES.PROJECT,
         ProjectManifestModel,
+        (nameOrId: string) => this.get(nameOrId),
+    );
+
+    public readonly manifestSampleProject = new ManifestLocal(
+        this.environment,
+        ENTITY_TYPES.PROJECT_INSTALL,
+        ProjectInstallManifestModel,
         (nameOrId: string) => this.get(nameOrId),
     );
 
@@ -265,6 +288,131 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
                 return found;
             });
+    }
+
+    async listSampleProjects(fetch?: () => any | Got): Promise<List<ISampleProjectRest>> {
+        const get = fetch || got;
+
+        try {
+            const response = await get('https://api.github.com/orgs/neo4j-graph-examples/repos');
+
+            // @TODO: Figure out how to filter the response by topic or something else.
+            return List.from(
+                JSON.parse(response.body).map(({name, description}: ISampleProjectRest) => ({
+                    name,
+                    description,
+                    downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/master.zip`,
+                })),
+            );
+        } catch (_error) {
+            throw new FetchError(`Unable to fetch Sample Projects from GitHub`);
+        }
+    }
+
+    async downloadSampleProject(selected: string, destPath?: string): Promise<{path: string; temp: boolean}> {
+        const {tmp} = this.environment.dirPaths;
+
+        const diskPath = destPath || path.join(tmp, 'sample-project');
+        const sampleProject = await download(
+            `https://github.com/neo4j-graph-examples/${selected}/archive/master.zip`,
+            destPath ? destPath : path.join(diskPath, selected),
+        );
+
+        const extractedPath = await extract(sampleProject, diskPath);
+
+        return {
+            path: extractedPath,
+            temp: !destPath,
+        };
+    }
+
+    async installSampleProject(
+        srcPath: string,
+        args: {
+            name?: string;
+            projectId?: string;
+            temp?: boolean;
+        },
+    ): Promise<{project: IProjectInput; install?: ISampleProjectInput}> {
+        const {name, projectId} = args;
+        let {temp} = args;
+
+        let project;
+
+        if (projectId) {
+            project = await this.get(projectId);
+        } else if (!projectId && !temp && name) {
+            project = await this.link(srcPath, name);
+        }
+
+        if (!project) {
+            temp = true;
+            project = await this.create({
+                name: name || 'Sample Project',
+                dbmss: [],
+            });
+        }
+
+        if (temp) {
+            await fse.copy(srcPath, project.root, {filter: (src) => !src.includes('relate.project.json')});
+        }
+
+        return {
+            project: await this.manifest.get(project.id),
+            install: await this.manifestSampleProject.get(project.id),
+        };
+    }
+
+    async importSampleDbms(
+        projectId: string,
+        dbms: ISampleProjectDbms,
+        credentials: string,
+    ): Promise<{created: IDbmsInfo; dump?: string; script?: string}> {
+        const versions = (await this.environment.dbmss.versions()).toArray();
+        const semverVersion = semver.maxSatisfying(
+            versions.map((v: IDbmsVersion) => v.version),
+            dbms.targetNeo4jVersion,
+        );
+
+        if (!semverVersion) {
+            throw new Error("Couldn't find a suitable DBMS version to install.");
+        }
+
+        const version = versions.find((v: IDbmsVersion) => v.version === semverVersion);
+        if (!version) {
+            throw new Error("Couldn't find a suitable DBMS version to install.");
+        }
+
+        const {edition} = version;
+
+        const created = await this.environment.dbmss.install(
+            dbms.name || 'Sample DBMS',
+            `${semverVersion}`,
+            edition,
+            credentials,
+        );
+
+        const project = await this.get(projectId);
+
+        let dump;
+        if (created.id && dbms.dumpFile) {
+            dump = await this.environment.dbs.load(created.id, 'neo4j', path.join(project.root, dbms.dumpFile));
+        }
+
+        let script;
+        if (created.id && !dbms.dumpFile && dbms.scriptFile) {
+            script = await this.environment.dbs.exec(created.id, path.join(project.root, dbms.scriptFile), {
+                user: 'neo4j',
+                database: 'neo4j',
+                accessToken: credentials,
+            });
+        }
+
+        return {
+            created,
+            dump,
+            script,
+        };
     }
 
     private async resolveProject(projectId: string | Str): Promise<Maybe<IProject>> {

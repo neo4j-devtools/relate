@@ -9,6 +9,7 @@ CLI tool for interacting with the Neo4j platform.
 
 - [@relate/cli](#relatecli)
 - [Usage](#usage)
+- [Development](#development)
 - [Commands](#commands)
 - [Command Topics](#command-topics)
 

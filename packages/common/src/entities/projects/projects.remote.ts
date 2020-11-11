@@ -1,6 +1,17 @@
 import {List} from '@relate/types';
+import {Got} from 'got';
 
-import {IRelateFile, IProject, IProjectDbms, ProjectManifestModel, IProjectInput} from '../../models';
+import {
+    IRelateFile,
+    IProject,
+    IProjectDbms,
+    ProjectManifestModel,
+    IProjectInput,
+    ISampleProjectRest,
+    IDbmsInfo,
+    ISampleProjectDbms,
+    ISampleProjectInput,
+} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {RemoteEnvironment} from '../environments';
 import {NotSupportedError} from '../../errors';
@@ -68,5 +79,32 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
 
     removeDbms(_nameOrId: string, _dbmsName: string): Promise<IProjectDbms> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project dbms`);
+    }
+
+    listSampleProjects(_fetch?: () => any | Got): Promise<List<ISampleProjectRest>> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support listing sample projects`);
+    }
+
+    downloadSampleProject(_selected: string, _destPath?: string): Promise<{path: string; temp: boolean}> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support downloading sample projects`);
+    }
+
+    installSampleProject(
+        _srcPath: string,
+        _args: {
+            name?: string;
+            projectId?: string;
+            temp?: boolean;
+        },
+    ): Promise<{project: IProjectInput; install?: ISampleProjectInput}> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support installing sample projects`);
+    }
+
+    importSampleDbms(
+        _projectId: string,
+        _dbms: ISampleProjectDbms,
+        _credentials: string,
+    ): Promise<{created: IDbmsInfo; dump?: string; script?: string}> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support installing sample dbmss`);
     }
 }

@@ -6,6 +6,7 @@ Projects bring files and data together.
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
 * [`relate project:init`](#relate-projectinit)
+* [`relate project:install-sample`](#relate-projectinstall-sample)
 * [`relate project:link FILEPATH`](#relate-projectlink-filepath)
 * [`relate project:list`](#relate-projectlist)
 * [`relate project:list-dbmss`](#relate-projectlist-dbmss)
@@ -85,6 +86,25 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/project/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/init.ts)_
+
+## `relate project:install-sample`
+
+Install sample project
+
+```
+USAGE
+  $ relate project:install-sample
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+  -p, --project=project          (required) Name of the project to run the command against
+  -t, --to=to                    Path where the project directory will be created.
+
+EXAMPLE
+  $ relate project:install-sample
+```
+
+_See code: [dist/commands/project/install-sample.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/install-sample.ts)_
 
 ## `relate project:link FILEPATH`
 
