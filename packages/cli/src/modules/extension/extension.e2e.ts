@@ -8,11 +8,12 @@ import UninstallCommand from '../../commands/extension/uninstall';
 const TEST_ENVIRONMENT_NAME = 'test';
 
 describe('$relate extension', () => {
-    const extensions = new TestExtensions(__filename);
+    let extensions: TestExtensions;
     let testExtension: IInstalledExtension;
     let testArchive: IInstalledExtension;
 
     beforeAll(async () => {
+        extensions = await TestExtensions.init(__filename);
         testExtension = await extensions.cacheNew();
         testArchive = await extensions.cacheArchive();
     });

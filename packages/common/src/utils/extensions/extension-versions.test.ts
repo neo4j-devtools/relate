@@ -3,7 +3,7 @@ import path from 'path';
 import * as extensionVersions from './extension-versions';
 import {TestExtensions} from '../system/test-extensions';
 import {IInstalledExtension} from '../../models/extension.model';
-import {envPaths} from '../env-paths';
+
 import {EXTENSION_DIR_NAME, EXTENSION_ORIGIN, EXTENSION_TYPES, EXTENSION_VERIFICATION_STATUS} from '../../constants';
 import {NotFoundError} from '../../errors';
 
@@ -40,8 +40,8 @@ jest.mock('got', () => ({
 describe('extension versions', () => {
     let extensions: TestExtensions;
 
-    beforeAll(() => {
-        extensions = new TestExtensions(__filename);
+    beforeAll(async () => {
+        extensions = await TestExtensions.init(__filename);
     });
 
     afterAll(() => extensions.teardown());
@@ -49,7 +49,9 @@ describe('extension versions', () => {
     describe('no extensions installed', () => {
         test('extension distributions empty (if none existing)', async () => {
             const extensionMeta = (
-                await extensionVersions.discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME))
+                await extensionVersions.discoverExtensionDistributions(
+                    path.join(extensions.environment.cachePath, EXTENSION_DIR_NAME),
+                )
             ).toArray();
 
             expect(extensionMeta.some((ext) => ext.name.includes(path.basename(__filename)))).toBeFalsy();
@@ -60,7 +62,12 @@ describe('extension versions', () => {
 
             await expect(
                 extensionVersions.discoverExtension(
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, NON_EXISTING_APP),
+                    path.join(
+                        extensions.environment.dataPath,
+                        EXTENSION_DIR_NAME,
+                        EXTENSION_TYPES.STATIC,
+                        NON_EXISTING_APP,
+                    ),
                 ),
             ).rejects.toThrow(new NotFoundError(`Extension ${NON_EXISTING_APP} not found`));
         });
@@ -95,12 +102,22 @@ describe('extension versions', () => {
 
         test('extensions discovered (if existing and with a package.json)', async () => {
             const extensionMeta = await extensionVersions.discoverExtension(
-                path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, testDataExtension.name),
+                path.join(
+                    extensions.environment.dataPath,
+                    EXTENSION_DIR_NAME,
+                    EXTENSION_TYPES.STATIC,
+                    testDataExtension.name,
+                ),
             );
 
             expect(extensionMeta).toEqual({
                 name: testDataExtension.name,
-                dist: path.join(envPaths().data, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC, testDataExtension.name),
+                dist: path.join(
+                    extensions.environment.dataPath,
+                    EXTENSION_DIR_NAME,
+                    EXTENSION_TYPES.STATIC,
+                    testDataExtension.name,
+                ),
                 main: testDataExtension.main,
                 root: testDataExtension.root,
                 official: false,
@@ -113,7 +130,9 @@ describe('extension versions', () => {
 
         test('extension distributions discovered (if existing)', async () => {
             const extensionMeta = (
-                await extensionVersions.discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME))
+                await extensionVersions.discoverExtensionDistributions(
+                    path.join(extensions.environment.dataPath, EXTENSION_DIR_NAME),
+                )
             )
                 .toArray()
                 .filter((ext) => ext.name.includes(testCachedExtension.name));
@@ -122,7 +141,7 @@ describe('extension versions', () => {
 
             expect(extensionMeta[0]).toEqual({
                 name: testCachedExtension.name,
-                dist: path.join(path.join(envPaths().cache, EXTENSION_DIR_NAME), testCachedExtension.name),
+                dist: path.join(path.join(extensions.environment.dataPath, EXTENSION_DIR_NAME), testCachedExtension.name),
                 main: testCachedExtension.main,
                 root: testCachedExtension.root,
                 official: false,

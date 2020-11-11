@@ -91,7 +91,7 @@ export abstract class EnvironmentAbstract {
      * @hidden
      */
     public get dataPath(): string {
-        return this.config.relateDataPath || path.join(envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${this.id}`);
+        return path.join(this.config.relateDataPath || envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${this.id}`);
     }
 
     /**

@@ -1,6 +1,9 @@
 import yargs from 'yargs/yargs';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import {processArgv} from 'yargs/build/index.cjs';
 import {SignOptions} from 'jsonwebtoken';
+
 import {IRelateBackup} from './models';
 
 export enum ENTITY_TYPES {

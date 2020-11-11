@@ -33,11 +33,12 @@ let TEST_DB_NAME: string;
 
 describe('$relate app', () => {
     let dbmss: TestDbmss;
-    const extensions = new TestExtensions(__filename);
+    let extensions: TestExtensions;
     let testExtension: IInstalledExtension;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
+        extensions = await TestExtensions.init(__filename, dbmss.environment);
         const {name} = await dbmss.createDbms();
         testExtension = await extensions.installNew();
 

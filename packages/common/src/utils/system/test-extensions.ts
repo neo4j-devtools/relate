@@ -4,13 +4,39 @@ import fse from 'fs-extra';
 import tar from 'tar';
 
 import {envPaths} from '../env-paths';
-import {IInstalledExtension} from '../../models';
-import {ENTITY_TYPES, EXTENSION_DIR_NAME, EXTENSION_MANIFEST_FILE, EXTENSION_TYPES} from '../../constants';
+import {EnvironmentConfigModel, IInstalledExtension} from '../../models';
+import {EXTENSION_DIR_NAME, EXTENSION_MANIFEST_FILE, EXTENSION_TYPES, ENTITY_TYPES} from '../../constants';
+import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment} from '../../entities/environments';
 
 export class TestExtensions {
     extensions: Array<IInstalledExtension | string> = [];
 
-    constructor(private filename: string) {}
+    environment: EnvironmentAbstract;
+
+    static async init(filename: string, environment?: EnvironmentAbstract): Promise<TestExtensions> {
+        // eslint-disable-next-line no-restricted-syntax
+        const extensions = new TestExtensions(filename, environment);
+        await extensions.environment.init();
+        return extensions;
+    }
+
+    constructor(private filename: string, environment?: EnvironmentAbstract) {
+        if (environment) {
+            this.environment = environment;
+            return;
+        }
+
+        const configPath = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, 'test.json');
+        // eslint-disable-next-line no-sync
+        const configJson = fse.readJSONSync(configPath);
+        const config = new EnvironmentConfigModel({
+            ...configJson,
+            configPath,
+            name: filename,
+        });
+
+        this.environment = new LocalEnvironment(config);
+    }
 
     createName(): string {
         const shortUUID = uuid().slice(0, 8);
@@ -21,8 +47,8 @@ export class TestExtensions {
 
     private async createExtension(type: EXTENSION_TYPES, cached?: boolean): Promise<IInstalledExtension> {
         const extensionPath = cached
-            ? path.join(envPaths().cache, EXTENSION_DIR_NAME)
-            : path.join(envPaths().data, EXTENSION_DIR_NAME);
+            ? path.join(this.environment.cachePath, EXTENSION_DIR_NAME)
+            : path.join(this.environment.dataPath, EXTENSION_DIR_NAME);
         const name = this.createName();
         const root = path.join(extensionPath, name);
         const manifest: IInstalledExtension = {
@@ -58,7 +84,7 @@ export class TestExtensions {
     }
 
     async cacheArchive(type: EXTENSION_TYPES = EXTENSION_TYPES.STATIC): Promise<IInstalledExtension> {
-        const cachePath = path.join(envPaths().cache, EXTENSION_DIR_NAME);
+        const cachePath = path.join(this.environment.cachePath, EXTENSION_DIR_NAME);
         const manifest = await this.createExtension(type, true);
         const archivePath = path.join(cachePath, `${manifest.name}.tgz`);
 
@@ -94,13 +120,13 @@ export class TestExtensions {
 
             await Promise.all(
                 [
-                    path.join(envPaths().cache, EXTENSION_DIR_NAME, ext.name),
-                    path.join(envPaths().cache, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, ext.name),
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
-                    path.join(envPaths().data, EXTENSION_DIR_NAME, `${ENTITY_TYPES.EXTENSION}-${ext.name}`),
+                    path.join(this.environment.cachePath, EXTENSION_DIR_NAME, ext.name),
+                    path.join(this.environment.cachePath, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
+                    path.join(this.environment.dataPath, EXTENSION_DIR_NAME, ext.name),
+                    path.join(this.environment.dataPath, EXTENSION_DIR_NAME, `${ext.name}@${ext.version}`),
+                    path.join(this.environment.dataPath, EXTENSION_DIR_NAME, `${ENTITY_TYPES.EXTENSION}-${ext.name}`),
                     ...Object.values(EXTENSION_TYPES).map((extType) =>
-                        path.join(envPaths().data, EXTENSION_DIR_NAME, extType, ext.name),
+                        path.join(this.environment.dataPath, EXTENSION_DIR_NAME, extType, ext.name),
                     ),
                 ].map((p) => fse.remove(p)),
             );

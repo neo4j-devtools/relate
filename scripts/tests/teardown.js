@@ -6,8 +6,6 @@ const {TestDbmss, DBMS_DIR_NAME} = require('../../packages/common');
 const {List} = require('../../packages/types');
 
 envSetup();
-const cachePath = process.env.NEO4J_RELATE_CACHE_HOME;
-const dataPath = process.env.NEO4J_RELATE_DATA_HOME;
 
 async function globalTeardown() {
     const env = (await TestDbmss.init('relate')).environment;
@@ -21,13 +19,13 @@ async function globalTeardown() {
         .unwindPromises()
         .catch((err) => console.error(err));
 
-    const cacheFiles = List.from(await fse.readdir(cachePath))
+    const cacheFiles = List.from(await fse.readdir(env.cachePath))
         .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
-        .mapEach((filename) => path.join(cachePath, filename));
+        .mapEach((filename) => path.join(env.cachePath, filename));
 
-    const dataFiles = List.from(await fse.readdir(dataPath))
+    const dataFiles = List.from(await fse.readdir(env.dataPath))
         .filter((filename) => !['.GITIGNORED', 'dbmss', 'acceptedTerms'].includes(filename))
-        .mapEach((filename) => path.join(dataPath, filename));
+        .mapEach((filename) => path.join(env.dataPath, filename));
 
     await List.from()
         .concat(cacheFiles)
@@ -35,7 +33,7 @@ async function globalTeardown() {
         .mapEach((filepath) => fse.remove(filepath))
         .unwindPromises();
 
-    const dbmssPath = path.join(dataPath, DBMS_DIR_NAME);
+    const dbmssPath = path.join(env.dataPath, DBMS_DIR_NAME);
     try {
         // Do not remove this directory if not empty, it could lead to unexpected behavior.
         await fse.rmdir(dbmssPath);

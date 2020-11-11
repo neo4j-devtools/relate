@@ -106,6 +106,6 @@ export class TestDbmss {
             }
         });
         await Promise.all(uninstallAll);
-        await fse.remove(path.resolve(path.join(envPaths().data, 'test-db.dump')));
+        await fse.remove(path.resolve(path.join(this.environment.dataPath, 'test-db.dump')));
     }
 }
