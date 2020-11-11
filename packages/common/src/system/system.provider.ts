@@ -20,7 +20,6 @@ export class SystemProvider implements OnModuleInit {
     protected readonly dirPaths = {
         ...envPaths(),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        accessTokens: path.join(envPaths().data, RELATE_ACCESS_TOKENS_DIR_NAME),
     };
 
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
@@ -98,7 +97,16 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.dirPaths.accessTokens, environmentNameOrId, dbmsId, dbmsUser, accessToken);
+        const environment = await this.getEnvironment(environmentNameOrId);
+
+        await fse.ensureDir(path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME));
+        await registerSystemAccessToken(
+            path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME),
+            environmentNameOrId,
+            dbmsId,
+            dbmsUser,
+            accessToken,
+        );
 
         return accessToken;
     }
@@ -106,7 +114,12 @@ export class SystemProvider implements OnModuleInit {
     async getAccessToken(environmentNameOrId: string, dbmsId: string, dbmsUser: string): Promise<string> {
         const environment = await this.getEnvironment(environmentNameOrId);
         const dbms = await environment.dbmss.get(dbmsId);
-        const token = await getSystemAccessToken(this.dirPaths.accessTokens, environment.id, dbms.id, dbmsUser);
+        const token = await getSystemAccessToken(
+            path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME),
+            environment.id,
+            dbms.id,
+            dbmsUser,
+        );
 
         if (!token) {
             throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);

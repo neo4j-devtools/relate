@@ -23,15 +23,6 @@ async function globalTeardown() {
         .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
         .mapEach((filename) => path.join(env.cachePath, filename));
 
-    const dataFiles = List.from(await fse.readdir(env.dataPath))
-        .filter((filename) => !['.GITIGNORED', 'dbmss', 'acceptedTerms'].includes(filename))
-        .mapEach((filename) => path.join(env.dataPath, filename));
-
-    await List.from()
-        .concat(cacheFiles)
-        .concat(dataFiles)
-        .mapEach((filepath) => fse.remove(filepath))
-        .unwindPromises();
 
     const dbmssPath = path.join(env.dataPath, DBMS_DIR_NAME);
     try {
@@ -70,6 +61,16 @@ async function globalTeardown() {
             })
             .unwindPromises();
     }
+
+    const dataFiles = List.from(await fse.readdir(env.dataPath))
+        .filter((filename) => !['.GITIGNORED', 'acceptedTerms'].includes(filename))
+        .mapEach((filename) => path.join(env.dataPath, filename));
+
+    await List.from()
+        .concat(cacheFiles)
+        .concat(dataFiles)
+        .mapEach((filepath) => fse.remove(filepath))
+        .unwindPromises();
 }
 
 globalTeardown()
