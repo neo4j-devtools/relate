@@ -28,7 +28,7 @@ export class InitModule implements OnApplicationBootstrap {
 
         name = name || (await inputPrompt('Enter project name'));
 
-        const config: IProjectInput = {
+        const config: Omit<IProjectInput, 'id'> = {
             name,
             dbmss: [],
         };

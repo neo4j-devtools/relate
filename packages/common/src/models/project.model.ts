@@ -1,5 +1,6 @@
-import {ModelAbstract} from './model.abstract';
-import {IsArray, IsString, IsUUID} from 'class-validator';
+import {IsArray, IsOptional} from 'class-validator';
+import {assign} from 'lodash';
+import {ManifestModel, IManifest, IManifestInput} from './manifest.model';
 
 // https://nodejs.org/api/fs.html#fs_file_system_flags
 export enum WriteFileFlag {
@@ -7,13 +8,12 @@ export enum WriteFileFlag {
     APPEND = 'a+',
 }
 
-export interface IProjectInput {
-    name: string;
-    dbmss: IProjectDbms[];
+export interface IProjectInput extends IManifestInput {
+    dbmss?: IProjectDbms[];
 }
 
-export interface IProjectManifest extends IProjectInput {
-    id: string;
+export interface IProjectManifest extends IManifest {
+    dbmss: IProjectDbms[];
 }
 
 export interface IProject extends IProjectManifest {
@@ -27,16 +27,15 @@ export interface IProjectDbms {
     accessToken?: string;
 }
 
-export class ProjectModel extends ModelAbstract<IProject> implements IProject {
-    @IsUUID()
-    public id!: string;
+export class ProjectManifestModel extends ManifestModel<IProject> implements IProjectManifest {
+    constructor(props: any) {
+        super(props);
 
-    @IsString()
-    public name!: string;
+        // reassigning default values doesn't work when it's done from the parent class
+        assign(this, props);
+    }
 
-    @IsString()
-    public root!: string;
-
+    @IsOptional()
     @IsArray()
-    public dbmss!: IProjectDbms[];
+    public dbmss: IProjectDbms[] = [];
 }

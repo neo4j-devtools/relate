@@ -4,19 +4,21 @@ import {List} from '@relate/types';
 
 import {TestDbmss} from '../../utils/system';
 import {EnvironmentAbstract} from '../environments';
-import {IProject, IProjectInput, WriteFileFlag} from '../../models';
+import {IProject, WriteFileFlag} from '../../models';
 import {InvalidArgumentError} from '../../errors';
 import {envPaths} from '../../utils';
 import {PROJECTS_DIR_NAME} from '../../constants';
 
-const TEST_MANIFEST: IProjectInput = {
+const TEST_MANIFEST = {
     name: 'testId',
     dbmss: [],
 };
 const TEST_CREATED: IProject = {
     ...TEST_MANIFEST,
-    root: expect.any(String),
+    description: '',
     id: expect.any(String),
+    root: expect.any(String),
+    tags: [],
 };
 const testFileName = 'test.txt';
 const testOtherFileName = 'test.pem';

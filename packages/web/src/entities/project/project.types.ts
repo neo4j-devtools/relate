@@ -12,6 +12,12 @@ export class Project implements Omit<IProject, 'root'> {
     @Field(() => String)
     name: string;
 
+    @Field(() => String)
+    description: string;
+
+    @Field(() => [String])
+    tags: string[];
+
     @Field(() => [ProjectDbms])
     dbmss: ProjectDbms[];
 
