@@ -12,7 +12,9 @@ export function loadExtensionsFor(targetType: EXTENSION_TYPES, nameOrId?: string
     }
 
     try {
-        return getInstalledExtensionsSync(nameOrId)
+        const installedExtensions = getInstalledExtensionsSync(nameOrId);
+
+        return installedExtensions
             .filter(({type}) => type === targetType)
             .mapEach(async ({root, main}) => {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires

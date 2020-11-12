@@ -13,7 +13,6 @@ import {
     EXTENSION_MANIFEST_FILE,
     PACKAGE_JSON,
     EXTENSION_TYPES,
-    RELATE_DEFAULT_ENVIRONMENT,
 } from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from '../../entities/environments';
 
@@ -41,14 +40,16 @@ export function getInstalledExtensionsSync(nameOrId?: string): List<IInstalledEx
         .compact();
 }
 
-function resolveEnvironmentSync(nameOrId = RELATE_DEFAULT_ENVIRONMENT): EnvironmentConfigModel {
+function resolveEnvironmentSync(nameOrId?: string): EnvironmentConfigModel {
     const environmentsConfig = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME);
     const configs = List.from(fse.readdirSync(environmentsConfig))
         .filter((name) => name.endsWith('.json'))
         .mapEach((name) => {
             const configPath = path.join(environmentsConfig, name);
+
             try {
                 const config = fse.readJSONSync(configPath);
+
                 return new EnvironmentConfigModel({
                     ...config,
                     configPath,

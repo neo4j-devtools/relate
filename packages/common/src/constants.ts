@@ -12,7 +12,6 @@ export enum ENTITY_TYPES {
 }
 
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
-export const RELATE_DEFAULT_ENVIRONMENT: string | undefined = process.env.RELATE_ENVIRONMENT;
 
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';

@@ -1,18 +1,27 @@
-import {Module} from '@nestjs/common';
+import {Module, DynamicModule} from '@nestjs/common';
+import {ConfigModule} from '@nestjs/config';
 
 import {SystemProvider} from './system.provider';
 import {loadExtensionsFor} from '../utils/extensions';
 import {EXTENSION_TYPES} from '../constants';
-
-const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.SYSTEM);
 
 export interface ISystemModuleConfig {
     defaultEnvironmentNameOrId?: string;
 }
 
 @Module({
+    imports: [ConfigModule],
     exports: [SystemProvider],
-    imports: [...dynamicModules],
     providers: [SystemProvider],
 })
-export class SystemModule {}
+export class SystemModule {
+    static register(config: ISystemModuleConfig = {}): DynamicModule {
+        const {defaultEnvironmentNameOrId} = config;
+        const systemExtensions = loadExtensionsFor(EXTENSION_TYPES.SYSTEM, defaultEnvironmentNameOrId);
+
+        return {
+            imports: [ConfigModule.forRoot({load: [() => config]}), ...systemExtensions],
+            module: SystemModule,
+        };
+    }
+}

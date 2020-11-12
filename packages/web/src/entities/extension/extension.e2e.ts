@@ -1,6 +1,5 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
-import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import {
     Environment,
@@ -107,11 +106,10 @@ describe('AppsModule', () => {
 
         const module = await Test.createTestingModule({
             imports: [
-                ConfigModule.forRoot({
-                    isGlobal: true,
-                    load: [configuration],
+                WebModule.register({
+                    defaultEnvironmentNameOrId: dbmss.environment.id,
+                    ...configuration(),
                 }),
-                WebModule,
             ],
         }).compile();
 

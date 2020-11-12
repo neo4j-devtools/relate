@@ -1,4 +1,3 @@
-import {RELATE_DEFAULT_ENVIRONMENT} from '@relate/common';
 import {IWebModuleConfig} from '../web.module';
 
 const DEFAULT_PORT = 3000;
@@ -9,5 +8,4 @@ export default (): IWebModuleConfig => ({
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : DEFAULT_PORT,
     // @todo: https?
     protocol: 'http://',
-    defaultEnvironmentNameOrId: RELATE_DEFAULT_ENVIRONMENT,
 });
