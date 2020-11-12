@@ -60,14 +60,15 @@ async function populateDistributionCache(env) {
 
 async function globalSetup() {
     console.log('Preparing environment');
+
+    const env = (await TestDbmss.init('relate')).environment;
+
+    await fse.emptyDir(env.dataPath);
     await fse.emptyDir(envPaths().data);
     await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
 
-    const env = (await TestDbmss.init('relate')).environment;
-
-    await fse.emptyDir(env.dataPath);
     await populateDistributionCache(env);
 
     // Some tests require an archive of the DBMS to be passed to them, and

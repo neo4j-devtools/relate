@@ -5,7 +5,7 @@ import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 import {ConfigService} from '@nestjs/config';
 
-import {JSON_FILE_EXTENSION, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
+import {ENTITY_TYPES, JSON_FILE_EXTENSION, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {FileUploadError, NotFoundError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
@@ -139,6 +139,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         const configModel = new EnvironmentConfigModel({
+            relateDataPath: path.join(envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${newId}`),
             ...config,
             configPath: filePath,
             id: newId,

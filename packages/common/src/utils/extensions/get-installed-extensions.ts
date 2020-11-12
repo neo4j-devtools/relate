@@ -14,7 +14,6 @@ import {
     PACKAGE_JSON,
     EXTENSION_TYPES,
     RELATE_DEFAULT_ENVIRONMENT,
-    ENTITY_TYPES,
 } from '../../constants';
 import {ENVIRONMENTS_DIR_NAME} from '../../entities/environments';
 
@@ -23,7 +22,7 @@ import {ENVIRONMENTS_DIR_NAME} from '../../entities/environments';
  */
 export function getInstalledExtensionsSync(nameOrId?: string): List<IInstalledExtension> {
     const env = resolveEnvironmentSync(nameOrId);
-    const dataDir = env.relateDataPath || path.join(envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${env.id}`);
+    const dataDir = env.relateDataPath || envPaths().data;
     const installationDir = path.join(dataDir, EXTENSION_DIR_NAME);
 
     fse.ensureDirSync(installationDir);

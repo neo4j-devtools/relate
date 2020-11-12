@@ -18,8 +18,7 @@ import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
-import {ENTITY_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
-import path from 'path';
+import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
@@ -91,7 +90,7 @@ export abstract class EnvironmentAbstract {
      * @hidden
      */
     public get dataPath(): string {
-        return path.join(this.config.relateDataPath || envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${this.id}`);
+        return this.config.relateDataPath || envPaths().data;
     }
 
     /**
