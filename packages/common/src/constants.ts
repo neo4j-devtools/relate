@@ -1,7 +1,3 @@
-import yargs from 'yargs/yargs';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import {processArgv} from 'yargs/build/index.cjs';
 import {SignOptions} from 'jsonwebtoken';
 
 import {IRelateBackup} from './models';
@@ -14,13 +10,9 @@ export enum ENTITY_TYPES {
     ENVIRONMENT = 'environment',
     BACKUP = 'backup',
 }
-// eslint-disable-next-line
-const argv = yargs(processArgv.hideBin(process.argv))
-    .alias('e', 'environment')
-    .option('environment', {type: 'string'}).argv;
 
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
-export const RELATE_DEFAULT_ENVIRONMENT: string | undefined = process.env.RELATE_ENVIRONMENT || argv.environment;
+export const RELATE_DEFAULT_ENVIRONMENT: string | undefined = process.env.RELATE_ENVIRONMENT;
 
 export const JSON_FILE_EXTENSION = '.json';
 export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
