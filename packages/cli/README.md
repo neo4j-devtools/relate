@@ -46,6 +46,18 @@ relate$ npm link
 relate$ relate --help
 ```
 
+## Packaging for distribution
+
+Packaging uses `oclif-dev` to prepare and distribute various installable packages.
+
+Requires:
+
+- `p7zip` 
+  - `brew install p7zip`
+  - windows? linux?
+- .. what else?
+
+
 # Commands
 
 <!-- commands -->
@@ -60,5 +72,6 @@ relate$ relate --help
 * [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
 * [`relate help`](./docs/help.md) - display help for relate
 * [`relate project`](./docs/project.md) - Projects bring files and data together.
+* [`relate update`](./docs/update.md) - update the relate CLI
 
 <!-- commandsstop -->
