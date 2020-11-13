@@ -92,6 +92,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
             id,
         });
 
+        await fse.ensureFile(manifestPath);
         await fse.writeJson(manifestPath, new this.EntityModel(updated.toObject()), {
             spaces: 2,
         });
