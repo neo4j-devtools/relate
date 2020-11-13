@@ -95,8 +95,15 @@ describe('System Provider', () => {
         beforeAll(async () => {
             const module: TestingModule = await Test.createTestingModule({
                 imports: [
-                    ConfigModule.forRoot({isGlobal: true}),
-                    SystemModule.register({defaultEnvironmentNameOrId: newTestEnv?.id}),
+                    ConfigModule.forRoot({
+                        isGlobal: true,
+                        load: [
+                            () => ({
+                                defaultEnvironmentNameOrId: newTestEnv?.id,
+                            }),
+                        ],
+                    }),
+                    SystemModule.register(),
                 ],
             }).compile();
 
