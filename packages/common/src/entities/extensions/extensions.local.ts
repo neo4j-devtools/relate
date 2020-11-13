@@ -32,7 +32,7 @@ import {TokenService} from '../../token.service';
 
 export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
     async getAppPath(appName: string, appRoot = ''): Promise<string> {
-        const appBase = await getAppBasePath(appName);
+        const appBase = await getAppBasePath(appName, this.environment.id);
 
         return isValidUrl(appBase) ? appBase : `${appRoot}${appBase}`;
     }

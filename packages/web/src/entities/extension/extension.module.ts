@@ -15,13 +15,13 @@ export class ExtensionModule implements OnModuleInit {
         @Inject(AppsService) private readonly loader: AppsService,
     ) {}
 
-    onModuleInit(): void {
+    async onModuleInit(): Promise<void> {
         if (!this.httpAdapterHost) {
             return;
         }
 
         const {httpAdapter} = this.httpAdapterHost;
 
-        this.loader.register(httpAdapter);
+        await this.loader.register(httpAdapter);
     }
 }

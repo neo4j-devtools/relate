@@ -4,11 +4,10 @@ const fse = require('fs-extra');
 const ora = require('ora');
 
 const envSetup = require('../../e2e/jest-global.setup');
-const {TestDbmss, DBMS_DIR_NAME, envPaths, download, PropertiesFile} = require('../../packages/common');
+const {TestDbmss, envPaths, download, PropertiesFile} = require('../../packages/common');
 const {List} = require('../../packages/types');
 
 envSetup();
-const dbmssCache = path.join(process.env.NEO4J_RELATE_CACHE_HOME, DBMS_DIR_NAME);
 
 // @todo - replace this with functionality from the common package once we're handling plugins there.
 async function downloadApoc(dbmsRootPath) {
@@ -61,12 +60,14 @@ async function populateDistributionCache(env) {
 
 async function globalSetup() {
     console.log('Preparing environment');
+
+    const env = (await TestDbmss.init('relate')).environment;
+
+    await fse.emptyDir(env.dataPath);
     await fse.emptyDir(envPaths().data);
     await fse.ensureFile(path.join(envPaths().data, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().cache, '.GITIGNORED'));
     await fse.ensureFile(path.join(envPaths().data, 'acceptedTerms'));
-
-    const env = (await TestDbmss.init('relate')).environment;
 
     await populateDistributionCache(env);
 
@@ -86,8 +87,8 @@ async function globalSetup() {
     await tar.c(
         {
             gzip: true,
-            file: path.join(dbmssCache, archiveName),
-            cwd: dbmssCache,
+            file: path.join(env.dirPaths.dbmssCache, archiveName),
+            cwd: env.dirPaths.dbmssCache,
         },
         [path.basename(version.dist)],
     );

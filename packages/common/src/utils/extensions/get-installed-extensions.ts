@@ -5,8 +5,8 @@ import _ from 'lodash';
 import {List} from '@relate/types';
 
 import {envPaths} from '../env-paths';
-import {ExtensionModel, IInstalledExtension} from '../../models';
-import {InvalidArgumentError} from '../../errors';
+import {EnvironmentConfigModel, ExtensionModel, IInstalledExtension} from '../../models';
+import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {
     EXTENSION_DIR_NAME,
     EXTENSION_MANIFEST_KEY,
@@ -14,12 +14,15 @@ import {
     PACKAGE_JSON,
     EXTENSION_TYPES,
 } from '../../constants';
+import {ENVIRONMENTS_DIR_NAME} from '../../entities/environments';
 
 /**
  * Synchronous method, only call on process bootstrap (not inside applications)
  */
-export function getInstalledExtensionsSync(): List<IInstalledExtension> {
-    const installationDir = path.join(envPaths().data, EXTENSION_DIR_NAME);
+export function getInstalledExtensionsSync(nameOrId?: string): List<IInstalledExtension> {
+    const env = resolveEnvironmentSync(nameOrId);
+    const dataDir = env.relateDataPath || envPaths().data;
+    const installationDir = path.join(dataDir, EXTENSION_DIR_NAME);
 
     fse.ensureDirSync(installationDir);
 
@@ -35,6 +38,36 @@ export function getInstalledExtensionsSync(): List<IInstalledExtension> {
             }
         })
         .compact();
+}
+
+function resolveEnvironmentSync(nameOrId?: string): EnvironmentConfigModel {
+    const environmentsConfig = path.join(envPaths().config, ENVIRONMENTS_DIR_NAME);
+    const configs = List.from(fse.readdirSync(environmentsConfig))
+        .filter((name) => name.endsWith('.json'))
+        .mapEach((name) => {
+            const configPath = path.join(environmentsConfig, name);
+
+            try {
+                const config = fse.readJSONSync(configPath);
+
+                return new EnvironmentConfigModel({
+                    ...config,
+                    configPath,
+                });
+            } catch (error) {
+                return null;
+            }
+        })
+        .compact();
+
+    const resolvedConfig = configs.find(({name, id}) => name === nameOrId || id === nameOrId);
+    const activeConfig = configs.find(({active}) => Boolean(active));
+
+    return resolvedConfig
+        .switchMap((c) => (nameOrId ? c : activeConfig))
+        .getOrElse(() => {
+            throw new NotFoundError(`Unable to find environment: ${nameOrId} or an active environment`);
+        });
 }
 
 function mapContentsToExtension(fullPath: string): IInstalledExtension {

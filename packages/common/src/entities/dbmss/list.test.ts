@@ -10,7 +10,6 @@ import {PropertiesFile} from '../../system/files';
 import {DBMS_DIR_NAME, DBMS_MANIFEST_FILE, DISCOVER_DBMS_THROTTLE_MS} from '../../constants';
 
 const TMP_HOME = path.join(envPaths().tmp, 'local-environment.list');
-const INSTALLATION_ROOT = path.join(TMP_HOME, DBMS_DIR_NAME);
 
 jest.mock('../../utils/files/read-properties-file', () => ({
     readPropertiesFile: (): Map<string, string> => new Map(),
@@ -21,18 +20,31 @@ const sleep = (ms: number): Promise<void> =>
         setTimeout(resolve, ms);
     });
 
-function generateDummyConf(dbms: string): PropertiesFile {
-    const configPath = path.join(INSTALLATION_ROOT, `dbms-${dbms}`, 'conf/neo4j.conf');
-
-    return new PropertiesFile([], configPath);
-}
-
 describe('LocalDbmss - list', () => {
     const dbms1 = uuidv4();
     const dbms2 = uuidv4();
     let environment: LocalEnvironment;
+    let INSTALLATION_ROOT: string;
+
+    function generateDummyConf(dbms: string): PropertiesFile {
+        const configPath = path.join(INSTALLATION_ROOT, `dbms-${dbms}`, 'conf/neo4j.conf');
+
+        return new PropertiesFile([], configPath);
+    }
 
     beforeAll(async () => {
+        const config = new EnvironmentConfigModel({
+            id: uuidv4(),
+            name: 'test',
+            relateDataPath: TMP_HOME,
+            type: ENVIRONMENT_TYPES.LOCAL,
+            user: 'test',
+            configPath: 'nowhere',
+        });
+
+        environment = new LocalEnvironment(config);
+        INSTALLATION_ROOT = path.join(environment.dataPath, DBMS_DIR_NAME);
+
         await fse.ensureDir(path.join(INSTALLATION_ROOT, `dbms-${dbms1}`));
         await fse.writeJSON(path.join(INSTALLATION_ROOT, `dbms-${dbms1}`, DBMS_MANIFEST_FILE), {
             description: 'DBMS with metadata',
@@ -47,17 +59,6 @@ describe('LocalDbmss - list', () => {
             name: '',
             rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms2}`),
         });
-
-        const config = new EnvironmentConfigModel({
-            id: uuidv4(),
-            name: 'test',
-            relateDataPath: TMP_HOME,
-            type: ENVIRONMENT_TYPES.LOCAL,
-            user: 'test',
-            configPath: 'nowhere',
-        });
-
-        environment = new LocalEnvironment(config);
     });
 
     afterAll(() => fse.remove(TMP_HOME));

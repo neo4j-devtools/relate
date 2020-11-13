@@ -3,10 +3,11 @@ import {Inject, Module, OnModuleInit} from '@nestjs/common';
 import {SystemModule} from '@relate/common';
 
 import {HealthService} from './services/health.service';
+import {ConfigModule} from '@nestjs/config';
 
 @Module({
     exports: [HealthService],
-    imports: [SystemModule],
+    imports: [ConfigModule, SystemModule],
     providers: [HealthService],
 })
 export class HealthModule implements OnModuleInit {

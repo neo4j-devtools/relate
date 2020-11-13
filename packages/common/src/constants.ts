@@ -1,4 +1,5 @@
 import {SignOptions} from 'jsonwebtoken';
+
 import {IRelateBackup} from './models';
 
 export enum ENTITY_TYPES {
