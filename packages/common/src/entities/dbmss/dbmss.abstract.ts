@@ -35,7 +35,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      */
     public dbmss: {[id: string]: IDbms} = {};
 
-    abstract manifest: ManifestAbstract<Env, IDbmsInfo, DbmsManifestModel>;
+    abstract readonly manifest: ManifestAbstract<Env, IDbmsInfo, DbmsManifestModel>;
 
     /**
      * @hidden

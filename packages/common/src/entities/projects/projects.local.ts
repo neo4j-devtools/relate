@@ -15,7 +15,7 @@ import {getAbsoluteProjectPath, getRelativeProjectPath, mapFileToModel} from '..
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
-    public manifest = new ManifestLocal(
+    public readonly manifest = new ManifestLocal(
         this.environment,
         ENTITY_TYPES.PROJECT,
         ProjectManifestModel,

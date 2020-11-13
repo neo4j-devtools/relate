@@ -67,7 +67,7 @@ import {emitHookEvent} from '../../utils';
 import {ManifestLocal} from '../manifest';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
-    public manifest = new ManifestLocal(
+    public readonly manifest = new ManifestLocal(
         this.environment,
         ENTITY_TYPES.DBMS,
         DbmsManifestModel,

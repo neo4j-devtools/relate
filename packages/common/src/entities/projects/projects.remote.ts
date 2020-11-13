@@ -9,7 +9,7 @@ import {ManifestRemote} from '../manifest';
 import {ENTITY_TYPES} from '../../constants';
 
 export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
-    public manifest = new ManifestRemote(
+    public readonly manifest = new ManifestRemote(
         this.environment,
         ENTITY_TYPES.PROJECT,
         ProjectManifestModel,

@@ -11,7 +11,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      */
     public projects: {[id: string]: IProject} = {};
 
-    abstract manifest: ManifestAbstract<Env, IProject, ProjectManifestModel>;
+    abstract readonly manifest: ManifestAbstract<Env, IProject, ProjectManifestModel>;
 
     /**
      * @hidden

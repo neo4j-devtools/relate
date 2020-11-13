@@ -13,7 +13,7 @@ import {IRelateFilter} from '../../utils/generic';
 import {ManifestRemote} from '../manifest';
 
 export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
-    public manifest = new ManifestRemote(this.environment, ENTITY_TYPES.DBMS, DbmsManifestModel, this.get);
+    public readonly manifest = new ManifestRemote(this.environment, ENTITY_TYPES.DBMS, DbmsManifestModel, this.get);
 
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {
         const {data, errors}: any = await this.environment.graphql({
