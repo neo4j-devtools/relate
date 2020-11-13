@@ -6,19 +6,13 @@ import tar from 'tar';
 
 import {LocalEnvironment} from '../environments';
 import {IRelateBackup, RelateBackupModel} from '../../models';
-import {
-    BACKUP_ARCHIVE_FILE_EXTENSION,
-    BACKUP_MANIFEST_FILE,
-    DBMS_MANIFEST_FILE,
-    ENTITY_TYPES,
-    EXTENSION_MANIFEST_FILE,
-    PROJECT_MANIFEST_FILE,
-} from '../../constants';
+import {BACKUP_ARCHIVE_FILE_EXTENSION, BACKUP_MANIFEST_FILE, ENTITY_TYPES} from '../../constants';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {BackupAbstract} from './backup.abstract';
 import {InvalidArgumentError, RelateBackupError, ValidationFailureError} from '../../errors';
 import {updateRestoredEntityManifest} from '../../utils/backups';
 import {envPaths, extract} from '../../utils';
+import {getManifestName} from '../../utils/system';
 
 export class LocalBackups extends BackupAbstract<LocalEnvironment> {
     async create(entityType: ENTITY_TYPES, entityNameOrId: string, entityMeta: any = {}): Promise<IRelateBackup> {
@@ -79,10 +73,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         await fse.move(result, outputTarget);
         await fse.writeJSON(path.join(outputTarget, BACKUP_MANIFEST_FILE), manifest);
 
-        const restoredEntityManifestPath = path.join(
-            outputTarget,
-            this.getRestoredEntityManifestPath(manifest.entityType),
-        );
+        const restoredEntityManifestPath = path.join(outputTarget, getManifestName(manifest.entityType));
         const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
         const updated = updateRestoredEntityManifest(manifest, restoredEntityId, restoredEntityManifest);
 
@@ -126,22 +117,6 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             .unwindPromises();
 
         return applyEntityFilters(backups.compact(), filters);
-    }
-
-    private getRestoredEntityManifestPath(entityType: ENTITY_TYPES): string {
-        switch (entityType) {
-            case ENTITY_TYPES.DBMS:
-                return DBMS_MANIFEST_FILE;
-
-            case ENTITY_TYPES.PROJECT:
-                return PROJECT_MANIFEST_FILE;
-
-            case ENTITY_TYPES.EXTENSION:
-                return EXTENSION_MANIFEST_FILE;
-
-            default:
-                throw new InvalidArgumentError(`Entity type ${entityType} does not have a manifest file`);
-        }
     }
 
     private async resolveRestorationManifest(filePath: string): Promise<IRelateBackup> {

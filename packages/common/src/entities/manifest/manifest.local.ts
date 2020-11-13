@@ -6,6 +6,7 @@ import {ManifestModel, IManifest} from '../../models';
 import {LocalEnvironment} from '../environments';
 import {ManifestAbstract} from './manifest.abstract';
 import {ENTITY_TYPES} from '../../constants';
+import {getManifestName} from '../../utils/system';
 
 export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestModel<Entity>> extends ManifestAbstract<
     LocalEnvironment,
@@ -61,8 +62,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         };
 
         const entityRootPath = this.environment.getEntityRootPath(this.entityType, id);
-        // @todo get rid of this string
-        const manifestPath = path.join(entityRootPath, `relate.${this.entityType}.json`);
+        const manifestPath = path.join(entityRootPath, getManifestName(this.entityType));
 
         const manifestExists = await fse.pathExists(manifestPath);
         if (!manifestExists) {
@@ -82,8 +82,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
     public async update(id: string, update: Partial<Omit<Entity, 'id'>>): Promise<void> {
         const entityRootPath = this.environment.getEntityRootPath(this.entityType, id);
-        // @todo get rid of this string
-        const manifestPath = path.join(entityRootPath, `relate.${this.entityType}.json`);
+        const manifestPath = path.join(entityRootPath, getManifestName(this.entityType));
 
         const manifest = await this.get(id);
         const updated = Dict.from({
