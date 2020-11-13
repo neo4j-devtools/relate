@@ -2,9 +2,11 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
 import {TestDbmss} from '@relate/common';
+import {ConfigModule} from '@nestjs/config';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
+
 let TEST_DBMS_NAME: string;
 let TEST_DBMS_ACCESS_TOKEN: string;
 const TEST_APP_ID = 'foo';
@@ -33,6 +35,10 @@ describe('DBModule', () => {
 
         const module = await Test.createTestingModule({
             imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [configuration],
+                }),
                 WebModule.register({
                     defaultEnvironmentNameOrId: dbmss.environment.id,
                     ...configuration(),

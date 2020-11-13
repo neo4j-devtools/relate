@@ -1,7 +1,6 @@
 import {DynamicModule, Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
 import {HttpAdapterHost} from '@nestjs/core';
-import {ConfigModule} from '@nestjs/config';
 import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
 import {Application} from 'express';
 import useSofa, {OpenAPI} from 'sofa-api';
@@ -25,6 +24,7 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
 
 @Module({
     imports: [
+        SystemModule,
         DBMSModule,
         DBModule,
         ExtensionModule,
@@ -49,14 +49,9 @@ export class WebModule implements OnModuleInit {
         const webExtensions = loadExtensionsFor(EXTENSION_TYPES.WEB, defaultEnvironmentNameOrId);
 
         return {
-            imports: [
-                ConfigModule.forRoot({
-                    load: [() => config],
-                }),
-                SystemModule.register(config),
-                ...webExtensions,
-            ],
+            imports: [SystemModule.register(config), ...webExtensions],
             module: WebModule,
+            exports: [SystemModule, ...webExtensions],
         };
     }
 

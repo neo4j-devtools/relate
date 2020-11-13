@@ -30,7 +30,14 @@ export default abstract class BaseCommand extends Command {
 
         return NestFactory.createApplicationContext(
             {
-                imports: [ConfigModule.forRoot(), SystemModule.register(systemConfig), ...cliExtensions],
+                imports: [
+                    ConfigModule.forRoot({
+                        isGlobal: true,
+                        load: [() => systemConfig],
+                    }),
+                    SystemModule.register(systemConfig),
+                    ...cliExtensions,
+                ],
                 module: this.commandModule,
                 providers: [
                     {

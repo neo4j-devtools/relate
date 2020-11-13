@@ -1,4 +1,6 @@
 import {NestFactory} from '@nestjs/core';
+import {ConfigModule} from '@nestjs/config';
+import {Module} from '@nestjs/common';
 import path from 'path';
 
 // ugly hack for allowing extensions to use our dependencies in electron
@@ -13,7 +15,20 @@ export {ElectronModule, IElectronModuleConfig, WindowModule};
 export async function bootstrapElectronModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);
     const config = configuration();
-    const app = await NestFactory.create(ElectronModule.register(config));
+
+    // this is weird but it allows us to have global configs
+    @Module({
+        imports: [
+            ConfigModule.forRoot({
+                isGlobal: true,
+                load: [configuration],
+            }),
+            ElectronModule.register(config),
+        ],
+    })
+    class ServerModule {}
+
+    const app = await NestFactory.create(ServerModule);
     const windowModule = app.get(WindowModule);
 
     await app.listen(config.port, config.host);
