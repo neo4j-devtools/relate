@@ -1,5 +1,4 @@
 import {Module, DynamicModule} from '@nestjs/common';
-import {ConfigModule} from '@nestjs/config';
 
 import {SystemProvider} from './system.provider';
 import {loadExtensionsFor} from '../utils/extensions';
@@ -10,7 +9,7 @@ export interface ISystemModuleConfig {
 }
 
 @Module({
-    imports: [ConfigModule],
+    imports: [],
     exports: [SystemProvider],
     providers: [SystemProvider],
 })
@@ -20,8 +19,9 @@ export class SystemModule {
         const systemExtensions = loadExtensionsFor(EXTENSION_TYPES.SYSTEM, defaultEnvironmentNameOrId);
 
         return {
-            imports: [ConfigModule.forRoot({load: [() => config]}), ...systemExtensions],
+            imports: [...systemExtensions],
             module: SystemModule,
+            exports: [...systemExtensions],
         };
     }
 }

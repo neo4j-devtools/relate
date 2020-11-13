@@ -9,7 +9,7 @@ describe('System Provider', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [ConfigModule.forRoot(), SystemModule.register()],
+            imports: [ConfigModule.forRoot({isGlobal: true}), SystemModule.register()],
         }).compile();
 
         provider = module.get(SystemProvider);
