@@ -14,6 +14,16 @@ Adds new functionality to one or more modules by:
     - `WEB`: Only for Web module
     - `ELECTRON`: Only for Electron module
     
+Extensions are installed under:
+```sh
+# Darwin
+~/Library/Application Support/com.Neo4j.Relate/Data/extensions
+# Linux
+~/.local/share/neo4j-relate/extensions
+# Win32
+%appdata%\Local\Neo4j\Relate\Data\extensions
+```
+    
 ## Event Hooks
 Allows reacting to events within the application and modify values being processed.
 
@@ -21,15 +31,6 @@ Allows reacting to events within the application and modify values being process
 ## STATIC extensions
 Static extensions simply need to be a directory containing at least an `index.html` file as well as a `package.json file` containing `name`, `version`, and `main` properties.
 
-Static extensions are installed under:
-```sh
-# Darwin
-~/Library/Application Support/com.Neo4j.Relate/Data/extensions/STATIC
-# Linux
-~/.local/share/neo4j-relate/extensions/STATIC
-# Win32
-%appdata%\Local\Neo4j\Relate\Data\extensions\STATIC
-```
 A sample `package.json`
 ```JSON
 {
@@ -41,7 +42,7 @@ A sample `package.json`
 
 ## Application extensions
 Application extensions simply need to be a directory containing at least an `index.js` file.
-The entry point of application extensions are defined in their `relate.manifest.json` file:
+The entry point of application extensions are defined in their `relate.extension.json` file:
 ```JSON
 {
   "name": "<name>",
@@ -52,16 +53,7 @@ The entry point of application extensions are defined in their `relate.manifest.
 ```
 The entrypoint **must have a default export** of a `@nestjs` module. Please see https://github.com/huboneo/grandql-extension for a simple example.
 
-Extensions are installed under:
-```sh
-# Darwin
-~/Library/Application Support/com.Neo4j.Relate/Data/extensions/<APP_TYPE>
-# Linux
-~/.local/share/neo4j-relate/extensions/<APP_TYPE>
-# Win32
-%appdata%\Local\Neo4j\Relate\Data\extensions\<APP_TYPE>
-```
-Where `<APP_TYPE>` is one of:
+Where `<type>` is one of:
 - `SYSTEM` Targeting the core system API (shared across all applications)
 - `WEB` Targeting the WEB applications
 - `CLI` Targeting the CLI applications
@@ -88,7 +80,7 @@ Secondly we want to offer ourselves and third parties the flexibility to enhance
 
 # Detailed design
 ## Extensions
-This entire concept revolves around the `relate.manifest.json` file:
+This entire concept revolves around the `relate.extension.json` file:
 ```JSON
 {
   "name": "<name>",
@@ -97,7 +89,7 @@ This entire concept revolves around the `relate.manifest.json` file:
   "main": "dist/index.(js|html)"
 }
 ```
-Using the information above `@relate` can determine what to do with the code-package. `STATIC` extensions are simply exposed over http (and thus require no restart or setup), whilst application extensions are added to the `@nestjs` module hierarchy and as such require restart.
+Using the information above `@relate` can determine what to do with the code-package. `STATIC` extensions are simply exposed over http (and thus require no restart or setup), whilst application extensions are added to the `@nestjs` module hierarchy and as such require restart (and the use of the static `.register()` methods of relate modules).
 
 The idea here is to allow developers to use any pre-existing code without having to be aware of `@relate` specific caveats, with the only contract being a default export of a `@nestjs` module:
 ```TypeScript
@@ -120,7 +112,7 @@ export default class ExampleModule implements OnApplicationBootstrap {
 ```
 From here extensions are free to do whatever they want within the NestJS ecosystem.
 
-We chose a liberal approach to encourage adoption and minimise the learning curve for creating extensions. To ensure that extensions do not introduce breaking changes we will have two separate categories: Offical, and Custom. Official extensions will be signed by our [Code Signing CA](https://github.com/neo4j-apps/code-signing-ca) and also undergo code-reviews before being signed. Official extensions will be published to our JFrog repository and available to be installed through the core API. Custom extensions will have no enforcement and only be installable using a provided tarball. This allows developers to quickly iterate extensions and when ready apply for official status.
+We chose a liberal approach to encourage adoption and minimise the learning curve for creating extensions. To ensure that extensions do not introduce breaking changes we will have two separate categories: Offical, and Third party. Official extensions will be signed by our [Code Signing CA](https://github.com/neo4j-apps/code-signing-ca) and also undergo code-reviews before being signed. Third party extensions will have no enforcement and are not signed. Extensions will be published to the official NPM registry and available to be installed through the relate API. This allows developers to quickly iterate extensions and when ready apply for official status.
 
 ## Event Hooks.
 This concept revolves around the pub/sub pattern, based losely on the DOM `addEventListener()` API:
