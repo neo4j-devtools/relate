@@ -19,12 +19,12 @@ const neo4jLimitedVersionsUrl = new URL(NEO4J_DIST_LIMITED_VERSIONS_URL);
 
 describe('DBMS versions (local environment)', () => {
     test('list cached distributions', async () => {
-        const dbmssDataDir = path.join(envPaths().cache, DBMS_DIR_NAME);
-        const versions = (await discoverNeo4jDistributions(dbmssDataDir)).toArray();
+        const dbmssCacheDir = path.join(envPaths().cache, DBMS_DIR_NAME);
+        const versions = (await discoverNeo4jDistributions(dbmssCacheDir)).toArray();
         expect(versions.length >= 1).toBeTruthy();
         expect(versions[0].edition).toEqual(NEO4J_EDITION.ENTERPRISE);
         expect(versions[0].origin).toEqual(NEO4J_ORIGIN.CACHED);
-        expect(versions[0].dist).toContain(dbmssDataDir);
+        expect(versions[0].dist).toContain(dbmssCacheDir);
     });
 
     test('list no cached distributions', async () => {

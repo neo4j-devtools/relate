@@ -6,8 +6,8 @@ import {NotFoundError} from '../../errors/not-found.error';
 import {discoverExtension} from './extension-versions';
 import {isValidUrl} from '../generic';
 
-export async function getAppBasePath(appName: string): Promise<string> {
-    const installed = getInstalledExtensionsSync();
+export async function getAppBasePath(appName: string, nameOrId?: string): Promise<string> {
+    const installed = getInstalledExtensionsSync(nameOrId);
     const app = installed
         .find(({type, name}) => type === EXTENSION_TYPES.STATIC && name === appName)
         .getOrElse(() => {

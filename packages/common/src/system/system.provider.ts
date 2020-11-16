@@ -1,10 +1,11 @@
 import path from 'path';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Inject, Injectable, OnModuleInit} from '@nestjs/common';
 import fse from 'fs-extra';
 import {List, Dict, None, Maybe} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
+import {ConfigService} from '@nestjs/config';
 
-import {JSON_FILE_EXTENSION, DBMS_DIR_NAME, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
+import {ENTITY_TYPES, JSON_FILE_EXTENSION, RELATE_ACCESS_TOKENS_DIR_NAME} from '../constants';
 import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME} from '../entities/environments';
 import {FileUploadError, NotFoundError, TargetExistsError} from '../errors';
 import {EnvironmentConfigModel, IEnvironmentConfigInput} from '../models';
@@ -18,13 +19,12 @@ import {Readable} from 'stream';
 export class SystemProvider implements OnModuleInit {
     protected readonly dirPaths = {
         ...envPaths(),
-        dbmssCache: path.join(envPaths().cache, DBMS_DIR_NAME),
-        dbmssData: path.join(envPaths().data, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
-        accessTokens: path.join(envPaths().data, RELATE_ACCESS_TOKENS_DIR_NAME),
     };
 
     protected allEnvironments = Dict.from<Map<string, EnvironmentAbstract>>(new Map());
+
+    constructor(@Inject(ConfigService) private readonly configService: ConfigService) {}
 
     async onModuleInit(): Promise<void> {
         await ensureDirs(this.dirPaths);
@@ -63,6 +63,21 @@ export class SystemProvider implements OnModuleInit {
             });
         }
 
+        const configId = this.configService.get('defaultEnvironmentNameOrId');
+        if (configId) {
+            const environment: Maybe<EnvironmentAbstract> = this.allEnvironments.values.find(
+                (env) => env.id === configId || env.name === configId,
+            );
+
+            return environment.flatMap((env) => {
+                if (None.isNone(env)) {
+                    throw new NotFoundError(`Environment "${configId}" not found`);
+                }
+
+                return env;
+            });
+        }
+
         const activeEnvironment = this.allEnvironments.values.find((env) => env.isActive);
 
         return activeEnvironment.flatMap((env) => {
@@ -82,7 +97,16 @@ export class SystemProvider implements OnModuleInit {
         dbmsUser: string,
         accessToken: string,
     ): Promise<string> {
-        await registerSystemAccessToken(this.dirPaths.accessTokens, environmentNameOrId, dbmsId, dbmsUser, accessToken);
+        const environment = await this.getEnvironment(environmentNameOrId);
+
+        await fse.ensureDir(path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME));
+        await registerSystemAccessToken(
+            path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME),
+            environmentNameOrId,
+            dbmsId,
+            dbmsUser,
+            accessToken,
+        );
 
         return accessToken;
     }
@@ -90,7 +114,12 @@ export class SystemProvider implements OnModuleInit {
     async getAccessToken(environmentNameOrId: string, dbmsId: string, dbmsUser: string): Promise<string> {
         const environment = await this.getEnvironment(environmentNameOrId);
         const dbms = await environment.dbmss.get(dbmsId);
-        const token = await getSystemAccessToken(this.dirPaths.accessTokens, environment.id, dbms.id, dbmsUser);
+        const token = await getSystemAccessToken(
+            path.join(environment.dataPath, RELATE_ACCESS_TOKENS_DIR_NAME),
+            environment.id,
+            dbms.id,
+            dbmsUser,
+        );
 
         if (!token) {
             throw new NotFoundError(`No Access Token found for user "${dbmsUser}"`);
@@ -110,6 +139,7 @@ export class SystemProvider implements OnModuleInit {
         }
 
         const configModel = new EnvironmentConfigModel({
+            relateDataPath: path.join(envPaths().data, `${ENTITY_TYPES.ENVIRONMENT}-${newId}`),
             ...config,
             configPath: filePath,
             id: newId,

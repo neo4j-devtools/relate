@@ -1,5 +1,5 @@
 import {Inject, Module} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
+import {ConfigModule, ConfigService} from '@nestjs/config';
 import {BrowserWindow} from 'electron';
 import {
     Environment,
@@ -16,7 +16,7 @@ import fetch from 'node-fetch';
 import {IElectronModuleConfig} from '../electron.module';
 
 @Module({
-    imports: [SystemModule],
+    imports: [ConfigModule, SystemModule],
 })
 export class WindowModule {
     constructor(

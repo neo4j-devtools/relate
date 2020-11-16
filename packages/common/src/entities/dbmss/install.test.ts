@@ -1,22 +1,23 @@
 import path from 'path';
 import {List} from '@relate/types';
 
-import {envPaths} from '../../utils';
 import {InvalidArgumentError, NotFoundError, NotSupportedError} from '../../errors';
 import * as versionUtils from '../../utils/dbmss/dbms-versions';
 import * as downloadUtils from '../../utils/dbmss/download-neo4j';
 import {TestDbmss} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
+import {EnvironmentAbstract} from '../environments';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
-const INSTALL_ROOT = path.join(envPaths().data, DBMS_DIR_NAME);
 const {ARCHIVE_PATH, NEO4J_VERSION} = TestDbmss;
 
 describe('LocalDbmss - install', () => {
     let testDbmss: TestDbmss;
+    let testEnv: EnvironmentAbstract;
 
     beforeAll(async () => {
         testDbmss = await TestDbmss.init(__filename);
+        testEnv = testDbmss.environment;
     });
 
     afterAll(() => testDbmss.teardown());
@@ -56,7 +57,9 @@ describe('LocalDbmss - install', () => {
         const message = await testDbmss.environment.dbmss.get(dbmsID);
         expect(message.status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsID}`));
+        const info = await versionUtils.getDistributionInfo(
+            path.join(testEnv.dataPath, DBMS_DIR_NAME, `dbms-${dbmsID}`),
+        );
         expect(info?.version).toEqual(NEO4J_VERSION);
     });
 
@@ -80,7 +83,9 @@ describe('LocalDbmss - install', () => {
         const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
+        const info = await versionUtils.getDistributionInfo(
+            path.join(testEnv.dataPath, DBMS_DIR_NAME, `dbms-${dbmsId}`),
+        );
         expect(info?.version).toEqual(NEO4J_VERSION);
     });
 
@@ -100,7 +105,9 @@ describe('LocalDbmss - install', () => {
         const message = (await testDbmss.environment.dbmss.info([dbmsId])).toArray();
         expect(message[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId}`));
+        const info = await versionUtils.getDistributionInfo(
+            path.join(testEnv.dataPath, DBMS_DIR_NAME, `dbms-${dbmsId}`),
+        );
         expect(info?.version).toEqual(NEO4J_VERSION);
 
         const {id: dbmsId2} = await testDbmss.environment.dbmss.install(testDbmss.createName(), NEO4J_VERSION);
@@ -108,7 +115,9 @@ describe('LocalDbmss - install', () => {
         const message2 = (await testDbmss.environment.dbmss.info([dbmsId2])).toArray();
         expect(message2[0].status).toContain(DBMS_STATUS.STOPPED);
 
-        const info2 = await versionUtils.getDistributionInfo(path.join(INSTALL_ROOT, `dbms-${dbmsId2}`));
+        const info2 = await versionUtils.getDistributionInfo(
+            path.join(testEnv.dataPath, DBMS_DIR_NAME, `dbms-${dbmsId2}`),
+        );
         expect(info2?.version).toEqual(NEO4J_VERSION);
     });
 

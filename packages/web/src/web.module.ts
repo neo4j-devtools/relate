@@ -1,7 +1,7 @@
-import {Inject, Module, OnModuleInit} from '@nestjs/common';
+import {DynamicModule, Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
-import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor} from '@relate/common';
 import {HttpAdapterHost} from '@nestjs/core';
+import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
 import {Application} from 'express';
 import useSofa, {OpenAPI} from 'sofa-api';
 import swaggerUi from 'swagger-ui-express';
@@ -16,13 +16,11 @@ import {FilesModule} from './files';
 import {HealthModule} from './health';
 import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
 
-export interface IWebModuleConfig {
-    protocol: string;
-    host: string;
-    port: number;
+export interface IWebModuleConfig extends ISystemModuleConfig {
+    protocol?: string;
+    host?: string;
+    port?: number;
 }
-
-const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
 
 @Module({
     imports: [
@@ -33,7 +31,6 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
         ProjectModule,
         FilesModule,
         HealthModule,
-        ...dynamicModules,
         GraphQLModule.forRoot({
             autoSchemaFile: true,
             installSubscriptionHandlers: true,
@@ -47,6 +44,17 @@ const dynamicModules = loadExtensionsFor(EXTENSION_TYPES.WEB);
     ],
 })
 export class WebModule implements OnModuleInit {
+    static register(config: IWebModuleConfig): DynamicModule {
+        const {defaultEnvironmentNameOrId} = config;
+        const webExtensions = loadExtensionsFor(EXTENSION_TYPES.WEB, defaultEnvironmentNameOrId);
+
+        return {
+            imports: [SystemModule.register(config), ...webExtensions],
+            module: WebModule,
+            exports: [SystemModule, ...webExtensions],
+        };
+    }
+
     constructor(
         @Inject(GraphQLSchemaHost) private readonly schemaHost: GraphQLSchemaHost,
         @Inject(HttpAdapterHost) private readonly httpAdapterHost: HttpAdapterHost,

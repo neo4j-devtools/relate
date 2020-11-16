@@ -85,7 +85,7 @@ const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 describe('AppsModule', () => {
     let app: INestApplication;
     let dbmss: TestDbmss;
-    const extensions = new TestExtensions(__filename);
+    let extensions: TestExtensions;
     let testExtension: IInstalledExtension;
     let testEnvironment: Environment;
 
@@ -99,6 +99,7 @@ describe('AppsModule', () => {
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
+        extensions = await TestExtensions.init(__filename, dbmss.environment);
         const {id} = await dbmss.createDbms();
         testEnvironment = dbmss.environment;
         TEST_DBMS_ID = id;
@@ -110,7 +111,10 @@ describe('AppsModule', () => {
                     isGlobal: true,
                     load: [configuration],
                 }),
-                WebModule,
+                WebModule.register({
+                    defaultEnvironmentNameOrId: dbmss.environment.id,
+                    ...configuration(),
+                }),
             ],
         }).compile();
 

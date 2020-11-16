@@ -1,6 +1,7 @@
 import {NestFactory} from '@nestjs/core';
+import {ConfigModule} from '@nestjs/config';
+import {Module} from '@nestjs/common';
 import path from 'path';
-import {ConfigModule, ConfigService} from '@nestjs/config';
 
 // ugly hack for allowing extensions to use our dependencies in electron
 require('module').globalPaths.push(path.join(__dirname, '..', 'node_modules'));
@@ -13,19 +14,24 @@ export {ElectronModule, IElectronModuleConfig, WindowModule};
 
 export async function bootstrapElectronModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);
-    const app = await NestFactory.create({
+    const config = configuration();
+
+    // this is weird but it allows us to have global configs
+    @Module({
         imports: [
             ConfigModule.forRoot({
                 isGlobal: true,
                 load: [configuration],
             }),
+            ElectronModule.register(config),
         ],
-        module: ElectronModule,
-    });
-    const config = app.get(ConfigService);
+    })
+    class ServerModule {}
+
+    const app = await NestFactory.create(ServerModule);
     const windowModule = app.get(WindowModule);
 
-    await app.listen(config.get('port'), config.get('host'));
+    await app.listen(config.port, config.host);
     await ELECTRON_IS_READY;
 
     return windowModule.createAppWindow('neo4j-browser');

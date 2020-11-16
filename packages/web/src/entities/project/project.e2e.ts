@@ -46,7 +46,10 @@ describe('AppsModule', () => {
                     isGlobal: true,
                     load: [configuration],
                 }),
-                WebModule,
+                WebModule.register({
+                    defaultEnvironmentNameOrId: dbmss.environment.id,
+                    ...configuration(),
+                }),
             ],
         }).compile();
 

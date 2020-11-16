@@ -15,6 +15,7 @@ import nock from 'nock';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
+
 let TEST_DBMS_NAME: string;
 const TEST_APP_ID = 'foo';
 
@@ -49,7 +50,10 @@ describe('DBMSModule', () => {
                     isGlobal: true,
                     load: [configuration],
                 }),
-                WebModule,
+                WebModule.register({
+                    defaultEnvironmentNameOrId: dbmss.environment.id,
+                    ...configuration(),
+                }),
             ],
         }).compile();
 

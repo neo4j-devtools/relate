@@ -1,5 +1,6 @@
+import {ConfigModule} from '@nestjs/config';
+import {Module} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
-import {ConfigModule, ConfigService} from '@nestjs/config';
 import fetch from 'node-fetch';
 
 import {HealthService, IHealthInfo} from './health';
@@ -10,42 +11,47 @@ export {ExtensionModule} from './entities/extension';
 
 export async function bootstrapWebModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);
-    const app = await NestFactory.create(
-        {
-            imports: [
-                ConfigModule.forRoot({
-                    isGlobal: true,
-                    load: [configuration],
-                }),
-            ],
-            module: WebModule,
-        },
-        {
-            cors: true,
-        },
-    );
-    const config = app.get(ConfigService);
+    const config = configuration();
 
-    return app.listen(config.get('port'), config.get('host'));
+    // this is weird but it allows us to have global configs
+    @Module({
+        imports: [
+            ConfigModule.forRoot({
+                isGlobal: true,
+                load: [configuration],
+            }),
+            WebModule.register(config),
+        ],
+    })
+    class ServerModule {}
+
+    const app = await NestFactory.create(ServerModule, {
+        cors: true,
+    });
+
+    return app.listen(config.port, config.host);
 }
 
 export async function infoWebModule(env = 'dev'): Promise<IHealthInfo> {
     // @todo: how to handle env?
     const {default: configuration} = await require(`./configs/${env}.config`);
-    const app = await NestFactory.create(
-        {
-            imports: [
-                ConfigModule.forRoot({
-                    isGlobal: true,
-                    load: [configuration],
-                }),
-            ],
-            module: WebModule,
-        },
-        {
-            logger: false,
-        },
-    );
+    const config = configuration();
+
+    // this is weird but it allows us to have global configs
+    @Module({
+        imports: [
+            ConfigModule.forRoot({
+                isGlobal: true,
+                load: [configuration],
+            }),
+            WebModule.register(config),
+        ],
+    })
+    class ServerModule {}
+
+    const app = await NestFactory.create(ServerModule, {
+        logger: false,
+    });
     const healthService = app.get(HealthService);
 
     return fetch(healthService.healthUrl).then((res) => {
