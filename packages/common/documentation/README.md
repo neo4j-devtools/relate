@@ -11,4 +11,5 @@
 * [DbsAbstract](classes/dbsabstract.md)
 * [EnvironmentAbstract](classes/environmentabstract.md)
 * [ExtensionsAbstract](classes/extensionsabstract.md)
+* [ManifestAbstract](classes/manifestabstract.md)
 * [ProjectsAbstract](classes/projectsabstract.md)
