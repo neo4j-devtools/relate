@@ -27,6 +27,14 @@ export class ListModule implements OnApplicationBootstrap {
             {
                 id: {},
                 name: {},
+                description: {},
+                tags: {
+                    get: (dbms) => dbms.tags.join(', '),
+                },
+                metadata: {
+                    get: (project) => JSON.stringify(project.metadata),
+                    extended: true,
+                },
             },
             {
                 printLine: this.utils.log,
