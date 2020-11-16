@@ -2,16 +2,19 @@ import gql from 'graphql-tag';
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {NEO4J_EDITION, RemoteEnvironment} from '../environments';
-import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {ENTITY_TYPES, PUBLIC_GRAPHQL_METHODS} from '../../constants';
 import {GraphqlError, InvalidConfigError, NotSupportedError} from '../../errors';
 import {PropertiesFile} from '../../system/files';
 import {IRelateFilter} from '../../utils/generic';
+import {ManifestRemote} from '../manifest';
 
 export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
+    public readonly manifest = new ManifestRemote(this.environment, ENTITY_TYPES.DBMS, DbmsManifestModel, this.get);
+
     async updateConfig(dbmsId: string, properties: Map<string, string>): Promise<boolean> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
@@ -377,23 +380,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support getting DBMS config`);
     }
 
-    addTags(_nameOrId: string, _tags: string[]): Promise<IDbmsInfo> {
-        throw new NotSupportedError(`${RemoteDbmss.name} does not support adding DBMS tags`);
-    }
-
-    removeTags(_nameOrId: string, _tags: string[]): Promise<IDbmsInfo> {
-        throw new NotSupportedError(`${RemoteDbmss.name} does not support removing DBMS tags`);
-    }
-
     clone(_id: string, _name: string): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support cloning`);
-    }
-
-    updateDbmsManifest(_id: string, _update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void> {
-        throw new NotSupportedError(`${RemoteDbmss.name} does not updating DBMS manifest`);
-    }
-
-    getDbmsManifest(_id: string): Promise<DbmsManifestModel> {
-        throw new NotSupportedError(`${RemoteDbmss.name} does not getting DBMS manifest`);
     }
 }

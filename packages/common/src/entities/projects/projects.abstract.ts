@@ -1,7 +1,8 @@
 import {List} from '@relate/types';
 
 import {EnvironmentAbstract} from '../environments';
-import {IRelateFile, IProject, IProjectDbms, WriteFileFlag, IProjectInput} from '../../models';
+import {ManifestAbstract} from '../manifest';
+import {IRelateFile, IProject, IProjectDbms, WriteFileFlag, ProjectManifestModel, IProjectInput} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
@@ -9,6 +10,8 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @hidden
      */
     public projects: {[id: string]: IProject} = {};
+
+    abstract readonly manifest: ManifestAbstract<Env, IProject, ProjectManifestModel>;
 
     /**
      * @hidden
@@ -20,7 +23,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @param   manifest        Project data
      * @param   path            Path to project root
      */
-    abstract create(manifest: IProjectInput, path?: string): Promise<IProject>;
+    abstract create(manifest: Omit<IProjectInput, 'id'>, path?: string): Promise<IProject>;
 
     /**
      * Gets a project by name

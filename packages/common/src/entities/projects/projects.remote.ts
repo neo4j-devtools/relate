@@ -1,13 +1,22 @@
 import {List} from '@relate/types';
 
-import {IRelateFile, IProject, IProjectManifest, IProjectDbms} from '../../models';
+import {IRelateFile, IProject, IProjectDbms, ProjectManifestModel, IProjectInput} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {RemoteEnvironment} from '../environments';
 import {NotSupportedError} from '../../errors';
 import {IRelateFilter} from '../../utils/generic';
+import {ManifestRemote} from '../manifest';
+import {ENTITY_TYPES} from '../../constants';
 
 export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
-    create(_manifest: IProjectManifest): Promise<IProject> {
+    public readonly manifest = new ManifestRemote(
+        this.environment,
+        ENTITY_TYPES.PROJECT,
+        ProjectManifestModel,
+        (nameOrId: string) => this.get(nameOrId),
+    );
+
+    create(_manifest: IProjectInput): Promise<IProject> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support creating projects`);
     }
 

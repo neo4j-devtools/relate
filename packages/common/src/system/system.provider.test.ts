@@ -4,7 +4,7 @@ import {EnvironmentAbstract} from '../entities/environments';
 import fse from 'fs-extra';
 
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
-import {IEnvironmentConfigInput} from '../models/environment-config.model';
+import {IEnvironmentConfigInput} from '../models/environment.model';
 import {SystemModule} from './system.module';
 import {SystemProvider} from './system.provider';
 import {NotFoundError} from '../errors';

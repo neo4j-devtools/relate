@@ -3,7 +3,7 @@ import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQ
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
-import {IDbms, IDbmsManifest, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {DbmsManifestModel, IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -18,6 +18,7 @@ import {
 import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
 import {emitHookEvent} from '../../utils';
 import {IRelateFilter} from '../../utils/generic';
+import {ManifestAbstract} from '../manifest';
 
 /**
  * @hidden
@@ -33,6 +34,8 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @hidden
      */
     public dbmss: {[id: string]: IDbms} = {};
+
+    abstract readonly manifest: ManifestAbstract<Env, IDbmsInfo, DbmsManifestModel>;
 
     /**
      * @hidden
@@ -141,33 +144,6 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   dbmsId
      */
     abstract updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean>;
-
-    /**
-     * Add tags to a DBMS
-     * @param   nameOrId
-     * @param   tags
-     */
-    abstract addTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
-
-    /**
-     * Remove tags from a DBMS
-     * @param   nameOrId
-     * @param   tags
-     */
-    abstract removeTags(nameOrId: string, tags: string[]): Promise<IDbmsInfo>;
-
-    /**
-     * Updates a DBMS manifest
-     * @param   dbmsId
-     * @param   update
-     */
-    abstract updateDbmsManifest(dbmsId: string, update: Partial<Omit<IDbmsManifest, 'id'>>): Promise<void>;
-
-    /**
-     * Gets a DBMS manifest
-     * @param   dbmsId
-     */
-    abstract getDbmsManifest(dbmsId: string): Promise<DbmsManifestModel>;
 
     /**
      * @hidden

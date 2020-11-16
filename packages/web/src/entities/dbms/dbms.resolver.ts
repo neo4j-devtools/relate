@@ -115,7 +115,7 @@ export class DBMSResolver {
         @Context('environment') environment: Environment,
         @Args() {dbmsId, tags}: AddDbmsTagsArgs,
     ): Promise<IDbmsInfo> {
-        return environment.dbmss.addTags(dbmsId, tags);
+        return environment.dbmss.manifest.addTags(dbmsId, tags);
     }
 
     @Mutation(() => DbmsInfo)
@@ -123,6 +123,6 @@ export class DBMSResolver {
         @Context('environment') environment: Environment,
         @Args() {dbmsId, tags}: RemoveDbmsTagsArgs,
     ): Promise<IDbmsInfo> {
-        return environment.dbmss.removeTags(dbmsId, tags);
+        return environment.dbmss.manifest.removeTags(dbmsId, tags);
     }
 }

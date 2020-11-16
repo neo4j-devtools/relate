@@ -30,7 +30,7 @@ export class AddTagModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
         tagName = tagName || (await inputPrompt('Enter tag to add'));
 
-        await environment.dbmss.addTags(dbms.id, [tagName]).then((res) => {
+        await environment.dbmss.manifest.addTags(dbms.id, [tagName]).then((res) => {
             this.utils.log(res.tags.join(', '));
         });
     }

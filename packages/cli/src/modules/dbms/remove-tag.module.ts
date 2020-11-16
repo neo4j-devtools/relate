@@ -30,7 +30,7 @@ export class RemoveTagModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
         tagName = tagName || (await inputPrompt('Enter tag to remove'));
 
-        await environment.dbmss.removeTags(dbms.id, [tagName]).then((res) => {
+        await environment.dbmss.manifest.removeTags(dbms.id, [tagName]).then((res) => {
             this.utils.log(res.tags.join(', '));
         });
     }

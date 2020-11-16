@@ -1,9 +1,7 @@
-import {IsString, IsUUID} from 'class-validator';
-
-import {ModelAbstract} from './model.abstract';
 import {PropertiesFile} from '../system/files';
 import {DBMS_STATUS, DBMS_SERVER_STATUS} from '../constants';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../entities/environments';
+import {ManifestModel, IManifest} from './manifest.model';
 
 export interface IDb {
     name: string;
@@ -29,30 +27,11 @@ export interface IDbmsVersion {
     origin: NEO4J_ORIGIN;
 }
 
-export interface IDbmsManifest {
-    id: string;
-    name: string;
-    description: string;
-    tags: string[];
-}
-
-export interface IDbms extends IDbmsManifest {
+export interface IDbms extends IManifest {
     rootPath?: string;
     secure?: boolean;
     connectionUri: string;
     config: PropertiesFile;
 }
 
-export class DbmsManifestModel extends ModelAbstract<IDbmsManifest> implements IDbmsManifest {
-    @IsUUID()
-    public id!: string;
-
-    @IsString()
-    public name!: string;
-
-    @IsString()
-    public description!: string;
-
-    @IsString({each: true})
-    public tags!: string[];
-}
+export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {}

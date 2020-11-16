@@ -5,24 +5,24 @@ import {flatMap, map} from 'rxjs/operators';
 import {List, Maybe, None, Str} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
 
-import {
-    IProject,
-    IProjectDbms,
-    IProjectInput,
-    IProjectManifest,
-    IRelateFile,
-    ProjectModel,
-    WriteFileFlag,
-} from '../../models';
+import {IProject, IProjectDbms, IProjectInput, IRelateFile, ProjectManifestModel, WriteFileFlag} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
-import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
+import {ManifestLocal} from '../manifest';
+import {ENTITY_TYPES} from '../../constants';
 import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
-    async create(manifest: IProjectInput, targetDir?: string): Promise<IProject> {
+    public readonly manifest = new ManifestLocal(
+        this.environment,
+        ENTITY_TYPES.PROJECT,
+        ProjectManifestModel,
+        (nameOrId: string) => this.get(nameOrId),
+    );
+
+    async create(manifest: Omit<IProjectInput, 'id'>, targetDir?: string): Promise<IProject> {
         const newId = uuidv4();
         const defaultDir = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
         const projectDir = targetDir || defaultDir;
@@ -34,13 +34,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
         if (projectDir !== defaultDir) {
             const {id} = await this.link(projectDir);
-            await this.updateManifest(id, manifest);
+            await this.manifest.update(id, manifest);
 
             return this.get(manifest.name);
         }
 
         await fse.ensureDir(projectDir);
-        await this.updateManifest(newId, manifest);
+        await this.manifest.update(newId, manifest);
 
         return this.get(manifest.name);
     }
@@ -59,19 +59,14 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             .filter((name) => name.startsWith(`${ENTITY_TYPES.PROJECT}-`))
             .mapEach((name) => name.replace(`${ENTITY_TYPES.PROJECT}-`, ''))
             .mapEach((projectId) =>
-                projectId.flatMap((id) => {
+                projectId.flatMap(async (id) => {
                     const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
+                    const manifest = await this.manifest.get(id);
 
-                    return this.getManifest(id)
-                        .then(
-                            (manifest) =>
-                                new ProjectModel({
-                                    ...manifest,
-                                    root: projectPath,
-                                    id,
-                                }),
-                        )
-                        .catch(() => null);
+                    return {
+                        ...manifest,
+                        root: projectPath,
+                    };
                 }),
             )
             .unwindPromises();
@@ -82,7 +77,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async link(projectPath: string): Promise<IProject> {
         try {
             const newId = uuidv4();
-            const manifest = await this.getManifest(newId);
+            const manifest = await this.manifest.get(newId);
             const exists = await this.resolveProject(manifest.name);
 
             if (!exists.isEmpty) {
@@ -92,9 +87,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
 
             await fse.symlink(path.normalize(projectPath), target, 'junction');
-            await this.updateManifest(newId, {
-                id: newId,
-            });
+            await this.manifest.update(newId, {});
 
             return this.get(newId);
         } catch (e) {
@@ -206,7 +199,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     ): Promise<IProjectDbms> {
         const project = await this.get(nameOrId);
         const dbms = await this.environment.dbmss.get(dbmsId);
-        const manifest = await this.getManifest(project.id);
+        const manifest = await this.manifest.get(project.id);
         const existing = List.from(manifest.dbmss);
         const newDbms: IProjectDbms = {
             name: dbmsName,
@@ -222,7 +215,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 throw new InvalidArgumentError(`Dbms "${found.name}" already exists in project`);
             }
 
-            return this.updateManifest(project.id, {
+            return this.manifest.update(project.id, {
                 dbmss: existing.concat(newDbms).toArray(),
             });
         });
@@ -232,7 +225,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
     async removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms> {
         const project = await this.get(projectName);
-        const manifest = await this.getManifest(project.id);
+        const manifest = await this.manifest.get(project.id);
         const existing = List.from(manifest.dbmss);
 
         return existing
@@ -244,49 +237,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
                 const without = existing.without(found).toArray();
 
-                await this.updateManifest(project.id, {
+                await this.manifest.update(project.id, {
                     dbmss: without,
                 });
 
                 return found;
             });
-    }
-
-    private async getManifest(projectId: string): Promise<IProjectManifest> {
-        const root = await this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, projectId);
-        const projectManifestFile = path.join(root, PROJECT_MANIFEST_FILE);
-        const defaults: IProjectManifest = {
-            dbmss: [],
-            id: projectId,
-            name: '',
-        };
-
-        if (!(await fse.pathExists(projectManifestFile))) {
-            return defaults;
-        }
-
-        const manifest = await fse.readJSON(projectManifestFile);
-
-        return {
-            ...defaults,
-            ...manifest,
-            id: projectId,
-        };
-    }
-
-    private async updateManifest(projectId: string, update: Partial<IProjectManifest>): Promise<IProjectManifest> {
-        const root = await this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, projectId);
-        const projectManifestFile = path.join(root, PROJECT_MANIFEST_FILE);
-        const manifest = await this.getManifest(projectId);
-        const updated = {
-            ...manifest,
-            ...update,
-            id: projectId,
-        };
-
-        await fse.writeJSON(projectManifestFile, updated);
-
-        return updated;
     }
 
     private async resolveProject(projectId: string | Str): Promise<Maybe<IProject>> {
