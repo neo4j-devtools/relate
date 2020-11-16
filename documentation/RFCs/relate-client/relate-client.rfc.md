@@ -6,7 +6,7 @@
 Enable frontend applications to seamlessly interact with `@relate` backend using a client library that exposes information such as DBMS connection parameters and more.
 
 # Basic example
-Below interactions result in an App Launch Token being created which can be used in URLs to allow apps access to connection information for a given DBMS and user: `/static/neo4j-browser?_appLaunchToken=<token>`
+Below interactions result in an App Launch Token being created which can be used in URLs to allow apps access to connection information for a given DBMS and user: `/static/neo4j-browser?relateLaunchToken=<token>`
 
 ### @relate/cli
 Create DBMS access token and launch frontend app for a given DBMS user
@@ -77,7 +77,7 @@ Variables
   "accessToken": "<access-token>"
 }
 ```
-where `path` points to the hosted version of the provided app, eg. `/static/neo4j-browser?_appLaunchToken=<token>`
+where `path` points to the hosted version of the provided app, eg. `/static/neo4j-browser?relateLaunchToken=<token>`
 
 Parsing a launch token
 ```GraphQL
@@ -103,23 +103,23 @@ Variables
 
 
 ### @relate/client
-Consume App Launch Token provided in URL `/static/neo4j-browser?_appLaunchToken=<token>`
+Consume App Launch Token provided in URL `/static/neo4j-browser?relateLaunchToken=<token>`
 ```JSX
 ...
 
-import {RelateClient} from '@relate/client';
+import {RelateClient, getURLParameters} from '@relate/client';
 
 ...
 
 
   componentDidMount() {
-    const launchToken = new URLSearchParams(location.search).get('_appLaunchToken');
+    const {relateLaunchToken} = getURLParameters(location.href);
 
-    if (!launchToken) {
+    if (!relateLaunchToken) {
       return;
     }
 
-    this.relateClient.getAppLaunchData(launchToken)
+    this.relateClient.getAppLaunchData(relateLaunchToken)
       .then(({accessToken, principal}) => {
         if (accessToken && principal) {
           this.onConnectModalSubmit(principal, accessToken);
