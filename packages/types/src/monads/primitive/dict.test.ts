@@ -250,6 +250,20 @@ describe('Dict', () => {
                     bar: 'bam',
                 }).omit('foo'),
             ).toEqual(Dict.from({bar: 'bam'}));
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                    baz: 2,
+                }).omit('foo', 'baz'),
+            ).toEqual(Dict.from({bar: 'bam'}));
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                    baz: 2,
+                }).omit('foo', 'bar', 'baz'),
+            ).toEqual(Dict.from({}));
         });
     });
 

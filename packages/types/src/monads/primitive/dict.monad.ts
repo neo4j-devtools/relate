@@ -199,23 +199,23 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
 
     // @todo: these types can probably be done better
     // @ts-ignore
-    omit<K2 extends K = K, R = T extends object ? Omit<T, K2> : never>(other: K2): Dict<R>;
+    omit<K2 extends K = K, R = T extends object ? Omit<T, K2> : never>(...other: K2[]): Dict<R>;
 
     omit<K2 extends KeyVal<T>['key'], I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(
-        other: K2,
+        ...other: K2[]
     ): R;
 
     /**
-     * Omits a key from the Dict
+     * Omits one or more keys from the Dict
      * ```ts
      * const fooBar = Dict.from({foo: true, bar: 1});
      * const foo = fooBar.omit('bar');
      * foo.toObject() // {foo: true}
      * ```
      */
-    omit(other: any) {
+    omit(...other: any[]) {
         return this.toList()
-            .filter(([key]) => key !== other)
+            .filter(([key]) => !other.includes(key))
             .switchMap(Dict.from);
     }
 

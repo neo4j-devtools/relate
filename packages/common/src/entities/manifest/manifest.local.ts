@@ -39,11 +39,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
     public async removeMetadata(nameOrId: string, keys: string[]): Promise<Entity> {
         const {id, metadata} = await this.getEntity(nameOrId);
-
-        const updated = Dict.from(metadata)
-            .toList()
-            .filter(([key]) => !keys.includes(key))
-            .switchMap(Dict.from);
+        const updated = Dict.from(metadata).omit(...keys);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
