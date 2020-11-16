@@ -87,6 +87,7 @@ describe('LocalDbmss - list', () => {
                 name: 'Name',
                 rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms1}`),
                 tags: [],
+                metadata: {},
                 secure: false,
             },
             {
@@ -97,6 +98,7 @@ describe('LocalDbmss - list', () => {
                 name: '',
                 rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms2}`),
                 tags: [],
+                metadata: {},
                 secure: false,
             },
         ];
@@ -142,6 +144,7 @@ describe('LocalDbmss - list', () => {
                 name: 'Name',
                 rootPath: path.join(INSTALLATION_ROOT, `dbms-${dbms1}`),
                 tags: [],
+                metadata: {},
                 secure: false,
             },
         ];

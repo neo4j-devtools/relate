@@ -1,12 +1,13 @@
 import {assign} from 'lodash';
 import {ModelAbstract} from './model.abstract';
-import {IsString, IsUUID, IsOptional} from 'class-validator';
+import {IsString, IsUUID, IsOptional, IsObject, IsArray} from 'class-validator';
 
 export interface IManifestInput {
     id: string;
     name: string;
     description?: string;
     tags?: string[];
+    metadata?: Record<string, any>;
 }
 
 export interface IManifest {
@@ -14,6 +15,7 @@ export interface IManifest {
     name: string;
     description: string;
     tags: string[];
+    metadata: Record<string, any>;
 }
 
 export class ManifestModel<Entity extends IManifest> extends ModelAbstract<Entity> implements IManifest {
@@ -36,5 +38,10 @@ export class ManifestModel<Entity extends IManifest> extends ModelAbstract<Entit
 
     @IsOptional()
     @IsString({each: true})
+    @IsArray()
     public tags: string[] = [];
+
+    @IsOptional()
+    @IsObject()
+    public metadata: Record<string, any> = {};
 }

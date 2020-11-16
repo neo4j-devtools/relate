@@ -19,6 +19,7 @@ const TEST_CREATED: IProject = {
     id: expect.any(String),
     root: expect.any(String),
     tags: [],
+    metadata: {},
 };
 const testFileName = 'test.txt';
 const testOtherFileName = 'test.pem';

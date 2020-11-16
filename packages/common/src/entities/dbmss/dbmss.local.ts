@@ -440,6 +440,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     name: dbms.name,
                     rootPath: dbms.rootPath,
                     tags: dbms.tags,
+                    metadata: dbms.metadata,
                     status,
                     serverStatus,
                     version: v?.version,

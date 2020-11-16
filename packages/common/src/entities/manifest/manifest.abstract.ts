@@ -18,6 +18,20 @@ export abstract class ManifestAbstract<
     ) {}
 
     /**
+     * Add metadata to an entity
+     * @param   nameOrId
+     * @param   metadata
+     */
+    abstract addMetadata(nameOrId: string, metadata: Record<string, any>): Promise<Entity>;
+
+    /**
+     * Remove metadata from an entity
+     * @param   nameOrId
+     * @param   keys
+     */
+    abstract removeMetadata(nameOrId: string, keys: string[]): Promise<Entity>;
+
+    /**
      * Add tags to an entity
      * @param   nameOrId
      * @param   tags
