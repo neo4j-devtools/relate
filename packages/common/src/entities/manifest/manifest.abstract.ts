@@ -22,14 +22,14 @@ export abstract class ManifestAbstract<
      * @param   nameOrId
      * @param   metadata
      */
-    abstract addMetadata(nameOrId: string, metadata: Record<string, any>): Promise<Entity>;
+    abstract setMetadata(nameOrId: string, key: string, value: any): Promise<Entity>;
 
     /**
      * Remove metadata from an entity
      * @param   nameOrId
      * @param   keys
      */
-    abstract removeMetadata(nameOrId: string, keys: string[]): Promise<Entity>;
+    abstract removeMetadata(nameOrId: string, ...keys: string[]): Promise<Entity>;
 
     /**
      * Add tags to an entity

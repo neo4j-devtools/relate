@@ -88,15 +88,17 @@ describe('LocalDbmss - manifest', () => {
             description: 'some description',
             tags: ['tag1', 'tag3'],
             metadata: {
-                foo: 'bar',
-                baz: 42,
+                object: {
+                    foo: 'bar',
+                },
+                number: 42,
+                string: 'foo',
             },
         });
 
-        const updatedDbms = await environment.dbmss.manifest.addMetadata(dbms.id, {
-            foo: 'bar',
-            baz: 42,
-        });
+        await environment.dbmss.manifest.setMetadata(dbms.id, 'object', {foo: 'bar'});
+        await environment.dbmss.manifest.setMetadata(dbms.id, 'number', 42);
+        const updatedDbms = await environment.dbmss.manifest.setMetadata(dbms.id, 'string', 'foo');
         const manifest = await environment.dbmss.manifest.get(dbms.id);
 
         expect(updatedDbms.metadata).toEqual(expected.metadata);
@@ -109,10 +111,10 @@ describe('LocalDbmss - manifest', () => {
             name: dbms.name,
             description: 'some description',
             tags: ['tag1', 'tag3'],
-            metadata: {},
+            metadata: {string: 'foo'},
         });
 
-        const updatedDbms = await environment.dbmss.manifest.removeMetadata(dbms.id, ['foo', 'baz', 'nonexistent']);
+        const updatedDbms = await environment.dbmss.manifest.removeMetadata(dbms.id, 'object', 'number', 'nonexistent');
         const manifest = await environment.dbmss.manifest.get(dbms.id);
 
         expect(updatedDbms.metadata).toEqual(expected.metadata);

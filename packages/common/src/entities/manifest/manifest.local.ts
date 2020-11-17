@@ -23,21 +23,21 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         super(environment, entityType, EntityModel, getEntity);
     }
 
-    public async addMetadata(nameOrId: string, metadata: Record<string, any>): Promise<Entity> {
+    public async setMetadata(nameOrId: string, key: string, value: any): Promise<Entity> {
         const {id, metadata: existing} = await this.getEntity(nameOrId);
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         await this.update(id, {
             metadata: Dict.from(existing)
-                .assign(metadata)
+                .assign({[key]: value})
                 .toObject(),
         });
 
         return this.getEntity(id);
     }
 
-    public async removeMetadata(nameOrId: string, keys: string[]): Promise<Entity> {
+    public async removeMetadata(nameOrId: string, ...keys: string[]): Promise<Entity> {
         const {id, metadata} = await this.getEntity(nameOrId);
         const updated = Dict.from(metadata).omit(...keys);
 

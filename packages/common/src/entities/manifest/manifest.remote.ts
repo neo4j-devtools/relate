@@ -8,11 +8,11 @@ export class ManifestRemote<Entity extends IManifest, Manifest extends ManifestM
     Entity,
     Manifest
 > {
-    public addMetadata(_nameOrId: string, _metadata: Record<string, any>): Promise<Entity> {
+    public setMetadata(_nameOrId: string, _key: string, _value: any): Promise<Entity> {
         throw new NotSupportedError(`${ManifestRemote.name} does not support adding metadata`);
     }
 
-    public removeMetadata(_nameOrId: string, _keys: string[]): Promise<Entity> {
+    public removeMetadata(_nameOrId: string, ..._keys: string[]): Promise<Entity> {
         throw new NotSupportedError(`${ManifestRemote.name} does not support removing metadata`);
     }
 
