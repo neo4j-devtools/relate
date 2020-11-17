@@ -30,7 +30,7 @@
 
 ▸ **createAppLaunchToken**(`appName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string, `projectId?`: undefined | string): *Promise‹string›*
 
-Defined in extensions/extensions.abstract.ts:66
+*Defined in [extensions/extensions.abstract.ts:66](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L66)*
 
 Creates an app launch token, for passing DBMS info and credentials to app
 
@@ -52,7 +52,7 @@ ___
 
 ▸ **getAppPath**(`appName`: string, `appRoot?`: undefined | string): *Promise‹string›*
 
-Defined in extensions/extensions.abstract.ts:19
+*Defined in [extensions/extensions.abstract.ts:19](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L19)*
 
 Gets path to app entry point
 
@@ -69,9 +69,9 @@ ___
 
 ### `Abstract` install
 
-▸ **install**(`name`: string, `version`: string): *Promise‹IExtensionMeta›*
+▸ **install**(`name`: string, `version`: string): *Promise‹IExtensionInfo›*
 
-Defined in extensions/extensions.abstract.ts:50
+*Defined in [extensions/extensions.abstract.ts:50](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L50)*
 
 Install given extension
 
@@ -82,15 +82,15 @@ Name | Type | Description |
 `name` | string | - |
 `version` | string |   |
 
-**Returns:** *Promise‹IExtensionMeta›*
+**Returns:** *Promise‹IExtensionInfo›*
 
 ___
 
 ### `Abstract` link
 
-▸ **link**(`filePath`: string): *Promise‹IExtensionMeta›*
+▸ **link**(`filePath`: string): *Promise‹IExtensionInfo›*
 
-Defined in extensions/extensions.abstract.ts:37
+*Defined in [extensions/extensions.abstract.ts:37](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L37)*
 
 Link local extension (useful for development)
 
@@ -100,15 +100,15 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `filePath` | string |   |
 
-**Returns:** *Promise‹IExtensionMeta›*
+**Returns:** *Promise‹IExtensionInfo›*
 
 ___
 
 ### `Abstract` list
 
-▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionMeta››*
+▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionInfo››*
 
-Defined in extensions/extensions.abstract.ts:25
+*Defined in [extensions/extensions.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L25)*
 
 List all installed extensions
 
@@ -118,15 +118,15 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
-**Returns:** *Promise‹List‹IExtensionMeta››*
+**Returns:** *Promise‹List‹IExtensionInfo››*
 
 ___
 
 ### `Abstract` listApps
 
-▸ **listApps**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionMeta››*
+▸ **listApps**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionInfo››*
 
-Defined in extensions/extensions.abstract.ts:31
+*Defined in [extensions/extensions.abstract.ts:31](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L31)*
 
 List all installed apps
 
@@ -136,7 +136,7 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
-**Returns:** *Promise‹List‹IExtensionMeta››*
+**Returns:** *Promise‹List‹IExtensionInfo››*
 
 ___
 
@@ -144,7 +144,7 @@ ___
 
 ▸ **parseAppLaunchToken**(`appName`: string, `launchToken`: string): *Promise‹IAppLaunchToken›*
 
-Defined in extensions/extensions.abstract.ts:79
+*Defined in [extensions/extensions.abstract.ts:79](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L79)*
 
 Decodes app launch token
 
@@ -161,9 +161,9 @@ ___
 
 ### `Abstract` uninstall
 
-▸ **uninstall**(`name`: string): *Promise‹List‹IExtensionMeta››*
+▸ **uninstall**(`name`: string): *Promise‹List‹IExtensionInfo››*
 
-Defined in extensions/extensions.abstract.ts:56
+*Defined in [extensions/extensions.abstract.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L56)*
 
 Uninstall given extension
 
@@ -173,7 +173,7 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `name` | string |   |
 
-**Returns:** *Promise‹List‹IExtensionMeta››*
+**Returns:** *Promise‹List‹IExtensionInfo››*
 
 ___
 
@@ -181,7 +181,7 @@ ___
 
 ▸ **versions**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IExtensionVersion››*
 
-Defined in extensions/extensions.abstract.ts:43
+*Defined in [extensions/extensions.abstract.ts:43](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L43)*
 
 List all available extensions to install
 

@@ -54,7 +54,7 @@ const plain: 'true' = str.get();
 
 ▪ **EMPTY**: *[Str](str.md)‹string›* = new Str('')
 
-Defined in src/monads/primitive/str.monad.ts:18
+*Defined in [src/monads/primitive/str.monad.ts:18](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L18)*
 
 ## Accessors
 
@@ -64,7 +64,7 @@ Defined in src/monads/primitive/str.monad.ts:18
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/str.monad.ts:31
+*Defined in [src/monads/primitive/str.monad.ts:31](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L31)*
 
 Returns true if value is empty string
 
@@ -76,7 +76,7 @@ Returns true if value is empty string
 
 ▸ **endsWith**(`other`: string | [Str](str.md)): *boolean*
 
-Defined in src/monads/primitive/str.monad.ts:97
+*Defined in [src/monads/primitive/str.monad.ts:97](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L97)*
 
 **Parameters:**
 
@@ -92,7 +92,7 @@ ___
 
 ▸ **includes**(`other`: string | [Str](str.md)): *boolean*
 
-Defined in src/monads/primitive/str.monad.ts:89
+*Defined in [src/monads/primitive/str.monad.ts:89](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L89)*
 
 **Parameters:**
 
@@ -108,7 +108,7 @@ ___
 
 ▸ **replace**(`pattern`: string | RegExp | [Str](str.md), `replacement`: string | [Str](str.md)): *[Str](str.md)*
 
-Defined in src/monads/primitive/str.monad.ts:105
+*Defined in [src/monads/primitive/str.monad.ts:105](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L105)*
 
 **Parameters:**
 
@@ -125,7 +125,7 @@ ___
 
 ▸ **split**(`sep`: string | [Str](str.md)): *[List](list.md)‹[Str](str.md)›*
 
-Defined in src/monads/primitive/str.monad.ts:101
+*Defined in [src/monads/primitive/str.monad.ts:101](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L101)*
 
 **Parameters:**
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **startsWith**(`other`: string | [Str](str.md)): *boolean*
 
-Defined in src/monads/primitive/str.monad.ts:93
+*Defined in [src/monads/primitive/str.monad.ts:93](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L93)*
 
 **Parameters:**
 
@@ -157,7 +157,7 @@ ___
 
 ▸ **test**(`regex`: RegExp): *boolean*
 
-Defined in src/monads/primitive/str.monad.ts:85
+*Defined in [src/monads/primitive/str.monad.ts:85](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L85)*
 
 **Parameters:**
 
@@ -173,7 +173,7 @@ ___
 
 ▸ **trim**(): *[Str](str.md)*
 
-Defined in src/monads/primitive/str.monad.ts:109
+*Defined in [src/monads/primitive/str.monad.ts:109](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L109)*
 
 **Returns:** *[Str](str.md)*
 
@@ -185,7 +185,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/str.monad.ts:70
+*Defined in [src/monads/primitive/str.monad.ts:70](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L70)*
 
 Coerces anything into a Str
 
@@ -211,7 +211,7 @@ ___
 
 ▸ **isStr**‹**T**›(`val`: any): *val is Str<T>*
 
-Defined in src/monads/primitive/str.monad.ts:43
+*Defined in [src/monads/primitive/str.monad.ts:43](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L43)*
 
 Indicates if passed value is an instance of `Str`
 ```ts
@@ -240,7 +240,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/str.monad.ts:62
+*Defined in [src/monads/primitive/str.monad.ts:62](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L62)*
 
 Returns Str representation of the passed value.
 

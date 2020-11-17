@@ -27,7 +27,7 @@
 
 ▸ **create**(`dbmsId`: string, `user`: string, `dbName`: string, `accessToken`: string): *Promise‹void›*
 
-Defined in dbs/dbs.abstract.ts:21
+*Defined in [dbs/dbs.abstract.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L21)*
 
 Creates a new Database
 
@@ -48,7 +48,7 @@ ___
 
 ▸ **drop**(`dbmsId`: string, `user`: string, `dbName`: string, `accessToken`: string): *Promise‹void›*
 
-Defined in dbs/dbs.abstract.ts:30
+*Defined in [dbs/dbs.abstract.ts:30](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L30)*
 
 Drops a Database
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **dump**(`dbmsId`: string, `database`: string, `to`: string, `javaPath?`: undefined | string): *Promise‹string›*
 
-Defined in dbs/dbs.abstract.ts:47
+*Defined in [dbs/dbs.abstract.ts:47](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L47)*
 
 Dumps a databese contents
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **exec**(`dbmsId`: string, `from`: string | ReadStream, `args`: object): *Promise‹string›*
 
-Defined in dbs/dbs.abstract.ts:64
+*Defined in [dbs/dbs.abstract.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L64)*
 
 Executes cypher against a given dbms
 
@@ -116,7 +116,7 @@ ___
 
 ▸ **list**(`dbmsId`: string, `user`: string, `accessToken`: string): *Promise‹List‹IDb››*
 
-Defined in dbs/dbs.abstract.ts:38
+*Defined in [dbs/dbs.abstract.ts:38](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L38)*
 
 Lists all databases
 
@@ -136,7 +136,7 @@ ___
 
 ▸ **load**(`dbmsId`: string, `database`: string, `from`: string, `force?`: undefined | false | true, `javaPath?`: undefined | string): *Promise‹string›*
 
-Defined in dbs/dbs.abstract.ts:56
+*Defined in [dbs/dbs.abstract.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L56)*
 
 Loads a database dump
 
