@@ -81,6 +81,46 @@ describe('LocalDbmss - manifest', () => {
         expect(manifest).toEqual(expected);
     });
 
+    test('add metadata to existing DBMS', async () => {
+        const expected = new DbmsManifestModel({
+            id: dbms.id,
+            name: dbms.name,
+            description: 'some description',
+            tags: ['tag1', 'tag3'],
+            metadata: {
+                object: {
+                    foo: 'bar',
+                },
+                number: 42,
+                string: 'foo',
+            },
+        });
+
+        await environment.dbmss.manifest.setMetadata(dbms.id, 'object', {foo: 'bar'});
+        await environment.dbmss.manifest.setMetadata(dbms.id, 'number', 42);
+        const updatedDbms = await environment.dbmss.manifest.setMetadata(dbms.id, 'string', 'foo');
+        const manifest = await environment.dbmss.manifest.get(dbms.id);
+
+        expect(updatedDbms.metadata).toEqual(expected.metadata);
+        expect(manifest).toEqual(expected);
+    });
+
+    test('remove metadata from existing DBMS', async () => {
+        const expected = new DbmsManifestModel({
+            id: dbms.id,
+            name: dbms.name,
+            description: 'some description',
+            tags: ['tag1', 'tag3'],
+            metadata: {string: 'foo'},
+        });
+
+        const updatedDbms = await environment.dbmss.manifest.removeMetadata(dbms.id, 'object', 'number', 'nonexistent');
+        const manifest = await environment.dbmss.manifest.get(dbms.id);
+
+        expect(updatedDbms.metadata).toEqual(expected.metadata);
+        expect(manifest).toEqual(expected);
+    });
+
     test('update manifest of non existing DBMS', async () => {
         const expected = new DbmsManifestModel({
             id: nonExistentId,

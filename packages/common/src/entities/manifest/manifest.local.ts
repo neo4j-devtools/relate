@@ -23,6 +23,31 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         super(environment, entityType, EntityModel, getEntity);
     }
 
+    public async setMetadata(nameOrId: string, key: string, value: any): Promise<Entity> {
+        const {id, metadata: existing} = await this.getEntity(nameOrId);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        await this.update(id, {
+            metadata: Dict.from(existing)
+                .assign({[key]: value})
+                .toObject(),
+        });
+
+        return this.getEntity(id);
+    }
+
+    public async removeMetadata(nameOrId: string, ...keys: string[]): Promise<Entity> {
+        const {id, metadata} = await this.getEntity(nameOrId);
+        const updated = Dict.from(metadata).omit(...keys);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        await this.update(id, {metadata: updated});
+
+        return this.getEntity(id);
+    }
+
     public async addTags(nameOrId: string, tags: string[]): Promise<Entity> {
         const {id, tags: existing} = await this.getEntity(nameOrId);
 
@@ -84,12 +109,8 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         const entityRootPath = this.environment.getEntityRootPath(this.entityType, id);
         const manifestPath = path.join(entityRootPath, getManifestName(this.entityType));
 
-        const manifest = await this.get(id);
-        const updated = Dict.from({
-            ...manifest,
-            ...update,
-            id,
-        });
+        const manifest = Dict.from(await this.get(id));
+        const updated = manifest.assign(update).assign({id});
 
         await fse.ensureFile(manifestPath);
         await fse.writeJson(manifestPath, new this.EntityModel(updated.toObject()), {

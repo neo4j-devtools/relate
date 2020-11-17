@@ -5,7 +5,7 @@ import {IFileUpload, GraphQLUpload} from './graphql-upload';
 import {EnvironmentArgs, RelateFile} from '../../global.types';
 
 @ObjectType()
-export class Project implements Omit<IProject, 'root'> {
+export class Project implements Omit<IProject, 'root' | 'metadata'> {
     @Field(() => String)
     id: string;
 

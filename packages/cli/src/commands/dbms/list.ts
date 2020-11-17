@@ -21,6 +21,6 @@ export default class ListCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...cli.table.flags({except: ['extended', 'csv']}),
+        ...cli.table.flags({except: ['csv']}),
     };
 }

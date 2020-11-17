@@ -250,6 +250,20 @@ describe('Dict', () => {
                     bar: 'bam',
                 }).omit('foo'),
             ).toEqual(Dict.from({bar: 'bam'}));
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                    baz: 2,
+                }).omit('foo', 'baz'),
+            ).toEqual(Dict.from({bar: 'bam'}));
+            expect(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                    baz: 2,
+                }).omit('foo', 'bar', 'baz'),
+            ).toEqual(Dict.from({}));
         });
     });
 
@@ -260,6 +274,77 @@ describe('Dict', () => {
                 Dict.from({
                     foo: 1,
                     bar: 'bam',
+                }),
+            );
+        });
+
+        test('merges recursively', () => {
+            const source = Dict.from({
+                foo: 1,
+                bar: [1, 2],
+                baz: {
+                    key1: 'source',
+                    key2: 'source',
+                },
+            });
+            const target = Dict.from({
+                bar: [3, 4],
+                baz: {
+                    key2: 'target',
+                    key3: 'target',
+                },
+            });
+
+            expect(source.merge(target)).toEqual(
+                Dict.from({
+                    foo: 1,
+                    bar: [3, 4],
+                    baz: {
+                        key1: 'source',
+                        key2: 'target',
+                        key3: 'target',
+                    },
+                }),
+            );
+        });
+    });
+
+    describe('assign', () => {
+        test('works', () => {
+            expect(Dict.from({foo: 1}).assign(Dict.from())).toEqual(Dict.from({foo: 1}));
+            expect(Dict.from({foo: 1}).assign(Dict.from({bar: 'bam'}))).toEqual(
+                Dict.from({
+                    foo: 1,
+                    bar: 'bam',
+                }),
+            );
+        });
+
+        test('does not merge recursively', () => {
+            const source = Dict.from({
+                foo: 1,
+                bar: [1, 2],
+                baz: {
+                    key1: 'source',
+                    key2: 'source',
+                },
+            });
+            const target = Dict.from({
+                bar: [3, 4],
+                baz: {
+                    key2: 'target',
+                    key3: 'target',
+                },
+            });
+
+            expect(source.assign(target)).toEqual(
+                Dict.from({
+                    foo: 1,
+                    bar: [3, 4],
+                    baz: {
+                        key2: 'target',
+                        key3: 'target',
+                    },
                 }),
             );
         });
