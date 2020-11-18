@@ -9,9 +9,9 @@ import {IProject, IProjectDbms, IProjectInput, IRelateFile, ProjectManifestModel
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
-import {ENTITY_TYPES} from '../../constants';
+import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
 import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
-import {getAbsoluteProjectPath, getRelativeProjectPath, mapFileToModel} from '../../utils/files';
+import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
@@ -61,6 +61,9 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             .mapEach((projectId) =>
                 projectId.flatMap(async (id) => {
                     const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
+                    if (!(await fse.pathExists(projectPath))) {
+                        return null;
+                    }
                     const manifest = await this.manifest.get(id);
 
                     return {
@@ -75,8 +78,43 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async link(projectPath: string): Promise<IProject> {
+        const alreadyHasManifest = await fse.pathExists(path.join(projectPath, PROJECT_MANIFEST_FILE));
+
+        if (alreadyHasManifest) {
+            const {id, name} = await fse.readJson(path.join(projectPath, PROJECT_MANIFEST_FILE));
+            const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
+            const targetExists = await fse.pathExists(target);
+
+            // symlink is correctly pointing to an existing path
+            // no need to do anything
+            if (targetExists) {
+                throw new InvalidArgumentError(`Project "${name}" already managed by relate`);
+            }
+
+            const exists = await this.list([
+                {
+                    field: 'name',
+                    value: name,
+                },
+            ]);
+
+            if (!exists.isEmpty) {
+                throw new InvalidArgumentError(`Project "${name}" already exists`, ['Use a unique name']);
+            }
+
+            // symlink is no longer correctly pointing to an existing path
+            // unlink and link again
+            if (await isSymlink(target)) {
+                await fse.unlink(target);
+            }
+            await fse.symlink(path.normalize(projectPath), target, 'junction');
+
+            return this.get(id);
+        }
+
         try {
             const newId = uuidv4();
+            // should we require a manifest for a newly linked project?
             const manifest = await this.manifest.get(newId);
             const exists = await this.resolveProject(manifest.name);
 
@@ -86,6 +124,9 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
             const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
 
+            if (await isSymlink(target)) {
+                await fse.unlink(target);
+            }
             await fse.symlink(path.normalize(projectPath), target, 'junction');
             await this.manifest.update(newId, {});
 

@@ -65,6 +65,7 @@ import {PropertiesFile} from '../../system/files';
 import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
 import {emitHookEvent} from '../../utils';
 import {ManifestLocal} from '../manifest';
+import {isSymlink} from '../../utils/files';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     public readonly manifest = new ManifestLocal(
@@ -311,10 +312,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, id);
             const targetExists = await fse.pathExists(target);
 
+            // symlink is correctly pointing to an existing path
+            // no need to do anything
             if (targetExists) {
                 throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
             }
 
+            // symlink is no longer correctly pointing to an existing path
+            // unlink and link again
+            if (await isSymlink(target)) {
+                await fse.unlink(target);
+            }
             await fse.symlink(rootPath, target, 'junction');
 
             return this.get(id);
