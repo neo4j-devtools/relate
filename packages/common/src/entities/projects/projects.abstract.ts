@@ -44,6 +44,12 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     abstract link(filePath: string): Promise<IProject>;
 
     /**
+     * Unlinks a linked project
+     * @param   filePath    Path to project root
+     */
+    abstract unlink(nameOrID: string): Promise<IProject>;
+
+    /**
      * List files for given project
      * @param   projectId
      * @param   filters         Filters to apply

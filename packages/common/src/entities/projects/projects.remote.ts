@@ -32,6 +32,10 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support linking projects`);
     }
 
+    unlink(_nameOrId: string): Promise<IProject> {
+        throw new NotSupportedError(`${RemoteProjects.name} does not support unlinking projects`);
+    }
+
     listFiles(_nameOrId: string, _filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project files`);
     }

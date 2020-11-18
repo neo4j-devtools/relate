@@ -140,6 +140,15 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
     }
 
+    async unlink(nameOrId: string): Promise<IProject> {
+        const project = await this.get(nameOrId);
+        const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, project.id);
+
+        await fse.unlink(projectPath);
+
+        return project;
+    }
+
     private async getFile(project: IProject, filePath: string): Promise<Maybe<IRelateFile>> {
         const target = getRelativeProjectPath(project, filePath);
         const fileName = path.basename(target);
