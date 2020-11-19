@@ -60,10 +60,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             .mapEach((name) => name.replace(`${ENTITY_TYPES.PROJECT}-`, ''))
             .mapEach((projectId) =>
                 projectId.flatMap(async (id) => {
-                    const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
-                    if (!(await fse.pathExists(projectPath))) {
+                    const projectExists = await this.environment.entityExists(ENTITY_TYPES.PROJECT, id);
+                    if (!projectExists) {
                         return null;
                     }
+
+                    const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
                     const manifest = await this.manifest.get(id);
 
                     return {
