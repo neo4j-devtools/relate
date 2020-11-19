@@ -151,7 +151,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support upgrading DBMSs`);
     }
 
-    link(_name: string, _rootPath: string): Promise<IDbmsInfo> {
+    link(_externalPath: string, _name: string): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support linking DBMSs`);
     }
 

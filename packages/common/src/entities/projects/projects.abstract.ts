@@ -21,9 +21,8 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     /**
      * Creates new project
      * @param   manifest        Project data
-     * @param   path            Path to project root
      */
-    abstract create(manifest: Omit<IProjectInput, 'id'>, path?: string): Promise<IProject>;
+    abstract create(manifest: Omit<IProjectInput, 'id'>): Promise<IProject>;
 
     /**
      * Gets a project by name
@@ -39,9 +38,10 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Links an existing project
-     * @param   filePath    Path to project root
+     * @param   externalPath    Path to project root
+     * @param   name
      */
-    abstract link(filePath: string): Promise<IProject>;
+    abstract link(externalPath: string, name: string): Promise<IProject>;
 
     /**
      * Unlinks a linked project

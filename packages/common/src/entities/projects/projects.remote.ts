@@ -16,7 +16,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         (nameOrId: string) => this.get(nameOrId),
     );
 
-    create(_manifest: IProjectInput): Promise<IProject> {
+    create(_manifest: Omit<IProjectInput, 'id'>): Promise<IProject> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support creating projects`);
     }
 
@@ -28,7 +28,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing projects`);
     }
 
-    link(_filePath: string): Promise<IProject> {
+    link(_externalPath: string, _name: string): Promise<IProject> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support linking projects`);
     }
 
