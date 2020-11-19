@@ -162,7 +162,7 @@ ___
 
 ### `Abstract` link
 
-▸ **link**(`name`: string, `rootPath`: string): *Promise‹IDbmsInfo›*
+▸ **link**(`externalPath`: string, `name`: string): *Promise‹IDbmsInfo›*
 
 *Defined in [dbmss/dbmss.abstract.ts:83](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L83)*
 
@@ -172,8 +172,8 @@ Links an existing DBMS to relate
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`name` | string | Name of DBMS |
-`rootPath` | string | Path to DBMS root  |
+`externalPath` | string | Path to DBMS root |
+`name` | string | Name of DBMS  |
 
 **Returns:** *Promise‹IDbmsInfo›*
 

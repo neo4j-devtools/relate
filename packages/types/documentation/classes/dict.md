@@ -231,11 +231,11 @@ ___
 
 ###  omit
 
-▸ **omit**‹**K2**, **R**›(`other`: K2): *[Dict](dict.md)‹R›*
+▸ **omit**‹**K2**, **R**›(...`other`: K2[]): *[Dict](dict.md)‹R›*
 
 *Defined in [src/monads/primitive/dict.monad.ts:202](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L202)*
 
-Omits a key from the Dict
+Omits one or more keys from the Dict
 ```ts
 const fooBar = Dict.from({foo: true, bar: 1});
 const foo = fooBar.omit('bar');
@@ -252,15 +252,15 @@ foo.toObject() // {foo: true}
 
 Name | Type |
 ------ | ------ |
-`other` | K2 |
+`...other` | K2[] |
 
 **Returns:** *[Dict](dict.md)‹R›*
 
-▸ **omit**‹**K2**, **I**, **R**›(`other`: K2): *R*
+▸ **omit**‹**K2**, **I**, **R**›(...`other`: K2[]): *R*
 
 *Defined in [src/monads/primitive/dict.monad.ts:204](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L204)*
 
-Omits a key from the Dict
+Omits one or more keys from the Dict
 ```ts
 const fooBar = Dict.from({foo: true, bar: 1});
 const foo = fooBar.omit('bar');
@@ -279,7 +279,7 @@ foo.toObject() // {foo: true}
 
 Name | Type |
 ------ | ------ |
-`other` | K2 |
+`...other` | K2[] |
 
 **Returns:** *R*
 
