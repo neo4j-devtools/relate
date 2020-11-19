@@ -19,6 +19,10 @@ export const acceptTerms = async (app: string): Promise<void> => {
         return;
     }
 
+    if (!(await fse.pathExists(envPaths().data))) {
+        await fse.ensureDir(envPaths().data);
+    }
+
     await fse.writeFile(ACCEPTED_TERMS_PATH, `${LICENSE_NAME} (${app})`);
 };
 
