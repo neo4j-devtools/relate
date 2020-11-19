@@ -3,6 +3,7 @@ import {SystemModule, SystemProvider} from '@relate/common';
 import path from 'path';
 
 import LinkCommand from '../../commands/project/link';
+import {inputPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -17,12 +18,14 @@ export class LinkModule implements OnApplicationBootstrap {
     ) {}
 
     async onApplicationBootstrap(): Promise<void> {
-        const {args} = this.parsed;
+        const {args, flags} = this.parsed;
         const {filePath} = args;
         const {projects} = await this.systemProvider.getEnvironment();
-        const resolvedPath = path.resolve(filePath);
 
-        return projects.link(resolvedPath).then((res) => {
+        const resolvedPath = path.resolve(filePath);
+        const name = flags.name || (await inputPrompt('Enter the project name'));
+
+        return projects.link(resolvedPath, name).then((res) => {
             this.utils.log(res.name);
         });
     }
