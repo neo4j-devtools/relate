@@ -158,13 +158,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return files.find(({name, directory}) => name === fileName && directory === projectDir);
     }
 
-    async addFile(
-        projectName: string,
-        source: string,
-        destination?: string,
-        overwrite?: boolean,
-    ): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+    async addFile(nameOrId: string, source: string, destination?: string, overwrite?: boolean): Promise<IRelateFile> {
+        const project = await this.get(nameOrId);
         const target = getAbsoluteProjectPath(project, destination || path.basename(source));
         const projectDir = path.dirname(target);
         const fileName = path.basename(target);
@@ -190,12 +185,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async writeFile(
-        projectName: string,
+        nameOrId: string,
         destination: string,
         data: string | Buffer,
         writeFlag?: WriteFileFlag,
     ): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+        const project = await this.get(nameOrId);
         const filePath = getAbsoluteProjectPath(project, destination);
         const fileName = path.basename(filePath);
 
@@ -211,8 +206,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async removeFile(projectName: string, relativePath: string): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+    async removeFile(nameOrId: string, relativePath: string): Promise<IRelateFile> {
+        const project = await this.get(nameOrId);
         const maybeFile = await this.getFile(project, relativePath);
 
         return maybeFile.flatMap(async (file) => {
@@ -273,8 +268,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return newDbms;
     }
 
-    async removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms> {
-        const project = await this.get(projectName);
+    async removeDbms(nameOrId: string, dbmsName: string): Promise<IProjectDbms> {
+        const project = await this.get(nameOrId);
         const manifest = await this.manifest.get(project.id);
         const existing = List.from(manifest.dbmss);
 

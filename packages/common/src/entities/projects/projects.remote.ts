@@ -20,7 +20,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support creating projects`);
     }
 
-    get(_name: string): Promise<IProject> {
+    get(_nameOrId: string): Promise<IProject> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support getting projects`);
     }
 
@@ -40,7 +40,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing project files`);
     }
 
-    addFile(_name: string, _source: string, _destination?: string, _overwrite?: boolean): Promise<IRelateFile> {
+    addFile(_nameOrId: string, _source: string, _destination?: string, _overwrite?: boolean): Promise<IRelateFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project files`);
     }
 
@@ -48,7 +48,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support writing to project files`);
     }
 
-    removeFile(_name: string, _relativePath: string): Promise<IRelateFile> {
+    removeFile(_nameOrId: string, _relativePath: string): Promise<IRelateFile> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project files`);
     }
 
@@ -57,7 +57,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
     }
 
     addDbms(
-        _name: string,
+        _nameOrId: string,
         _dbmsName: string,
         _dbmsId: string,
         _principal?: string,
@@ -66,7 +66,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support adding project dbms`);
     }
 
-    removeDbms(_name: string, _dbmsName: string): Promise<IProjectDbms> {
+    removeDbms(_nameOrId: string, _dbmsName: string): Promise<IProjectDbms> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support removing project dbms`);
     }
 }

@@ -27,9 +27,9 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Gets a project by name
-     * @param   nameOrID
+     * @param   nameOrId
      */
-    abstract get(nameOrID: string): Promise<IProject>;
+    abstract get(nameOrId: string): Promise<IProject>;
 
     /**
      * List all available projects
@@ -45,39 +45,34 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Unlinks a linked project
-     * @param   filePath    Path to project root
+     * @param   nameOrId
      */
-    abstract unlink(nameOrID: string): Promise<IProject>;
+    abstract unlink(nameOrId: string): Promise<IProject>;
 
     /**
      * List files for given project
-     * @param   projectId
+     * @param   nameOrId
      * @param   filters         Filters to apply
      */
-    abstract listFiles(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
+    abstract listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>>;
 
     /**
      * Adds file (copy) to project
-     * @param   projectId
+     * @param   nameOrId
      * @param   source
      * @param   destination
      */
-    abstract addFile(
-        projectId: string,
-        source: string,
-        destination?: string,
-        overwrite?: boolean,
-    ): Promise<IRelateFile>;
+    abstract addFile(nameOrId: string, source: string, destination?: string, overwrite?: boolean): Promise<IRelateFile>;
 
     /**
      * Adds file (write) to project
-     * @param   projectId
+     * @param   nameOrId
      * @param   destination
      * @param   data
      * @param   writeFlag
      */
     abstract writeFile(
-        projectId: string,
+        nameOrId: string,
         destination: string,
         data: string | Buffer,
         writeFlag?: WriteFileFlag,
@@ -85,28 +80,28 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Removes file from given project
-     * @param   projectId
+     * @param   nameOrId
      * @param   relativePath    Path relative to project
      */
-    abstract removeFile(projectId: string, relativePath: string): Promise<IRelateFile>;
+    abstract removeFile(nameOrId: string, relativePath: string): Promise<IRelateFile>;
 
     /**
      * Lists DBMSs for given project
-     * @param   projectId
+     * @param   nameOrId
      * @param   filters         Filters to apply
      */
-    abstract listDbmss(projectId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
+    abstract listDbmss(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProjectDbms>>;
 
     /**
      * Adds DBMS to given project
-     * @param   projectId
+     * @param   nameOrId        Project name or ID
      * @param   dbmsName        Name to give DBMS in project
      * @param   dbmsId
      * @param   principal       DBMS principal
      * @param   accessToken     DBMS access token
      */
     abstract addDbms(
-        projectId: string,
+        nameOrId: string,
         dbmsName: string,
         dbmsId: string,
         principal?: string,
@@ -115,8 +110,8 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * removes DBMS from given project
-     * @param   projectId
+     * @param   nameOrId        Project name or ID
      * @param   dbmsName
      */
-    abstract removeDbms(projectId: string, dbmsName: string): Promise<IProjectDbms>;
+    abstract removeDbms(nameOrId: string, dbmsName: string): Promise<IProjectDbms>;
 }
