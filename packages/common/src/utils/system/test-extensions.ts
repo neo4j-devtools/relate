@@ -70,8 +70,8 @@ export class TestExtensions {
         await fse.ensureFile(manifestPath);
         await fse.ensureFile(packageJsonPath);
         await fse.ensureFile(indexPath);
-        await fse.writeJSON(manifestPath, manifest);
-        await fse.writeJSON(packageJsonPath, packageJson);
+        await fse.writeJSON(manifestPath, manifest, {encoding: 'utf8'});
+        await fse.writeJSON(packageJsonPath, packageJson, {encoding: 'utf8'});
 
         if (type === EXTENSION_TYPES.STATIC && !cached) {
             await fse.ensureDir(path.join(extensionPath, type));

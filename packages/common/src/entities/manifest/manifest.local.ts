@@ -97,7 +97,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
             });
         }
 
-        const manifest = await fse.readJson(manifestPath);
+        const manifest = await fse.readJSON(manifestPath, {encoding: 'utf-8'});
         return new this.EntityModel({
             ...defaults,
             ...manifest,
@@ -114,6 +114,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
         await fse.ensureFile(manifestPath);
         await fse.writeJson(manifestPath, new this.EntityModel(updated.toObject()), {
+            encoding: 'utf8',
             spaces: 2,
         });
 

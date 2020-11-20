@@ -57,7 +57,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<Exten
         throw new InvalidArgumentError(`${dirName} contains no package.json`);
     }
 
-    const packageJson = await fse.readJSON(extensionPackageJson);
+    const packageJson = await fse.readJSON(extensionPackageJson, {encoding: 'utf-8'});
     const appResult = await verifyApp({
         appPath: extensionRootDir,
         rootCertificatePem: RELATE_ROOT_CERT,
@@ -83,7 +83,7 @@ export async function discoverExtension(extensionRootDir: string): Promise<Exten
 
     const manifest = await defaultManifest.switchMap(async (m) => {
         if (hasManifestFile) {
-            return defaultManifest.merge(await fse.readJSON(extensionManifest));
+            return defaultManifest.merge(await fse.readJSON(extensionManifest, {encoding: 'utf-8'}));
         }
 
         if (_.has(packageJson, EXTENSION_MANIFEST_KEY)) {

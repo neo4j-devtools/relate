@@ -84,7 +84,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         // If a manifest exists in the target path use it
         /* eslint-disable indent */
         const rawManifest = manifestExists
-            ? await fse.readJson(manifestPath)
+            ? await fse.readJSON(manifestPath, {encoding: 'utf-8'})
             : {
                   name,
                   id: uuidv4(),

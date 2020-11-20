@@ -92,13 +92,13 @@ describe('LocalProjects - link', () => {
     });
 
     test('Existing manifest is preferred over the given name', async () => {
-        const oldManifest = await fse.readJson(path.join(tmpPath2, PROJECT_MANIFEST_FILE));
+        const oldManifest = await fse.readJSON(path.join(tmpPath2, PROJECT_MANIFEST_FILE), {encoding: 'utf-8'});
         const newManifest = new DbmsManifestModel({
             ...oldManifest,
             name: 'foo',
             tags: ['some tag'],
         });
-        await fse.writeJson(path.join(tmpPath2, PROJECT_MANIFEST_FILE), newManifest);
+        await fse.writeJson(path.join(tmpPath2, PROJECT_MANIFEST_FILE), newManifest, {encoding: 'utf8'});
 
         const result = await environment.projects.link(tmpPath2, 'bar');
 
