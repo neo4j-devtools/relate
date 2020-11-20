@@ -38,7 +38,7 @@ describe('LocalDbmss - clone', () => {
         await fse.move(originalDbms.rootPath!, linkedDbmsPath);
 
         const linkedName = testDbmss.createName();
-        const linkedDbms = await env.dbmss.link(linkedName, linkedDbmsPath!);
+        const linkedDbms = await env.dbmss.link(linkedDbmsPath!, linkedName);
 
         const clonedName = testDbmss.createName();
         const clonedDbms = await env.dbmss.clone(linkedDbms.id, clonedName);

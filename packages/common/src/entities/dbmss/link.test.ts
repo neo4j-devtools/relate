@@ -69,7 +69,7 @@ describe('LocalDbmss - link', () => {
         const targetPath = await fse.readlink(result.rootPath!);
 
         expect(result.name).toEqual('bar');
-        expect(targetPath).toEqual(tmpDbmsPath2);
+        expect(targetPath.replace(/[/\\]$/, '')).toEqual(tmpDbmsPath2);
     });
 
     test('Target directory is not deleted when uninstalling', async () => {

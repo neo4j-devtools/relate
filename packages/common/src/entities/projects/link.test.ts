@@ -79,7 +79,7 @@ describe('LocalProjects - link', () => {
         const targetPath = await fse.readlink(result.root);
 
         expect(result.name).toEqual('bar');
-        expect(targetPath).toEqual(tmpPath2);
+        expect(targetPath.replace(/[/\\]$/, '')).toEqual(tmpPath2);
     });
 
     test('Target directory is not deleted when unlinking', async () => {

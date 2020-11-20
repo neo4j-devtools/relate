@@ -15,7 +15,6 @@ import RemoveDbmsCommand from '../../commands/project/remove-dbms';
 
 const TEST_PROJECT_NAME = 'Cli Project';
 const TEST_FILE_NAME = 'cliProject.tmp';
-const TEST_PROJECT_DIR = path.join(envPaths().tmp, TEST_PROJECT_NAME);
 const TEST_PROJECT_FILE = path.join(envPaths().tmp, TEST_FILE_NAME);
 const TEST_FILE_OTHER_NAME = 'cliProject.pem';
 const TEST_FILE_DESTINATION_DIR = path.normalize('foo/bar');
@@ -40,7 +39,6 @@ describe('$relate project', () => {
         TEST_DB_NAME = name;
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
 
-        await fse.ensureDir(TEST_PROJECT_DIR);
         await fse.ensureFile(TEST_PROJECT_FILE);
         await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
     });
@@ -48,7 +46,6 @@ describe('$relate project', () => {
     afterAll(async () => {
         await dbmss.teardown();
         await fse.remove(path.join(envPaths().data, PROJECTS_DIR_NAME, TEST_PROJECT_NAME));
-        await fse.remove(TEST_PROJECT_DIR);
         await fse.remove(TEST_PROJECT_FILE);
     });
 
@@ -58,7 +55,7 @@ describe('$relate project', () => {
     });
 
     test.stdout().it('inits a new project', async (ctx) => {
-        await InitCommand.run([TEST_PROJECT_DIR, '--environment', TEST_ENVIRONMENT_ID, '--name', TEST_PROJECT_NAME]);
+        await InitCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--name', TEST_PROJECT_NAME]);
         expect(ctx.stdout).toContain(TEST_PROJECT_NAME);
     });
 
