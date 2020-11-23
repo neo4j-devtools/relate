@@ -7,6 +7,7 @@ import path from 'path';
 import {v4 as uuid} from 'uuid';
 
 import {ENVIRONMENT_TYPES, LocalEnvironment, NEO4J_EDITION} from '../../entities/environments';
+import {NotSupportedError} from '../../errors';
 import {IDbmsInfo} from '../../models';
 import {SystemModule, SystemProvider} from '../../system';
 
@@ -21,7 +22,11 @@ export class TestEnvironment {
         public readonly app: INestApplicationContext,
         public readonly systemProvider: SystemProvider,
         public readonly environment: LocalEnvironment,
-    ) {}
+    ) {
+        if (process.env.NODE_ENV !== 'test') {
+            throw new NotSupportedError('Cannot use TestEnvironment outside of testing environment');
+        }
+    }
 
     static async init(filename: string): Promise<TestEnvironment> {
         const shortUUID = uuid().slice(0, 8);
@@ -49,6 +54,8 @@ export class TestEnvironment {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         const environment: LocalEnvironment = await systemProvider.getEnvironment(name);
+
+        // eslint-disable-next-line no-restricted-syntax
         return new TestEnvironment(filename, app, systemProvider, environment);
     }
 

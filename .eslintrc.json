@@ -172,6 +172,10 @@
             {
                 "selector": "NewExpression[callee.name='TestDbmss']",
                 "message": "Do not use 'new TestDbmss()', use 'TestDbmss.init()' instead."
+            },
+            {
+                "selector": "NewExpression[callee.name='TestEnvironment']",
+                "message": "Do not use 'new TestEnvironment()', use 'TestEnvironment.init()' instead."
             }
         ],
         "no-restricted-properties": [
