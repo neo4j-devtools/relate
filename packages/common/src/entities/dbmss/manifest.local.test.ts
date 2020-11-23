@@ -3,24 +3,21 @@ import fse from 'fs-extra';
 import path from 'path';
 
 import {DbmsManifestModel, IDbmsInfo} from '../../models';
-import {TestDbmss} from '../../utils/system';
-import {EnvironmentAbstract} from '../environments';
+import {TestEnvironment} from '../../utils/system';
 
 describe('LocalDbmss - manifest', () => {
     const nonExistentId = uuid();
-    let environment: EnvironmentAbstract;
-    let testDbmss: TestDbmss;
+    let app: TestEnvironment;
     let dbms: IDbmsInfo;
 
     beforeAll(async () => {
-        testDbmss = await TestDbmss.init(__filename);
-        environment = testDbmss.environment;
-        dbms = await testDbmss.createDbms();
+        app = await TestEnvironment.init(__filename);
+        dbms = await app.createDbms();
     });
 
     afterAll(async () => {
-        await fse.remove(path.join(environment.dirPaths.dbmssData, `dbms-${nonExistentId}`));
-        await testDbmss.teardown();
+        await fse.remove(path.join(app.environment.dirPaths.dbmssData, `dbms-${nonExistentId}`));
+        await app.teardown();
     });
 
     test('get manifest of existing DBMS', async () => {
@@ -30,7 +27,7 @@ describe('LocalDbmss - manifest', () => {
             description: '',
             tags: [],
         });
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(manifest).toEqual(expected);
     });
@@ -43,10 +40,10 @@ describe('LocalDbmss - manifest', () => {
             tags: [],
         });
 
-        await environment.dbmss.manifest.update(dbms.id, {
+        await app.environment.dbmss.manifest.update(dbms.id, {
             description: 'some description',
         });
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(manifest).toEqual(expected);
     });
@@ -59,8 +56,8 @@ describe('LocalDbmss - manifest', () => {
             tags: ['tag1', 'tag2', 'tag3'],
         });
 
-        const newDbms = await environment.dbmss.manifest.addTags(dbms.id, ['tag1', 'tag2', 'tag3']);
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        const newDbms = await app.environment.dbmss.manifest.addTags(dbms.id, ['tag1', 'tag2', 'tag3']);
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(newDbms.tags).toEqual(expected.tags);
         expect(manifest).toEqual(expected);
@@ -74,8 +71,8 @@ describe('LocalDbmss - manifest', () => {
             tags: ['tag1', 'tag3'],
         });
 
-        const newDbms = await environment.dbmss.manifest.removeTags(dbms.id, ['tag2']);
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        const newDbms = await app.environment.dbmss.manifest.removeTags(dbms.id, ['tag2']);
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(newDbms.tags).toEqual(expected.tags);
         expect(manifest).toEqual(expected);
@@ -96,10 +93,10 @@ describe('LocalDbmss - manifest', () => {
             },
         });
 
-        await environment.dbmss.manifest.setMetadata(dbms.id, 'object', {foo: 'bar'});
-        await environment.dbmss.manifest.setMetadata(dbms.id, 'number', 42);
-        const updatedDbms = await environment.dbmss.manifest.setMetadata(dbms.id, 'string', 'foo');
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        await app.environment.dbmss.manifest.setMetadata(dbms.id, 'object', {foo: 'bar'});
+        await app.environment.dbmss.manifest.setMetadata(dbms.id, 'number', 42);
+        const updatedDbms = await app.environment.dbmss.manifest.setMetadata(dbms.id, 'string', 'foo');
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(updatedDbms.metadata).toEqual(expected.metadata);
         expect(manifest).toEqual(expected);
@@ -114,8 +111,13 @@ describe('LocalDbmss - manifest', () => {
             metadata: {string: 'foo'},
         });
 
-        const updatedDbms = await environment.dbmss.manifest.removeMetadata(dbms.id, 'object', 'number', 'nonexistent');
-        const manifest = await environment.dbmss.manifest.get(dbms.id);
+        const updatedDbms = await app.environment.dbmss.manifest.removeMetadata(
+            dbms.id,
+            'object',
+            'number',
+            'nonexistent',
+        );
+        const manifest = await app.environment.dbmss.manifest.get(dbms.id);
 
         expect(updatedDbms.metadata).toEqual(expected.metadata);
         expect(manifest).toEqual(expected);
@@ -129,11 +131,11 @@ describe('LocalDbmss - manifest', () => {
             tags: [],
         });
 
-        await environment.dbmss.manifest.update(nonExistentId, {
+        await app.environment.dbmss.manifest.update(nonExistentId, {
             name: 'a new dbms',
             description: 'with a new description',
         });
-        const manifest = await environment.dbmss.manifest.get(nonExistentId);
+        const manifest = await app.environment.dbmss.manifest.get(nonExistentId);
 
         expect(manifest).toEqual(expected);
     });
