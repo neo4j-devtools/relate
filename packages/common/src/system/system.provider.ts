@@ -146,7 +146,10 @@ export class SystemProvider implements OnModuleInit {
         });
         const environment = await createEnvironmentInstance(configModel);
 
-        await fse.writeJSON(filePath, configModel, {spaces: 2});
+        await fse.writeJSON(filePath, configModel, {
+            encoding: 'utf-8',
+            spaces: 2,
+        });
         this.allEnvironments.setValue(environment.id, environment);
 
         return environment;

@@ -10,7 +10,7 @@ import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
 import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
-import {ErrorAbstract, InvalidArgumentError, NotFoundError} from '../../errors';
+import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 
@@ -22,21 +22,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         (nameOrId: string) => this.get(nameOrId),
     );
 
-    async create(manifest: Omit<IProjectInput, 'id'>, targetDir?: string): Promise<IProject> {
+    async create(manifest: Omit<IProjectInput, 'id'>): Promise<IProject> {
         const newId = uuidv4();
-        const defaultDir = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
-        const projectDir = targetDir || defaultDir;
+        const projectDir = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
         const exists = await this.resolveProject(manifest.name);
 
         if (!exists.isEmpty) {
             throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
-        }
-
-        if (projectDir !== defaultDir) {
-            const {id} = await this.link(projectDir);
-            await this.manifest.update(id, manifest);
-
-            return this.get(manifest.name);
         }
 
         await fse.ensureDir(projectDir);
@@ -60,10 +52,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             .mapEach((name) => name.replace(`${ENTITY_TYPES.PROJECT}-`, ''))
             .mapEach((projectId) =>
                 projectId.flatMap(async (id) => {
-                    const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
-                    if (!(await fse.pathExists(projectPath))) {
+                    const projectExists = await this.environment.entityExists(ENTITY_TYPES.PROJECT, id);
+                    if (!projectExists) {
                         return null;
                     }
+
+                    const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
                     const manifest = await this.manifest.get(id);
 
                     return {
@@ -77,67 +71,63 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return applyEntityFilters(projects.compact(), filters);
     }
 
-    async link(projectPath: string): Promise<IProject> {
-        const alreadyHasManifest = await fse.pathExists(path.join(projectPath, PROJECT_MANIFEST_FILE));
-
-        if (alreadyHasManifest) {
-            const {id, name} = await fse.readJson(path.join(projectPath, PROJECT_MANIFEST_FILE));
-            const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
-            const targetExists = await fse.pathExists(target);
-
-            // symlink is correctly pointing to an existing path
-            // no need to do anything
-            if (targetExists) {
-                throw new InvalidArgumentError(`Project "${name}" already managed by relate`);
-            }
-
-            const exists = await this.list([
-                {
-                    field: 'name',
-                    value: name,
-                },
-            ]);
-
-            if (!exists.isEmpty) {
-                throw new InvalidArgumentError(`Project "${name}" already exists`, ['Use a unique name']);
-            }
-
-            // symlink is no longer correctly pointing to an existing path
-            // unlink and link again
-            if (await isSymlink(target)) {
-                await fse.unlink(target);
-            }
-            await fse.symlink(path.normalize(projectPath), target, 'junction');
-
-            return this.get(id);
+    async link(externalPath: string, name: string): Promise<IProject> {
+        // Make sure the path we're getting exists
+        const externalPathExists = await fse.pathExists(externalPath);
+        if (!externalPathExists) {
+            throw new InvalidArgumentError(`Path "${externalPath}" does not exist`, ['Use a valid path']);
         }
 
-        try {
-            const newId = uuidv4();
-            // should we require a manifest for a newly linked project?
-            const manifest = await this.manifest.get(newId);
-            const exists = await this.resolveProject(manifest.name);
+        const manifestPath = path.join(externalPath, PROJECT_MANIFEST_FILE);
+        const manifestExists = await fse.pathExists(manifestPath);
 
-            if (!exists.isEmpty) {
-                throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
-            }
+        // If a manifest exists in the target path use it
+        /* eslint-disable indent */
+        const rawManifest = manifestExists
+            ? await fse.readJSON(manifestPath, {encoding: 'utf-8'})
+            : {
+                  name,
+                  id: uuidv4(),
+              };
+        /* eslint-enable indent */
+        const manifestModel = new ProjectManifestModel(rawManifest);
 
-            const target = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
-
-            if (await isSymlink(target)) {
-                await fse.unlink(target);
-            }
-            await fse.symlink(path.normalize(projectPath), target, 'junction');
-            await this.manifest.update(newId, {});
-
-            return this.get(newId);
-        } catch (e) {
-            if (e instanceof ErrorAbstract) {
-                throw e;
-            }
-
-            throw new InvalidArgumentError(`Failed to link ${projectPath}`);
+        // Don't override existing data
+        const projectExists = await this.environment.entityExists(ENTITY_TYPES.PROJECT, manifestModel.id);
+        if (projectExists) {
+            throw new InvalidArgumentError(`Project "${manifestModel.name}" already managed by relate`);
         }
+
+        // Replace broken symlinks
+        const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, manifestModel.id);
+        if (await isSymlink(projectPath)) {
+            await fse.unlink(projectPath);
+        }
+
+        // Enforce unique names
+        const projectNameExists = await this.list([
+            {
+                field: 'name',
+                value: manifestModel.name,
+            },
+        ]);
+        if (!projectNameExists.isEmpty) {
+            throw new InvalidArgumentError(`Project "${manifestModel.name}" already exists`, ['Use a unique name']);
+        }
+
+        await fse.symlink(externalPath, projectPath, 'junction');
+        await this.manifest.update(manifestModel.id, manifestModel);
+
+        return this.get(manifestModel.id);
+    }
+
+    async unlink(nameOrId: string): Promise<IProject> {
+        const project = await this.get(nameOrId);
+        const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, project.id);
+
+        await fse.unlink(projectPath);
+
+        return project;
     }
 
     private async getFile(project: IProject, filePath: string): Promise<Maybe<IRelateFile>> {
@@ -149,13 +139,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return files.find(({name, directory}) => name === fileName && directory === projectDir);
     }
 
-    async addFile(
-        projectName: string,
-        source: string,
-        destination?: string,
-        overwrite?: boolean,
-    ): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+    async addFile(nameOrId: string, source: string, destination?: string, overwrite?: boolean): Promise<IRelateFile> {
+        const project = await this.get(nameOrId);
         const target = getAbsoluteProjectPath(project, destination || path.basename(source));
         const projectDir = path.dirname(target);
         const fileName = path.basename(target);
@@ -181,12 +166,12 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async writeFile(
-        projectName: string,
+        nameOrId: string,
         destination: string,
         data: string | Buffer,
         writeFlag?: WriteFileFlag,
     ): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+        const project = await this.get(nameOrId);
         const filePath = getAbsoluteProjectPath(project, destination);
         const fileName = path.basename(filePath);
 
@@ -202,8 +187,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         });
     }
 
-    async removeFile(projectName: string, relativePath: string): Promise<IRelateFile> {
-        const project = await this.get(projectName);
+    async removeFile(nameOrId: string, relativePath: string): Promise<IRelateFile> {
+        const project = await this.get(nameOrId);
         const maybeFile = await this.getFile(project, relativePath);
 
         return maybeFile.flatMap(async (file) => {
@@ -264,8 +249,8 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return newDbms;
     }
 
-    async removeDbms(projectName: string, dbmsName: string): Promise<IProjectDbms> {
-        const project = await this.get(projectName);
+    async removeDbms(nameOrId: string, dbmsName: string): Promise<IProjectDbms> {
+        const project = await this.get(nameOrId);
         const manifest = await this.manifest.get(project.id);
         const existing = List.from(manifest.dbmss);
 

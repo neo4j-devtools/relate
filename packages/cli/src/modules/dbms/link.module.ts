@@ -40,7 +40,7 @@ export class LinkModule implements OnApplicationBootstrap {
         const {dbmss} = await this.systemProvider.getEnvironment();
         const resolvedPath = path.resolve(filePath);
 
-        await dbmss.link(name, resolvedPath).then((res) => {
+        await dbmss.link(resolvedPath, name).then((res) => {
             this.utils.log(res.name);
         });
     }

@@ -17,14 +17,6 @@ export default class InitCommand extends BaseCommand {
         '$ relate project:init /path/to/target/project/dir --name=my-project',
     ];
 
-    static args = [
-        {
-            name: 'targetDir',
-            // @todo: this is optional is projects.abstract
-            required: true,
-        },
-    ];
-
     static flags = {
         ...FLAGS.ENVIRONMENT,
         name: flags.string({

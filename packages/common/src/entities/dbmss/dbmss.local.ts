@@ -293,62 +293,61 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
     }
 
-    async link(name: string, rootPath: string): Promise<IDbmsInfo> {
-        const exists = await this.list([
-            {
-                field: 'name',
-                value: name,
-            },
-        ]);
-
-        if (!exists.isEmpty) {
-            throw new InvalidArgumentError(`DBMS "${name}" already exists`, ['Use a unique name']);
-        }
-
-        const alreadyHasManifest = await fse.pathExists(path.join(rootPath, DBMS_MANIFEST_FILE));
-
-        if (alreadyHasManifest) {
-            const {id} = await fse.readJson(path.join(rootPath, DBMS_MANIFEST_FILE));
-            const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, id);
-            const targetExists = await fse.pathExists(target);
-
-            // symlink is correctly pointing to an existing path
-            // no need to do anything
-            if (targetExists) {
-                throw new InvalidArgumentError(`DBMS "${name}" already managed by relate`);
-            }
-
-            // symlink is no longer correctly pointing to an existing path
-            // unlink and link again
-            if (await isSymlink(target)) {
-                await fse.unlink(target);
-            }
-            await fse.symlink(rootPath, target, 'junction');
-
-            return this.get(id);
-        }
-
-        const newId = uuidv4();
-        const info = await getDistributionInfo(rootPath);
-
+    async link(externalPath: string, name: string): Promise<IDbmsInfo> {
+        // Make sure the path we're getting is an actual DBMS
+        const info = await getDistributionInfo(externalPath);
         if (!info || !semver.satisfies(info.version, NEO4J_SUPPORTED_VERSION_RANGE)) {
-            throw new InvalidArgumentError(`Path "${rootPath}" does not seem to be a valid neo4j DBMS`, [
+            throw new InvalidArgumentError(`Path "${externalPath}" does not seem to be a valid neo4j DBMS`, [
                 'Use a valid path',
             ]);
         }
 
-        const target = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, newId);
+        const manifestPath = path.join(externalPath, DBMS_MANIFEST_FILE);
+        const manifestExists = await fse.pathExists(manifestPath);
 
-        await fse.symlink(rootPath, target, 'junction');
-        await this.manifest.update(newId, {name});
+        // If a manifest exists in the target, path use it
+        /* eslint-disable indent */
+        const rawManifest = manifestExists
+            ? await fse.readJSON(manifestPath, {encoding: 'utf-8'})
+            : {
+                  name,
+                  id: uuidv4(),
+              };
+        /* eslint-enable indent */
+        const manifestModel = new DbmsManifestModel(rawManifest);
+
+        // Don't override existing data
+        const dbmsExists = await this.environment.entityExists(ENTITY_TYPES.DBMS, manifestModel.id);
+        if (dbmsExists) {
+            throw new InvalidArgumentError(`DBMS "${manifestModel.name}" already managed by relate`);
+        }
+
+        // Replace broken symlinks
+        const dbmsPath = this.environment.getEntityRootPath(ENTITY_TYPES.DBMS, manifestModel.id);
+        if (await isSymlink(dbmsPath)) {
+            await fse.unlink(dbmsPath);
+        }
+
+        // Enforce unique names
+        const dbmsNameExists = await this.list([
+            {
+                field: 'name',
+                value: manifestModel.name,
+            },
+        ]);
+        if (!dbmsNameExists.isEmpty) {
+            throw new InvalidArgumentError(`DBMS "${manifestModel.name}" already exists`, ['Use a unique name']);
+        }
+
+        await fse.symlink(externalPath, dbmsPath, 'junction');
+        await this.manifest.update(manifestModel.id, manifestModel);
 
         if (supportsAccessTokens(info)) {
-            await this.installSecurityPlugin(newId);
+            await this.installSecurityPlugin(manifestModel.id);
         }
 
         await this.discoverDbmss();
-
-        return this.get(newId);
+        return this.get(manifestModel.id);
     }
 
     async clone(id: string, name: string): Promise<IDbmsInfo> {

@@ -71,13 +71,13 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
         const result = await extract(backupPath, tmpPath);
 
         await fse.move(result, outputTarget);
-        await fse.writeJSON(path.join(outputTarget, BACKUP_MANIFEST_FILE), manifest);
+        await fse.writeJSON(path.join(outputTarget, BACKUP_MANIFEST_FILE), manifest, {encoding: 'utf8'});
 
         const restoredEntityManifestPath = path.join(outputTarget, getManifestName(manifest.entityType));
-        const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath);
+        const restoredEntityManifest = await fse.readJSON(restoredEntityManifestPath, {encoding: 'utf-8'});
         const updated = updateRestoredEntityManifest(manifest, restoredEntityId, restoredEntityManifest);
 
-        await fse.writeJSON(restoredEntityManifestPath, updated);
+        await fse.writeJSON(restoredEntityManifestPath, updated, {encoding: 'utf8'});
 
         return {
             entityType: manifest.entityType,
@@ -158,7 +158,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
 
     private async readManifestFile(filePath: string): Promise<IRelateBackup> {
         try {
-            const config = await fse.readJson(filePath);
+            const config = await fse.readJSON(filePath, {encoding: 'utf-8'});
 
             return new RelateBackupModel({
                 ...config,
@@ -190,7 +190,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             id: backupId,
         });
 
-        await fse.writeJSON(configFileName, withUpdates);
+        await fse.writeJSON(configFileName, withUpdates, {encoding: 'utf8'});
 
         return this.getBackupManifest(backupId);
     }

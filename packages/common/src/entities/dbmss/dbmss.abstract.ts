@@ -77,10 +77,10 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Links an existing DBMS to relate
-     * @param   name        Name of DBMS
-     * @param   rootPath    Path to DBMS root
+     * @param   externalPath    Path to DBMS root
+     * @param   name            Name of DBMS
      */
-    abstract link(name: string, rootPath: string): Promise<IDbmsInfo>;
+    abstract link(externalPath: string, name: string): Promise<IDbmsInfo>;
 
     /**
      * Clone a DBMS

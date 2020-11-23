@@ -20,6 +20,7 @@ import {LocalDbs} from '../dbs';
 import {LocalBackups} from '../backups';
 import {InvalidArgumentError} from '../../errors';
 import {TokenService} from '../../token.service';
+import {getManifestName} from '../../utils/system';
 
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
@@ -65,6 +66,14 @@ export class LocalEnvironment extends EnvironmentAbstract {
             default:
                 throw new InvalidArgumentError(`Entity type ${entityType} is not stored on disk`);
         }
+    }
+
+    public entityExists(entityType: ENTITY_TYPES, id: string): Promise<boolean> {
+        // Need to check for the manifest instead of the project path, as broken
+        // links return inconsistent results across platforms (they behave as
+        // existing on Windows and non existing on Mac and Linux).
+        const manifestPath = path.join(this.getEntityRootPath(entityType, id), getManifestName(entityType));
+        return fse.pathExists(manifestPath);
     }
 
     async init(): Promise<void> {

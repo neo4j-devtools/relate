@@ -5,7 +5,7 @@ Projects bring files and data together.
 
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
-* [`relate project:init TARGETDIR`](#relate-projectinit-targetdir)
+* [`relate project:init`](#relate-projectinit)
 * [`relate project:link FILEPATH`](#relate-projectlink-filepath)
 * [`relate project:list`](#relate-projectlist)
 * [`relate project:list-dbmss`](#relate-projectlist-dbmss)
@@ -66,13 +66,13 @@ EXAMPLES
 
 _See code: [dist/commands/project/add-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.15/packages/cli/src/commands/project/add-file.ts)_
 
-## `relate project:init TARGETDIR`
+## `relate project:init`
 
 Initialize a new project
 
 ```
 USAGE
-  $ relate project:init TARGETDIR
+  $ relate project:init
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
@@ -93,6 +93,9 @@ Link a project
 ```
 USAGE
   $ relate project:link FILEPATH
+
+OPTIONS
+  -n, --name=name  (required) Name of the project
 
 EXAMPLE
   $ relate project:link /path/to/target/project/dir
