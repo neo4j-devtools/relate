@@ -6,12 +6,16 @@ import {List} from '@relate/types';
 import {
     AddProjectDbmsArgs,
     AddProjectFileArgs,
+    AddProjectMetadataArgs,
+    AddProjectTagsArgs,
     InitProjectArgs,
     Project,
     ProjectArgs,
     ProjectDbms,
     RemoveProjectDbmsArgs,
     RemoveProjectFileArgs,
+    RemoveProjectMetadataArgs,
+    RemoveProjectTagsArgs,
 } from './project.types';
 import {EnvironmentArgs, FilterArgs, RelateFile} from '../../global.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
@@ -119,5 +123,57 @@ export class ProjectResolver {
         @Args() {name, filePath}: RemoveProjectFileArgs,
     ): Promise<RelateFile> {
         return environment.projects.removeFile(name, filePath);
+    }
+
+    @Mutation(() => Project)
+    async [PUBLIC_GRAPHQL_METHODS.ADD_PROJECT_TAGS](
+        @Context('environment') environment: Environment,
+        @Args() {name, tags}: AddProjectTagsArgs,
+    ): Promise<Project> {
+        const project = await environment.projects.manifest.addTags(name, tags);
+
+        return {
+            ...project,
+            files: [],
+        };
+    }
+
+    @Mutation(() => Project)
+    async [PUBLIC_GRAPHQL_METHODS.REMOVE_PROJECT_TAGS](
+        @Context('environment') environment: Environment,
+        @Args() {name, tags}: RemoveProjectTagsArgs,
+    ): Promise<Project> {
+        const project = await environment.projects.manifest.removeTags(name, tags);
+
+        return {
+            ...project,
+            files: [],
+        };
+    }
+
+    @Mutation(() => Project)
+    async [PUBLIC_GRAPHQL_METHODS.SET_PROJECT_METADATA](
+        @Context('environment') environment: Environment,
+        @Args() {name, key, value}: AddProjectMetadataArgs,
+    ): Promise<Project> {
+        const project = await environment.projects.manifest.setMetadata(name, key, value);
+
+        return {
+            ...project,
+            files: [],
+        };
+    }
+
+    @Mutation(() => Project)
+    async [PUBLIC_GRAPHQL_METHODS.REMOVE_PROJECT_METADATA](
+        @Context('environment') environment: Environment,
+        @Args() {name, keys}: RemoveProjectMetadataArgs,
+    ): Promise<Project> {
+        const project = await environment.projects.manifest.removeMetadata(name, ...keys);
+
+        return {
+            ...project,
+            files: [],
+        };
     }
 }
