@@ -572,4 +572,146 @@ describe('AppsModule', () => {
                 expect(getProject).toEqual(expected);
             });
     });
+
+    test('/graphql addProjectTags', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(
+                queryBody(
+                    `
+                mutation projectTags($environmentNameOrId: String, $name: String!, $tags: [String!]!) {
+                    addProjectTags(environmentNameOrId: $environmentNameOrId, name: $name, tags: $tags) {
+                        name
+                        tags
+                    }
+                }
+            `,
+                    {
+                        name: TEST_PROJECT_NAME,
+                        tags: ['tag1', 'tag2'],
+                    },
+                ),
+            )
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {addProjectTags} = res.body.data;
+                const expected = {
+                    name: TEST_PROJECT_NAME,
+                    tags: ['tag1', 'tag2'],
+                };
+
+                expect(addProjectTags).toEqual(expected);
+            });
+    });
+
+    test('/graphql removeProjectTags', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(
+                queryBody(
+                    `
+                    mutation projectTags($environmentNameOrId: String, $name: String!, $tags: [String!]!) {
+                        removeProjectTags(environmentNameOrId: $environmentNameOrId, name: $name, tags: $tags) {
+                            name
+                            tags
+                        }
+                    }
+                `,
+                    {
+                        name: TEST_PROJECT_NAME,
+                        tags: ['tag1', 'tag2'],
+                    },
+                ),
+            )
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {removeProjectTags} = res.body.data;
+                const expected = {
+                    name: TEST_PROJECT_NAME,
+                    tags: [],
+                };
+
+                expect(removeProjectTags).toEqual(expected);
+            });
+    });
+
+    test('/graphql setProjectMetadata', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(
+                queryBody(
+                    `
+                        mutation projectMetadata($environmentNameOrId: String, $name: String!, $key: String!, $value: JSON!) {
+                            setProjectMetadata(
+                                environmentNameOrId: $environmentNameOrId,
+                                name: $name,
+                                key: $key,
+                                value: $value,
+                            ) {
+                                name
+                                metadata
+                            }
+                        }
+                    `,
+                    {
+                        name: TEST_PROJECT_NAME,
+                        key: 'someKey',
+                        value: {
+                            value1: 'someValue',
+                            value2: {
+                                foo: 10,
+                            },
+                        },
+                    },
+                ),
+            )
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {setProjectMetadata} = res.body.data;
+                const expected = {
+                    name: TEST_PROJECT_NAME,
+                    metadata: {
+                        someKey: {
+                            value1: 'someValue',
+                            value2: {
+                                foo: 10,
+                            },
+                        },
+                    },
+                };
+
+                expect(setProjectMetadata).toEqual(expected);
+            });
+    });
+
+    test('/graphql removeProjectMetadata', () => {
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send(
+                queryBody(
+                    `
+                    mutation projectMetadata($environmentNameOrId: String, $name: String!, $keys: [String!]!) {
+                        removeProjectMetadata(environmentNameOrId: $environmentNameOrId, name: $name, keys: $keys) {
+                            name
+                            metadata
+                        }
+                    }
+                `,
+                    {
+                        name: TEST_PROJECT_NAME,
+                        keys: ['someKey'],
+                    },
+                ),
+            )
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {removeProjectMetadata} = res.body.data;
+                const expected = {
+                    name: TEST_PROJECT_NAME,
+                    metadata: {},
+                };
+
+                expect(removeProjectMetadata).toEqual(expected);
+            });
+    });
 });
