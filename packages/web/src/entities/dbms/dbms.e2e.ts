@@ -206,6 +206,143 @@ describe('DBMSModule', () => {
                     });
                 });
         });
+
+        test('/graphql addDbmsTags', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                mutation dbmsTags($environmentNameOrId: String, $dbmsName: String!, $tags: [String!]!) {
+                    addDbmsTags(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsName, tags: $tags) {
+                        name
+                        tags
+                    }
+                }
+            `,
+                        {tags: ['tag1', 'tag2']},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {addDbmsTags} = res.body.data;
+                    const expected = {
+                        name: TEST_DBMS_NAME,
+                        tags: ['tag1', 'tag2'],
+                    };
+
+                    expect(addDbmsTags).toEqual(expected);
+                });
+        });
+
+        test('/graphql removeDbmsTags', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                    mutation dbmsTags($environmentNameOrId: String, $dbmsName: String!, $tags: [String!]!) {
+                        removeDbmsTags(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsName, tags: $tags) {
+                            name
+                            tags
+                        }
+                    }
+                `,
+                        {tags: ['tag1', 'tag2']},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {removeDbmsTags} = res.body.data;
+                    const expected = {
+                        name: TEST_DBMS_NAME,
+                        tags: [],
+                    };
+
+                    expect(removeDbmsTags).toEqual(expected);
+                });
+        });
+
+        test('/graphql setDbmsMetadata', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                        mutation dbmsMetadata(
+                            $environmentNameOrId: String,
+                            $dbmsName: String!,
+                            $key: String!,
+                            $value: JSON!
+                        ) {
+                            setDbmsMetadata(
+                                environmentNameOrId: $environmentNameOrId,
+                                dbmsId: $dbmsName,
+                                key: $key,
+                                value: $value,
+                            ) {
+                                name
+                                metadata
+                            }
+                        }
+                    `,
+                        {
+                            key: 'someKey',
+                            value: {
+                                value1: 'someValue',
+                                value2: {
+                                    foo: 10,
+                                },
+                            },
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {setDbmsMetadata} = res.body.data;
+                    const expected = {
+                        name: TEST_DBMS_NAME,
+                        metadata: {
+                            someKey: {
+                                value1: 'someValue',
+                                value2: {
+                                    foo: 10,
+                                },
+                            },
+                        },
+                    };
+
+                    expect(setDbmsMetadata).toEqual(expected);
+                });
+        });
+
+        test('/graphql removeDbmsMetadata', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                    mutation dbmsMetadata($environmentNameOrId: String, $dbmsName: String!, $keys: [String!]!) {
+                        removeDbmsMetadata(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsName, keys: $keys) {
+                            name
+                            metadata
+                        }
+                    }
+                `,
+                        {keys: ['someKey']},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {removeDbmsMetadata} = res.body.data;
+                    const expected = {
+                        name: TEST_DBMS_NAME,
+                        metadata: {},
+                    };
+
+                    expect(removeDbmsMetadata).toEqual(expected);
+                });
+        });
     });
 
     describe('dbms started', () => {

@@ -16,6 +16,8 @@ import {
     ListDbmsVersionsArgs,
     AddDbmsTagsArgs,
     RemoveDbmsTagsArgs,
+    AddDbmsMetadataArgs,
+    RemoveDbmsMetadataArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -124,5 +126,21 @@ export class DBMSResolver {
         @Args() {dbmsId, tags}: RemoveDbmsTagsArgs,
     ): Promise<IDbmsInfo> {
         return environment.dbmss.manifest.removeTags(dbmsId, tags);
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.SET_DBMS_METADATA](
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, key, value}: AddDbmsMetadataArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.manifest.setMetadata(dbmsId, key, value);
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.REMOVE_DBMS_METADATA](
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, keys}: RemoveDbmsMetadataArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.manifest.removeMetadata(dbmsId, ...keys);
     }
 }

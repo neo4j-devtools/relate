@@ -134,6 +134,8 @@ export enum PUBLIC_GRAPHQL_METHODS {
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',
     ADD_DBMS_TAGS = 'addDbmsTags',
     REMOVE_DBMS_TAGS = 'removeDbmsTags',
+    SET_DBMS_METADATA = 'setDbmsMetadata',
+    REMOVE_DBMS_METADATA = 'removeDbmsMetadata',
 
     // dbs
     CREATE_DB = 'createDb',
@@ -157,6 +159,10 @@ export enum PUBLIC_GRAPHQL_METHODS {
     REMOVE_PROJECT_DBMS = 'removeProjectDbms',
     ADD_PROJECT_FILE = 'addProjectFile',
     REMOVE_PROJECT_FILE = 'removeProjectFile',
+    ADD_PROJECT_TAGS = 'addProjectTags',
+    REMOVE_PROJECT_TAGS = 'removeProjectTags',
+    SET_PROJECT_METADATA = 'setProjectMetadata',
+    REMOVE_PROJECT_METADATA = 'removeProjectMetadata',
 
     // dump / import
     DB_DUMP = 'dbDump',

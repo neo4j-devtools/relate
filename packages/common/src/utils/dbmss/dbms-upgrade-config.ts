@@ -7,6 +7,7 @@ import {
     NEO4J_CERT_DIR,
     NEO4J_CONF_DIR,
     NEO4J_DATA_DIR,
+    NEO4J_IMPORT_DIR,
     NEO4J_JWT_ADDON_NAME,
     NEO4J_JWT_ADDON_VERSION,
     NEO4J_JWT_CONF_FILE,
@@ -41,6 +42,7 @@ export async function dbmsUpgradeConfigs(
     await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, NEO4J_LOGS_DIR);
     await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, NEO4J_CONF_DIR);
     await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, NEO4J_PLUGIN_DIR);
+    await copyDBMSPath(dbms.rootPath, upgradedDbms.rootPath, NEO4J_IMPORT_DIR);
 
     const certsExists = await fse.pathExists(path.join(dbms.rootPath, NEO4J_CERT_DIR));
 

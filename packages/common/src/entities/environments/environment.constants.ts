@@ -44,6 +44,7 @@ export const NEO4J_DIST_LIMITED_VERSIONS_URL = 'https://dist.neo4j.org/versions/
 export const NEO4J_CONF_DIR = 'conf';
 export const NEO4J_LOGS_DIR = 'logs';
 export const NEO4J_DATA_DIR = 'data';
+export const NEO4J_IMPORT_DIR = 'import';
 export const NEO4J_RUN_DIR = 'run';
 export const NEO4J_LIB_DIR = 'lib';
 export const NEO4J_PLUGIN_DIR = 'plugins';

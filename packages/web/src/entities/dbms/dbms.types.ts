@@ -1,25 +1,29 @@
 import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
-import {NEO4J_EDITION} from '@relate/common';
+import {IDbms, NEO4J_EDITION} from '@relate/common';
+import GraphQLJSON, {GraphQLJSONObject} from 'graphql-type-json';
 
 import {AuthTokenInput} from './dto/auth-token.input';
 import {EnvironmentArgs} from '../../global.types';
 
 @ObjectType()
-export class Dbms {
+export class Dbms implements Omit<IDbms, 'config'> {
     @Field(() => ID)
     id: string;
 
-    @Field(() => String, {nullable: true})
-    name?: string;
+    @Field(() => String)
+    name: string;
 
-    @Field(() => String, {nullable: true})
-    description?: string;
+    @Field(() => String)
+    description: string;
 
     @Field(() => [String])
     tags: string[];
 
-    @Field(() => String, {nullable: true})
-    connectionUri?: string;
+    @Field(() => GraphQLJSONObject)
+    metadata: Record<string, any>;
+
+    @Field(() => String)
+    connectionUri: string;
 }
 
 @ObjectType()
@@ -113,6 +117,27 @@ export class RemoveDbmsTagsArgs extends EnvironmentArgs {
 
     @Field(() => [String])
     tags: string[];
+}
+
+@ArgsType()
+export class AddDbmsMetadataArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => String)
+    key: string;
+
+    @Field(() => GraphQLJSON)
+    value: any;
+}
+
+@ArgsType()
+export class RemoveDbmsMetadataArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => [String])
+    keys: string[];
 }
 
 @ObjectType()

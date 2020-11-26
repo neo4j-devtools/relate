@@ -1,11 +1,12 @@
 import {ObjectType, ArgsType, Field} from '@nestjs/graphql';
 import {IProject, IProjectDbms} from '@relate/common';
-import {IFileUpload, GraphQLUpload} from './graphql-upload';
+import GraphQLJSON, {GraphQLJSONObject} from 'graphql-type-json';
 
+import {IFileUpload, GraphQLUpload} from './graphql-upload';
 import {EnvironmentArgs, RelateFile} from '../../global.types';
 
 @ObjectType()
-export class Project implements Omit<IProject, 'root' | 'metadata'> {
+export class Project implements Omit<IProject, 'root'> {
     @Field(() => String)
     id: string;
 
@@ -17,6 +18,9 @@ export class Project implements Omit<IProject, 'root' | 'metadata'> {
 
     @Field(() => [String])
     tags: string[];
+
+    @Field(() => GraphQLJSONObject)
+    metadata: Record<string, any>;
 
     @Field(() => [ProjectDbms])
     dbmss: ProjectDbms[];
@@ -89,4 +93,31 @@ export class AddProjectFileArgs extends ProjectArgs {
 export class RemoveProjectFileArgs extends ProjectArgs {
     @Field(() => String)
     filePath: string;
+}
+
+@ArgsType()
+export class AddProjectTagsArgs extends ProjectArgs {
+    @Field(() => [String])
+    tags: string[];
+}
+
+@ArgsType()
+export class RemoveProjectTagsArgs extends ProjectArgs {
+    @Field(() => [String])
+    tags: string[];
+}
+
+@ArgsType()
+export class AddProjectMetadataArgs extends ProjectArgs {
+    @Field(() => String)
+    key: string;
+
+    @Field(() => GraphQLJSON)
+    value: any;
+}
+
+@ArgsType()
+export class RemoveProjectMetadataArgs extends ProjectArgs {
+    @Field(() => [String])
+    keys: string[];
 }
