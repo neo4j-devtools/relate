@@ -31,7 +31,7 @@
 
 ▸ **addTags**(`nameOrId`: string, `tags`: string[]): *Promise‹Entity›*
 
-*Defined in [manifest/manifest.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L39)*
+Defined in manifest/manifest.abstract.ts:39
 
 Add tags to an entity
 
@@ -50,7 +50,7 @@ ___
 
 ▸ **get**(`id`: string): *Promise‹Manifest›*
 
-*Defined in [manifest/manifest.abstract.ts:52](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L52)*
+Defined in manifest/manifest.abstract.ts:52
 
 Get an entity's manifest
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **removeMetadata**(`nameOrId`: string, ...`keys`: string[]): *Promise‹Entity›*
 
-*Defined in [manifest/manifest.abstract.ts:32](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L32)*
+Defined in manifest/manifest.abstract.ts:32
 
 Remove metadata from an entity
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **removeTags**(`nameOrId`: string, `tags`: string[]): *Promise‹Entity›*
 
-*Defined in [manifest/manifest.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L46)*
+Defined in manifest/manifest.abstract.ts:46
 
 Remove tags from an entity
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **setMetadata**(`nameOrId`: string, `key`: string, `value`: any): *Promise‹Entity›*
 
-*Defined in [manifest/manifest.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L25)*
+Defined in manifest/manifest.abstract.ts:25
 
 Add metadata to an entity
 
@@ -126,7 +126,7 @@ ___
 
 ▸ **update**(`id`: string, `update`: Partial‹Omit‹Entity, "id"››): *Promise‹void›*
 
-*Defined in [manifest/manifest.abstract.ts:59](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L59)*
+Defined in manifest/manifest.abstract.ts:59
 
 Update an entity's manifest
 

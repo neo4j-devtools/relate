@@ -37,7 +37,7 @@
 
 • **manifest**: *[ManifestAbstract](manifestabstract.md)‹Env, IProject, ProjectManifestModel›*
 
-*Defined in [projects/projects.abstract.ts:14](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L14)*
+Defined in projects/projects.abstract.ts:14
 
 ## Methods
 
@@ -45,7 +45,7 @@
 
 ▸ **addDbms**(`nameOrId`: string, `dbmsName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:103](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L103)*
+Defined in projects/projects.abstract.ts:103
 
 Adds DBMS to given project
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **addFile**(`nameOrId`: string, `source`: string, `destination?`: undefined | string, `overwrite?`: undefined | false | true): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:65](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L65)*
+Defined in projects/projects.abstract.ts:65
 
 Adds file (copy) to project
 
@@ -88,7 +88,7 @@ ___
 
 ▸ **create**(`manifest`: Omit‹IProjectInput, "id"›): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L25)*
+Defined in projects/projects.abstract.ts:25
 
 Creates new project
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **get**(`nameOrId`: string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:31](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L31)*
+Defined in projects/projects.abstract.ts:31
 
 Gets a project by name
 
@@ -124,7 +124,7 @@ ___
 
 ▸ **link**(`externalPath`: string, `name`: string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:44](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L44)*
+Defined in projects/projects.abstract.ts:44
 
 Links an existing project
 
@@ -143,7 +143,7 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProject››*
 
-*Defined in [projects/projects.abstract.ts:37](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L37)*
+Defined in projects/projects.abstract.ts:37
 
 List all available projects
 
@@ -161,7 +161,7 @@ ___
 
 ▸ **listDbmss**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProjectDbms››*
 
-*Defined in [projects/projects.abstract.ts:93](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L93)*
+Defined in projects/projects.abstract.ts:93
 
 Lists DBMSs for given project
 
@@ -180,7 +180,7 @@ ___
 
 ▸ **listFiles**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IRelateFile››*
 
-*Defined in [projects/projects.abstract.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L57)*
+Defined in projects/projects.abstract.ts:57
 
 List files for given project
 
@@ -199,7 +199,7 @@ ___
 
 ▸ **removeDbms**(`nameOrId`: string, `dbmsName`: string): *Promise‹IProjectDbms›*
 
-*Defined in [projects/projects.abstract.ts:116](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L116)*
+Defined in projects/projects.abstract.ts:116
 
 removes DBMS from given project
 
@@ -218,7 +218,7 @@ ___
 
 ▸ **removeFile**(`nameOrId`: string, `relativePath`: string): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:86](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L86)*
+Defined in projects/projects.abstract.ts:86
 
 Removes file from given project
 
@@ -237,7 +237,7 @@ ___
 
 ▸ **unlink**(`nameOrId`: string): *Promise‹IProject›*
 
-*Defined in [projects/projects.abstract.ts:50](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L50)*
+Defined in projects/projects.abstract.ts:50
 
 Unlinks a linked project
 
@@ -255,7 +255,7 @@ ___
 
 ▸ **writeFile**(`nameOrId`: string, `destination`: string, `data`: string | Buffer, `writeFlag?`: WriteFileFlag): *Promise‹IRelateFile›*
 
-*Defined in [projects/projects.abstract.ts:74](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L74)*
+Defined in projects/projects.abstract.ts:74
 
 Adds file (write) to project
 
