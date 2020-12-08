@@ -233,7 +233,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             user: principal,
             accessToken,
         };
-        const dbmsPredicate = ({name, connectionUri}: IProjectDbms) =>
+        const dbmsPredicate = ({name, connectionUri}: IProjectDbms): boolean =>
             name === newDbms.name || connectionUri === newDbms.connectionUri;
 
         await existing.find(dbmsPredicate).flatMap((found) => {
@@ -241,9 +241,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 throw new InvalidArgumentError(`Dbms "${found.name}" already exists in project`);
             }
 
-            return this.manifest.update(project.id, {
-                dbmss: existing.concat(newDbms).toArray(),
-            });
+            return this.manifest.update(project.id, {dbmss: existing.concat(newDbms).toArray()}, false);
         });
 
         return newDbms;
@@ -263,9 +261,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
                 const without = existing.without(found).toArray();
 
-                await this.manifest.update(project.id, {
-                    dbmss: without,
-                });
+                await this.manifest.update(project.id, {dbmss: without}, false);
 
                 return found;
             });
