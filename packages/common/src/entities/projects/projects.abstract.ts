@@ -1,8 +1,20 @@
 import {List} from '@relate/types';
+import {Got} from 'got';
 
 import {EnvironmentAbstract} from '../environments';
 import {ManifestAbstract} from '../manifest';
-import {IRelateFile, IProject, IProjectDbms, WriteFileFlag, ProjectManifestModel, IProjectInput} from '../../models';
+import {
+    IRelateFile,
+    IProject,
+    IProjectDbms,
+    WriteFileFlag,
+    ProjectManifestModel,
+    IProjectInput,
+    IDbmsInfo,
+    ISampleProjectDbms,
+    ISampleProjectInput,
+    ISampleProjectRest,
+} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 
 export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
@@ -114,4 +126,35 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
      * @param   dbmsName
      */
     abstract removeDbms(nameOrId: string, dbmsName: string): Promise<IProjectDbms>;
+
+    /**
+     * Lists sample projects from github (https://github.com/neo4j-graph-examples)
+     */
+    abstract listSampleProjects(fetch?: () => any | Got): Promise<List<ISampleProjectRest>>;
+
+    /**
+     * Download sample project from github (https://github.com/neo4j-graph-examples)
+     */
+    abstract downloadSampleProject(selected: string, destPath?: string): Promise<{path: string; temp: boolean}>;
+
+    /**
+     * Install sample project from file
+     */
+    abstract installSampleProject(
+        srcPath: string,
+        args: {
+            name?: string;
+            projectId?: string;
+            temp?: boolean;
+        },
+    ): Promise<{project: IProjectInput; install?: ISampleProjectInput}>;
+
+    /**
+     * Install sample DBMSs from file
+     */
+    abstract importSampleDbms(
+        projectId: string,
+        dbms: ISampleProjectDbms,
+        credentials: string,
+    ): Promise<{created: IDbmsInfo; dump?: string; script?: string}>;
 }
