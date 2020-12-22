@@ -71,7 +71,7 @@ describe('LocalProjects - link', () => {
 
     test('Is not discovered if target is removed or missing', async () => {
         await fse.move(tmpPath, tmpPath2);
-        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Could not find project bar'));
+        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Project "bar" not found'));
     });
 
     test('Symlink is updated if linking again a project that was moved', async () => {
@@ -88,7 +88,7 @@ describe('LocalProjects - link', () => {
 
         expect(result.name).toEqual('bar');
         expect(targetPathExists).toEqual(true);
-        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Could not find project bar'));
+        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Project "bar" not found'));
     });
 
     test('Existing manifest is preferred over the given name', async () => {
@@ -104,6 +104,6 @@ describe('LocalProjects - link', () => {
 
         expect(result.name).toEqual(newManifest.name);
         expect(result.tags).toEqual(newManifest.tags);
-        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Could not find project bar'));
+        await expect(environment.projects.get('bar')).rejects.toThrow(new NotFoundError('Project "bar" not found'));
     });
 });

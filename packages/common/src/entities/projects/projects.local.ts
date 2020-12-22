@@ -5,7 +5,7 @@ import semver from 'semver';
 import {flatMap, map} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 import got, {Got} from 'got';
-import {List, Maybe, None, Str} from '@relate/types';
+import {Dict, List, Maybe, None, Str} from '@relate/types';
 
 import {
     IProject,
@@ -25,7 +25,7 @@ import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
 import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
-import {FetchError, InvalidArgumentError, NotFoundError} from '../../errors';
+import {AmbiguousTargetError, FetchError, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {download, extract} from '../../utils';
@@ -48,9 +48,9 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async create(manifest: Omit<IProjectInput, 'id'>): Promise<IProject> {
         const newId = uuidv4();
         const projectDir = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
-        const exists = await this.resolveProject(manifest.name);
 
-        if (!exists.isEmpty) {
+        const exists = await this.get(manifest.name).catch(() => null);
+        if (exists) {
             throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
         }
 
@@ -61,15 +61,14 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async get(nameOrId: string): Promise<IProject> {
-        const project = await this.resolveProject(nameOrId);
-
-        return project.getOrElse(() => {
-            throw new NotFoundError(`Could not find project ${nameOrId}`);
-        });
+        await this.discoverProjects();
+        return this.resolveProject(this.projects, nameOrId);
     }
 
-    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
-        const projects = await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
+    async discoverProjects(): Promise<void> {
+        const projects: Record<string, IProject> = {};
+
+        await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
             .mapEach(Str.from)
             .filter((name) => name.startsWith(`${ENTITY_TYPES.PROJECT}-`))
             .mapEach((name) => name.replace(`${ENTITY_TYPES.PROJECT}-`, ''))
@@ -77,13 +76,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 projectId.flatMap(async (id) => {
                     const projectExists = await this.environment.entityExists(ENTITY_TYPES.PROJECT, id);
                     if (!projectExists) {
-                        return null;
+                        return;
                     }
 
                     const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
                     const manifest = await this.manifest.get(id);
 
-                    return {
+                    projects[id] = {
                         ...manifest,
                         root: projectPath,
                     };
@@ -91,7 +90,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             )
             .unwindPromises();
 
-        return applyEntityFilters(projects.compact(), filters);
+        this.projects = projects;
+    }
+
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
+        await this.discoverProjects();
+
+        return applyEntityFilters(Dict.from(this.projects).values, filters);
     }
 
     async link(externalPath: string, name: string): Promise<IProject> {
@@ -140,6 +145,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
         await fse.symlink(externalPath, projectPath, 'junction');
         await this.manifest.update(manifestModel.id, manifestModel);
+        await this.discoverProjects();
 
         return this.get(manifestModel.id);
     }
@@ -149,6 +155,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, project.id);
 
         await fse.unlink(projectPath);
+        delete this.projects[project.id];
 
         return project;
     }
@@ -415,13 +422,23 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         };
     }
 
-    private async resolveProject(projectId: string | Str): Promise<Maybe<IProject>> {
-        const nameToUse = Str.from(projectId);
-        const allProjects = await this.list();
+    private resolveProject(projects: Record<string, IProject>, nameOrId: string): IProject {
+        if (projects[nameOrId]) {
+            return projects[nameOrId];
+        }
 
-        return allProjects.find(
-            ({id, name}) => nameToUse.equals(id) || (!Str.EMPTY.equals(name) && nameToUse.equals(name)),
-        );
+        const projectsWithTargetName = Object.values(projects).filter((project) => project.name === nameOrId);
+
+        if (projectsWithTargetName.length === 0) {
+            throw new NotFoundError(`Project "${nameOrId}" not found`);
+        }
+
+        if (projectsWithTargetName.length > 1) {
+            const ids = projectsWithTargetName.map((project) => project.id).join('\n');
+            throw new AmbiguousTargetError(`Multiple projects found with name "${nameOrId}": \n${ids}`);
+        }
+
+        return projectsWithTargetName[0];
     }
 
     private findAllFilesRecursive(root: string): Promise<List<string>> {
