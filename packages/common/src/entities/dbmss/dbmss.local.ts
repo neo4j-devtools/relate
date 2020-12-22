@@ -438,7 +438,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 return {
-                    connectionUri: dbms.connectionUri,
+                    connectionUri: await this.getConnectionUri(dbms.id),
                     description: dbms.description,
                     edition: v?.edition,
                     id: dbms.id,
@@ -706,6 +706,18 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     private throttledDiscoverDbmss = throttle(this.discoverDbmss, DISCOVER_DBMS_THROTTLE_MS);
 
+    private async getConnectionUri(dbmsId: string): Promise<string> {
+        const neo4jConfig = await this.getDbmsConfig(dbmsId);
+        // @todo: verify these settings with driver team
+        const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
+        const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
+        const protocol = secure ? 'neo4j+s://' : 'neo4j://';
+        const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
+        const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
+
+        return `${protocol}${host}${port}`;
+    }
+
     private async discoverDbmss(): Promise<void> {
         const dbmss: {[key: string]: IDbms} = {};
         const root = this.getDbmsRootPath();
@@ -732,13 +744,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     // @todo: verify these settings with driver team
                     const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
                     const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
-                    const protocol = secure ? 'neo4j+s://' : 'neo4j://';
-                    const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
-                    const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
+
                     const configDbmss = await this.manifest.get(id);
                     const overrides = {
                         config: neo4jConfig,
-                        connectionUri: `${protocol}${host}${port}`,
+                        connectionUri: await this.getConnectionUri(id),
                         id,
                         rootPath: fullPath,
                         secure,
