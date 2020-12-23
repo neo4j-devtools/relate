@@ -329,13 +329,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         // Enforce unique names
-        const dbmsNameExists = await this.list([
-            {
-                field: 'name',
-                value: manifestModel.name,
-            },
-        ]);
-        if (!dbmsNameExists.isEmpty) {
+        const dbmsNameExists = await this.getDbms(manifestModel.name).catch(() => null);
+        if (dbmsNameExists) {
             throw new InvalidArgumentError(`DBMS "${manifestModel.name}" already exists`, ['Use a unique name']);
         }
 
@@ -376,20 +371,23 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async uninstall(nameOrId: string): Promise<IDbmsInfo> {
-        const {id} = resolveDbms(this.dbmss, nameOrId);
+        const {id} = await this.getDbms(nameOrId);
         const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
 
         if (status.includes(DBMS_STATUS_FILTERS.STARTED)) {
             throw new NotAllowedError('Cannot uninstall DBMS that is running');
         }
 
-        return this.uninstallNeo4j(id);
+        const dbms = await this.uninstallNeo4j(id);
+        delete this.dbmss[dbms.id];
+        return dbms;
     }
 
     start(nameOrIds: string[] | List<string>): Promise<List<string>> {
         return List.from(nameOrIds)
-            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
-            .mapEach((id) => {
+            .mapEach(async (nameOrId) => {
+                const {id} = await this.getDbms(nameOrId);
+
                 if (process.platform === 'win32') {
                     return winNeo4jStart(this.getDbmsRootPath(id));
                 }
@@ -401,8 +399,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     stop(nameOrIds: string[] | List<string>): Promise<List<string>> {
         return List.from(nameOrIds)
-            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId).id)
-            .mapEach((id) => {
+            .mapEach(async (nameOrId) => {
+                const {id} = await this.getDbms(nameOrId);
                 if (process.platform === 'win32') {
                     return winNeo4jStop(this.getDbmsRootPath(id));
                 }
@@ -414,8 +412,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     info(nameOrIds: string[] | List<string>, onlineCheck?: boolean): Promise<List<IDbmsInfo>> {
         return List.from(nameOrIds)
-            .mapEach((nameOrId) => resolveDbms(this.dbmss, nameOrId))
-            .mapEach(async (dbms) => {
+            .mapEach(async (nameOrId) => {
+                const dbms = await this.getDbms(nameOrId);
                 const v = dbms.rootPath ? await getDistributionInfo(dbms.rootPath) : null;
 
                 let status: DBMS_STATUS;
@@ -440,7 +438,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 return {
-                    connectionUri: dbms.connectionUri,
+                    connectionUri: await this.getConnectionUri(dbms.id),
                     description: dbms.description,
                     edition: v?.edition,
                     id: dbms.id,
@@ -457,7 +455,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async updateConfig(nameOrId: string, properties: Map<string, string>): Promise<boolean> {
-        const dbmsId = resolveDbms(this.dbmss, nameOrId).id;
+        const dbmsId = await this.getDbms(nameOrId).then((dbms) => dbms.id);
         const neo4jConfig = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
@@ -476,17 +474,44 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return applyEntityFilters(Dict.from(this.dbmss).values, filters);
     }
 
+    // @todo - Replace dbmss.get with this method for further performance gains.
+    private async getDbms(nameOrId: string): Promise<IDbms> {
+        try {
+            const dbms = resolveDbms(this.dbmss, nameOrId);
+            if (await this.environment.entityExists(ENTITY_TYPES.DBMS, dbms.id)) {
+                return dbms;
+            }
+        } catch {
+            await this.discoverDbmss();
+        }
+
+        try {
+            const dbms = resolveDbms(this.dbmss, nameOrId);
+            if (await this.environment.entityExists(ENTITY_TYPES.DBMS, dbms.id)) {
+                return dbms;
+            }
+
+            throw new NotFoundError(`DBMS "${nameOrId}" not found`);
+        } catch (e) {
+            throw new NotFoundError(`DBMS "${nameOrId}" not found`);
+        }
+    }
+
     async get(nameOrId: string, onlineCheck?: boolean): Promise<IDbmsInfo> {
-        await this.discoverDbmss();
+        try {
+            resolveDbms(this.dbmss, nameOrId);
+        } catch {
+            await this.discoverDbmss();
+        }
 
         try {
             const info = await this.info([nameOrId], onlineCheck);
 
             return info.first.getOrElse(() => {
-                throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+                throw new NotFoundError(`DBMS "${nameOrId}" not found`);
             });
         } catch (e) {
-            throw new InvalidArgumentError(`DBMS "${nameOrId}" not found`);
+            throw new NotFoundError(`DBMS "${nameOrId}" not found`);
         }
     }
 
@@ -681,6 +706,18 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
     private throttledDiscoverDbmss = throttle(this.discoverDbmss, DISCOVER_DBMS_THROTTLE_MS);
 
+    private async getConnectionUri(dbmsId: string): Promise<string> {
+        const neo4jConfig = await this.getDbmsConfig(dbmsId);
+        // @todo: verify these settings with driver team
+        const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
+        const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
+        const protocol = secure ? 'neo4j+s://' : 'neo4j://';
+        const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
+        const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
+
+        return `${protocol}${host}${port}`;
+    }
+
     private async discoverDbmss(): Promise<void> {
         const dbmss: {[key: string]: IDbms} = {};
         const root = this.getDbmsRootPath();
@@ -707,13 +744,11 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     // @todo: verify these settings with driver team
                     const tlsLevel = neo4jConfig.get('dbms.connector.bolt.tls_level') || DBMS_TLS_LEVEL.DISABLED;
                     const secure = tlsLevel !== DBMS_TLS_LEVEL.DISABLED;
-                    const protocol = secure ? 'neo4j+s://' : 'neo4j://';
-                    const host = neo4jConfig.get('dbms.default_advertised_address') || LOCALHOST_IP_ADDRESS;
-                    const port = neo4jConfig.get('dbms.connector.bolt.listen_address') || BOLT_DEFAULT_PORT;
+
                     const configDbmss = await this.manifest.get(id);
                     const overrides = {
                         config: neo4jConfig,
-                        connectionUri: `${protocol}${host}${port}`,
+                        connectionUri: await this.getConnectionUri(id),
                         id,
                         rootPath: fullPath,
                         secure,

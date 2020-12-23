@@ -82,8 +82,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
 
-        await this.dbmss.list();
-
         // @todo: this needs to be done proper
         const securityPluginFilename = `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`;
         const securityPluginTmp = path.join(__dirname, '..', '..', '..', securityPluginFilename);
