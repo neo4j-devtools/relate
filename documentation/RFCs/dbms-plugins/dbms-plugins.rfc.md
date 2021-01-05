@@ -28,7 +28,7 @@ $ relate dbms:uninstall-plugin <dbmsid>
 ```
 
 # Motivation
-Extending DBMS functionality using plugins is common practice in the Neo4j community. Furthermore, certain graph apps depends on one or more plugins being installed to function correctly. To this end we want to enable `@relate` to manage DBMS plugins as well as extension dependencies (on plugins and other extensions) to help users setup and consume Neo4j DBMSs, tools, and apps.
+Extending DBMS functionality using plugins is common practice in the Neo4j community. Furthermore, certain graph apps depends on one or more plugins being installed to function correctly. To this end we want to enable `@relate` to manage DBMS plugins to help users setup and consume Neo4j DBMSs, tools, and apps.
 
 # Detailed design
 ## DBMS plugin discovery
@@ -95,31 +95,13 @@ Finally we also recognize that users are not always able/willing to make changes
 
 If a plugin does not need config changes, the config property can safely be omitted from the version schema.
 
-## Extension dependencies
-With this enabled, extensions (such as graph-apps) can now declare a dependency on a DBMS plugin and/or other relate extensions.
-
-relate.extension.json
-```Typescript
-export interface IInstalledExtension {
-    // existing values:
-    name: string;
-    version: string;
-    type: EXTENSION_TYPES;
-    main: string;
-    // new values:
-    dependencies?: {
-        plugins?: string[] // DBMS plugins
-        extensions?: : string[] // @relate extensions
-    }
-}
-```
-It's unclear if these dependencies also need to specify a minimum version of a plugin/extension. With this information when an extension (eg. graph-app) installs we can also add any missing dependencies. 
+It's unclear if dependencies also need to specify a minimum version of a plugin. With this information when an extension (eg. graph-app) installs we can also add any missing DBMS plugins. 
 
 Today there is no direct link between relate extensions and DBMSs. This means that when for example Bloom installs it is added on a system level and not for a specific DBMS.
 
 
 # Drawbacks
-Potential drawbacks center around maintenance costs and percieved responsibility:
+Potential drawbacks center around maintenance costs and perceived responsibility:
 - We would have to keep our indirection file up to date should a plugin version URL change.
 - Since we are exposing this through `@relate` we would most likely have to help users find where to get support for a plugin (hence the "homepage" entry in the indirection file)
 - Since we are modifying the DBMS config we could break installations, meaning we should offer some way to rollback plugin installations. It is not clear if the current backup/restore functionality is sufficient here as data may have changed between plugin install and rollback.
