@@ -658,28 +658,34 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .split(',')
             .filter((_) => !_.isEmpty);
 
-        neo4jConfig.set(
-            `dbms.security.authentication_providers`,
-            authenticationProviders
-                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
-                .join(',')
-                .get(),
-        );
-        neo4jConfig.set(
-            `dbms.security.authorization_providers`,
-            authorizationProviders
-                .concat([`plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin`])
-                .join(',')
-                .get(),
-        );
-        neo4jConfig.set(
-            `dbms.security.procedures.unrestricted`,
-            unrestrictedProcedures
-                .concat([`jwt.security.*`])
-                .join(',')
-                .get(),
-        );
-
+        const securityPluginJavaPath = 'plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin';
+        if (!authenticationProviders.includes(Str.from(securityPluginJavaPath))) {
+            neo4jConfig.set(
+                `dbms.security.authentication_providers`,
+                authenticationProviders
+                    .concat([securityPluginJavaPath])
+                    .join(',')
+                    .get(),
+            );
+        }
+        if (!authorizationProviders.includes(Str.from(securityPluginJavaPath))) {
+            neo4jConfig.set(
+                `dbms.security.authorization_providers`,
+                authorizationProviders
+                    .concat([securityPluginJavaPath])
+                    .join(',')
+                    .get(),
+            );
+        }
+        if (!unrestrictedProcedures.includes(Str.from('jwt.security.*'))) {
+            neo4jConfig.set(
+                `dbms.security.procedures.unrestricted`,
+                unrestrictedProcedures
+                    .concat([`jwt.security.*`])
+                    .join(',')
+                    .get(),
+            );
+        }
         await neo4jConfig.flush();
 
         const jwtConfigPath = path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_JWT_CONF_FILE);
