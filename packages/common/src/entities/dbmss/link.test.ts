@@ -5,21 +5,27 @@ import {TestEnvironment} from '../../utils/system';
 import {DbmsManifestModel, IDbmsInfo} from '../../models';
 import {InvalidArgumentError, NotFoundError} from '../../errors';
 import {DBMS_MANIFEST_FILE} from '../../constants';
+import {NEO4J_CONF_DIR, NEO4J_CONF_FILE} from '../environments';
+import {PropertiesFile} from '../../system';
 
 describe('LocalDbmss - link', () => {
     let app: TestEnvironment;
     let dbms: IDbmsInfo;
     let tmpDbmsPath: string;
     let tmpDbmsPath2: string;
+    let tmpDbmsPath3: string;
 
     beforeAll(async () => {
         app = await TestEnvironment.init(__filename);
         dbms = await app.createDbms();
         tmpDbmsPath = path.join(app.environment.dataPath, path.basename(dbms.rootPath!));
         tmpDbmsPath2 = `${tmpDbmsPath}-2`;
+        tmpDbmsPath3 = `${tmpDbmsPath}-3`;
 
         await fse.copy(dbms.rootPath!, tmpDbmsPath);
+        await fse.copy(dbms.rootPath!, tmpDbmsPath3);
         await fse.remove(path.join(tmpDbmsPath, DBMS_MANIFEST_FILE));
+        await fse.remove(path.join(tmpDbmsPath3, DBMS_MANIFEST_FILE));
     });
 
     afterAll(() => app.teardown());
@@ -95,5 +101,27 @@ describe('LocalDbmss - link', () => {
         expect(result.name).toEqual(newManifest.name);
         expect(result.tags).toEqual(newManifest.tags);
         await expect(app.environment.dbmss.get('bar')).rejects.toThrow(new NotFoundError('DBMS "bar" not found'));
+    });
+
+    test('Security plugin config options are not changed if they are already correct', async () => {
+        const securityPluginJavaPath = 'plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin';
+        const originalConfigPath = path.join(tmpDbmsPath3, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
+        const originalConfig = await PropertiesFile.readFile(originalConfigPath);
+
+        originalConfig.set('dbms.security.authentication_providers', securityPluginJavaPath);
+        originalConfig.set('dbms.security.authorization_providers', securityPluginJavaPath);
+        originalConfig.set('dbms.security.procedures.unrestricted', 'jwt.security.*');
+        await originalConfig.flush();
+
+        const linkedDbms = await app.environment.dbmss.link(tmpDbmsPath3, 'jwt-plugin');
+        const linkedConfig = await app.environment.dbmss.getDbmsConfig(linkedDbms.id);
+
+        const authenticationProviders = linkedConfig.get('dbms.security.authentication_providers');
+        const authorizationProviders = linkedConfig.get('dbms.security.authorization_providers');
+        const unrestrictedProcedures = linkedConfig.get('dbms.security.procedures.unrestricted');
+
+        expect(authenticationProviders).toEqual(securityPluginJavaPath);
+        expect(authorizationProviders).toEqual(securityPluginJavaPath);
+        expect(unrestrictedProcedures).toEqual('jwt.security.*');
     });
 });
