@@ -21,7 +21,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.19 linux-x64 node-v12.20.0
+@relate/cli/1.0.2-alpha.19 darwin-x64 node-v12.18.3
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -60,6 +60,7 @@ relate$ relate --help
 * [`relate environment`](./docs/environment.md) - Managed sets of related resources and services, which may be local or remote.
 * [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
 * [`relate help`](./docs/help.md) - display help for relate
+* [`relate plugins`](./docs/plugins.md) - list installed plugins
 * [`relate project`](./docs/project.md) - Projects bring files and data together.
 
 <!-- commandsstop -->

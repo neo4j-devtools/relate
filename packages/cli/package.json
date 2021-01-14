@@ -29,13 +29,14 @@
         "@nestjs/core": "7.0.8",
         "@oclif/command": "1.8.0",
         "@oclif/config": "1.17.0",
-        "@oclif/plugin-autocomplete": "0.2.0",
-        "@oclif/plugin-help": "3.2.0",
+        "@oclif/plugin-autocomplete": "0.3.0",
+        "@oclif/plugin-help": "3.2.1",
+        "@oclif/plugin-plugins": "1.9.5",
         "@relate/common": "^1.0.2-alpha.19",
         "@relate/types": "^1.0.2-alpha.11",
         "chalk": "4.1.0",
-        "cli-ux": "5.5.0",
-        "cross-env": "7.0.2",
+        "cli-ux": "5.5.1",
+        "cross-env": "7.0.3",
         "enquirer": "2.3.6",
         "fs-extra": "9.0.1",
         "graphql": "15.1.0",
@@ -47,8 +48,8 @@
         "tslib": "1.10.0"
     },
     "devDependencies": {
-        "@oclif/dev-cli": "1.22.2",
-        "@oclif/test": "1.2.7",
+        "@oclif/dev-cli": "1.26.0",
+        "@oclif/test": "1.2.8",
         "@types/fs-extra": "8.1.0",
         "@types/jest": "26.0.7",
         "@types/lodash": "4.14.149",
@@ -102,9 +103,11 @@
             "command_not_found": "./dist/hooks/command-not-found"
         },
         "bin": "relate",
+        "scope": "relate",
         "plugins": [
             "@oclif/plugin-help",
-            "@oclif/plugin-autocomplete"
+            "@oclif/plugin-autocomplete",
+            "@oclif/plugin-plugins"
         ]
     },
     "scripts": {
