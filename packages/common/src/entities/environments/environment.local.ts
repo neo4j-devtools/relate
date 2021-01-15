@@ -56,6 +56,9 @@ export class LocalEnvironment extends EnvironmentAbstract {
             case ENTITY_TYPES.PROJECT:
                 return path.join(this.dirPaths.projectsData, `${ENTITY_TYPES.PROJECT}-${id}`);
 
+            case ENTITY_TYPES.PROJECT_INSTALL:
+                return path.join(this.dirPaths.projectsData, `${ENTITY_TYPES.PROJECT}-${id}`);
+
             case ENTITY_TYPES.EXTENSION:
                 return path.join(this.dirPaths.extensionsData, `${ENTITY_TYPES.EXTENSION}-${id}`);
 
@@ -78,8 +81,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
-
-        await this.dbmss.list();
 
         // @todo: this needs to be done proper
         const securityPluginFilename = `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`;

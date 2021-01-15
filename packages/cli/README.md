@@ -9,6 +9,7 @@ CLI tool for interacting with the Neo4j platform.
 
 - [@relate/cli](#relatecli)
 - [Usage](#usage)
+- [Development](#development)
 - [Commands](#commands)
 - [Command Topics](#command-topics)
 
@@ -20,7 +21,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.17 linux-x64 node-v12.20.0
+@relate/cli/1.0.2-alpha.20 linux-x64 node-v12.20.1
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND

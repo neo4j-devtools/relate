@@ -11,5 +11,6 @@ export * from './extension.model';
 export * from './authentication.model';
 export * from './file.model';
 export * from './project.model';
+export * from './project-install.model';
 export * from './relate-backup.model';
 export * from './manifest.model';

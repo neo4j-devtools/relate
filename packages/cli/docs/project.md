@@ -6,6 +6,7 @@ Projects bring files and data together.
 * [`relate project:add-dbms DBMS`](#relate-projectadd-dbms-dbms)
 * [`relate project:add-file SOURCE`](#relate-projectadd-file-source)
 * [`relate project:init`](#relate-projectinit)
+* [`relate project:install-sample`](#relate-projectinstall-sample)
 * [`relate project:link FILEPATH`](#relate-projectlink-filepath)
 * [`relate project:list`](#relate-projectlist)
 * [`relate project:list-dbmss`](#relate-projectlist-dbmss)
@@ -38,7 +39,7 @@ EXAMPLES
   $ relate project:add-dbms -p my-project -n dbms-name-in-project -u dbms-user-to-create-token-for
 ```
 
-_See code: [dist/commands/project/add-dbms.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/add-dbms.ts)_
+_See code: [dist/commands/project/add-dbms.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/add-dbms.ts)_
 
 ## `relate project:add-file SOURCE`
 
@@ -64,7 +65,7 @@ EXAMPLES
   $ relate project:add-file -p my-project -d /path/to/existing-dest.file /path/to/source.file --overwrite
 ```
 
-_See code: [dist/commands/project/add-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/add-file.ts)_
+_See code: [dist/commands/project/add-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/add-file.ts)_
 
 ## `relate project:init`
 
@@ -84,7 +85,26 @@ EXAMPLES
   $ relate project:init /path/to/target/project/dir --name=my-project
 ```
 
-_See code: [dist/commands/project/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/init.ts)_
+_See code: [dist/commands/project/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/init.ts)_
+
+## `relate project:install-sample`
+
+Install sample project
+
+```
+USAGE
+  $ relate project:install-sample
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+  -p, --project=project          (required) Name of the project to run the command against
+  -t, --to=to                    Path where the project directory will be created.
+
+EXAMPLE
+  $ relate project:install-sample
+```
+
+_See code: [dist/commands/project/install-sample.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/install-sample.ts)_
 
 ## `relate project:link FILEPATH`
 
@@ -101,7 +121,7 @@ EXAMPLE
   $ relate project:link /path/to/target/project/dir
 ```
 
-_See code: [dist/commands/project/link.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/link.ts)_
+_See code: [dist/commands/project/link.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/link.ts)_
 
 ## `relate project:list`
 
@@ -126,7 +146,7 @@ EXAMPLES
   $ relate project:list -e environment-name
 ```
 
-_See code: [dist/commands/project/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/list.ts)_
+_See code: [dist/commands/project/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/list.ts)_
 
 ## `relate project:list-dbmss`
 
@@ -146,7 +166,7 @@ EXAMPLES
   $ relate project:list-dbmss -p my-project
 ```
 
-_See code: [dist/commands/project/list-dbmss.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/list-dbmss.ts)_
+_See code: [dist/commands/project/list-dbmss.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/list-dbmss.ts)_
 
 ## `relate project:list-files`
 
@@ -166,7 +186,7 @@ EXAMPLES
   $ relate project:list-files -p my-project
 ```
 
-_See code: [dist/commands/project/list-files.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/list-files.ts)_
+_See code: [dist/commands/project/list-files.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/list-files.ts)_
 
 ## `relate project:open`
 
@@ -188,7 +208,7 @@ EXAMPLES
   $ relate project:open -p my-project -L
 ```
 
-_See code: [dist/commands/project/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/open.ts)_
+_See code: [dist/commands/project/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/open.ts)_
 
 ## `relate project:remove-dbms DBMS`
 
@@ -212,7 +232,7 @@ EXAMPLES
   $ relate project:remove-dbms project-dbms-name -p my-project
 ```
 
-_See code: [dist/commands/project/remove-dbms.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/remove-dbms.ts)_
+_See code: [dist/commands/project/remove-dbms.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/remove-dbms.ts)_
 
 ## `relate project:remove-file FILE`
 
@@ -233,4 +253,4 @@ EXAMPLES
   $ relate project:remove-file /project/path/to/name.file -p my-project
 ```
 
-_See code: [dist/commands/project/remove-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.17/packages/cli/src/commands/project/remove-file.ts)_
+_See code: [dist/commands/project/remove-file.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/project/remove-file.ts)_

@@ -1,8 +1,5 @@
-import {ApolloLink, execute, FetchResult, GraphQLRequest, makePromise} from 'apollo-link';
-import {createHttpLink} from 'apollo-link-http';
-import fetch from 'node-fetch';
+import {FetchResult, GraphQLRequest} from 'apollo-link';
 import path from 'path';
-import {Dict} from '@relate/types';
 
 import {RemoteDbmss} from '../dbmss';
 import {RemoteExtensions} from '../extensions';
@@ -16,6 +13,7 @@ import {ensureDirs} from '../../system/files';
 import {RemoteProjects} from '../projects';
 import {RemoteDbs} from '../dbs';
 import {RemoteBackups} from '../backups';
+import {GraphQLClient, GraphQLAbstract} from '../../utils/graphql';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
@@ -28,7 +26,7 @@ export class RemoteEnvironment extends EnvironmentAbstract {
 
     public readonly backups = new RemoteBackups(this);
 
-    private client: ApolloLink;
+    private graphqlClient: GraphQLAbstract;
 
     private relateUrl = `${this.httpOrigin}/graphql`;
 
@@ -39,27 +37,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
     constructor(config: EnvironmentConfigModel) {
         super(config);
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        this.client = createHttpLink({
-            // HttpLink wants a fetch implementation to make requests to a
-            // GraphQL API. It wants the browser version of it which has a
-            // few more options than the node version.
-            credentials: 'include',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-            // @ts-ignore
-            fetch: (url: string, opts: any) => {
-                // @todo: this could definitely be done better
-                const options = Dict.from(opts)
-                    .merge({
-                        credentials: 'include',
-                        headers: {[AUTH_TOKEN_HEADER]: this.config.authToken},
-                        mode: 'cors',
-                    })
-                    .toObject();
-
-                return fetch(url, options);
-            },
+        this.graphqlClient = new GraphQLClient({
+            headers: {[AUTH_TOKEN_HEADER]: this.config.authToken},
             uri: this.relateUrl,
         });
     }
@@ -77,17 +56,8 @@ export class RemoteEnvironment extends EnvironmentAbstract {
             throw new InvalidConfigError('Environments must specify a `httpOrigin`');
         }
 
-        try {
-            const res = await makePromise(execute(this.client, operation));
-
-            return res;
-        } catch (err) {
-            if (err.statusCode === 401 || err.statusCode === 403) {
-                throw new NotAllowedError('Unauthorized: must login to perform this operation');
-            }
-
-            throw err;
-        }
+        const res = await this.graphqlClient.execute(operation);
+        return res;
     }
 
     generateAPIToken(_hostName: string, _clientId: string, _data: any = {}): Promise<string> {

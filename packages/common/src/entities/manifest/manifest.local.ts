@@ -136,7 +136,10 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         const manifest = Dict.from(await this.get(id));
         const updated = merge ? manifest.merge(update).merge({id}) : manifest.assign(update).assign({id});
 
-        await emitHookEvent(HOOK_EVENTS.MANIFEST_WRITE, manifestPath);
+        await emitHookEvent(HOOK_EVENTS.MANIFEST_WRITE, {
+            manifestPath,
+            update,
+        });
         await fse.ensureFile(manifestPath);
         await fse.writeJson(manifestPath, new this.EntityModel(updated.toObject()), {
             encoding: 'utf8',

@@ -1,18 +1,34 @@
 import path from 'path';
 import fse from 'fs-extra';
 import {from} from 'rxjs';
+import semver from 'semver';
 import {flatMap, map} from 'rxjs/operators';
-import {List, Maybe, None, Str} from '@relate/types';
 import {v4 as uuidv4} from 'uuid';
+import got, {Got} from 'got';
+import {Dict, List, Maybe, None, Str} from '@relate/types';
 
-import {IProject, IProjectDbms, IProjectInput, IRelateFile, ProjectManifestModel, WriteFileFlag} from '../../models';
+import {
+    IProject,
+    IProjectDbms,
+    IProjectInput,
+    IRelateFile,
+    ProjectManifestModel,
+    ProjectInstallManifestModel,
+    WriteFileFlag,
+    ISampleProjectDbms,
+    ISampleProjectInput,
+    IDbmsInfo,
+    IDbmsVersion,
+    ISampleProjectRest,
+} from '../../models';
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
 import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
-import {InvalidArgumentError, NotFoundError} from '../../errors';
+import {AmbiguousTargetError, FetchError, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
+import {download, extract} from '../../utils';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     public readonly manifest = new ManifestLocal(
@@ -22,12 +38,19 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         (nameOrId: string) => this.get(nameOrId),
     );
 
+    public readonly manifestSampleProject = new ManifestLocal(
+        this.environment,
+        ENTITY_TYPES.PROJECT_INSTALL,
+        ProjectInstallManifestModel,
+        (nameOrId: string) => this.get(nameOrId),
+    );
+
     async create(manifest: Omit<IProjectInput, 'id'>): Promise<IProject> {
         const newId = uuidv4();
         const projectDir = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, newId);
-        const exists = await this.resolveProject(manifest.name);
 
-        if (!exists.isEmpty) {
+        const exists = await this.get(manifest.name).catch(() => null);
+        if (exists) {
             throw new InvalidArgumentError(`Project ${manifest.name} already exists`);
         }
 
@@ -38,15 +61,14 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async get(nameOrId: string): Promise<IProject> {
-        const project = await this.resolveProject(nameOrId);
-
-        return project.getOrElse(() => {
-            throw new NotFoundError(`Could not find project ${nameOrId}`);
-        });
+        await this.discoverProjects();
+        return this.resolveProject(this.projects, nameOrId);
     }
 
-    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
-        const projects = await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
+    async discoverProjects(): Promise<void> {
+        const projects: Record<string, IProject> = {};
+
+        await List.from(await fse.readdir(this.environment.dirPaths.projectsData))
             .mapEach(Str.from)
             .filter((name) => name.startsWith(`${ENTITY_TYPES.PROJECT}-`))
             .mapEach((name) => name.replace(`${ENTITY_TYPES.PROJECT}-`, ''))
@@ -54,13 +76,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                 projectId.flatMap(async (id) => {
                     const projectExists = await this.environment.entityExists(ENTITY_TYPES.PROJECT, id);
                     if (!projectExists) {
-                        return null;
+                        return;
                     }
 
                     const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, id);
                     const manifest = await this.manifest.get(id);
 
-                    return {
+                    projects[id] = {
                         ...manifest,
                         root: projectPath,
                     };
@@ -68,7 +90,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             )
             .unwindPromises();
 
-        return applyEntityFilters(projects.compact(), filters);
+        this.projects = projects;
+    }
+
+    async list(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IProject>> {
+        await this.discoverProjects();
+
+        return applyEntityFilters(Dict.from(this.projects).values, filters);
     }
 
     async link(externalPath: string, name: string): Promise<IProject> {
@@ -117,6 +145,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
         await fse.symlink(externalPath, projectPath, 'junction');
         await this.manifest.update(manifestModel.id, manifestModel);
+        await this.discoverProjects();
 
         return this.get(manifestModel.id);
     }
@@ -126,6 +155,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const projectPath = this.environment.getEntityRootPath(ENTITY_TYPES.PROJECT, project.id);
 
         await fse.unlink(projectPath);
+        delete this.projects[project.id];
 
         return project;
     }
@@ -267,13 +297,148 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             });
     }
 
-    private async resolveProject(projectId: string | Str): Promise<Maybe<IProject>> {
-        const nameToUse = Str.from(projectId);
-        const allProjects = await this.list();
+    async listSampleProjects(fetch?: () => any | Got): Promise<List<ISampleProjectRest>> {
+        const get = fetch || got;
 
-        return allProjects.find(
-            ({id, name}) => nameToUse.equals(id) || (!Str.EMPTY.equals(name) && nameToUse.equals(name)),
+        try {
+            const response = await get('https://api.github.com/orgs/neo4j-graph-examples/repos');
+
+            // @TODO: Figure out how to filter the response by topic or something else.
+            return List.from(
+                JSON.parse(response.body).map(({name, description}: ISampleProjectRest) => ({
+                    name,
+                    description,
+                    downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/master.zip`,
+                })),
+            );
+        } catch (_error) {
+            throw new FetchError(`Unable to fetch Sample Projects from GitHub`);
+        }
+    }
+
+    async downloadSampleProject(selected: string, destPath?: string): Promise<{path: string; temp: boolean}> {
+        const {tmp} = this.environment.dirPaths;
+
+        const diskPath = destPath || path.join(tmp, 'sample-project');
+        const sampleProject = await download(
+            `https://github.com/neo4j-graph-examples/${selected}/archive/master.zip`,
+            destPath ? destPath : path.join(diskPath, selected),
         );
+
+        const extractedPath = await extract(sampleProject, diskPath);
+
+        return {
+            path: extractedPath,
+            temp: !destPath,
+        };
+    }
+
+    async installSampleProject(
+        srcPath: string,
+        args: {
+            name?: string;
+            projectId?: string;
+            temp?: boolean;
+        },
+    ): Promise<{project: IProjectInput; install?: ISampleProjectInput}> {
+        const {name, projectId} = args;
+        let {temp} = args;
+
+        let project;
+
+        if (projectId) {
+            project = await this.get(projectId);
+        } else if (!projectId && !temp && name) {
+            project = await this.link(srcPath, name);
+        }
+
+        if (!project) {
+            temp = true;
+            project = await this.create({
+                name: name || 'Sample Project',
+                dbmss: [],
+            });
+        }
+
+        if (temp) {
+            await fse.copy(srcPath, project.root, {filter: (src) => !src.includes('relate.project.json')});
+        }
+
+        return {
+            project: await this.manifest.get(project.id),
+            install: await this.manifestSampleProject.get(project.id),
+        };
+    }
+
+    async importSampleDbms(
+        projectId: string,
+        dbms: ISampleProjectDbms,
+        credentials: string,
+    ): Promise<{created: IDbmsInfo; dump?: string; script?: string}> {
+        const versions = (await this.environment.dbmss.versions()).toArray();
+        const semverVersion = semver.maxSatisfying(
+            versions.map((v: IDbmsVersion) => v.version),
+            dbms.targetNeo4jVersion,
+        );
+
+        if (!semverVersion) {
+            throw new Error("Couldn't find a suitable DBMS version to install.");
+        }
+
+        const version = versions.find((v: IDbmsVersion) => v.version === semverVersion);
+        if (!version) {
+            throw new Error("Couldn't find a suitable DBMS version to install.");
+        }
+
+        const {edition} = version;
+
+        const created = await this.environment.dbmss.install(
+            dbms.name || 'Sample DBMS',
+            `${semverVersion}`,
+            edition,
+            credentials,
+        );
+
+        const project = await this.get(projectId);
+
+        let dump;
+        if (created.id && dbms.dumpFile) {
+            dump = await this.environment.dbs.load(created.id, 'neo4j', path.join(project.root, dbms.dumpFile));
+        }
+
+        let script;
+        if (created.id && !dbms.dumpFile && dbms.scriptFile) {
+            script = await this.environment.dbs.exec(created.id, path.join(project.root, dbms.scriptFile), {
+                user: 'neo4j',
+                database: 'neo4j',
+                accessToken: credentials,
+            });
+        }
+
+        return {
+            created,
+            dump,
+            script,
+        };
+    }
+
+    private resolveProject(projects: Record<string, IProject>, nameOrId: string): IProject {
+        if (projects[nameOrId]) {
+            return projects[nameOrId];
+        }
+
+        const projectsWithTargetName = Object.values(projects).filter((project) => project.name === nameOrId);
+
+        if (projectsWithTargetName.length === 0) {
+            throw new NotFoundError(`Project "${nameOrId}" not found`);
+        }
+
+        if (projectsWithTargetName.length > 1) {
+            const ids = projectsWithTargetName.map((project) => project.id).join('\n');
+            throw new AmbiguousTargetError(`Multiple projects found with name "${nameOrId}": \n${ids}`);
+        }
+
+        return projectsWithTargetName[0];
     }
 
     private findAllFilesRecursive(root: string): Promise<List<string>> {

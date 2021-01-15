@@ -103,7 +103,7 @@ describe('AppsModule', () => {
             .expect(HTTP_OK)
             .expect((res: request.Response) => {
                 const [{message}] = res.body.errors;
-                const expected = `Could not find project ${TEST_PROJECT_NAME}`;
+                const expected = `Project "${TEST_PROJECT_NAME}" not found`;
 
                 expect(message).toEqual(expected);
             });

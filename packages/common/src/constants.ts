@@ -5,6 +5,7 @@ import {IRelateBackup} from './models';
 export enum ENTITY_TYPES {
     DBMS = 'dbms',
     PROJECT = 'project',
+    PROJECT_INSTALL = 'project-install',
     DB = 'db',
     EXTENSION = 'extension',
     ENVIRONMENT = 'environment',
@@ -19,6 +20,7 @@ export const DOWNLOADING_FILE_EXTENSION = '.rdownload';
 export const BACKUP_MANIFEST_FILE = `relate.${ENTITY_TYPES.BACKUP}.json`;
 export const DBMS_MANIFEST_FILE = `relate.${ENTITY_TYPES.DBMS}.json`;
 export const PROJECT_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT}.json`;
+export const PROJECT_INSTALL_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT_INSTALL}.json`;
 export const EXTENSION_MANIFEST_FILE = `relate.${ENTITY_TYPES.EXTENSION}.json`;
 
 export const RELATE_ACCESS_TOKENS_DIR_NAME = 'access-tokens';
@@ -165,6 +167,9 @@ export enum PUBLIC_GRAPHQL_METHODS {
     REMOVE_PROJECT_TAGS = 'removeProjectTags',
     SET_PROJECT_METADATA = 'setProjectMetadata',
     REMOVE_PROJECT_METADATA = 'removeProjectMetadata',
+    LIST_SAMPLES_PROJECTS = 'listSampleProjects',
+    INSTALL_SAMPLE_PROJECTS = 'installSampleProjects',
+    IMPORT_SAMPLE_DBMS = 'importSampleDbms',
 
     // dump / import
     DB_DUMP = 'dbDump',
