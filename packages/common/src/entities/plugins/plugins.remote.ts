@@ -7,15 +7,19 @@ import {PluginsAbstract} from './plugins.abstract';
 import {RemoteEnvironment} from '../environments';
 
 export class RemotePlugins extends PluginsAbstract<RemoteEnvironment> {
+    public getSource(_name: string): Promise<IPluginSource> {
+        throw new NotSupportedError(`${RemotePlugins.name} does not support getting plugin sources`);
+    }
+
     public listSources(_filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IPluginSource>> {
         throw new NotSupportedError(`${RemotePlugins.name} does not support listing plugin sources`);
     }
 
-    public addSources(_urls: string[]): Promise<IPluginSource> {
+    public addSources(_urls: string[]): Promise<List<IPluginSource>> {
         throw new NotSupportedError(`${RemotePlugins.name} does not support adding plugin sources`);
     }
 
-    public removeSources(_urls: string[]): Promise<IPluginSource> {
+    public removeSources(_urls: string[]): Promise<List<IPluginSource>> {
         throw new NotSupportedError(`${RemotePlugins.name} does not support removing plugin sources`);
     }
 

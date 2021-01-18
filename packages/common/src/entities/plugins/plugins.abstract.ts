@@ -15,6 +15,12 @@ export abstract class PluginsAbstract<Env extends EnvironmentAbstract> {
     constructor(protected readonly environment: Env) {}
 
     /**
+     * Get the source for a specific plugin
+     * @param   name
+     */
+    abstract getSource(name: string): Promise<IPluginSource>;
+
+    /**
      * List all plugin sources
      * @param   filters     Filters to apply
      */
@@ -24,13 +30,13 @@ export abstract class PluginsAbstract<Env extends EnvironmentAbstract> {
      * Add one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract addSources(urls: string[]): Promise<IPluginSource>;
+    abstract addSources(urls: string[]): Promise<List<IPluginSource>>;
 
     /**
      * Remove one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract removeSources(urls: string[]): Promise<IPluginSource>;
+    abstract removeSources(urls: string[]): Promise<List<IPluginSource>>;
 
     /**
      * List all plugins installed in the specified DBMS
