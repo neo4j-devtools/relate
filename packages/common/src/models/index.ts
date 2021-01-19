@@ -10,7 +10,7 @@ export {AppLaunchTokenModel, IAppLaunchToken} from './app-launch-token.model';
 export * from './extension.model';
 export * from './authentication.model';
 export * from './file.model';
-export * from './plugin.model';
+export * from './dbms-plugin.model';
 export * from './project.model';
 export * from './project-install.model';
 export * from './relate-backup.model';

@@ -3,7 +3,7 @@ import {IsHash, IsOptional, IsSemVer, IsString, IsUrl} from 'class-validator';
 
 import {ModelAbstract, StringOrStringArray} from './model.abstract';
 
-export interface IPluginSource {
+export interface IDbmsPluginSource {
     /** Plugin name */
     name: string;
 
@@ -14,7 +14,7 @@ export interface IPluginSource {
     versionsUrl: string;
 }
 
-export interface IPluginVersion {
+export interface IDbmsPluginVersion {
     /** Plugin semver */
     version: string;
 
@@ -34,7 +34,7 @@ export interface IPluginVersion {
     config: Record<string, string | string[]>;
 }
 
-export class PluginSourceModel extends ModelAbstract<IPluginSource> implements IPluginSource {
+export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> implements IDbmsPluginSource {
     @IsString()
     public name!: string;
 
@@ -45,7 +45,7 @@ export class PluginSourceModel extends ModelAbstract<IPluginSource> implements I
     public versionsUrl!: string;
 }
 
-export class PluginVersionModel extends ModelAbstract<IPluginVersion> implements IPluginVersion {
+export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> implements IDbmsPluginVersion {
     constructor(props: any) {
         super(props);
 

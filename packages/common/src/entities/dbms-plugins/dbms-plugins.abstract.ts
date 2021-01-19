@@ -1,13 +1,13 @@
 import {List} from '@relate/types';
 
-import {IPluginSource, IPluginVersion} from '../../models';
+import {IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 import {EnvironmentAbstract} from '../environments';
 
-export abstract class PluginsAbstract<Env extends EnvironmentAbstract> {
-    public sources: Record<string, IPluginSource> = {};
+export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
+    public sources: Record<string, IDbmsPluginSource> = {};
 
-    public versions: Record<string, IPluginVersion[]> = {};
+    public versions: Record<string, IDbmsPluginVersion[]> = {};
 
     /**
      * @hidden
@@ -18,51 +18,54 @@ export abstract class PluginsAbstract<Env extends EnvironmentAbstract> {
      * Get the source for a specific plugin
      * @param   name
      */
-    abstract getSource(name: string): Promise<IPluginSource>;
+    abstract getSource(name: string): Promise<IDbmsPluginSource>;
 
     /**
      * List all plugin sources
      * @param   filters     Filters to apply
      */
-    abstract listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IPluginSource>>;
+    abstract listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Add one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract addSources(urls: string[]): Promise<List<IPluginSource>>;
+    abstract addSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Remove one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract removeSources(urls: string[]): Promise<List<IPluginSource>>;
+    abstract removeSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * List all plugins installed in the specified DBMS
      * @param   dbmsNameOrId
      * @param   filters         Filters to apply
      */
-    abstract list(dbmsNameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IPluginVersion>>;
+    abstract list(
+        dbmsNameOrId: string,
+        filters?: List<IRelateFilter> | IRelateFilter[],
+    ): Promise<List<IDbmsPluginVersion>>;
 
     /**
      * Install a plugin in the specified DBMS
      * @param   dbmsNameOrId
      * @param   pluginName
      */
-    abstract install(dbmsNameOrId: string, pluginName: string): Promise<IPluginVersion>;
+    abstract install(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
 
     /**
      * Upgrade a plugin in the specified DBMS
      * @param   dbmsNameOrId
      * @param   pluginName
      */
-    abstract upgrade(dbmsNameOrId: string, pluginName: string): Promise<IPluginVersion>;
+    abstract upgrade(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
 
     /**
      * Uninstall a plugin from the specified DBMS
      * @param   dbmsNameOrId
      * @param   pluginName
      */
-    abstract uninstall(dbmsNameOrId: string, pluginName: string): Promise<IPluginVersion>;
+    abstract uninstall(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
 }

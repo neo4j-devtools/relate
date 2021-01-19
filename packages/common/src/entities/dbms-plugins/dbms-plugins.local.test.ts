@@ -1,5 +1,5 @@
 import nock from 'nock';
-import {IPluginSource} from '../../models';
+import {IDbmsPluginSource} from '../../models';
 import {TestEnvironment} from '../../utils/system';
 
 describe('LocalPlugins', () => {
@@ -18,7 +18,7 @@ describe('LocalPlugins', () => {
     });
 
     test('Add plugin sources by URL', async () => {
-        const testSource: IPluginSource = {
+        const testSource: IDbmsPluginSource = {
             name: 'apoc',
             homepageUrl: 'http://apoc.test/homepageUrl',
             versionsUrl: 'http://apoc.test/versionsUrl',
@@ -35,7 +35,7 @@ describe('LocalPlugins', () => {
     });
 
     test('Remove plugin sources', async () => {
-        const testSource: IPluginSource = {
+        const testSource: IDbmsPluginSource = {
             name: 'apoc',
             homepageUrl: 'http://apoc.test/homepageUrl',
             versionsUrl: 'http://apoc.test/versionsUrl',

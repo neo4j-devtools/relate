@@ -3,21 +3,21 @@ import got from 'got';
 import path from 'path';
 import {Dict, List} from '@relate/types';
 
-import {IPluginSource, IPluginVersion, PluginSourceModel} from '../../models';
-import {IRelateFilter} from '../../utils/generic';
+import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
+import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {NotFoundError, NotSupportedError} from '../../errors';
-import {PluginsAbstract} from './plugins.abstract';
-import {discoverPluginSources} from '../../utils/plugins';
+import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
+import {discoverPluginSources} from '../../utils/dbms-plugins';
 import {LocalEnvironment} from '../environments';
 import {JSON_FILE_EXTENSION} from '../../constants';
 
-export class LocalPlugins extends PluginsAbstract<LocalEnvironment> {
-    public async getSource(name: string): Promise<IPluginSource> {
+export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
+    public async getSource(name: string): Promise<IDbmsPluginSource> {
         const sourcePath = path.join(this.environment.dirPaths.pluginSources, `${name}${JSON_FILE_EXTENSION}`);
 
         try {
             const sourceRaw = await fse.readJSON(sourcePath);
-            const source = new PluginSourceModel(sourceRaw);
+            const source = new DbmsPluginSourceModel(sourceRaw);
 
             return source;
         } catch {
@@ -25,18 +25,18 @@ export class LocalPlugins extends PluginsAbstract<LocalEnvironment> {
         }
     }
 
-    public async listSources(_filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IPluginSource>> {
-        // Should throttle this
+    public async listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
+        // @todo - should throttle this
         this.sources = await discoverPluginSources(this.environment.dirPaths.pluginSources);
 
-        return Dict.from(this.sources).values;
+        return applyEntityFilters(Dict.from(this.sources).values, filters);
     }
 
-    public async addSources(urls: string[]): Promise<List<IPluginSource>> {
-        const responses: List<IPluginSource> = await List.from(urls)
+    public async addSources(urls: string[]): Promise<List<IDbmsPluginSource>> {
+        const responses: List<IDbmsPluginSource> = await List.from(urls)
             .mapEach((url) => got(url).json())
             .unwindPromises();
-        const sources = responses.mapEach((res) => new PluginSourceModel(res));
+        const sources = responses.mapEach((res) => new DbmsPluginSourceModel(res));
 
         await sources
             .mapEach(async (source) => {
@@ -52,7 +52,7 @@ export class LocalPlugins extends PluginsAbstract<LocalEnvironment> {
         return sources;
     }
 
-    public async removeSources(names: string[]): Promise<List<IPluginSource>> {
+    public async removeSources(names: string[]): Promise<List<IDbmsPluginSource>> {
         const sources = await List.from(names)
             .mapEach((name) => this.getSource(name))
             .unwindPromises();
@@ -74,19 +74,19 @@ export class LocalPlugins extends PluginsAbstract<LocalEnvironment> {
     public list(
         _dbmsNameOrId: string,
         _filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IPluginVersion>> {
-        throw new NotSupportedError(`${LocalPlugins.name} does not support listing plugins`);
+    ): Promise<List<IDbmsPluginVersion>> {
+        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support listing plugins`);
     }
 
-    public install(_dbmsNameOrId: string, _pluginName: string): Promise<IPluginVersion> {
-        throw new NotSupportedError(`${LocalPlugins.name} does not support installing plugins`);
+    public install(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support installing plugins`);
     }
 
-    public upgrade(_dbmsNameOrId: string, _pluginName: string): Promise<IPluginVersion> {
-        throw new NotSupportedError(`${LocalPlugins.name} does not support upgrading plugins`);
+    public upgrade(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support upgrading plugins`);
     }
 
-    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IPluginVersion> {
-        throw new NotSupportedError(`${LocalPlugins.name} does not support uninstalling plugins`);
+    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support uninstalling plugins`);
     }
 }

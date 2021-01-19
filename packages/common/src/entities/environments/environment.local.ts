@@ -19,7 +19,7 @@ import {
 import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
 import {LocalBackups} from '../backups';
-import {LocalPlugins} from '../plugins';
+import {LocalDbmsPlugins} from '../dbms-plugins';
 import {InvalidArgumentError} from '../../errors';
 import {TokenService} from '../../token.service';
 import {getManifestName} from '../../utils/system';
@@ -35,7 +35,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     public readonly backups = new LocalBackups(this);
 
-    public readonly plugins = new LocalPlugins(this);
+    public readonly plugins = new LocalDbmsPlugins(this);
 
     public readonly dirPaths = {
         ...envPaths(),
