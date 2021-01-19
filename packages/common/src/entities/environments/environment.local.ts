@@ -13,11 +13,13 @@ import {
     ENTITY_TYPES,
     EXTENSION_DIR_NAME,
     EXTENSION_TYPES,
+    PLUGIN_SOURCES_DIR_NAME,
     PROJECTS_DIR_NAME,
 } from '../../constants';
 import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
 import {LocalBackups} from '../backups';
+import {LocalDbmsPlugins} from '../dbms-plugins';
 import {InvalidArgumentError} from '../../errors';
 import {TokenService} from '../../token.service';
 import {getManifestName} from '../../utils/system';
@@ -33,6 +35,8 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     public readonly backups = new LocalBackups(this);
 
+    public readonly plugins = new LocalDbmsPlugins(this);
+
     public readonly dirPaths = {
         ...envPaths(),
         dbmssData: path.join(this.dataPath, DBMS_DIR_NAME),
@@ -43,6 +47,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         extensionsCache: path.join(this.cachePath, EXTENSION_DIR_NAME),
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
         staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
+        pluginSources: path.join(envPaths().config, PLUGIN_SOURCES_DIR_NAME),
     };
 
     public getEntityRootPath(entityType: ENTITY_TYPES, id: string): string {
