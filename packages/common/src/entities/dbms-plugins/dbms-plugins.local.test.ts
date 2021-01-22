@@ -1,6 +1,16 @@
 import nock from 'nock';
 import {IDbmsPluginSource} from '../../models';
 import {TestEnvironment} from '../../utils/system';
+import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
+
+const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
+const PLUGIN_SOURCES_PATHNAME = new URL(NEO4J_PLUGIN_SOURCES_URL).pathname;
+
+const TEST_SOURCE: IDbmsPluginSource = {
+    name: 'apoc',
+    homepageUrl: 'http://apoc.test/homepageUrl',
+    versionsUrl: 'http://apoc.test/versionsUrl',
+};
 
 describe('LocalPlugins', () => {
     let app: TestEnvironment;
@@ -9,42 +19,84 @@ describe('LocalPlugins', () => {
         app = await TestEnvironment.init(__filename);
     });
 
+    afterEach(() => nock.cleanAll());
+
     afterAll(() => app.teardown());
 
     test('Lists no plugin sources', async () => {
-        const pluginSources = await app.environment.plugins.listSources();
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {});
 
-        expect(pluginSources.toArray()).toEqual([]);
+        const pluginSourcesNoDefaults = await app.environment.plugins.listSources();
+        expect(pluginSourcesNoDefaults.toArray()).toEqual([]);
+
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(500);
+
+        const pluginSourcesFetchError = await app.environment.plugins.listSources();
+        expect(pluginSourcesFetchError.toArray()).toEqual([]);
     });
 
-    test('Add plugin sources by URL', async () => {
-        const testSource: IDbmsPluginSource = {
-            name: 'apoc',
-            homepageUrl: 'http://apoc.test/homepageUrl',
-            versionsUrl: 'http://apoc.test/versionsUrl',
-        };
-        nock('http://apoc.test')
-            .get('/plugin-sources')
-            .reply(200, testSource);
+    test('Lists default plugin sources', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {
+                apoc: TEST_SOURCE,
+            });
 
-        const addedSources = await app.environment.plugins.addSources(['http://apoc.test/plugin-sources']);
+        const pluginSources = await app.environment.plugins.listSources();
+        expect(pluginSources.toArray()).toEqual([
+            {
+                ...TEST_SOURCE,
+                isOfficial: true,
+            },
+        ]);
+    });
+
+    test('Add plugin sources', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {});
+
+        const addedSources = await app.environment.plugins.addSources([TEST_SOURCE]);
         const listedSources = await app.environment.plugins.listSources();
 
-        expect(addedSources.toArray()).toEqual([testSource]);
-        expect(listedSources.toArray()).toEqual([testSource]);
+        expect(addedSources.toArray()).toEqual([TEST_SOURCE]);
+        expect(listedSources.toArray()).toEqual([TEST_SOURCE]);
     });
 
-    test('Remove plugin sources', async () => {
-        const testSource: IDbmsPluginSource = {
-            name: 'apoc',
-            homepageUrl: 'http://apoc.test/homepageUrl',
-            versionsUrl: 'http://apoc.test/versionsUrl',
-        };
+    test('Remove user added plugin sources', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
+            .reply(200, {});
 
         const removedSources = await app.environment.plugins.removeSources(['apoc']);
         const listedSources = await app.environment.plugins.listSources();
 
-        expect(removedSources.toArray()).toEqual([testSource]);
+        expect(removedSources.toArray()).toEqual([TEST_SOURCE]);
         expect(listedSources.toArray()).toEqual([]);
+    });
+
+    test('Cannot remove official plugin sources', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
+            .reply(200, {
+                apoc: TEST_SOURCE,
+            });
+
+        const removedSources = await app.environment.plugins.removeSources(['apoc']);
+        const listedSources = await app.environment.plugins.listSources();
+
+        expect(removedSources.toArray()).toEqual([]);
+        expect(listedSources.toArray()).toEqual([
+            {
+                ...TEST_SOURCE,
+                isOfficial: true,
+            },
+        ]);
     });
 });

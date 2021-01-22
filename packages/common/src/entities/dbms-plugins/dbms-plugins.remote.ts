@@ -15,11 +15,11 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugin sources`);
     }
 
-    public addSources(_urls: string[]): Promise<List<IDbmsPluginSource>> {
+    public addSources(_sources: IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support adding plugin sources`);
     }
 
-    public removeSources(_urls: string[]): Promise<List<IDbmsPluginSource>> {
+    public removeSources(_names: string[]): Promise<List<IDbmsPluginSource>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support removing plugin sources`);
     }
 

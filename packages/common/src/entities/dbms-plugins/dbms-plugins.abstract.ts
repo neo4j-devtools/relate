@@ -28,15 +28,15 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Add one or more plugin sources
-     * @param   urls     List of source URLs
+     * @param   sources     List of sources
      */
-    abstract addSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
+    abstract addSources(sources: IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Remove one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract removeSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
+    abstract removeSources(names: string[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * List all plugins installed in the specified DBMS
