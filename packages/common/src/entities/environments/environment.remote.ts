@@ -14,9 +14,12 @@ import {RemoteProjects} from '../projects';
 import {RemoteDbs} from '../dbs';
 import {RemoteBackups} from '../backups';
 import {GraphQLClient, GraphQLAbstract} from '../../utils/graphql';
+import {RemoteDbmsPlugins} from '../dbms-plugins';
 
 export class RemoteEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new RemoteDbmss(this);
+
+    public readonly dbmsPlugins = new RemoteDbmsPlugins(this);
 
     public readonly dbs = new RemoteDbs(this);
 

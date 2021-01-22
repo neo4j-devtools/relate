@@ -27,6 +27,8 @@ import {getManifestName} from '../../utils/system';
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
 
+    public readonly dbmsPlugins = new LocalDbmsPlugins(this);
+
     public readonly dbs = new LocalDbs(this);
 
     public readonly extensions = new LocalExtensions(this);
@@ -34,8 +36,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
     public readonly projects = new LocalProjects(this);
 
     public readonly backups = new LocalBackups(this);
-
-    public readonly plugins = new LocalDbmsPlugins(this);
 
     public readonly dirPaths = {
         ...envPaths(),

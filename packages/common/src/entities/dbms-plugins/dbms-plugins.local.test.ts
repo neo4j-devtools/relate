@@ -28,14 +28,14 @@ describe('LocalPlugins', () => {
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {});
 
-        const pluginSourcesNoDefaults = await app.environment.plugins.listSources();
+        const pluginSourcesNoDefaults = await app.environment.dbmsPlugins.listSources();
         expect(pluginSourcesNoDefaults.toArray()).toEqual([]);
 
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(500);
 
-        const pluginSourcesFetchError = await app.environment.plugins.listSources();
+        const pluginSourcesFetchError = await app.environment.dbmsPlugins.listSources();
         expect(pluginSourcesFetchError.toArray()).toEqual([]);
     });
 
@@ -46,7 +46,7 @@ describe('LocalPlugins', () => {
                 apoc: TEST_SOURCE,
             });
 
-        const pluginSources = await app.environment.plugins.listSources();
+        const pluginSources = await app.environment.dbmsPlugins.listSources();
         expect(pluginSources.toArray()).toEqual([
             {
                 ...TEST_SOURCE,
@@ -60,8 +60,8 @@ describe('LocalPlugins', () => {
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {});
 
-        const addedSources = await app.environment.plugins.addSources([TEST_SOURCE]);
-        const listedSources = await app.environment.plugins.listSources();
+        const addedSources = await app.environment.dbmsPlugins.addSources([TEST_SOURCE]);
+        const listedSources = await app.environment.dbmsPlugins.listSources();
 
         expect(addedSources.toArray()).toEqual([TEST_SOURCE]);
         expect(listedSources.toArray()).toEqual([TEST_SOURCE]);
@@ -73,8 +73,8 @@ describe('LocalPlugins', () => {
             .twice()
             .reply(200, {});
 
-        const removedSources = await app.environment.plugins.removeSources(['apoc']);
-        const listedSources = await app.environment.plugins.listSources();
+        const removedSources = await app.environment.dbmsPlugins.removeSources(['apoc']);
+        const listedSources = await app.environment.dbmsPlugins.listSources();
 
         expect(removedSources.toArray()).toEqual([TEST_SOURCE]);
         expect(listedSources.toArray()).toEqual([]);
@@ -88,8 +88,8 @@ describe('LocalPlugins', () => {
                 apoc: TEST_SOURCE,
             });
 
-        const removedSources = await app.environment.plugins.removeSources(['apoc']);
-        const listedSources = await app.environment.plugins.listSources();
+        const removedSources = await app.environment.dbmsPlugins.removeSources(['apoc']);
+        const listedSources = await app.environment.dbmsPlugins.listSources();
 
         expect(removedSources.toArray()).toEqual([]);
         expect(listedSources.toArray()).toEqual([
