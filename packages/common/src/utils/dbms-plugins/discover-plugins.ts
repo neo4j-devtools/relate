@@ -6,24 +6,37 @@ import {isArray, isObject} from 'lodash';
 
 import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel, DbmsPluginVersionModel} from '../../models';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../../entities/environments';
+import {envPaths} from '../env-paths';
+import {DEFAULT_PLUGIN_SOURCES_FILE, PLUGIN_SOURCES_DIR_NAME} from '../../constants';
 
 export const fetchOfficialPluginSources = async (): Promise<List<IDbmsPluginSource>> => {
+    const cachedSourcesFile = path.join(envPaths().cache, PLUGIN_SOURCES_DIR_NAME, DEFAULT_PLUGIN_SOURCES_FILE);
     const rawSourcesMap = await got(NEO4J_PLUGIN_SOURCES_URL)
         .json()
         .catch(() => null);
 
     if (!rawSourcesMap || !isObject(rawSourcesMap)) {
-        // @todo - should we check the cache here before returning an empty list?
+        if (await fse.pathExists(cachedSourcesFile)) {
+            return List.from<IDbmsPluginSource>(await fse.readJSON(cachedSourcesFile)).mapEach(
+                (source) => new DbmsPluginSourceModel(source),
+            );
+        }
+
         return List.from([]);
     }
 
-    return List.from(Object.entries(rawSourcesMap)).mapEach(([name, source]) => {
+    const sources = List.from(Object.entries(rawSourcesMap)).mapEach(([name, source]) => {
         return new DbmsPluginSourceModel({
             ...source,
             name,
             isOfficial: true,
         });
     });
+
+    await fse.ensureFile(cachedSourcesFile);
+    await fse.writeJSON(cachedSourcesFile, sources);
+
+    return sources;
 };
 
 export const discoverPluginSources = async (rootDir: string): Promise<List<IDbmsPluginSource>> => {

@@ -65,6 +65,7 @@ describe('LocalDbmsPlugins', () => {
     test('dbmsPlugins.addSources - fails when adding an already existing source', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
             .reply(200, {
                 apoc: TEST_SOURCE,
             });
@@ -75,12 +76,18 @@ describe('LocalDbmsPlugins', () => {
         );
 
         const listedSources = await app.environment.dbmsPlugins.listSources();
-        expect(listedSources.toArray()).toEqual([]);
+        expect(listedSources.toArray()).toEqual([
+            {
+                ...TEST_SOURCE,
+                isOfficial: true,
+            },
+        ]);
     });
 
     test('dbmsPlugins.addSources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
             .reply(200, {});
 
         const addedSources = await app.environment.dbmsPlugins.addSources([TEST_SOURCE]);
@@ -97,6 +104,7 @@ describe('LocalDbmsPlugins', () => {
     test('dbmsPlugins.addSources - isOfficial attribute is ignored when adding sources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
             .reply(200, {});
 
         const addedSources = await app.environment.dbmsPlugins.addSources([

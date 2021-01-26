@@ -27,6 +27,7 @@ export const RELATE_ACCESS_TOKENS_DIR_NAME = 'access-tokens';
 export const DBMS_DIR_NAME = 'dbmss';
 export const BACKUPS_DIR_NAME = 'backups';
 export const PLUGIN_SOURCES_DIR_NAME = 'plugin-sources';
+export const DEFAULT_PLUGIN_SOURCES_FILE = 'default-sources.json';
 export const NEW_LINE = '\n';
 export const PROPERTIES_SEPARATOR = '=';
 // @todo: this should be generated when installing relate instance
