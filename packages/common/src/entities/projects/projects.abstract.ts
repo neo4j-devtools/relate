@@ -135,7 +135,11 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     /**
      * Download sample project from github (https://github.com/neo4j-graph-examples)
      */
-    abstract downloadSampleProject(selected: string, destPath?: string): Promise<{path: string; temp: boolean}>;
+    abstract downloadSampleProject(
+        url: string,
+        name: string,
+        destPath?: string,
+    ): Promise<{path: string; temp: boolean}>;
 
     /**
      * Install sample project from file

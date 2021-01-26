@@ -85,7 +85,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support listing sample projects`);
     }
 
-    downloadSampleProject(_selected: string, _destPath?: string): Promise<{path: string; temp: boolean}> {
+    downloadSampleProject(_url: string, _name: string, _destPath?: string): Promise<{path: string; temp: boolean}> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support downloading sample projects`);
     }
 

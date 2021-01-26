@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {ISampleProjectRest, SystemModule, SystemProvider} from '@relate/common';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 import path from 'path';
@@ -30,10 +30,10 @@ export class InstallSampleModule implements OnApplicationBootstrap {
 
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
-        const sampleProjects = await environment.projects.listSampleProjects();
+        const sampleProjects = await (await environment.projects.listSampleProjects()).toArray();
 
         cli.table(
-            sampleProjects.toArray(),
+            sampleProjects,
             {
                 name: {},
                 description: {},
@@ -48,14 +48,25 @@ export class InstallSampleModule implements OnApplicationBootstrap {
 
         const selected = await selectPrompt(
             'Select a sample project to install',
-            sampleProjects.toArray().map((item: {name: string}) => ({
-                message: item.name,
-                name: item.name,
+            sampleProjects.map((item: ISampleProjectRest) => ({
+                message: `${item.name}`,
+                name: `${item.name}`,
             })),
         );
 
+        const item = sampleProjects.find((p) => p.name === selected);
+
+        if (!item) {
+            this.utils.error(`Something went wrong when trying to download '${selected}'`);
+            return;
+        }
+
         cli.action.start(`Downloading '${selected}'.`);
-        const {path: downloadPath, temp} = await environment.projects.downloadSampleProject(selected, destPath);
+        const {path: downloadPath, temp} = await environment.projects.downloadSampleProject(
+            item.downloadUrl,
+            selected,
+            destPath,
+        );
         cli.action.stop(chalk.green('done'));
 
         cli.action.start(`Creating project '${selected}'.`);

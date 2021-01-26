@@ -305,10 +305,14 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
             // @TODO: Figure out how to filter the response by topic or something else.
             return List.from(
-                JSON.parse(response.body).map(({name, description}: ISampleProjectRest) => ({
+                /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
+                JSON.parse(response.body).map(({name, description, default_branch}: ISampleProjectRest) => ({
                     name,
                     description,
-                    downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/master.zip`,
+                    /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
+                    default_branch,
+                    /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
+                    downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/${default_branch}.zip`,
                 })),
             );
         } catch (_error) {
@@ -316,14 +320,11 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         }
     }
 
-    async downloadSampleProject(selected: string, destPath?: string): Promise<{path: string; temp: boolean}> {
+    async downloadSampleProject(url: string, name: string, destPath?: string): Promise<{path: string; temp: boolean}> {
         const {tmp} = this.environment.dirPaths;
 
-        const diskPath = destPath || path.join(tmp, 'sample-project');
-        const sampleProject = await download(
-            `https://github.com/neo4j-graph-examples/${selected}/archive/master.zip`,
-            destPath ? destPath : path.join(diskPath, selected),
-        );
+        const diskPath = destPath || path.join(tmp, uuidv4());
+        const sampleProject = await download(url, destPath ? destPath : path.join(diskPath, name));
 
         const extractedPath = await extract(sampleProject, diskPath);
 
