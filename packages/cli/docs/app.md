@@ -31,4 +31,4 @@ EXAMPLES
   $ relate app:open app-name -D dbms-to-connect-to -e environment-name -L
 ```
 
-_See code: [dist/commands/app/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.20/packages/cli/src/commands/app/open.ts)_
+_See code: [dist/commands/app/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.21/packages/cli/src/commands/app/open.ts)_

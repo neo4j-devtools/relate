@@ -108,7 +108,7 @@ ___
 
 ### `Abstract` downloadSampleProject
 
-▸ **downloadSampleProject**(`selected`: string, `destPath?`: undefined | string): *Promise‹object›*
+▸ **downloadSampleProject**(`url`: string, `name`: string, `destPath?`: undefined | string): *Promise‹object›*
 
 Defined in projects/projects.abstract.ts:138
 
@@ -118,7 +118,8 @@ Download sample project from github (https://github.com/neo4j-graph-examples)
 
 Name | Type |
 ------ | ------ |
-`selected` | string |
+`url` | string |
+`name` | string |
 `destPath?` | undefined &#124; string |
 
 **Returns:** *Promise‹object›*
@@ -147,7 +148,7 @@ ___
 
 ▸ **importSampleDbms**(`projectId`: string, `dbms`: ISampleProjectDbms, `credentials`: string): *Promise‹object›*
 
-Defined in projects/projects.abstract.ts:155
+Defined in projects/projects.abstract.ts:159
 
 Install sample DBMSs from file
 
@@ -167,7 +168,7 @@ ___
 
 ▸ **installSampleProject**(`srcPath`: string, `args`: object): *Promise‹object›*
 
-Defined in projects/projects.abstract.ts:143
+Defined in projects/projects.abstract.ts:147
 
 Install sample project from file
 
