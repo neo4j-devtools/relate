@@ -47,7 +47,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         extensionsCache: path.join(this.cachePath, EXTENSION_DIR_NAME),
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
         staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
-        pluginSources: path.join(envPaths().config, PLUGIN_SOURCES_DIR_NAME),
+        pluginSources: path.join(this.dataPath, PLUGIN_SOURCES_DIR_NAME),
     };
 
     public getEntityRootPath(entityType: ENTITY_TYPES, id: string): string {
