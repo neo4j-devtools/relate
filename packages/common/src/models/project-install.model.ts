@@ -30,6 +30,8 @@ export interface ISampleProjectRest {
     name: string;
     description: string;
     downloadUrl: string;
+    /* eslint-disable-next-line camelcase */
+    default_branch: string;
 }
 
 export class ProjectInstallManifestModel extends ManifestModel<ISampleProject> implements ISampleProjectManifest {
