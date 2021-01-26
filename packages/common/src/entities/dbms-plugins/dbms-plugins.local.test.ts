@@ -1,4 +1,5 @@
 import nock from 'nock';
+import {TargetExistsError} from '../../errors';
 import {IDbmsPluginSource} from '../../models';
 import {TestEnvironment} from '../../utils/system';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
@@ -12,7 +13,13 @@ const TEST_SOURCE: IDbmsPluginSource = {
     versionsUrl: 'http://apoc.test/versionsUrl',
 };
 
-describe('LocalPlugins', () => {
+const TEST_SOURCE_2: IDbmsPluginSource = {
+    name: 'gds',
+    homepageUrl: 'http://gds.test/homepageUrl',
+    versionsUrl: 'http://gds.test/versionsUrl',
+};
+
+describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
 
     beforeAll(async () => {
@@ -23,7 +30,7 @@ describe('LocalPlugins', () => {
 
     afterAll(() => app.teardown());
 
-    test('Lists no plugin sources', async () => {
+    test('dbmsPlugins.listSources - no plugin sources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {});
@@ -39,7 +46,7 @@ describe('LocalPlugins', () => {
         expect(pluginSourcesFetchError.toArray()).toEqual([]);
     });
 
-    test('Lists default plugin sources', async () => {
+    test('dbmsPlugins.listSources - default plugin sources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {
@@ -55,7 +62,23 @@ describe('LocalPlugins', () => {
         ]);
     });
 
-    test('Add plugin sources', async () => {
+    test('dbmsPlugins.addSources - fails when adding an already existing source', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {
+                apoc: TEST_SOURCE,
+            });
+
+        const addedSources = app.environment.dbmsPlugins.addSources([TEST_SOURCE]);
+        await expect(addedSources).rejects.toThrowError(
+            new TargetExistsError(`The following dbms plugin sources already exist: apoc`),
+        );
+
+        const listedSources = await app.environment.dbmsPlugins.listSources();
+        expect(listedSources.toArray()).toEqual([]);
+    });
+
+    test('dbmsPlugins.addSources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {});
@@ -63,24 +86,66 @@ describe('LocalPlugins', () => {
         const addedSources = await app.environment.dbmsPlugins.addSources([TEST_SOURCE]);
         const listedSources = await app.environment.dbmsPlugins.listSources();
 
-        expect(addedSources.toArray()).toEqual([TEST_SOURCE]);
-        expect(listedSources.toArray()).toEqual([TEST_SOURCE]);
+        const expectedSource = {
+            ...TEST_SOURCE,
+            isOfficial: false,
+        };
+        expect(addedSources.toArray()).toEqual([expectedSource]);
+        expect(listedSources.toArray()).toEqual([expectedSource]);
     });
 
-    test('Remove user added plugin sources', async () => {
+    test('dbmsPlugins.addSources - isOfficial attribute is ignored when adding sources', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {});
+
+        const addedSources = await app.environment.dbmsPlugins.addSources([
+            {
+                ...TEST_SOURCE_2,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                isOfficial: true,
+            },
+        ]);
+        const listedSources = await app.environment.dbmsPlugins.listSources();
+
+        const expectedSources = [
+            {
+                ...TEST_SOURCE,
+                isOfficial: false,
+            },
+            {
+                ...TEST_SOURCE_2,
+                isOfficial: false,
+            },
+        ];
+        expect(addedSources.toArray()).toEqual([expectedSources[1]]);
+        expect(listedSources.toArray()).toEqual(expectedSources);
+    });
+
+    test('dbmsPlugins.removeSources - removes user added sources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .twice()
             .reply(200, {});
 
-        const removedSources = await app.environment.dbmsPlugins.removeSources(['apoc']);
+        const removedSources = await app.environment.dbmsPlugins.removeSources(['gds', 'apoc']);
         const listedSources = await app.environment.dbmsPlugins.listSources();
 
-        expect(removedSources.toArray()).toEqual([TEST_SOURCE]);
+        expect(removedSources.toArray()).toEqual([
+            {
+                ...TEST_SOURCE,
+                isOfficial: false,
+            },
+            {
+                ...TEST_SOURCE_2,
+                isOfficial: false,
+            },
+        ]);
         expect(listedSources.toArray()).toEqual([]);
     });
 
-    test('Cannot remove official plugin sources', async () => {
+    test('dbmsPlugins.removeSources - cannot remove default sources', async () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .twice()

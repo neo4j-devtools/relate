@@ -7,15 +7,11 @@ import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
 import {RemoteEnvironment} from '../environments';
 
 export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
-    public getSource(_name: string): Promise<IDbmsPluginSource> {
-        throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support getting plugin sources`);
-    }
-
     public listSources(_filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugin sources`);
     }
 
-    public addSources(_sources: IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
+    public addSources(_sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support adding plugin sources`);
     }
 

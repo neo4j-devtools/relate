@@ -4,26 +4,13 @@ import {List} from '@relate/types';
 
 import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
-import {NotFoundError, NotSupportedError} from '../../errors';
+import {NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
 import {discoverPluginSources, fetchOfficialPluginSources} from '../../utils/dbms-plugins';
 import {LocalEnvironment} from '../environments';
 import {JSON_FILE_EXTENSION} from '../../constants';
 
 export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
-    public async getSource(name: string): Promise<IDbmsPluginSource> {
-        const sourcePath = path.join(this.environment.dirPaths.pluginSources, `${name}${JSON_FILE_EXTENSION}`);
-
-        try {
-            const sourceRaw = await fse.readJSON(sourcePath);
-            const source = new DbmsPluginSourceModel(sourceRaw);
-
-            return source;
-        } catch {
-            throw new NotFoundError(`Plugin source for "${name}" not found`);
-        }
-    }
-
     public async listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
         const official = await fetchOfficialPluginSources();
         const userSaved = await discoverPluginSources(this.environment.dirPaths.pluginSources);
@@ -39,8 +26,25 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(allSources, filters);
     }
 
-    public async addSources(sources: IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
-        const mappedSources = List.from(sources).mapEach((source) => new DbmsPluginSourceModel(source));
+    public async addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
+        const allSources = await this.listSources();
+        const namesToBeAdded = sources.map((source) => source.name);
+        const existingSources = allSources.filter((source) => namesToBeAdded.includes(source.name));
+
+        if (existingSources.length.greaterThan(0)) {
+            const names = existingSources.mapEach((source) => source.name);
+            throw new TargetExistsError(`The following dbms plugin sources already exist: ${names.join(', ')}`);
+        }
+
+        const mappedSources = List.from(sources)
+            .mapEach(
+                (source) =>
+                    new DbmsPluginSourceModel({
+                        ...source,
+                        isOfficial: false,
+                    }),
+            )
+            .compact();
 
         await mappedSources
             .mapEach(async (source) => {
