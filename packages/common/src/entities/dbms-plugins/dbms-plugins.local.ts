@@ -1,44 +1,52 @@
 import fse from 'fs-extra';
-import got from 'got';
 import path from 'path';
-import {Dict, List} from '@relate/types';
+import {List} from '@relate/types';
 
 import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
-import {NotFoundError, NotSupportedError} from '../../errors';
+import {NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
-import {discoverPluginSources} from '../../utils/dbms-plugins';
+import {discoverPluginSources, fetchOfficialPluginSources} from '../../utils/dbms-plugins';
 import {LocalEnvironment} from '../environments';
 import {JSON_FILE_EXTENSION} from '../../constants';
 
 export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
-    public async getSource(name: string): Promise<IDbmsPluginSource> {
-        const sourcePath = path.join(this.environment.dirPaths.pluginSources, `${name}${JSON_FILE_EXTENSION}`);
-
-        try {
-            const sourceRaw = await fse.readJSON(sourcePath);
-            const source = new DbmsPluginSourceModel(sourceRaw);
-
-            return source;
-        } catch {
-            throw new NotFoundError(`Plugin source for "${name}" not found`);
-        }
-    }
-
     public async listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
-        // @todo - should throttle this
-        this.sources = await discoverPluginSources(this.environment.dirPaths.pluginSources);
+        const official = await fetchOfficialPluginSources();
+        const userSaved = await discoverPluginSources(this.environment.dirPaths.pluginSources);
+        const allSources = official.concat(userSaved);
 
-        return applyEntityFilters(Dict.from(this.sources).values, filters);
+        this.sources = allSources.reduce((agg, source) => {
+            return {
+                ...agg,
+                [source.name]: source,
+            };
+        }, {});
+
+        return applyEntityFilters(allSources, filters);
     }
 
-    public async addSources(urls: string[]): Promise<List<IDbmsPluginSource>> {
-        const responses: List<IDbmsPluginSource> = await List.from(urls)
-            .mapEach((url) => got(url).json())
-            .unwindPromises();
-        const sources = responses.mapEach((res) => new DbmsPluginSourceModel(res));
+    public async addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
+        const allSources = await this.listSources();
+        const namesToBeAdded = sources.map((source) => source.name);
+        const existingSources = allSources.filter((source) => namesToBeAdded.includes(source.name));
 
-        await sources
+        if (existingSources.length.greaterThan(0)) {
+            const names = existingSources.mapEach((source) => source.name);
+            throw new TargetExistsError(`The following dbms plugin sources already exist: ${names.join(', ')}`);
+        }
+
+        const mappedSources = List.from(sources)
+            .mapEach(
+                (source) =>
+                    new DbmsPluginSourceModel({
+                        ...source,
+                        isOfficial: false,
+                    }),
+            )
+            .compact();
+
+        await mappedSources
             .mapEach(async (source) => {
                 const sourcePath = path.join(
                     this.environment.dirPaths.pluginSources,
@@ -49,15 +57,14 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
             })
             .unwindPromises();
 
-        return sources;
+        return mappedSources;
     }
 
     public async removeSources(names: string[]): Promise<List<IDbmsPluginSource>> {
-        const sources = await List.from(names)
-            .mapEach((name) => this.getSource(name))
-            .unwindPromises();
+        const sourcesList = await this.listSources();
+        const removedSources = sourcesList.filter((source) => names.includes(source.name) && !source.isOfficial);
 
-        await sources
+        await removedSources
             .mapEach(async (source) => {
                 const sourcePath = path.join(
                     this.environment.dirPaths.pluginSources,
@@ -68,7 +75,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
             })
             .unwindPromises();
 
-        return sources;
+        return removedSources;
     }
 
     public list(

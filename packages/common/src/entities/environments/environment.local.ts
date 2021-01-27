@@ -27,6 +27,8 @@ import {getManifestName} from '../../utils/system';
 export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmss = new LocalDbmss(this);
 
+    public readonly dbmsPlugins = new LocalDbmsPlugins(this);
+
     public readonly dbs = new LocalDbs(this);
 
     public readonly extensions = new LocalExtensions(this);
@@ -34,8 +36,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
     public readonly projects = new LocalProjects(this);
 
     public readonly backups = new LocalBackups(this);
-
-    public readonly plugins = new LocalDbmsPlugins(this);
 
     public readonly dirPaths = {
         ...envPaths(),
@@ -47,7 +47,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         extensionsCache: path.join(this.cachePath, EXTENSION_DIR_NAME),
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
         staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
-        pluginSources: path.join(envPaths().config, PLUGIN_SOURCES_DIR_NAME),
+        pluginSources: path.join(this.dataPath, PLUGIN_SOURCES_DIR_NAME),
     };
 
     public getEntityRootPath(entityType: ENTITY_TYPES, id: string): string {

@@ -1,5 +1,5 @@
 import {assign} from 'lodash';
-import {IsHash, IsOptional, IsSemVer, IsString, IsUrl} from 'class-validator';
+import {IsBoolean, IsHash, IsOptional, IsSemVer, IsString, IsUrl} from 'class-validator';
 
 import {ModelAbstract, StringOrStringArray} from './model.abstract';
 
@@ -12,6 +12,9 @@ export interface IDbmsPluginSource {
 
     /** URL from which to fetch available plugin versions */
     versionsUrl: string;
+
+    /** Whether the plugin source is officially supported */
+    isOfficial?: boolean;
 }
 
 export interface IDbmsPluginVersion {
@@ -43,6 +46,10 @@ export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> impl
 
     @IsUrl()
     public versionsUrl!: string;
+
+    @IsOptional()
+    @IsBoolean()
+    public isOfficial?: boolean;
 }
 
 export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> implements IDbmsPluginVersion {

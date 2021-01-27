@@ -19,9 +19,12 @@ import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
 import {PUBLIC_GRAPHQL_METHODS} from '../../constants';
+import {DbmsPluginsAbstract} from '../dbms-plugins';
 
 export abstract class EnvironmentAbstract {
     public readonly dbmss!: DbmssAbstract<EnvironmentAbstract>;
+
+    public readonly dbmsPlugins!: DbmsPluginsAbstract<EnvironmentAbstract>;
 
     public readonly dbs!: DbsAbstract<EnvironmentAbstract>;
 

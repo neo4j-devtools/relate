@@ -15,12 +15,6 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     constructor(protected readonly environment: Env) {}
 
     /**
-     * Get the source for a specific plugin
-     * @param   name
-     */
-    abstract getSource(name: string): Promise<IDbmsPluginSource>;
-
-    /**
      * List all plugin sources
      * @param   filters     Filters to apply
      */
@@ -28,15 +22,15 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Add one or more plugin sources
-     * @param   urls     List of source URLs
+     * @param   sources     List of sources
      */
-    abstract addSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
+    abstract addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Remove one or more plugin sources
      * @param   urls     List of source URLs
      */
-    abstract removeSources(urls: string[]): Promise<List<IDbmsPluginSource>>;
+    abstract removeSources(names: string[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * List all plugins installed in the specified DBMS
