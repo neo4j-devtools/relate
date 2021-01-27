@@ -14,6 +14,7 @@ import {
     EXTENSION_DIR_NAME,
     EXTENSION_TYPES,
     PLUGIN_SOURCES_DIR_NAME,
+    PLUGIN_VERSIONS_DIR_NAME,
     PROJECTS_DIR_NAME,
 } from '../../constants';
 import {LocalProjects} from '../projects';
@@ -48,6 +49,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         extensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME),
         staticExtensionsData: path.join(this.dataPath, EXTENSION_DIR_NAME, EXTENSION_TYPES.STATIC),
         pluginSources: path.join(this.dataPath, PLUGIN_SOURCES_DIR_NAME),
+        pluginVersions: path.join(this.dataPath, PLUGIN_VERSIONS_DIR_NAME),
     };
 
     public getEntityRootPath(entityType: ENTITY_TYPES, id: string): string {
