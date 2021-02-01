@@ -4,13 +4,34 @@ import {List} from '@relate/types';
 
 import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
-import {NotSupportedError, TargetExistsError} from '../../errors';
+import {NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
-import {discoverPluginSources, fetchOfficialPluginSources} from '../../utils/dbms-plugins';
-import {LocalEnvironment} from '../environments';
-import {JSON_FILE_EXTENSION} from '../../constants';
+import {
+    discoverPluginSources,
+    fetchOfficialPluginSources,
+    getLatestCompatibleVersion,
+    listVersions,
+    updateDbmsConfig,
+} from '../../utils/dbms-plugins';
+import {LocalEnvironment, NEO4J_PLUGIN_DIR} from '../environments';
+import {JSON_FILE_EXTENSION, PLUGINS_DIR_NAME} from '../../constants';
+import {download, envPaths} from '../../utils';
+import {verifyHash} from '../../utils/download';
 
 export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
+    public async getSource(name: string): Promise<IDbmsPluginSource> {
+        if (this.sources[name]) {
+            return this.sources[name];
+        }
+
+        await this.listSources();
+        if (this.sources[name]) {
+            return this.sources[name];
+        }
+
+        throw new NotFoundError(`Source for plugin "${name}" not found`);
+    }
+
     public async listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
         const official = await fetchOfficialPluginSources();
         const userSaved = await discoverPluginSources(this.environment.dirPaths.pluginSources);
@@ -85,8 +106,41 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support listing plugins`);
     }
 
-    public install(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
-        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support installing plugins`);
+    public async install(
+        dbmsNamesOrIds: string[] | List<string>,
+        pluginName: string,
+    ): Promise<List<IDbmsPluginVersion>> {
+        const pluginSource = await this.getSource(pluginName);
+        const pluginVersions = await listVersions(this.environment.dirPaths.pluginVersions, pluginSource);
+
+        return List.from(dbmsNamesOrIds)
+            .mapEach(async (dbmsNameOrId) => {
+                const dbms = await this.environment.dbmss.get(dbmsNameOrId);
+                const dbmsRootPath = dbms.rootPath;
+                if (!dbmsRootPath) {
+                    throw new NotFoundError(`Could not find DBMS root path for "${dbms.name}"`);
+                }
+
+                const pluginToInstall = getLatestCompatibleVersion(dbms, pluginSource, pluginVersions);
+
+                const pluginCacheDir = path.join(envPaths().cache, PLUGINS_DIR_NAME);
+                const pluginFilePath = path.join(
+                    dbmsRootPath,
+                    NEO4J_PLUGIN_DIR,
+                    `${pluginSource.name}-${pluginToInstall.version}.jar`,
+                );
+
+                const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
+                await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                await fse.move(downloadedFilePath, pluginFilePath);
+
+                const config = await this.environment.dbmss.getDbmsConfig(dbms.id);
+                updateDbmsConfig(config, pluginToInstall.config);
+                await config.flush();
+
+                return pluginToInstall;
+            })
+            .unwindPromises();
     }
 
     public upgrade(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {

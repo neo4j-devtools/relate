@@ -44,10 +44,10 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Install a plugin in the specified DBMS
-     * @param   dbmsNameOrId
+     * @param   dbmsNamesOrIds
      * @param   pluginName
      */
-    abstract install(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
+    abstract install(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<List<IDbmsPluginVersion>>;
 
     /**
      * Upgrade a plugin in the specified DBMS

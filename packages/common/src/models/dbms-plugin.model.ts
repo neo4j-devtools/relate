@@ -68,10 +68,10 @@ export interface IDbmsPluginVersion {
     neo4jVersion: string;
 
     /** Plugin homepage URL */
-    homepage: string;
+    homepageUrl: string;
 
     /** Plugin download URL */
-    url: string;
+    downloadUrl: string;
 
     /** sha256b checksum */
     sha256: string;
@@ -110,10 +110,10 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
     public neo4jVersion!: string;
 
     @IsString()
-    public homepage!: string;
+    public homepageUrl!: string;
 
     @IsUrl()
-    public url!: string;
+    public downloadUrl!: string;
 
     @IsHash('sha256')
     public sha256!: string;

@@ -26,7 +26,7 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugins`);
     }
 
-    public install(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+    public install(_dbmsNamesOrIds: string[] | List<string>, _pluginName: string): Promise<List<IDbmsPluginVersion>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support installing plugins`);
     }
 
