@@ -1,7 +1,50 @@
 import {assign} from 'lodash';
-import {IsBoolean, IsHash, IsOptional, IsSemVer, IsString, IsUrl} from 'class-validator';
+import {
+    IsBoolean,
+    IsHash,
+    IsOptional,
+    IsSemVer,
+    IsString,
+    IsUrl,
+    isArray,
+    isString,
+    isBoolean,
+    registerDecorator,
+    ValidationArguments,
+    ValidationOptions,
+} from 'class-validator';
+import {ModelAbstract} from './model.abstract';
 
-import {ModelAbstract, StringOrStringArray} from './model.abstract';
+export type DbmsPluginConfig = Record<string, string | string[] | boolean | undefined>;
+
+export function IsPluginConfig(validationOptions?: ValidationOptions) {
+    return (object: any, propertyName: string) => {
+        registerDecorator({
+            name: 'stringOrStringArray',
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            validator: {
+                validate(value: unknown, _args: ValidationArguments) {
+                    if (isArray(value)) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                        // @ts-ignore
+                        return Array.from(value).every((v) => isString(v) || isBoolean(v));
+                    }
+
+                    return isString(value) || isBoolean(value);
+                },
+                defaultMessage(args?: ValidationArguments) {
+                    if (!args) {
+                        return 'Property must be "string | string[] | boolean"';
+                    }
+
+                    return `Expected "string | string[] | boolean" on "${args.property}" found "${args.value}"`;
+                },
+            },
+        });
+    };
+}
 
 export interface IDbmsPluginSource {
     /** Plugin name */
@@ -34,7 +77,7 @@ export interface IDbmsPluginVersion {
     sha256: string;
 
     /** neo4j.conf changes needed */
-    config: Record<string, string | string[]>;
+    config: DbmsPluginConfig;
 }
 
 export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> implements IDbmsPluginSource {
@@ -76,6 +119,6 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
     public sha256!: string;
 
     @IsOptional()
-    @StringOrStringArray({each: true})
-    public config: Record<string, string | string[]> = {};
+    @IsPluginConfig({each: true})
+    public config: DbmsPluginConfig = {};
 }
