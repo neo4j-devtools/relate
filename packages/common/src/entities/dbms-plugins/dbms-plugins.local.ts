@@ -131,7 +131,9 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 );
 
                 const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
-                await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                if (pluginToInstall.sha256) {
+                    await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                }
                 await fse.move(downloadedFilePath, pluginFilePath);
 
                 const config = await this.environment.dbmss.getDbmsConfig(dbms.id);

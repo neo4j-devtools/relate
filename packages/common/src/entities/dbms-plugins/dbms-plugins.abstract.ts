@@ -15,6 +15,12 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     constructor(protected readonly environment: Env) {}
 
     /**
+     * Get the source for a plugin
+     * @param   name
+     */
+    abstract getSource(name: string): Promise<IDbmsPluginSource>;
+
+    /**
      * List all plugin sources
      * @param   filters     Filters to apply
      */
