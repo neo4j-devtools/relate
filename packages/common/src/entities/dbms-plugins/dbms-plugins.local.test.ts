@@ -1,7 +1,10 @@
 import nock from 'nock';
+
 import {TargetExistsError} from '../../errors';
-import {IDbmsPluginSource} from '../../models';
-import {TestEnvironment} from '../../utils/system';
+import {IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
+import {waitForDbmsToBeOnline} from '../../utils/dbmss';
+import {dbQuery} from '../../utils/dbmss/system-db-query';
+import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
@@ -18,6 +21,34 @@ const TEST_SOURCE_2: IDbmsPluginSource = {
     homepageUrl: 'http://gds.test/homepageUrl',
     versionsUrl: 'http://gds.test/versionsUrl',
 };
+
+// @todo - delete this once the official version files are updated
+const TEST_VERSIONS: IDbmsPluginVersion[] = [
+    {
+        version: '4.2.0.1',
+        neo4jVersion: '4.2.2',
+        homepageUrl: 'http://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/4.2.0.1',
+        downloadUrl:
+            'https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.2.0.1/apoc-4.2.0.1-all.jar',
+        sha256: '75ec237dfac08723e04fcd012dfd656faa9db92e679fc1bbbbe8ddd3e8ea0d9a',
+        config: {
+            '+:dbms.security.procedures.unrestricted': ['apoc.*'],
+        },
+    },
+    {
+        version: '4.0.0.17',
+        neo4jVersion: '4.0.4',
+        homepageUrl: 'http://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/4.0.0.17',
+        downloadUrl:
+            'https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.0.0.17/apoc-4.0.0.17-all.jar',
+        sha256: 'ed388e5e7bea1842f35dccfe2d2e03db3271c59b2b6fa52ae8cfcc50fbb5e2b6',
+        config: {
+            '+:dbms.security.procedures.unrestricted': ['apoc.*'],
+        },
+    },
+];
+const PLUGIN_VERSIONS_PATHNAME = new URL(TEST_SOURCE.versionsUrl).pathname;
+const PLUGIN_VERSIONS_ORIGIN = new URL(TEST_SOURCE.versionsUrl).origin;
 
 describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
@@ -171,5 +202,50 @@ describe('LocalDbmsPlugins', () => {
                 isOfficial: true,
             },
         ]);
+    });
+
+    test('dbmsPlugins.install - installs apoc successfully', async () => {
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .twice()
+            .reply(200, {
+                apoc: TEST_SOURCE,
+            });
+
+        nock(PLUGIN_VERSIONS_ORIGIN)
+            .get(PLUGIN_VERSIONS_PATHNAME)
+            .reply(200, JSON.stringify(TEST_VERSIONS));
+
+        const dbms = await app.createDbms();
+        const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
+
+        expect(installedVersion.toArray().length).toEqual(1);
+        expect(installedVersion.toArray()[0].version).toEqual('4.0.0.17');
+
+        await app.environment.dbmss.start([dbms.id]);
+        await waitForDbmsToBeOnline({
+            ...dbms,
+            config: await app.environment.dbmss.getDbmsConfig(dbms.id),
+        });
+
+        const accessToken = await app.environment.dbmss.createAccessToken('tests', dbms.id, {
+            credentials: TEST_NEO4J_CREDENTIALS,
+            principal: 'neo4j',
+            scheme: 'basic',
+        });
+
+        const [res] = await dbQuery(
+            {
+                database: 'neo4j',
+                dbmsUser: 'neo4j',
+                accessToken,
+                dbmsId: dbms.id,
+                environment: app.environment,
+            },
+            'RETURN apoc.version()',
+        ).finally(() => app.environment.dbmss.stop([dbms.id]));
+
+        expect(res.data).toEqual(['4.0.0.17']);
+        expect(res.type).toEqual('RECORD');
     });
 });

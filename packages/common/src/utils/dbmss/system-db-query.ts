@@ -7,13 +7,14 @@ import {DBMS_STATUS} from '../../constants';
 import {TapestryJSONResponse} from '../../entities/dbmss';
 
 export interface IQueryTarget {
+    database?: string;
     environment: EnvironmentAbstract;
     dbmsId: string;
     dbmsUser: string;
     accessToken: string;
 }
 
-export const systemDbQuery = async (
+export const dbQuery = async (
     target: IQueryTarget,
     query: string,
     params: any = {},
@@ -35,7 +36,7 @@ export const systemDbQuery = async (
     });
 
     return dbmss
-        .runQuery(driver, query, params, 3, {db: 'system'})
+        .runQuery(driver, query, params, 3, {db: target.database || 'neo4j'})
         .pipe(rxjsOps.reduce((agg, next) => agg.concat(next), List.of<TapestryJSONResponse>([])))
         .toPromise()
         .finally(() => driver.shutDown().toPromise());

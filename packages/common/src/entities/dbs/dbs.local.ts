@@ -7,7 +7,7 @@ import {neo4jAdminCmd} from '../../utils/dbmss';
 import {CypherParameterError} from '../../errors';
 import {LocalEnvironment} from '../environments';
 import {NEO4J_DB_NAME_REGEX} from './dbs.constants';
-import {systemDbQuery} from '../../utils/dbmss/system-db-query';
+import {dbQuery} from '../../utils/dbmss/system-db-query';
 import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 import {DbsAbstract} from './dbs.abstract';
 
@@ -18,8 +18,9 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
-        await systemDbQuery(
+        await dbQuery(
             {
+                database: 'system',
                 accessToken,
                 dbmsId: dbms.id,
                 dbmsUser,
@@ -35,8 +36,9 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
-        await systemDbQuery(
+        await dbQuery(
             {
+                database: 'system',
                 accessToken,
                 dbmsId: dbms.id,
                 dbmsUser,
@@ -48,8 +50,9 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
 
     async list(nameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
         const dbms = await this.environment.dbmss.get(nameOrId);
-        const dbs = await systemDbQuery(
+        const dbs = await dbQuery(
             {
+                database: 'system',
                 accessToken,
                 dbmsId: dbms.id,
                 dbmsUser,
