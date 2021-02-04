@@ -434,7 +434,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 if (onlineCheck && status === DBMS_STATUS.STARTED) {
-                    serverStatus = (await isDbmsOnline(dbms)) ? DBMS_SERVER_STATUS.ONLINE : DBMS_SERVER_STATUS.OFFLINE;
+                    const config = await this.getDbmsConfig(dbms.id);
+                    serverStatus = (await isDbmsOnline({
+                        ...dbms,
+                        config,
+                    }))
+                        ? DBMS_SERVER_STATUS.ONLINE
+                        : DBMS_SERVER_STATUS.OFFLINE;
                 }
 
                 return {
