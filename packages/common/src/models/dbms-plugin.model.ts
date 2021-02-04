@@ -1,9 +1,8 @@
-import {assign} from 'lodash';
+import {assign, isObjectLike} from 'lodash';
 import {
     IsBoolean,
     IsHash,
     IsOptional,
-    IsSemVer,
     IsString,
     IsUrl,
     isArray,
@@ -20,26 +19,35 @@ export type DbmsPluginConfig = Record<string, string | string[] | boolean | unde
 export function IsPluginConfig(validationOptions?: ValidationOptions) {
     return (object: any, propertyName: string) => {
         registerDecorator({
-            name: 'stringOrStringArray',
+            name: 'isPluginConfig',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             validator: {
-                validate(value: unknown, _args: ValidationArguments) {
-                    if (isArray(value)) {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                        // @ts-ignore
-                        return Array.from(value).every((v) => isString(v) || isBoolean(v));
+                validate(value: any, _args: ValidationArguments) {
+                    if (isObjectLike(value)) {
+                        return Object.entries(value).every(([_, v]) => {
+                            if (isArray(v)) {
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                                // @ts-ignore
+                                return Array.from(v).every(isString);
+                            }
+
+                            return isString(v) || isBoolean(v);
+                        });
                     }
 
-                    return isString(value) || isBoolean(value);
+                    return false;
                 },
                 defaultMessage(args?: ValidationArguments) {
+                    const expectedMsg = 'Expected "{ [key: string]: string | string[] | boolean }"';
+
                     if (!args) {
-                        return 'Property must be "string | string[] | boolean"';
+                        return expectedMsg;
                     }
 
-                    return `Expected "string | string[] | boolean" on "${args.property}" found "${args.value}"`;
+                    const strValue = JSON.stringify(args.value);
+                    return `${expectedMsg} on "${args.property}" but found "${strValue}" instead`;
                 },
             },
         });
@@ -103,10 +111,10 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
         assign(this, props);
     }
 
-    @IsSemVer()
+    @IsString()
     public version!: string;
 
-    @IsSemVer()
+    @IsString()
     public neo4jVersion!: string;
 
     @IsString()

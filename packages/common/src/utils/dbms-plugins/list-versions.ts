@@ -48,7 +48,12 @@ export function getLatestCompatibleVersion(
     const latestCompatibleVersion = pluginVersions
         .filter((plugin) => semver.satisfies(dbmsVersion, plugin.neo4jVersion))
         .reduce<IDbmsPluginVersion | null>((newest, current) => {
-            if (!newest || semver.gt(current.version, newest.version)) {
+            if (
+                !newest ||
+                (semver.parse(current.version) &&
+                    semver.parse(newest.version) &&
+                    semver.gt(current.version, newest.version))
+            ) {
                 return current;
             }
 
