@@ -1,58 +1,9 @@
-import {assign, isObjectLike} from 'lodash';
-import {
-    IsBoolean,
-    IsHash,
-    IsOptional,
-    IsString,
-    IsUrl,
-    isArray,
-    isString,
-    isBoolean,
-    registerDecorator,
-    ValidationArguments,
-    ValidationOptions,
-} from 'class-validator';
+import {assign} from 'lodash';
+import {IsBoolean, IsHash, IsOptional, IsString, IsUrl} from 'class-validator';
 import {ModelAbstract} from './model.abstract';
+import {IsPluginConfig} from './custom-validators';
 
 export type DbmsPluginConfig = Record<string, string | string[] | boolean | undefined>;
-
-export function IsPluginConfig(validationOptions?: ValidationOptions) {
-    return (object: any, propertyName: string) => {
-        registerDecorator({
-            name: 'isPluginConfig',
-            target: object.constructor,
-            propertyName: propertyName,
-            options: validationOptions,
-            validator: {
-                validate(value: any, _args: ValidationArguments) {
-                    if (isObjectLike(value)) {
-                        return Object.entries(value).every(([_, v]) => {
-                            if (isArray(v)) {
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                                // @ts-ignore
-                                return Array.from(v).every(isString);
-                            }
-
-                            return isString(v) || isBoolean(v);
-                        });
-                    }
-
-                    return false;
-                },
-                defaultMessage(args?: ValidationArguments) {
-                    const expectedMsg = 'Expected "{ [key: string]: string | string[] | boolean }"';
-
-                    if (!args) {
-                        return expectedMsg;
-                    }
-
-                    const strValue = JSON.stringify(args.value);
-                    return `${expectedMsg} on "${args.property}" but found "${strValue}" instead`;
-                },
-            },
-        });
-    };
-}
 
 export interface IDbmsPluginSource {
     /** Plugin name */
