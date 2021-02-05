@@ -15,6 +15,7 @@ export const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
 export const TEST_NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
     .values.find((e) => e === process.env.TEST_NEO4J_EDITION)
     .getOrElse(NEO4J_EDITION.ENTERPRISE);
+export const TEST_NEO4J_CREDENTIALS = 'password';
 
 export class TestEnvironment {
     constructor(
@@ -75,7 +76,32 @@ export class TestEnvironment {
         return `[${shortUUID}] ${path.relative('..', this.filename)}`;
     }
 
-    createDbms(): Promise<IDbmsInfo> {
-        return this.environment.dbmss.install(this.createName(), TEST_NEO4J_VERSION, TEST_NEO4J_EDITION);
+    async createDbms(): Promise<IDbmsInfo> {
+        const {id: dbmsId} = await this.environment.dbmss.install(
+            this.createName(),
+            TEST_NEO4J_VERSION,
+            TEST_NEO4J_EDITION,
+            TEST_NEO4J_CREDENTIALS,
+        );
+
+        const shortUUID = dbmsId.slice(0, 8);
+        const numUUID = Array.from(shortUUID).reduce((sum, char, index) => {
+            // Weight char codes before summing them, to avoid collisions when
+            // strings contain the same characters.
+            return sum + char.charCodeAt(0) * (index + 1);
+        }, 0);
+
+        // Increments of 10 to avoid collisions between the 3 different ports,
+        // and max offset of 30k.
+        const portOffset = (numUUID * 10) % 30000;
+
+        const properties = await this.environment.dbmss.getDbmsConfig(dbmsId);
+        properties.set('dbms.connector.bolt.listen_address', `:${7687 + portOffset}`);
+        properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
+        properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
+        properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
+        await properties.flush();
+
+        return this.environment.dbmss.get(dbmsId);
     }
 }
