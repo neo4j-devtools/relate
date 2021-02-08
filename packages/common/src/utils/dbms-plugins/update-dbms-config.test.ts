@@ -72,10 +72,12 @@ describe('updateDbmsConfig', () => {
         );
 
         updateDbmsConfig(config, {
+            '-:newProp': 'anyValue',
             '-:existingProp': 'existingValue',
             '-:otherProp': 'newValue',
         });
 
+        expect(config.get('newProp')).toEqual(undefined);
         expect(config.get('existingProp')).toEqual('');
         expect(config.get('otherProp')).toEqual('existingValue');
     });
@@ -91,11 +93,13 @@ describe('updateDbmsConfig', () => {
         );
 
         updateDbmsConfig(config, {
+            '-:newProp': ['anyValue'],
             '-:prop1': ['notExistingValue'],
             '-:prop2': ['existingValue'],
             '-:prop3': ['bar'],
         });
 
+        expect(config.get('newProp')).toEqual(undefined);
         expect(config.get('prop1')).toEqual('existingValue');
         expect(config.get('prop2')).toEqual('');
         expect(config.get('prop3')).toEqual('foo,baz');

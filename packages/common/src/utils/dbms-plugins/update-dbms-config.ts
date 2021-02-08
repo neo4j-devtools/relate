@@ -45,10 +45,12 @@ export function updateDbmsConfig(config: PropertiesFile, configChanges: DbmsPlug
                     break;
                 }
                 case '-': {
+                    if (!config.get(change.property)) {
+                        return;
+                    }
+
                     if (typeof change.value === 'boolean') {
-                        if (config.get(change.property)) {
-                            config.set(change.property, '');
-                        }
+                        config.set(change.property, '');
                         return;
                     }
 
