@@ -15,6 +15,12 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     constructor(protected readonly environment: Env) {}
 
     /**
+     * Get the source for a plugin
+     * @param   name
+     */
+    abstract getSource(name: string): Promise<IDbmsPluginSource>;
+
+    /**
      * List all plugin sources
      * @param   filters     Filters to apply
      */
@@ -44,10 +50,10 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
 
     /**
      * Install a plugin in the specified DBMS
-     * @param   dbmsNameOrId
+     * @param   dbmsNamesOrIds
      * @param   pluginName
      */
-    abstract install(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
+    abstract install(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<List<IDbmsPluginVersion>>;
 
     /**
      * Upgrade a plugin in the specified DBMS

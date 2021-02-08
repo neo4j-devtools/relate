@@ -1,7 +1,9 @@
 import {assign} from 'lodash';
-import {IsBoolean, IsHash, IsOptional, IsSemVer, IsString, IsUrl} from 'class-validator';
+import {IsBoolean, IsHash, IsOptional, IsString, IsUrl} from 'class-validator';
+import {ModelAbstract} from './model.abstract';
+import {IsPluginConfig} from './custom-validators';
 
-import {ModelAbstract, StringOrStringArray} from './model.abstract';
+export type DbmsPluginConfig = Record<string, string | string[] | boolean | undefined>;
 
 export interface IDbmsPluginSource {
     /** Plugin name */
@@ -25,16 +27,16 @@ export interface IDbmsPluginVersion {
     neo4jVersion: string;
 
     /** Plugin homepage URL */
-    homepage: string;
+    homepageUrl: string;
 
     /** Plugin download URL */
-    url: string;
+    downloadUrl: string;
 
     /** sha256b checksum */
-    sha256: string;
+    sha256?: string;
 
     /** neo4j.conf changes needed */
-    config: Record<string, string | string[]>;
+    config: DbmsPluginConfig;
 }
 
 export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> implements IDbmsPluginSource {
@@ -60,22 +62,23 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
         assign(this, props);
     }
 
-    @IsSemVer()
+    @IsString()
     public version!: string;
 
-    @IsSemVer()
+    @IsString()
     public neo4jVersion!: string;
 
     @IsString()
-    public homepage!: string;
+    public homepageUrl!: string;
 
     @IsUrl()
-    public url!: string;
-
-    @IsHash('sha256')
-    public sha256!: string;
+    public downloadUrl!: string;
 
     @IsOptional()
-    @StringOrStringArray({each: true})
-    public config: Record<string, string | string[]> = {};
+    @IsHash('sha256')
+    public sha256?: string;
+
+    @IsOptional()
+    @IsPluginConfig({each: true})
+    public config: DbmsPluginConfig = {};
 }

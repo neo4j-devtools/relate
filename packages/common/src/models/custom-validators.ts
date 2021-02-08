@@ -1,4 +1,5 @@
-import {registerDecorator} from 'class-validator';
+import {isObjectLike} from 'lodash';
+import {registerDecorator, isArray, isString, isBoolean, ValidationArguments, ValidationOptions} from 'class-validator';
 
 export function IsValidUrl() {
     return (object: Record<string, any>, propertyName: string) => {
@@ -43,6 +44,44 @@ export function IsValidJWT() {
                     const match = value.match(JWT_REGEX);
 
                     return Boolean(match && match[0].length === value.length);
+                },
+            },
+        });
+    };
+}
+
+export function IsPluginConfig(validationOptions?: ValidationOptions) {
+    return (object: any, propertyName: string) => {
+        registerDecorator({
+            name: 'isPluginConfig',
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            validator: {
+                validate(value: any, _args: ValidationArguments) {
+                    if (isObjectLike(value)) {
+                        return Object.entries(value).every(([_, v]) => {
+                            if (isArray(v)) {
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                                // @ts-ignore
+                                return Array.from(v).every(isString);
+                            }
+
+                            return isString(v) || isBoolean(v);
+                        });
+                    }
+
+                    return false;
+                },
+                defaultMessage(args?: ValidationArguments) {
+                    const expectedMsg = 'Expected "{ [key: string]: string | string[] | boolean }"';
+
+                    if (!args) {
+                        return expectedMsg;
+                    }
+
+                    const strValue = JSON.stringify(args.value);
+                    return `${expectedMsg} on "${args.property}" but found "${strValue}" instead`;
                 },
             },
         });
