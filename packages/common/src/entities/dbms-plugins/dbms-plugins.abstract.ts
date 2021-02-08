@@ -30,7 +30,7 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
      * Add one or more plugin sources
      * @param   sources     List of sources
      */
-    abstract addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>>;
+    abstract addSources(sources: List<IDbmsPluginSource> | IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Remove one or more plugin sources

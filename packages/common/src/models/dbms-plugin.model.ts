@@ -43,10 +43,12 @@ export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> impl
     @IsString()
     public name!: string;
 
-    @IsUrl()
+    // eslint-disable-next-line @typescript-eslint/camelcase,camelcase
+    @IsUrl({require_tld: false})
     public homepageUrl!: string;
 
-    @IsUrl()
+    // eslint-disable-next-line @typescript-eslint/camelcase,camelcase
+    @IsUrl({require_tld: false})
     public versionsUrl!: string;
 
     @IsOptional()
@@ -71,7 +73,8 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
     @IsString()
     public homepageUrl!: string;
 
-    @IsUrl()
+    // eslint-disable-next-line @typescript-eslint/camelcase,camelcase
+    @IsUrl({require_tld: false})
     public downloadUrl!: string;
 
     @IsOptional()

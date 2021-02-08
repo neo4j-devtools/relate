@@ -15,7 +15,7 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugin sources`);
     }
 
-    public addSources(_sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
+    public addSources(_sources: List<IDbmsPluginSource> | IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support adding plugin sources`);
     }
 

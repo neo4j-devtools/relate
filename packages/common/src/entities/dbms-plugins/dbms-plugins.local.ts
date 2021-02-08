@@ -47,9 +47,9 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(allSources, filters);
     }
 
-    public async addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
+    public async addSources(sources: List<IDbmsPluginSource> | IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
         const allSources = await this.listSources();
-        const namesToBeAdded = sources.map((source) => source.name);
+        const namesToBeAdded = List.from(sources).mapEach((source) => source.name);
         const existingSources = allSources.filter((source) => namesToBeAdded.includes(source.name));
 
         if (existingSources.length.greaterThan(0)) {
