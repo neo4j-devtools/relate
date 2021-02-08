@@ -88,7 +88,7 @@
             "dbms": {
                 "description": "Neo4j DBMS installations."
             },
-            "dbms-plugins": {
+            "dbms-plugin": {
                 "description": "Neo4j DBMS plugins."
             },
             "environment": {

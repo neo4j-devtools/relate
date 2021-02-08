@@ -144,6 +144,41 @@ export const selectDbmsPrompt = async (
     );
 };
 
+export const selectDbmssPrompt = async (
+    message: string,
+    environment: Environment,
+    filter?: DBMS_STATUS,
+): Promise<string[]> => {
+    let dbmss = (await environment.dbmss.list()).toArray();
+    if (!dbmss.length) {
+        throw new NotFoundError('No DBMS is installed', ['Run "relate dbms:install" and try again']);
+    }
+
+    if (filter) {
+        const infoDbmss = (await environment.dbmss.info(_.map(dbmss, (dbms) => dbms.id))).toArray();
+        dbmss = _.compact(
+            _.map(dbmss, (dbms, index) => {
+                if (infoDbmss[index].status === filter) {
+                    return dbms;
+                }
+                return null;
+            }),
+        );
+    }
+
+    if (!dbmss.length) {
+        throw new NotFoundError(`All DBMSs are currently ${filter === DBMS_STATUS.STARTED ? 'stopped' : 'started'}`);
+    }
+
+    return selectMultiplePrompt(
+        message,
+        dbmss.map((dbms) => ({
+            name: dbms.id,
+            message: getEntityDisplayName(dbms),
+        })),
+    );
+};
+
 export const selectProjectPrompt = async (message: string, environment: Environment): Promise<string> => {
     const projects = (await environment.projects.list()).toArray();
 
