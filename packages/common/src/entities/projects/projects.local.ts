@@ -1,8 +1,7 @@
 import path from 'path';
 import fse from 'fs-extra';
-import {from} from 'rxjs';
 import semver from 'semver';
-import {flatMap, map} from 'rxjs/operators';
+import Plimit from 'p-limit';
 import {v4 as uuidv4} from 'uuid';
 import got, {Got} from 'got';
 import {Dict, List, Maybe, None, Str} from '@relate/types';
@@ -24,7 +23,7 @@ import {
 import {ProjectsAbstract} from './projects.abstract';
 import {LocalEnvironment} from '../environments';
 import {ManifestLocal} from '../manifest';
-import {ENTITY_TYPES, PROJECT_MANIFEST_FILE} from '../../constants';
+import {ENTITY_TYPES, FILTER_COMPARATORS, PROJECT_MANIFEST_FILE} from '../../constants';
 import {AmbiguousTargetError, FetchError, InvalidArgumentError, NotFoundError} from '../../errors';
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
@@ -233,10 +232,18 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     }
 
     async listFiles(nameOrId: string, filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IRelateFile>> {
-        const project = await this.get(nameOrId);
-        const allFiles = await this.findAllFilesRecursive(project.root);
-        const mapped = await allFiles.mapEach((file) => mapFileToModel(file, project)).unwindPromises();
+        const ignoredDirectories = List.from(filters)
+            .filter((filter) => filter.field === 'directory' && filter.type === FILTER_COMPARATORS.NOT_CONTAINS)
+            .mapEach((filter) => filter.value)
+            .toArray();
 
+        const project = await this.get(nameOrId);
+        const allFiles = await this.findAllFiles(project.root, ignoredDirectories);
+
+        // Needed to avoid the process running out of memory when listing files
+        // in big folders (ie. 100k + files).
+        const limit = Plimit(100);
+        const mapped = await allFiles.mapEach((file) => limit(mapFileToModel, file, project)).unwindPromises();
         return applyEntityFilters(mapped.compact(), filters);
     }
 
@@ -442,25 +449,44 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         return projectsWithTargetName[0];
     }
 
-    private findAllFilesRecursive(root: string): Promise<List<string>> {
-        return from(fse.readdir(root))
-            .pipe(
-                flatMap((files) =>
-                    List.from(files)
-                        .mapEach(async (file) => {
-                            const fullPath = path.join(root, file);
-                            const stat = await fse.stat(fullPath);
+    private async findAllFiles(root: string, ignoredDirs: string[] = []): Promise<List<string>> {
+        let dirsToRead = [root];
+        const allFiles: string[] = [];
 
-                            if (!stat.isDirectory()) {
-                                return List.from([fullPath]);
-                            }
+        while (dirsToRead.length) {
+            // Read in chunks to avoid hogging memory.
+            const currentDirs = dirsToRead.slice(0, 100);
+            dirsToRead = dirsToRead.slice(100);
 
-                            return this.findAllFilesRecursive(fullPath);
-                        })
-                        .unwindPromises(),
-                ),
-                map((l) => l.flatten()),
-            )
-            .toPromise();
+            // eslint-disable-next-line no-await-in-loop
+            await List.from(currentDirs)
+                // eslint-disable-next-line no-loop-func
+                .mapEach(async (dir) => {
+                    if (ignoredDirs.includes(path.basename(dir))) {
+                        return;
+                    }
+
+                    try {
+                        const files = await fse.readdir(dir);
+                        await List.from(files)
+                            .mapEach(async (file) => {
+                                const fullPath = path.join(dir, file);
+                                const stat = await fse.stat(fullPath);
+
+                                if (stat.isDirectory()) {
+                                    dirsToRead.push(fullPath);
+                                } else {
+                                    allFiles.push(fullPath);
+                                }
+                            })
+                            .unwindPromises();
+                    } catch {
+                        // User has no permission to read this folder.
+                    }
+                })
+                .unwindPromises();
+        }
+
+        return List.from(allFiles);
     }
 }
