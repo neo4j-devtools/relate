@@ -14,8 +14,8 @@ import {
     updateDbmsConfig,
 } from '../../utils/dbms-plugins';
 import {LocalEnvironment, NEO4J_PLUGIN_DIR} from '../environments';
-import {JSON_FILE_EXTENSION, PLUGINS_DIR_NAME} from '../../constants';
-import {download, envPaths} from '../../utils';
+import {HOOK_EVENTS, JSON_FILE_EXTENSION, PLUGINS_DIR_NAME} from '../../constants';
+import {download, emitHookEvent, envPaths} from '../../utils';
 import {verifyHash} from '../../utils/download';
 
 export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
@@ -130,11 +130,14 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                     `${pluginSource.name}-${pluginToInstall.version}.jar`,
                 );
 
+                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
                 const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
                 if (pluginToInstall.sha256) {
                     await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
                 }
-                await fse.move(downloadedFilePath, pluginFilePath);
+                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_STOP, null);
+
+                await fse.move(downloadedFilePath, pluginFilePath, {overwrite: true});
 
                 const config = await this.environment.dbmss.getDbmsConfig(dbms.id);
                 updateDbmsConfig(config, pluginToInstall.config);
