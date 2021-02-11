@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {FILTER_COMPARATORS, SystemModule, SystemProvider} from '@relate/common';
 import cli from 'cli-ux';
 
 import ListFilesCommand from '../../commands/project/list-files';
@@ -19,13 +19,27 @@ export class ListFilesModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
-        const {environment: environmentId} = flags;
+        const {environment: environmentId, limit} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const projectId = flags.project || (await selectProjectPrompt('Select a Project', environment));
-        const files = await environment.projects.listFiles(projectId);
+
+        let {ignore = []} = flags;
+        // This is to accept both common formats for arrays in the CLI:
+        // command -i val1 -i val2 -i val3
+        // command -i val1,val2,val3
+        if (ignore.length === 1) {
+            ignore = ignore[0].split(',');
+        }
+
+        const filter = ignore.map((dirname) => ({
+            field: 'directory',
+            type: FILTER_COMPARATORS.NOT_CONTAINS,
+            value: dirname,
+        }));
+        const files = await environment.projects.listFiles(projectId, filter);
 
         cli.table(
-            files.toArray(),
+            files.toArray().slice(0, limit),
             {
                 name: {},
                 extension: {},

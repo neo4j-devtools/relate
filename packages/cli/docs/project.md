@@ -178,12 +178,23 @@ USAGE
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+  -i, --ignore=ignore            [default: node_modules,.git] List of directories to ignore
+  -l, --limit=limit              Max number of files to list
   -p, --project=project          (required) Name of the project to run the command against
+  -x, --extended                 show extra columns
+  --columns=columns              only show provided columns (comma-separated)
+  --filter=filter                filter property by partial string matching, ex: name=foo
+  --no-header                    hide table header from output
+  --no-truncate                  do not truncate output to fit screen
+  --output=csv|json|yaml         output in a more machine friendly format
+  --sort=sort                    property to sort by (prepend '-' for descending)
 
 EXAMPLES
   $ relate project:list-files
   $ relate project:list-files -e environment-name
   $ relate project:list-files -p my-project
+  $ relate project:list-files --ignore node_module --ignore dist
+  $ relate project:list-files --ignore node_module,dist
 ```
 
 _See code: [dist/commands/project/list-files.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.21/packages/cli/src/commands/project/list-files.ts)_
