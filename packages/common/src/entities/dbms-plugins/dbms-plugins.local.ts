@@ -2,7 +2,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import {List} from '@relate/types';
 
-import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
+import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -109,7 +109,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
     public async install(
         dbmsNamesOrIds: string[] | List<string>,
         pluginName: string,
-    ): Promise<List<IDbmsPluginVersion>> {
+    ): Promise<List<IDbmsPluginInstalled>> {
         const pluginSource = await this.getSource(pluginName);
         const pluginVersions = await listVersions(this.environment.dirPaths.pluginVersions, pluginSource);
 
@@ -143,7 +143,10 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 updateDbmsConfig(config, pluginToInstall.config);
                 await config.flush();
 
-                return pluginToInstall;
+                return {
+                    ...pluginSource,
+                    version: pluginToInstall,
+                };
             })
             .unwindPromises();
     }

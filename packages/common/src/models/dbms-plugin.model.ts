@@ -39,6 +39,10 @@ export interface IDbmsPluginVersion {
     config: DbmsPluginConfig;
 }
 
+export interface IDbmsPluginInstalled extends IDbmsPluginSource {
+    version: IDbmsPluginVersion;
+}
+
 export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> implements IDbmsPluginSource {
     @IsString()
     public name!: string;
