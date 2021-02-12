@@ -1,3 +1,5 @@
+import cli from 'cli-ux';
+
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
 import {AddSourcesModule} from '../../modules/dbms-plugin/add-sources.module';
@@ -27,5 +29,6 @@ export default class AddSourcesCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
+        ...cli.table.flags({except: ['csv']}),
     };
 }
