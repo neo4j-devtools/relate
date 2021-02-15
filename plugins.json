@@ -1,0 +1,18 @@
+{
+    "apoc": {
+        "homepageUrl": "https://github.com/neo4j-contrib/neo4j-apoc-procedures",
+        "versionsUrl": "https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json"
+    },
+    "streams": {
+        "homepageUrl": "https://github.com/neo4j-contrib/neo4j-streams/",
+        "versionsUrl": "https://neo4j-contrib.github.io/neo4j-streams/versions.json"
+    },
+    "graphql": {
+        "homepageUrl": "https://github.com/neo4j-graphql/neo4j-graphql",
+        "versionsUrl": "https://neo4j-graphql.github.io/neo4j-graphql/versions.json"
+    },
+    "graph-data-science": {
+        "homepageUrl": "https://github.com/neo4j/graph-data-science/",
+        "versionsUrl": "https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/versions.json"
+    }
+}
