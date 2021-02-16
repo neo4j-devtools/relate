@@ -155,7 +155,7 @@ describe('LocalDbmsPlugins', () => {
         const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
 
         expect(installedVersion.toArray().length).toEqual(1);
-        expect(installedVersion.toArray()[0].version).toEqual('4.0.0.17');
+        expect(installedVersion.toArray()[0].version.version).toEqual('4.0.0.17');
 
         await app.environment.dbmss.start([dbms.id]);
         await waitForDbmsToBeOnline({

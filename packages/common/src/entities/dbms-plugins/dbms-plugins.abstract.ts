@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
+import {IDbmsPluginInstalled, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 import {EnvironmentAbstract} from '../environments';
 
@@ -30,7 +30,7 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
      * Add one or more plugin sources
      * @param   sources     List of sources
      */
-    abstract addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>>;
+    abstract addSources(sources: List<IDbmsPluginSource> | IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>>;
 
     /**
      * Remove one or more plugin sources
@@ -53,7 +53,7 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
      * @param   dbmsNamesOrIds
      * @param   pluginName
      */
-    abstract install(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<List<IDbmsPluginVersion>>;
+    abstract install(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<List<IDbmsPluginInstalled>>;
 
     /**
      * Upgrade a plugin in the specified DBMS

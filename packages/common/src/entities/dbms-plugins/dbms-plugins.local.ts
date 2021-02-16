@@ -2,7 +2,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import {List} from '@relate/types';
 
-import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel} from '../../models';
+import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -14,8 +14,8 @@ import {
     updateDbmsConfig,
 } from '../../utils/dbms-plugins';
 import {LocalEnvironment, NEO4J_PLUGIN_DIR} from '../environments';
-import {JSON_FILE_EXTENSION, PLUGINS_DIR_NAME} from '../../constants';
-import {download, envPaths} from '../../utils';
+import {HOOK_EVENTS, JSON_FILE_EXTENSION, PLUGINS_DIR_NAME} from '../../constants';
+import {download, emitHookEvent, envPaths} from '../../utils';
 import {verifyHash} from '../../utils/download';
 
 export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
@@ -47,9 +47,9 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(allSources, filters);
     }
 
-    public async addSources(sources: Omit<IDbmsPluginSource, 'isOfficial'>[]): Promise<List<IDbmsPluginSource>> {
+    public async addSources(sources: List<IDbmsPluginSource> | IDbmsPluginSource[]): Promise<List<IDbmsPluginSource>> {
         const allSources = await this.listSources();
-        const namesToBeAdded = sources.map((source) => source.name);
+        const namesToBeAdded = List.from(sources).mapEach((source) => source.name);
         const existingSources = allSources.filter((source) => namesToBeAdded.includes(source.name));
 
         if (existingSources.length.greaterThan(0)) {
@@ -109,7 +109,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
     public async install(
         dbmsNamesOrIds: string[] | List<string>,
         pluginName: string,
-    ): Promise<List<IDbmsPluginVersion>> {
+    ): Promise<List<IDbmsPluginInstalled>> {
         const pluginSource = await this.getSource(pluginName);
         const pluginVersions = await listVersions(this.environment.dirPaths.pluginVersions, pluginSource);
 
@@ -130,17 +130,23 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                     `${pluginSource.name}-${pluginToInstall.version}.jar`,
                 );
 
+                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
                 const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
                 if (pluginToInstall.sha256) {
                     await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
                 }
-                await fse.move(downloadedFilePath, pluginFilePath);
+                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_STOP, null);
+
+                await fse.move(downloadedFilePath, pluginFilePath, {overwrite: true});
 
                 const config = await this.environment.dbmss.getDbmsConfig(dbms.id);
                 updateDbmsConfig(config, pluginToInstall.config);
                 await config.flush();
 
-                return pluginToInstall;
+                return {
+                    ...pluginSource,
+                    version: pluginToInstall,
+                };
             })
             .unwindPromises();
     }

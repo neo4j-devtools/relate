@@ -21,7 +21,7 @@ $ npm install -g @relate/cli
 $ relate COMMAND
 running command...
 $ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.21 linux-x64 node-v12.20.1
+@relate/cli/1.0.2-alpha.21 linux-x64 node-v12.20.0
 $ relate --help [COMMAND]
 USAGE
   $ relate COMMAND
@@ -57,6 +57,7 @@ relate$ relate --help
 * [`relate backup`](./docs/backup.md) - Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
 * [`relate db`](./docs/db.md) - Individual databases within a DBMS.
 * [`relate dbms`](./docs/dbms.md) - Neo4j DBMS installations.
+* [`relate dbms-plugin`](./docs/dbms-plugin.md) - Neo4j DBMS plugins.
 * [`relate environment`](./docs/environment.md) - Managed sets of related resources and services, which may be local or remote.
 * [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
 * [`relate help`](./docs/help.md) - display help for relate

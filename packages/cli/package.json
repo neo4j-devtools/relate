@@ -88,6 +88,9 @@
             "dbms": {
                 "description": "Neo4j DBMS installations."
             },
+            "dbms-plugin": {
+                "description": "Neo4j DBMS plugins."
+            },
             "environment": {
                 "description": "Managed sets of related resources and services, which may be local or remote."
             },

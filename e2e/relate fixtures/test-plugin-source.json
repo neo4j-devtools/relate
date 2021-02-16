@@ -1,0 +1,5 @@
+{
+    "name": "plugin-test",
+    "homepageUrl": "https://github.com/neo4j-contrib/neo4j-apoc-procedures",
+    "versionsUrl": "https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json"
+}
