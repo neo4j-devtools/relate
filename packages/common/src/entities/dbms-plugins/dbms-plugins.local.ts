@@ -1,8 +1,10 @@
+import {promises as fs} from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
+import semver from 'semver';
 import {List} from '@relate/types';
 
-import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
+import {IDbmsPluginSource, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -99,11 +101,53 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return removedSources;
     }
 
-    public list(
-        _dbmsNameOrId: string,
-        _filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IDbmsPluginVersion>> {
-        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support listing plugins`);
+    public async list(
+        dbmsNameOrId: string,
+        filters?: List<IRelateFilter> | IRelateFilter[],
+    ): Promise<List<IDbmsPluginInstalled>> {
+        const dbms = await this.environment.dbmss.get(dbmsNameOrId);
+        if (!dbms.rootPath) {
+            throw new NotFoundError(`Could not find DBMS root path for "${dbms.name}"`);
+        }
+
+        const dbmsPluginsDir = path.join(dbms.rootPath, NEO4J_PLUGIN_DIR);
+        const files = await fs.readdir(dbmsPluginsDir, {withFileTypes: true});
+
+        const plugins = await List.from(files)
+            .filter((file) => file.isFile() && path.extname(file.name) === '.jar')
+            .mapEach(async (file) => {
+                const splitFilename = path.basename(file.name, '.jar').split('-');
+                const versionStr = splitFilename.pop();
+                const name = splitFilename.join('-');
+
+                if (!name || !versionStr || !semver.coerce(versionStr)) {
+                    await emitHookEvent(HOOK_EVENTS.DEBUG, `Couldn't parse version from "${file.name}"`);
+                    return null;
+                }
+
+                const source = await this.getSource(name).catch(async (err) => {
+                    await emitHookEvent(HOOK_EVENTS.DEBUG, `Could not retrieve source for "${name}": ${err}`);
+                    return null;
+                });
+
+                const allVersions = source?.versionsUrl
+                    ? await listVersions(this.environment.dirPaths.pluginVersions, source)
+                    : List.of([]);
+                const version = allVersions
+                    .find((v) => v.version === versionStr)
+                    .getOrElse({
+                        version: versionStr,
+                    });
+
+                return {
+                    ...source,
+                    name,
+                    version,
+                };
+            })
+            .unwindPromises();
+
+        return applyEntityFilters(plugins.compact(), filters);
     }
 
     public async install(
@@ -151,11 +195,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    public upgrade(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
-        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support upgrading plugins`);
-    }
-
-    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginInstalled> {
         throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support uninstalling plugins`);
     }
 }
