@@ -6,7 +6,7 @@ import {List} from '@relate/types';
 
 import {IDbmsPluginSource, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
-import {NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
+import {NotFoundError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
 import {
     discoverPluginSources,
@@ -171,7 +171,10 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 const pluginFilePath = path.join(
                     dbmsRootPath,
                     NEO4J_PLUGIN_DIR,
-                    `${pluginSource.name}-${pluginToInstall.version}.jar`,
+                    this.getDbmsPluginFilename({
+                        ...pluginSource,
+                        version: pluginToInstall,
+                    }),
                 );
 
                 await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
@@ -195,7 +198,46 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginInstalled> {
-        throw new NotSupportedError(`${LocalDbmsPlugins.name} does not support uninstalling plugins`);
+    public async uninstall(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<void> {
+        await List.from(dbmsNamesOrIds)
+            .mapEach(async (dbmsNameOrId) => {
+                const dbms = await this.environment.dbmss.get(dbmsNameOrId);
+                if (!dbms.rootPath) {
+                    throw new NotFoundError(`Could not find DBMS root path for "${dbms.name}"`);
+                }
+                const dbmsPluginsDir = path.join(dbms.rootPath, NEO4J_PLUGIN_DIR);
+
+                const pluginsToUninstall = await this.list(dbmsNameOrId, [
+                    {
+                        field: 'name',
+                        value: pluginName,
+                    },
+                ]);
+
+                // In most cases there shouldn't be multiple versions of the
+                // same plugin, but it is possible for this to happen, so in
+                // this case all versions of the plugin would be deleted.
+                await pluginsToUninstall
+                    .mapEach(async (plugin) => {
+                        const filename = this.getDbmsPluginFilename(plugin);
+                        const pluginPath = path.join(dbmsPluginsDir, filename);
+                        const pluginPathExists = await fse.pathExists(pluginPath);
+
+                        if (pluginPathExists) {
+                            return fse.remove(pluginPath);
+                        }
+
+                        return emitHookEvent(
+                            HOOK_EVENTS.DEBUG,
+                            `cannot remove "${pluginPath}" because it does not exist`,
+                        );
+                    })
+                    .unwindPromises();
+            })
+            .unwindPromises();
+    }
+
+    private getDbmsPluginFilename(plugin: IDbmsPluginInstalled): string {
+        return `${plugin.name}-${plugin.version.version}.jar`;
     }
 }

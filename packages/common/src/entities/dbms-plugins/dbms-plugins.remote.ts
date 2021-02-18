@@ -34,7 +34,7 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support installing plugins`);
     }
 
-    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginInstalled> {
+    public uninstall(_dbmsNameOrId: string[] | List<string>, _pluginName: string): Promise<void> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support uninstalling plugins`);
     }
 }

@@ -60,5 +60,5 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
      * @param   dbmsNameOrId
      * @param   pluginName
      */
-    abstract uninstall(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginInstalled>;
+    abstract uninstall(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<void>;
 }

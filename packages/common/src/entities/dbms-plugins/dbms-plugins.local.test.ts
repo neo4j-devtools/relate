@@ -209,4 +209,25 @@ describe('LocalDbmsPlugins', () => {
             },
         ]);
     });
+
+    test('dbmsPlugins.uninstall - uninstalls apoc successfully', async () => {
+        await app.environment.dbmsPlugins.uninstall([dbms.id], 'apoc');
+        const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        expect(
+            plugins
+                .mapEach((p) => ({
+                    name: p.name,
+                    homepageUrl: p.homepageUrl,
+                    version: p.version.version,
+                }))
+                .toArray(),
+        ).toEqual([
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: undefined,
+                version: '1.0.1',
+            },
+        ]);
+    });
 });
