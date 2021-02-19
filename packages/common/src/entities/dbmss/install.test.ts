@@ -1,12 +1,13 @@
 import path from 'path';
 import {List} from '@relate/types';
 
-import {InvalidArgumentError, NotFoundError, NotSupportedError} from '../../errors';
+import {InvalidArgumentError, NotAllowedError, NotFoundError, NotSupportedError} from '../../errors';
 import * as versionUtils from '../../utils/dbmss/dbms-versions';
 import * as downloadUtils from '../../utils/dbmss/download-neo4j';
 import {TestDbmss, TestEnvironment} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 import {LocalEnvironment} from '../environments';
+import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 
 const UUID_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 const {ARCHIVE_PATH, NEO4J_VERSION} = TestDbmss;
@@ -126,5 +127,23 @@ describe('LocalDbmss - install', () => {
         const config = await testEnv.dbmss.getDbmsConfig(dbmsId);
 
         expect(config.get('dbms.security.procedures.unrestricted')).toEqual('jwt.security.*');
+    });
+
+    test('Cannot uninstall a started DBMS', async () => {
+        const dbms = await testEnv.dbmss.install(app.createName(), NEO4J_VERSION);
+        const config = await testEnv.dbmss.getDbmsConfig(dbms.id);
+
+        await testEnv.dbmss.start([dbms.id]);
+        await waitForDbmsToBeOnline({
+            ...dbms,
+            config,
+        });
+
+        await expect(testEnv.dbmss.uninstall(dbms.id)).rejects.toThrowError(
+            new NotAllowedError('Cannot uninstall DBMS that is running'),
+        );
+
+        await testEnv.dbmss.stop([dbms.id]);
+        await expect(testEnv.dbmss.uninstall(dbms.id)).resolves.toEqual(dbms);
     });
 });
