@@ -20,6 +20,8 @@ export default class AddSourcesCommand extends BaseCommand {
         '$ relate dbms-plugin:add-sources ./local/.neo4j-plugin-source',
     ];
 
+    static strict = false;
+
     static args = [
         {
             name: 'sources',

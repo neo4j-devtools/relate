@@ -19,6 +19,8 @@ export default class UninstallCommand extends BaseCommand {
         '$ relate dbms-plugin:uninstall -e environment-name',
     ];
 
+    static strict = false;
+
     static args = [ARGS.DBMSS];
 
     static flags = {

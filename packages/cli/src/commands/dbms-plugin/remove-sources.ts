@@ -18,6 +18,8 @@ export default class RemoveSourcesCommand extends BaseCommand {
         '$ relate dbms-plugin:remove-sources sourceName1 sourceName2',
     ];
 
+    static strict = false;
+
     static args = [
         {
             name: 'sources',
