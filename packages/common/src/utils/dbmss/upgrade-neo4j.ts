@@ -52,6 +52,16 @@ export const upgradeNeo4j = async (
         );
 
         await dbmsUpgradeConfigs(dbms, upgradedDbmsInfo, upgradedConfigFileName);
+        const existingPlugins = await env.dbmsPlugins.list(dbms.id);
+        await existingPlugins
+            .mapEach(async (plugin) => {
+                try {
+                    await env.dbmsPlugins.install([upgradedDbmsInfo.id], plugin.name);
+                } catch (err) {
+                    await emitHookEvent(HOOK_EVENTS.DEBUG, `could not install plugin ${plugin.name}: ${err}`);
+                }
+            })
+            .unwindPromises();
 
         const upgradedConfig = await env.dbmss.getDbmsConfig(upgradedDbmsInfo.id);
 

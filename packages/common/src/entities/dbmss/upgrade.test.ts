@@ -1,3 +1,5 @@
+import semver from 'semver';
+
 import {InvalidArgumentError} from '../../errors';
 import {TestDbmss} from '../../utils/system';
 import {IDbmsInfo} from '../../models';
@@ -91,5 +93,27 @@ describe('LocalDbmss - upgrade', () => {
         expect(upgraded.version).toEqual('4.1.0');
         expect(upgraded.id).toEqual(dbms352.id);
         expect(upgradedConfig.get('foo')).toEqual('bar');
+    });
+
+    test('Upgrades plugins when upgrading', async () => {
+        const installedPlugin = await env.dbmsPlugins.install([dbms404.id], 'streams');
+        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.1.0', false, false, false);
+        const upgradedPlugin = await env.dbmsPlugins.list(dbms404.id, [
+            {
+                field: 'name',
+                value: 'streams',
+            },
+        ]);
+
+        const installedVersion = installedPlugin.first.getOrElse(() => {
+            throw new Error('plugin not found');
+        }).version.version;
+        const upgradedVersion = upgradedPlugin.first.getOrElse(() => {
+            throw new Error('plugin not found');
+        }).version.version;
+
+        expect(upgraded.version).toEqual('4.1.0');
+        expect(upgraded.id).toEqual(dbms404.id);
+        expect(semver.gt(upgradedVersion, installedVersion)).toEqual(true);
     });
 });
