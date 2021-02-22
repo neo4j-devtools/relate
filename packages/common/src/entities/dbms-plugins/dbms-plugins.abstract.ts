@@ -46,7 +46,7 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     abstract list(
         dbmsNameOrId: string,
         filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IDbmsPluginVersion>>;
+    ): Promise<List<IDbmsPluginInstalled>>;
 
     /**
      * Install a plugin in the specified DBMS
@@ -56,16 +56,9 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     abstract install(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<List<IDbmsPluginInstalled>>;
 
     /**
-     * Upgrade a plugin in the specified DBMS
-     * @param   dbmsNameOrId
-     * @param   pluginName
-     */
-    abstract upgrade(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
-
-    /**
      * Uninstall a plugin from the specified DBMS
      * @param   dbmsNameOrId
      * @param   pluginName
      */
-    abstract uninstall(dbmsNameOrId: string, pluginName: string): Promise<IDbmsPluginVersion>;
+    abstract uninstall(dbmsNamesOrIds: string[] | List<string>, pluginName: string): Promise<void>;
 }

@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IDbmsPluginInstalled, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
+import {IDbmsPluginInstalled, IDbmsPluginSource} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 import {NotSupportedError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -26,7 +26,7 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
     public list(
         _dbmsNameOrId: string,
         _filters?: List<IRelateFilter> | IRelateFilter[],
-    ): Promise<List<IDbmsPluginVersion>> {
+    ): Promise<List<IDbmsPluginInstalled>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugins`);
     }
 
@@ -34,11 +34,7 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support installing plugins`);
     }
 
-    public upgrade(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
-        throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support upgrading plugins`);
-    }
-
-    public uninstall(_dbmsNameOrId: string, _pluginName: string): Promise<IDbmsPluginVersion> {
+    public uninstall(_dbmsNameOrId: string[] | List<string>, _pluginName: string): Promise<void> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support uninstalling plugins`);
     }
 }

@@ -8,6 +8,7 @@ Neo4j DBMS plugins.
 * [`relate dbms-plugin:list DBMS`](#relate-dbms-pluginlist-dbms)
 * [`relate dbms-plugin:list-sources`](#relate-dbms-pluginlist-sources)
 * [`relate dbms-plugin:remove-sources [SOURCES]`](#relate-dbms-pluginremove-sources-sources)
+* [`relate dbms-plugin:uninstall [DBMSS]`](#relate-dbms-pluginuninstall-dbmss)
 
 ## `relate dbms-plugin:add-sources [SOURCES]`
 
@@ -166,3 +167,30 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/dbms-plugin/remove-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.21/packages/cli/src/commands/dbms-plugin/remove-sources.ts)_
+
+## `relate dbms-plugin:uninstall [DBMSS]`
+
+Uninstall plugin from one or more Neo4j DBMSs
+
+```
+USAGE
+  $ relate dbms-plugin:uninstall [DBMSS]
+
+ARGUMENTS
+  DBMSS  Names or IDs of Neo4j instances
+
+OPTIONS
+  -e, --environment=environment  Name of the environment to run the command against
+  -p, --plugin=plugin            (required) Name of the plugin to uninstall
+
+ALIASES
+  $ relate plugin:uninstall
+
+EXAMPLES
+  $ relate dbms-plugin:uninstall
+  $ relate dbms-plugin:uninstall dbms1 --plugin apoc
+  $ relate dbms-plugin:uninstall dbms1 dbms2 dbms3 --plugin apoc
+  $ relate dbms-plugin:uninstall -e environment-name
+```
+
+_See code: [dist/commands/dbms-plugin/uninstall.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.21/packages/cli/src/commands/dbms-plugin/uninstall.ts)_

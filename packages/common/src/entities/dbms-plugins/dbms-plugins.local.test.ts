@@ -1,7 +1,7 @@
 import nock from 'nock';
 
 import {TargetExistsError} from '../../errors';
-import {IDbmsPluginSource} from '../../models';
+import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbQuery} from '../../utils/dbmss/system-db-query';
 import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
@@ -30,9 +30,11 @@ const TEST_SOURCE_2: IDbmsPluginSource = {
 
 describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
+    let dbms: IDbmsInfo;
 
     beforeAll(async () => {
         app = await TestEnvironment.init(__filename);
+        dbms = await app.createDbms();
     });
 
     afterEach(() => nock.cleanAll());
@@ -151,7 +153,6 @@ describe('LocalDbmsPlugins', () => {
     });
 
     test('dbmsPlugins.install - installs apoc successfully', async () => {
-        const dbms = await app.createDbms();
         const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
 
         expect(installedVersion.toArray().length).toEqual(1);
@@ -182,5 +183,72 @@ describe('LocalDbmsPlugins', () => {
 
         expect(res.data).toEqual(['4.0.0.17']);
         expect(res.type).toEqual('RECORD');
+    });
+
+    test('dbmsPlugins.list - lists installed plugin', async () => {
+        const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        expect(
+            plugins
+                .mapEach((p) => ({
+                    name: p.name,
+                    homepageUrl: p.homepageUrl,
+                    version: p.version.version,
+                }))
+                .toArray(),
+        ).toEqual([
+            {
+                name: 'apoc',
+                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
+                version: '4.0.0.17',
+            },
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: undefined,
+                version: '1.0.1',
+            },
+        ]);
+    });
+
+    test('dbmsPlugins.uninstall - uninstalls apoc successfully', async () => {
+        await app.environment.dbmsPlugins.uninstall([dbms.id], 'apoc');
+        const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        expect(
+            plugins
+                .mapEach((p) => ({
+                    name: p.name,
+                    homepageUrl: p.homepageUrl,
+                    version: p.version.version,
+                }))
+                .toArray(),
+        ).toEqual([
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: undefined,
+                version: '1.0.1',
+            },
+        ]);
+    });
+
+    test('dbmsPlugins.uninstall - does not fail if the plugin is not installed', async () => {
+        await app.environment.dbmsPlugins.uninstall([dbms.id], 'nonexistent');
+        const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        expect(
+            plugins
+                .mapEach((p) => ({
+                    name: p.name,
+                    homepageUrl: p.homepageUrl,
+                    version: p.version.version,
+                }))
+                .toArray(),
+        ).toEqual([
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: undefined,
+                version: '1.0.1',
+            },
+        ]);
     });
 });

@@ -20,6 +20,8 @@ export default class InstallCommand extends BaseCommand {
         '$ relate dbms-plugin:install -e environment-name',
     ];
 
+    static strict = false;
+
     static args = [ARGS.DBMSS];
 
     static flags = {

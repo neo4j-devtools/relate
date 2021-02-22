@@ -7,7 +7,7 @@ import {EnvironmentAbstract} from '../environments';
 import {IProject, WriteFileFlag} from '../../models';
 import {InvalidArgumentError} from '../../errors';
 import {envPaths} from '../../utils';
-import {PROJECTS_DIR_NAME} from '../../constants';
+import {FILTER_COMPARATORS, PROJECTS_DIR_NAME} from '../../constants';
 
 const TEST_MANIFEST = {
     name: 'testId',
@@ -46,7 +46,15 @@ describe('LocalProjects', () => {
     });
 
     test('projects.list() - none created', async () => {
-        expect(await environment.projects.list()).toEqual(List.from());
+        expect(
+            await environment.projects.list([
+                {
+                    field: 'name',
+                    type: FILTER_COMPARATORS.EQUALS,
+                    value: TEST_MANIFEST.name,
+                },
+            ]),
+        ).toEqual(List.from());
     });
 
     test('projects.create()', async () => {
@@ -63,7 +71,15 @@ describe('LocalProjects', () => {
     });
 
     test('projects.list() - with created', async () => {
-        expect(await environment.projects.list()).toEqual(List.from([TEST_CREATED]));
+        expect(
+            await environment.projects.list([
+                {
+                    field: 'name',
+                    type: FILTER_COMPARATORS.EQUALS,
+                    value: TEST_MANIFEST.name,
+                },
+            ]),
+        ).toEqual(List.from([TEST_CREATED]));
     });
 
     test('projects.addFile() - no destination', async () => {

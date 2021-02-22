@@ -29,8 +29,20 @@ export class ListModule implements OnApplicationBootstrap {
                 plugins.toArray(),
                 {
                     name: {},
-                    homepageUrl: {},
-                    version: {},
+                    version: {
+                        get: (p) => p.version.version,
+                    },
+                    isOfficial: {
+                        header: 'Official',
+                    },
+                    homepageUrl: {
+                        header: 'Homepage',
+                    },
+                    downloadUrl: {
+                        get: (p) => p.version.downloadUrl,
+                        extended: true,
+                        header: 'Download',
+                    },
                 },
                 {
                     printLine: this.utils.log,
