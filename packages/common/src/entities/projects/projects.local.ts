@@ -308,19 +308,22 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const get = fetch || got;
 
         try {
-            const response = await get('https://api.github.com/orgs/neo4j-graph-examples/repos');
+            const response = await get(
+                'https://api.github.com/search/repositories?q=topic:neo4j-approved+org:neo4j-graph-examples',
+            );
 
-            // @TODO: Figure out how to filter the response by topic or something else.
             return List.from(
-                /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
-                JSON.parse(response.body).map(({name, description, default_branch}: ISampleProjectRest) => ({
-                    name,
-                    description,
+                JSON.parse(response.body)?.items.map(
                     /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
-                    default_branch,
-                    /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
-                    downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/${default_branch}.zip`,
-                })),
+                    ({name, description, default_branch}: ISampleProjectRest) => ({
+                        name,
+                        description,
+                        /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
+                        default_branch,
+                        /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
+                        downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/${default_branch}.zip`,
+                    }),
+                ),
             );
         } catch (_error) {
             throw new FetchError(`Unable to fetch Sample Projects from GitHub`);
