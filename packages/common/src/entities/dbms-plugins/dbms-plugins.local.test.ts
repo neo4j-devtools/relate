@@ -230,4 +230,25 @@ describe('LocalDbmsPlugins', () => {
             },
         ]);
     });
+
+    test('dbmsPlugins.uninstall - does not fail if the plugin is not installed', async () => {
+        await app.environment.dbmsPlugins.uninstall([dbms.id], 'nonexistent');
+        const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        expect(
+            plugins
+                .mapEach((p) => ({
+                    name: p.name,
+                    homepageUrl: p.homepageUrl,
+                    version: p.version.version,
+                }))
+                .toArray(),
+        ).toEqual([
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: undefined,
+                version: '1.0.1',
+            },
+        ]);
+    });
 });
