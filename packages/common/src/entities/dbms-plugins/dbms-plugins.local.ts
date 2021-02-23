@@ -4,7 +4,7 @@ import path from 'path';
 import semver from 'semver';
 import {List} from '@relate/types';
 
-import {IDbmsPluginSource, DbmsPluginSourceModel, IDbmsPluginInstalled} from '../../models';
+import {IDbmsPluginSource, DbmsPluginSourceModel, IDbmsPluginInstalled, IDbmsPluginUpgradable} from '../../models';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {NotFoundError, TargetExistsError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -150,6 +150,29 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(plugins.compact(), filters);
     }
 
+    public async listUpgradable(dbmsNameOrId: string, dbmsVersion: string): Promise<List<IDbmsPluginUpgradable>> {
+        const plugins = await this.list(dbmsNameOrId);
+
+        return plugins
+            .mapEach(async (plugin) => {
+                try {
+                    const pluginVersions = await listVersions(this.environment.dirPaths.pluginVersions, plugin);
+                    const latestCompatibleVersion = getLatestCompatibleVersion(dbmsVersion, plugin, pluginVersions);
+
+                    return {
+                        installed: plugin,
+                        upgradable: latestCompatibleVersion,
+                    };
+                } catch {
+                    return {
+                        installed: plugin,
+                        upgradable: null,
+                    };
+                }
+            })
+            .unwindPromises();
+    }
+
     public async install(
         dbmsNamesOrIds: string[] | List<string>,
         pluginName: string,
@@ -165,7 +188,12 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Could not find DBMS root path for "${dbms.name}"`);
                 }
 
-                const pluginToInstall = getLatestCompatibleVersion(dbms, pluginSource, pluginVersions);
+                const dbmsVersion = dbms.version;
+                if (!dbmsVersion) {
+                    throw new NotFoundError(`Could not get version for DBMS "${dbms.name}"`);
+                }
+
+                const pluginToInstall = getLatestCompatibleVersion(dbmsVersion, pluginSource, pluginVersions);
 
                 const pluginCacheDir = path.join(envPaths().cache, PLUGINS_DIR_NAME);
                 const pluginFilePath = path.join(

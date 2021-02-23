@@ -210,6 +210,28 @@ describe('LocalDbmsPlugins', () => {
         ]);
     });
 
+    test('dbmsPlugins.listUpgradable - lists upgradable plugins', async () => {
+        const upgradable = await app.environment.dbmsPlugins.listUpgradable(dbms.name, '4.2.0');
+        const upgradableMapped = upgradable.toArray().map((plugin) => ({
+            name: plugin.installed.name,
+            installed: plugin.installed.version.version,
+            upgradable: plugin.upgradable?.version,
+        }));
+
+        expect(upgradableMapped).toEqual([
+            {
+                name: 'apoc',
+                installed: '4.0.0.17',
+                upgradable: '4.2.0.0',
+            },
+            {
+                name: 'neo4j-jwt-addon',
+                installed: '1.0.1',
+                upgradable: undefined,
+            },
+        ]);
+    });
+
     test('dbmsPlugins.uninstall - uninstalls apoc successfully', async () => {
         await app.environment.dbmsPlugins.uninstall([dbms.id], 'apoc');
         const plugins = await app.environment.dbmsPlugins.list(dbms.name);
