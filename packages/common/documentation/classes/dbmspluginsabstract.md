@@ -26,7 +26,6 @@
 * [listSources](dbmspluginsabstract.md#abstract-listsources)
 * [removeSources](dbmspluginsabstract.md#abstract-removesources)
 * [uninstall](dbmspluginsabstract.md#abstract-uninstall)
-* [upgrade](dbmspluginsabstract.md#abstract-upgrade)
 
 ## Properties
 
@@ -48,7 +47,7 @@ Defined in dbms-plugins/dbms-plugins.abstract.ts:10
 
 ### `Abstract` addSources
 
-▸ **addSources**(`urls`: string[]): *Promise‹List‹IDbmsPluginSource››*
+▸ **addSources**(`sources`: List‹IDbmsPluginSource› | IDbmsPluginSource[]): *Promise‹List‹IDbmsPluginSource››*
 
 Defined in dbms-plugins/dbms-plugins.abstract.ts:33
 
@@ -58,7 +57,7 @@ Add one or more plugin sources
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`urls` | string[] | List of source URLs  |
+`sources` | List‹IDbmsPluginSource› &#124; IDbmsPluginSource[] | List of sources  |
 
 **Returns:** *Promise‹List‹IDbmsPluginSource››*
 
@@ -70,7 +69,7 @@ ___
 
 Defined in dbms-plugins/dbms-plugins.abstract.ts:21
 
-Get the source for a specific plugin
+Get the source for a plugin
 
 **Parameters:**
 
@@ -84,7 +83,7 @@ ___
 
 ### `Abstract` install
 
-▸ **install**(`dbmsNameOrId`: string, `pluginName`: string): *Promise‹IDbmsPluginVersion›*
+▸ **install**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹List‹IDbmsPluginInstalled››*
 
 Defined in dbms-plugins/dbms-plugins.abstract.ts:56
 
@@ -94,16 +93,16 @@ Install a plugin in the specified DBMS
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`dbmsNameOrId` | string | - |
+`dbmsNamesOrIds` | string[] &#124; List‹string› | - |
 `pluginName` | string |   |
 
-**Returns:** *Promise‹IDbmsPluginVersion›*
+**Returns:** *Promise‹List‹IDbmsPluginInstalled››*
 
 ___
 
 ### `Abstract` list
 
-▸ **list**(`dbmsNameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsPluginVersion››*
+▸ **list**(`dbmsNameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsPluginInstalled››*
 
 Defined in dbms-plugins/dbms-plugins.abstract.ts:46
 
@@ -116,7 +115,7 @@ Name | Type | Description |
 `dbmsNameOrId` | string | - |
 `filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
 
-**Returns:** *Promise‹List‹IDbmsPluginVersion››*
+**Returns:** *Promise‹List‹IDbmsPluginInstalled››*
 
 ___
 
@@ -140,7 +139,7 @@ ___
 
 ### `Abstract` removeSources
 
-▸ **removeSources**(`urls`: string[]): *Promise‹List‹IDbmsPluginSource››*
+▸ **removeSources**(`names`: string[]): *Promise‹List‹IDbmsPluginSource››*
 
 Defined in dbms-plugins/dbms-plugins.abstract.ts:39
 
@@ -148,9 +147,9 @@ Remove one or more plugin sources
 
 **Parameters:**
 
-Name | Type | Description |
------- | ------ | ------ |
-`urls` | string[] | List of source URLs  |
+Name | Type |
+------ | ------ |
+`names` | string[] |
 
 **Returns:** *Promise‹List‹IDbmsPluginSource››*
 
@@ -158,9 +157,9 @@ ___
 
 ### `Abstract` uninstall
 
-▸ **uninstall**(`dbmsNameOrId`: string, `pluginName`: string): *Promise‹IDbmsPluginVersion›*
+▸ **uninstall**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹void›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:70
+Defined in dbms-plugins/dbms-plugins.abstract.ts:63
 
 Uninstall a plugin from the specified DBMS
 
@@ -168,26 +167,7 @@ Uninstall a plugin from the specified DBMS
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`dbmsNameOrId` | string | - |
+`dbmsNamesOrIds` | string[] &#124; List‹string› | - |
 `pluginName` | string |   |
 
-**Returns:** *Promise‹IDbmsPluginVersion›*
-
-___
-
-### `Abstract` upgrade
-
-▸ **upgrade**(`dbmsNameOrId`: string, `pluginName`: string): *Promise‹IDbmsPluginVersion›*
-
-Defined in dbms-plugins/dbms-plugins.abstract.ts:63
-
-Upgrade a plugin in the specified DBMS
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`dbmsNameOrId` | string | - |
-`pluginName` | string |   |
-
-**Returns:** *Promise‹IDbmsPluginVersion›*
+**Returns:** *Promise‹void›*

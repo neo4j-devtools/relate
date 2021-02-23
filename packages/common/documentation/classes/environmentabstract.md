@@ -11,6 +11,7 @@
 ### Properties
 
 * [backups](environmentabstract.md#readonly-backups)
+* [dbmsPlugins](environmentabstract.md#readonly-dbmsplugins)
 * [dbmss](environmentabstract.md#readonly-dbmss)
 * [dbs](environmentabstract.md#readonly-dbs)
 * [extensions](environmentabstract.md#readonly-extensions)
@@ -44,7 +45,15 @@
 
 • **backups**: *[BackupAbstract](backupabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:32
+Defined in environments/environment.abstract.ts:35
+
+___
+
+### `Readonly` dbmsPlugins
+
+• **dbmsPlugins**: *[DbmsPluginsAbstract](dbmspluginsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
+
+Defined in environments/environment.abstract.ts:27
 
 ___
 
@@ -52,7 +61,7 @@ ___
 
 • **dbmss**: *[DbmssAbstract](dbmssabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:24
+Defined in environments/environment.abstract.ts:25
 
 ___
 
@@ -60,7 +69,7 @@ ___
 
 • **dbs**: *[DbsAbstract](dbsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:26
+Defined in environments/environment.abstract.ts:29
 
 ___
 
@@ -68,7 +77,7 @@ ___
 
 • **extensions**: *[ExtensionsAbstract](extensionsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:28
+Defined in environments/environment.abstract.ts:31
 
 ___
 
@@ -76,7 +85,7 @@ ___
 
 • **projects**: *[ProjectsAbstract](projectsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:30
+Defined in environments/environment.abstract.ts:33
 
 ## Accessors
 
@@ -84,7 +93,7 @@ Defined in environments/environment.abstract.ts:30
 
 • **get httpOrigin**(): *string*
 
-Defined in environments/environment.abstract.ts:60
+Defined in environments/environment.abstract.ts:63
 
 **Returns:** *string*
 
@@ -94,7 +103,7 @@ ___
 
 • **get id**(): *string*
 
-Defined in environments/environment.abstract.ts:41
+Defined in environments/environment.abstract.ts:44
 
 **Returns:** *string*
 
@@ -104,7 +113,7 @@ ___
 
 • **get isActive**(): *boolean*
 
-Defined in environments/environment.abstract.ts:52
+Defined in environments/environment.abstract.ts:55
 
 Indicates if environment is current active
 
@@ -116,7 +125,7 @@ ___
 
 • **get name**(): *string*
 
-Defined in environments/environment.abstract.ts:45
+Defined in environments/environment.abstract.ts:48
 
 **Returns:** *string*
 
@@ -126,7 +135,7 @@ ___
 
 • **get requiresAPIToken**(): *boolean*
 
-Defined in environments/environment.abstract.ts:64
+Defined in environments/environment.abstract.ts:67
 
 **Returns:** *boolean*
 
@@ -136,7 +145,7 @@ ___
 
 • **get type**(): *ENVIRONMENT_TYPES*
 
-Defined in environments/environment.abstract.ts:56
+Defined in environments/environment.abstract.ts:59
 
 **Returns:** *ENVIRONMENT_TYPES*
 
@@ -146,7 +155,7 @@ Defined in environments/environment.abstract.ts:56
 
 ▸ **generateAPIToken**(`hostName`: string, `clientId`: string, `data`: any): *Promise‹string›*
 
-Defined in environments/environment.abstract.ts:140
+Defined in environments/environment.abstract.ts:143
 
 Generates an API token
 
@@ -168,7 +177,7 @@ ___
 
 ▸ **generateAuthToken**(`data`: any): *Promise‹string›*
 
-Defined in environments/environment.abstract.ts:166
+Defined in environments/environment.abstract.ts:169
 
 Generates an authentication token
 
@@ -188,7 +197,7 @@ ___
 
 ▸ **getConfigValue**‹**K**›(`key`: K): *Promise‹EnvironmentConfigModel[K]›*
 
-Defined in environments/environment.abstract.ts:204
+Defined in environments/environment.abstract.ts:207
 
 Gets config value for given key
 
@@ -210,7 +219,7 @@ ___
 
 ▸ **init**(): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:131
+Defined in environments/environment.abstract.ts:134
 
 Environment initialisation logic
 
@@ -222,7 +231,7 @@ ___
 
 ▸ **login**(`redirectTo?`: undefined | string): *Promise‹IEnvironmentAuth›*
 
-Defined in environments/environment.abstract.ts:153
+Defined in environments/environment.abstract.ts:156
 
 Environment Authentication logic
 
@@ -240,7 +249,7 @@ ___
 
 ▸ **reloadConfig**(): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:211
+Defined in environments/environment.abstract.ts:214
 
 Reloads config from disk
 
@@ -252,7 +261,7 @@ ___
 
 ▸ **supports**(`methodName`: PUBLIC_GRAPHQL_METHODS): *boolean*
 
-Defined in environments/environment.abstract.ts:191
+Defined in environments/environment.abstract.ts:194
 
 Checks if given GraphQL method is supported
 
@@ -270,7 +279,7 @@ ___
 
 ▸ **updateConfig**(`key`: string, `value`: any): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:223
+Defined in environments/environment.abstract.ts:226
 
 Updates config on disk
 
@@ -289,7 +298,7 @@ ___
 
 ▸ **verifyAPIToken**(`hostName`: string, `clientId`: string, `token?`: undefined | string): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:148
+Defined in environments/environment.abstract.ts:151
 
 Verifies an API token
 
@@ -309,7 +318,7 @@ ___
 
 ▸ **verifyAuthToken**(`token`: string): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:179
+Defined in environments/environment.abstract.ts:182
 
 Verifies an authentication token
 
