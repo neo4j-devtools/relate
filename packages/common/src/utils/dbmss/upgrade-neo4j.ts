@@ -3,25 +3,57 @@ import fse from 'fs-extra';
 import path from 'path';
 
 import {DBMS_STATUS, ENTITY_TYPES, HOOK_EVENTS} from '../../constants';
-import {LocalEnvironment, NEO4J_CONF_DIR, NEO4J_CONF_FILE} from '../../entities/environments';
-import {DbmsUpgradeError, InvalidArgumentError, RelateBackupError} from '../../errors';
+import {LocalEnvironment, NEO4J_CONF_DIR, NEO4J_CONF_FILE, NEO4J_PLUGIN_DIR} from '../../entities/environments';
+import {DbmsUpgradeError, InvalidArgumentError, NotFoundError, RelateBackupError} from '../../errors';
 import {emitHookEvent} from '../event-hooks';
 import {dbmsUpgradeConfigs} from './dbms-upgrade-config';
 import {waitForDbmsToBeOnline} from './is-dbms-online';
 import {resolveDbms} from './resolve-dbms';
-import {IDbmsInfo} from '../../models';
+import {IDbmsInfo, IDbmsUpgradeOptions, PLUGIN_UPGRADE_MODE} from '../../models';
 
-export interface IUpgradeOptions {
-    noCache?: boolean;
-    migrate?: boolean;
-    backup?: boolean;
-}
+const upgradePlugins = async (
+    env: LocalEnvironment,
+    originalDbms: IDbmsInfo,
+    upgradedDbms: IDbmsInfo,
+    pluginUpgradeMode: PLUGIN_UPGRADE_MODE = PLUGIN_UPGRADE_MODE.UPGRADABLE,
+): Promise<void> => {
+    if (pluginUpgradeMode === PLUGIN_UPGRADE_MODE.NONE) {
+        return;
+    }
+
+    const existingPlugins = await env.dbmsPlugins.list(originalDbms.id);
+    await existingPlugins
+        .mapEach(async (plugin) => {
+            try {
+                await env.dbmsPlugins.install([upgradedDbms.id], plugin.name);
+            } catch (err) {
+                await emitHookEvent(HOOK_EVENTS.DEBUG, `could not install plugin ${plugin.name}: ${err}`);
+
+                if (!originalDbms.rootPath) {
+                    throw new NotFoundError(`Could not find DBMS root path for ${originalDbms.name}`);
+                }
+
+                if (!upgradedDbms.rootPath) {
+                    throw new NotFoundError(`Could not find DBMS root path for ${upgradedDbms.name}`);
+                }
+
+                if (pluginUpgradeMode === PLUGIN_UPGRADE_MODE.ALL) {
+                    const pluginFilename = env.dbmsPlugins.getDbmsPluginFilename(plugin);
+                    const originalPluginPath = path.join(originalDbms.rootPath, NEO4J_PLUGIN_DIR, pluginFilename);
+                    const upgradedPluginPath = path.join(upgradedDbms.rootPath, NEO4J_PLUGIN_DIR, pluginFilename);
+
+                    await fse.copy(originalPluginPath, upgradedPluginPath);
+                }
+            }
+        })
+        .unwindPromises();
+};
 
 export const upgradeNeo4j = async (
     env: LocalEnvironment,
     dbmsId: string,
     version: string,
-    options: IUpgradeOptions,
+    options: IDbmsUpgradeOptions,
 ): Promise<IDbmsInfo> => {
     const dbms = await env.dbmss.get(dbmsId);
     const dbmsManifest = await env.dbmss.manifest.get(dbmsId);
@@ -52,17 +84,6 @@ export const upgradeNeo4j = async (
         );
 
         await dbmsUpgradeConfigs(dbms, upgradedDbmsInfo, upgradedConfigFileName);
-        const existingPlugins = await env.dbmsPlugins.list(dbms.id);
-        await existingPlugins
-            .mapEach(async (plugin) => {
-                try {
-                    await env.dbmsPlugins.install([upgradedDbmsInfo.id], plugin.name);
-                } catch (err) {
-                    await emitHookEvent(HOOK_EVENTS.DEBUG, `could not install plugin ${plugin.name}: ${err}`);
-                }
-            })
-            .unwindPromises();
-
         const upgradedConfig = await env.dbmss.getDbmsConfig(upgradedDbmsInfo.id);
 
         /**
@@ -86,6 +107,9 @@ export const upgradeNeo4j = async (
             upgradedConfig.set('dbms.allow_upgrade', 'false');
             await upgradedConfig.flush();
         }
+
+        // Install new plugins
+        await upgradePlugins(env, dbms, upgradedDbmsInfo, options.pluginUpgradeMode);
 
         /**
          * Replace old installation

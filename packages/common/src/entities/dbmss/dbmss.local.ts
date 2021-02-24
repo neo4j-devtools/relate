@@ -8,7 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -181,18 +181,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
-    upgrade(dbmsId: string, version: string, migrate = true, backup?: boolean, noCache?: boolean): Promise<IDbmsInfo> {
+    upgrade(dbmsId: string, version: string, options: IDbmsUpgradeOptions = {migrate: true}): Promise<IDbmsInfo> {
         if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
             throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
                 'Use valid version',
             ]);
         }
 
-        return upgradeNeo4j(this.environment, dbmsId, version, {
-            migrate,
-            backup,
-            noCache,
-        });
+        return upgradeNeo4j(this.environment, dbmsId, version, options);
     }
 
     async link(externalPath: string, name: string): Promise<IDbmsInfo> {

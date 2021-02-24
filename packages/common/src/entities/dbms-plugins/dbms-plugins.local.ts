@@ -150,14 +150,18 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(plugins.compact(), filters);
     }
 
-    public async listUpgradable(dbmsNameOrId: string, dbmsVersion: string): Promise<List<IDbmsPluginUpgradable>> {
+    public async listUpgradable(dbmsNameOrId: string, dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>> {
         const plugins = await this.list(dbmsNameOrId);
 
         return plugins
             .mapEach(async (plugin) => {
                 try {
                     const pluginVersions = await listVersions(this.environment.dirPaths.pluginVersions, plugin);
-                    const latestCompatibleVersion = getLatestCompatibleVersion(dbmsVersion, plugin, pluginVersions);
+                    const latestCompatibleVersion = getLatestCompatibleVersion(
+                        dbmsTargetVersion,
+                        plugin,
+                        pluginVersions,
+                    );
 
                     return {
                         installed: plugin,
@@ -265,7 +269,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    private getDbmsPluginFilename(plugin: IDbmsPluginInstalled): string {
+    public getDbmsPluginFilename(plugin: IDbmsPluginInstalled): string {
         return `${plugin.name}-${plugin.version.version}.jar`;
     }
 }
