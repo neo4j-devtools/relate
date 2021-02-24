@@ -210,8 +210,8 @@ describe('LocalDbmsPlugins', () => {
         ]);
     });
 
-    test('dbmsPlugins.listUpgradable - lists upgradable plugins', async () => {
-        const upgradable = await app.environment.dbmsPlugins.listUpgradable(dbms.name, '4.2.0');
+    test('dbmsPlugins.previewUpgrade - lists correct plugin versions', async () => {
+        const upgradable = await app.environment.dbmsPlugins.previewUpgrade(dbms.name, '4.2.0');
         const upgradableMapped = upgradable.toArray().map((plugin) => ({
             name: plugin.installed.name,
             installed: plugin.installed.version.version,

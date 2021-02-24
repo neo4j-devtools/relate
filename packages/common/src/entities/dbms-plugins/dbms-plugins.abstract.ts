@@ -49,11 +49,12 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
     ): Promise<List<IDbmsPluginInstalled>>;
 
     /**
-     * List the latest version compatible with the provided DBMS version for each plugin installed in the specified DBMS
+     * Preview plugin versions that would be installed if the DBMS
+     * containing them would be upgraded.
      * @param   dbmsNameOrId
-     * @param   dbmsVersion         Version to check compatibility against
+     * @param   dbmsTargetVersion         Version the DBMS would be upgraded to
      */
-    abstract listUpgradable(dbmsNameOrId: string, dbmsVersion: string): Promise<List<IDbmsPluginUpgradable>>;
+    abstract previewUpgrade(dbmsNameOrId: string, dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>>;
 
     /**
      * Install a plugin in the specified DBMS

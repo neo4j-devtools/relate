@@ -150,7 +150,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         return applyEntityFilters(plugins.compact(), filters);
     }
 
-    public async listUpgradable(dbmsNameOrId: string, dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>> {
+    public async previewUpgrade(dbmsNameOrId: string, dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>> {
         const plugins = await this.list(dbmsNameOrId);
 
         return plugins

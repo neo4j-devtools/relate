@@ -30,8 +30,8 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugins`);
     }
 
-    public listUpgradable(_dbmsNameOrId: string, _dbmsVersion: string): Promise<List<IDbmsPluginUpgradable>> {
-        throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugins`);
+    public previewUpgrade(_dbmsNameOrId: string, _dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>> {
+        throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support previewing upgrades`);
     }
 
     public install(_dbmsNamesOrIds: string[] | List<string>, _pluginName: string): Promise<List<IDbmsPluginInstalled>> {
