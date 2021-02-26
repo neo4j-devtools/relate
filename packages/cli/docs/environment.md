@@ -51,6 +51,7 @@ ARGUMENTS
 
 OPTIONS
   -i, --interactive      Get prompted for each configuration option available
+  --noRuntime            Skip downloading the Java runtime required by the DBMS
   --type=(LOCAL|REMOTE)  Type of environment
   --use                  Set environment as active right after creating it
 

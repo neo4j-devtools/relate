@@ -35,12 +35,15 @@ export default class InitCommand extends BaseCommand {
             description: 'Type of environment',
             options: Object.values(ENVIRONMENT_TYPES),
         }),
-        use: flags.boolean({
-            description: 'Set environment as active right after creating it',
-        }),
         interactive: flags.boolean({
             description: 'Get prompted for each configuration option available',
             char: 'i',
+        }),
+        use: flags.boolean({
+            description: 'Set environment as active right after creating it',
+        }),
+        noRuntime: flags.boolean({
+            description: 'Skip downloading the Java runtime required by the DBMS',
         }),
     };
 }

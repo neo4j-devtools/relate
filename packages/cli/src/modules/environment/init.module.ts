@@ -7,6 +7,10 @@ import {
     IEnvironmentConfigInput,
     SystemModule,
     SystemProvider,
+    downloadJava,
+    registerHookListener,
+    HOOK_EVENTS,
+    resolveRelateJavaHome,
 } from '@relate/common';
 import fetch from 'node-fetch';
 
@@ -31,11 +35,29 @@ export class InitModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
+    registerHookListeners() {
+        const downloadBar = cli.progress({
+            format: 'Downloading Java [{bar}] {percentage}%',
+            barCompleteChar: '\u2588',
+            barIncompleteChar: '\u2591',
+        });
+        registerHookListener(HOOK_EVENTS.JAVA_DOWNLOAD_START, () => downloadBar.start());
+        registerHookListener(HOOK_EVENTS.JAVA_DOWNLOAD_STOP, () => downloadBar.stop());
+        registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
+            downloadBar.update(Math.round(percent * 100)),
+        );
+
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_START, (val) => cli.action.start(val));
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_STOP, () => cli.action.stop());
+    }
+
     async onApplicationBootstrap(): Promise<void> {
         let {environment: name, httpOrigin} = this.parsed.args;
         let {type} = this.parsed.flags;
-        const {interactive, use} = this.parsed.flags;
+        const {interactive, use, noRuntime} = this.parsed.flags;
         let remoteEnvironmentId: string | undefined = undefined;
+
+        this.registerHookListeners();
 
         name = name || (await inputPrompt('Enter environment name'));
 
@@ -88,8 +110,14 @@ export class InitModule implements OnApplicationBootstrap {
         await this.systemProvider.createEnvironment(config);
         cli.action.stop();
 
+        const relateJavaExists = await resolveRelateJavaHome('4.0.0');
+        if ((!type || type === ENVIRONMENT_TYPES.LOCAL) && !noRuntime && !relateJavaExists) {
+            await downloadJava('4.0.0');
+        }
+
         if (use) {
             await this.systemProvider.useEnvironment(name);
+            this.utils.log(`Environment "${name}" is now set as active.`);
         }
     }
 }
