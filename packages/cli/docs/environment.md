@@ -4,7 +4,7 @@
 Managed sets of related resources and services, which may be local or remote.
 
 * [`relate environment:api-token [CLIENTID]`](#relate-environmentapi-token-clientid)
-* [`relate environment:init`](#relate-environmentinit)
+* [`relate environment:init [ENVIRONMENT] [HTTPORIGIN]`](#relate-environmentinit-environment-httporigin)
 * [`relate environment:list`](#relate-environmentlist)
 * [`relate environment:login [ENVIRONMENT]`](#relate-environmentlogin-environment)
 * [`relate environment:open [ENVIRONMENT]`](#relate-environmentopen-environment)
@@ -37,26 +37,31 @@ EXAMPLES
 
 _See code: [dist/commands/environment/api-token.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/environment/api-token.ts)_
 
-## `relate environment:init`
+## `relate environment:init [ENVIRONMENT] [HTTPORIGIN]`
 
 Initialize a new relate environment
 
 ```
 USAGE
-  $ relate environment:init
+  $ relate environment:init [ENVIRONMENT] [HTTPORIGIN]
+
+ARGUMENTS
+  ENVIRONMENT  Name of the environment to run the command against
+  HTTPORIGIN   URL of the hosted instance of relate (only applies to --type=REMOTE)
 
 OPTIONS
-  --httpOrigin=httpOrigin  URL of the hosted instance of relate (only applies to --type=REMOTE)
-  --name=name              (required) Name of the environment to initialize
-  --type=(LOCAL|REMOTE)    (required) Type of environment
+  -i, --interactive      Get prompted for each configuration option available
+  --type=(LOCAL|REMOTE)  Type of environment
+  --use                  Set environment as active right after creating it
 
 ALIASES
   $ relate env:init
 
 EXAMPLES
-  $ relate env:init
-  $ relate env:init --name=local-environment-name --type=LOCAL
-  $ relate env:init --name=remote-environment-name --type=REMOTE --httpOrigin=https://url.of.hosted.relate.com
+  $ relate env:init local-environment-name
+  $ relate env:init local-environment-name --use
+  $ relate env:init remote-environment-name https://url.of.hosted.relate.com --type=REMOTE
+  $ relate env:init environment-name --interactive
 ```
 
 _See code: [dist/commands/environment/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/environment/init.ts)_
