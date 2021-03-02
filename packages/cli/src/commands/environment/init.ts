@@ -45,5 +45,10 @@ export default class InitCommand extends BaseCommand {
         noRuntime: flags.boolean({
             description: 'Skip downloading the Java runtime required by the DBMS',
         }),
+        apiToken: flags.boolean({
+            description:
+                // eslint-disable-next-line max-len
+                'If this flag is provided and the environment created is set as active, all requests to @relate/web will require API tokens',
+        }),
     };
 }

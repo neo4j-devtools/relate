@@ -54,7 +54,7 @@ export class InitModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         let {environment: name, httpOrigin} = this.parsed.args;
         let {type} = this.parsed.flags;
-        const {interactive, use, noRuntime} = this.parsed.flags;
+        const {interactive, use, noRuntime, apiToken} = this.parsed.flags;
         let remoteEnvironmentId: string | undefined = undefined;
 
         this.registerHookListeners();
@@ -92,7 +92,8 @@ export class InitModule implements OnApplicationBootstrap {
 
             const authentication = await selectAuthenticatorPrompt();
             const publicGraphQLMethods = await selectAllowedMethodsPrompt();
-            const requiresAPIToken = await confirmPrompt('Are HTTP consumers required to have an API key?');
+            const requiresAPIToken =
+                apiToken || (await confirmPrompt('Are HTTP consumers required to have an API key?'));
             config = {
                 name,
                 type,

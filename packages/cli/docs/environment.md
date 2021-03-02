@@ -51,8 +51,14 @@ ARGUMENTS
 
 OPTIONS
   -i, --interactive      Get prompted for each configuration option available
+
+  --apiToken             If this flag is provided and the environment created is set as active, all requests to
+                         @relate/web will require API tokens
+
   --noRuntime            Skip downloading the Java runtime required by the DBMS
+
   --type=(LOCAL|REMOTE)  Type of environment
+
   --use                  Set environment as active right after creating it
 
 ALIASES
