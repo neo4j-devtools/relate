@@ -130,7 +130,7 @@ describe('LocalDbmss - install', () => {
     });
 
     test('Cannot uninstall a started DBMS', async () => {
-        const dbms = await testEnv.dbmss.install(app.createName(), NEO4J_VERSION);
+        const dbms = await app.createDbms();
         const config = await testEnv.dbmss.getDbmsConfig(dbms.id);
 
         await testEnv.dbmss.start([dbms.id]);
