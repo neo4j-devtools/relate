@@ -37,6 +37,13 @@ export function applyEntityFilters<T extends object>(
 
 function compare(source: any, target: any, comparator = FILTER_COMPARATORS.EQUALS) {
     switch (comparator) {
+        case FILTER_COMPARATORS.IS_INCLUDED:
+        case FILTER_COMPARATORS.IS_NOT_INCLUDED: {
+            return comparator === FILTER_COMPARATORS.IS_INCLUDED
+                ? List.from(target).includes(source)
+                : !List.from(target).includes(source);
+        }
+
         case FILTER_COMPARATORS.CONTAINS:
         case FILTER_COMPARATORS.NOT_CONTAINS: {
             return comparator === FILTER_COMPARATORS.CONTAINS
