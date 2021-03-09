@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IDbmsPluginInstalled, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
+import {IDbmsPluginInstalled, IDbmsPluginSource, IDbmsPluginUpgradable, IDbmsPluginVersion} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 import {EnvironmentAbstract} from '../environments';
 
@@ -47,6 +47,14 @@ export abstract class DbmsPluginsAbstract<Env extends EnvironmentAbstract> {
         dbmsNameOrId: string,
         filters?: List<IRelateFilter> | IRelateFilter[],
     ): Promise<List<IDbmsPluginInstalled>>;
+
+    /**
+     * Preview plugin versions that would be installed if the DBMS
+     * containing them would be upgraded.
+     * @param   dbmsNameOrId
+     * @param   dbmsTargetVersion         Version the DBMS would be upgraded to
+     */
+    abstract previewUpgrade(dbmsNameOrId: string, dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>>;
 
     /**
      * Install a plugin in the specified DBMS

@@ -8,9 +8,8 @@ import {v4 as uuidv4} from 'uuid';
 import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions} from '../../models';
 import {
-    dbmsUpgradeConfigs,
     discoverNeo4jDistributions,
     downloadNeo4j,
     extractNeo4j,
@@ -22,17 +21,15 @@ import {
     resolveDbms,
     supportsAccessTokens,
     isDbmsOnline,
-    waitForDbmsToBeOnline,
+    upgradeNeo4j,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
     DbmsExistsError,
-    DbmsUpgradeError,
     InvalidArgumentError,
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
-    RelateBackupError,
 } from '../../errors';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
@@ -59,11 +56,9 @@ import {
     DBMS_TLS_LEVEL,
     DISCOVER_DBMS_THROTTLE_MS,
     ENTITY_TYPES,
-    HOOK_EVENTS,
 } from '../../constants';
 import {PropertiesFile} from '../../system/files';
 import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
-import {emitHookEvent} from '../../utils';
 import {ManifestLocal} from '../manifest';
 import {isSymlink} from '../../utils/files';
 
@@ -186,111 +181,14 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         throw new InvalidArgumentError('Provided version argument is not valid semver, url or path.');
     }
 
-    async upgrade(
-        dbmsId: string,
-        version: string,
-        migrate = true,
-        backup?: boolean,
-        noCache?: boolean,
-    ): Promise<IDbmsInfo> {
+    upgrade(dbmsId: string, version: string, options: IDbmsUpgradeOptions = {migrate: true}): Promise<IDbmsInfo> {
         if (!semver.satisfies(version, NEO4J_SUPPORTED_VERSION_RANGE)) {
             throw new InvalidArgumentError(`Version not in range ${NEO4J_SUPPORTED_VERSION_RANGE}`, [
                 'Use valid version',
             ]);
         }
 
-        const dbms = await this.get(dbmsId);
-        const dbmsManifest = await this.manifest.get(dbmsId);
-
-        if (semver.lte(version, dbms.version!)) {
-            throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, [
-                'Use valid version',
-            ]);
-        }
-
-        if (dbms.status !== DBMS_STATUS.STOPPED) {
-            throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
-        }
-
-        const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
-            entityType: ENTITY_TYPES.DBMS,
-            entityId: dbms.id,
-        });
-        const dbmsBackup = await this.environment.backups.create(entityType, entityId);
-        const {backup: completeBackup} = await emitHookEvent(HOOK_EVENTS.BACKUP_COMPLETE, {backup: dbmsBackup});
-
-        const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
-
-        try {
-            const upgradedDbmsInfo = await this.install(upgradeTmpName, version, dbms.edition!, '', noCache);
-            const upgradedConfigFileName = path.join(
-                this.getDbmsRootPath(upgradedDbmsInfo.id),
-                NEO4J_CONF_DIR,
-                NEO4J_CONF_FILE,
-            );
-
-            await dbmsUpgradeConfigs(dbms, upgradedDbmsInfo, upgradedConfigFileName);
-
-            const upgradedConfig = await this.getDbmsConfig(upgradedDbmsInfo.id);
-
-            /**
-             * Run Neo4j migration?
-             */
-            if (migrate) {
-                upgradedConfig.set('dbms.allow_upgrade', 'true');
-                await upgradedConfig.flush();
-                const upgradedDbms = resolveDbms(this.dbmss, upgradedDbmsInfo.id);
-
-                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbms});
-
-                await this.start([upgradedDbms.id]);
-                await waitForDbmsToBeOnline(upgradedDbms);
-                await this.stop([upgradedDbms.id]);
-
-                await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbms});
-
-                await upgradedConfig.flush();
-            } else {
-                upgradedConfig.set('dbms.allow_upgrade', 'false');
-                await upgradedConfig.flush();
-            }
-
-            /**
-             * Replace old installation
-             */
-            await this.uninstall(dbms.id);
-            await fse.move(upgradedDbmsInfo.rootPath!, dbms.rootPath!);
-            await this.manifest.update(dbms.id, {
-                ...dbmsManifest,
-                name: dbms.name,
-            });
-
-            if (!backup) {
-                await this.environment.backups.remove(completeBackup.id);
-            }
-
-            return this.get(dbms.id);
-        } catch (e) {
-            if (e instanceof RelateBackupError) {
-                throw e;
-            }
-
-            await this.get(upgradeTmpName)
-                .then(({id}) => this.uninstallNeo4j(id))
-                .catch(() => null);
-            await this.uninstallNeo4j(dbms.id).catch(() => null);
-
-            const restored = await this.environment.backups.restore(completeBackup.directory);
-
-            await fse.move(this.getDbmsRootPath(restored.entityId)!, dbms.rootPath!);
-            await this.manifest.update(dbms.id, {
-                name: dbms.name,
-            });
-
-            throw new DbmsUpgradeError(`Failed to upgrade dbms ${dbms.id}`, e.message, [
-                `DBMS was restored from backup ${completeBackup.id}`,
-            ]);
-        }
+        return upgradeNeo4j(this.environment, dbmsId, version, options);
     }
 
     async link(externalPath: string, name: string): Promise<IDbmsInfo> {
@@ -371,10 +269,9 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     async uninstall(nameOrId: string): Promise<IDbmsInfo> {
-        const {id} = await this.getDbms(nameOrId);
-        const status = Str.from(await neo4jCmd(this.getDbmsRootPath(id), 'status'));
+        const {id, status} = await this.get(nameOrId);
 
-        if (status.includes(DBMS_STATUS_FILTERS.STARTED)) {
+        if (status === DBMS_STATUS.STARTED) {
             throw new NotAllowedError('Cannot uninstall DBMS that is running');
         }
 
