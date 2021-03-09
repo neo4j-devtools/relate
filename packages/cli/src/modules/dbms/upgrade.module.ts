@@ -23,7 +23,7 @@ export class UpgradeModule implements OnApplicationBootstrap {
 
     registerHookListeners() {
         const downloadBar = cli.progress({
-            format: 'DOWNLOAD PROGRESS [{bar}] {percentage}%',
+            format: 'Download progress [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
         });
