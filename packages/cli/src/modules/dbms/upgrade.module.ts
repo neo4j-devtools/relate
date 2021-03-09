@@ -23,7 +23,7 @@ export class UpgradeModule implements OnApplicationBootstrap {
 
     registerHookListeners() {
         const downloadBar = cli.progress({
-            format: 'DOWNLOAD PROGRESS [{bar}] {percentage}%',
+            format: 'Download progress [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
         });
@@ -79,8 +79,13 @@ export class UpgradeModule implements OnApplicationBootstrap {
             version = choices.get(selected)!.version;
         }
 
-        return environment.dbmss.upgrade(dbms.id, version, !noMigration, noCaching).then((res) => {
-            this.utils.log(getEntityDisplayName(res));
-        });
+        return environment.dbmss
+            .upgrade(dbms.id, version, {
+                migrate: !noMigration,
+                noCache: noCaching,
+            })
+            .then((res) => {
+                this.utils.log(getEntityDisplayName(res));
+            });
     }
 }

@@ -9,10 +9,12 @@ import ListCommand from '../../commands/environment/list';
 
 const TEST_ENV_NAME = 'test';
 const ENV_NAME = 'test2';
+const ENV_NAME_2 = 'test3';
 
 describe('$relate environment', () => {
     afterAll(async () => {
         await fse.unlink(path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, `${ENV_NAME}.json`));
+        await fse.unlink(path.join(envPaths().config, ENVIRONMENTS_DIR_NAME, `${ENV_NAME_2}.json`));
     });
 
     describe('list, before init', () => {
@@ -24,11 +26,23 @@ describe('$relate environment', () => {
     });
 
     describe('init', () => {
-        test.stderr().it('creates environment', async (ctx) => {
-            await InitCommand.run([`--name=${ENV_NAME}`, '--type=LOCAL']);
+        test.stdout()
+            .stderr()
+            .it('creates environment', async (ctx) => {
+                await InitCommand.run([`${ENV_NAME}`, '--type=LOCAL']);
 
-            expect(ctx.stderr).toContain('done');
-        });
+                expect(ctx.stderr).toContain('done');
+                expect(ctx.stdout).not.toContain(`Environment "${ENV_NAME}" is now set as active.`);
+            });
+
+        test.stdout()
+            .stderr()
+            .it('creates environment and activates it', async (ctx) => {
+                await InitCommand.run([`${ENV_NAME_2}`, '--type=LOCAL', '--use']);
+
+                expect(ctx.stderr).toContain('done');
+                expect(ctx.stdout).toContain(`Environment "${ENV_NAME_2}" is now set as active.`);
+            });
     });
 
     describe('list, after init', () => {
