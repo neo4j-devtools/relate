@@ -1,53 +1,43 @@
-# @relate/cli
-
-CLI tool for interacting with the Neo4j platform.
+# [@relate](../../README.md)/cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/cli.svg)](https://npmjs.org/package/@relate/cli)
 [![Downloads/week](https://img.shields.io/npm/dw/@relate/cli.svg)](https://npmjs.com/package/@relate/cli)
 [![License](https://img.shields.io/npm/l/@relate/cli.svg)](https://github.com/neo4j-devtools/relate/blob/master/package.json)
 
-- [@relate/cli](#relatecli)
-- [Usage](#usage)
-- [Development](#development)
-- [Commands](#commands)
-- [Command Topics](#command-topics)
+CLI tool for interacting with the Neo4j platform.
 
-# Usage
+# Installing
 
-<!-- usage -->
-```sh-session
+Run these commands to install and set up your first Relate environment.
+
+```
 $ npm install -g @relate/cli
-$ relate COMMAND
-running command...
-$ relate (-v|--version|version)
-@relate/cli/1.0.2-alpha.22 linux-x64 node-v12.20.2
-$ relate --help [COMMAND]
-USAGE
-  $ relate COMMAND
-...
-```
-<!-- usagestop -->
-
-# Development
-
-To to run the CLI while developing, you can either execute the run script on the
-`cli` package
-
-```shell
-relate$ cd packages/cli
-cli$ npm run build
-cli$ ./bin/run --help
+$ relate env:init development --use
 ```
 
-Or link the entire repository and have access to the `relate` command globally.
+In the second command you can replace `development` with any name you want to
+use for your environment.
 
-```shell
-relate$ npm link
-relate$ relate --help
+The `--use` flag is required to set the environment as active right after it's
+created. This means that if you don't provide an `--environment=<name>` flag to
+following commands, Relate will default to using the environment you just
+created.
+
+The `env:init` command will download the Java distribution required to run
+Neo4j, if this wasn't already done previously. If you wish to use the Java
+distribution installed in your system you can provide the `--noRuntime` flag.
+
+# Documentation
+
+The following commands can be used to get more information about topics,
+commands, flags, and arguments available, and how to use them.
+
 ```
-
-# Commands
+$ relate --help
+$ relate <topic> --help
+$ relate <topic>:<command> --help
+```
 
 <!-- commands -->
 # Command Topics
