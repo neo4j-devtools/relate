@@ -7,6 +7,7 @@ export * from './generate-plugin-certs';
 export * from './download-neo4j';
 export * from './extract-neo4j';
 export * from './is-dbms-online';
+export * from './upgrade-neo4j';
 export {parseNeo4jConfigPort} from './parse-neo4j-config-port';
 export {supportsAccessTokens} from './supports-access-tokens';
 export {dbmsUpgradeConfigs} from './dbms-upgrade-config';

@@ -3,7 +3,7 @@ import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQ
 import * as rxjs from 'rxjs';
 import * as rxjsOps from 'rxjs/operators';
 
-import {DbmsManifestModel, IDbms, IDbmsInfo, IDbmsVersion} from '../../models';
+import {DbmsManifestModel, IDbms, IDbmsInfo, IDbmsUpgradeOptions, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -67,13 +67,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         limited?: boolean,
     ): Promise<IDbmsInfo>;
 
-    abstract upgrade(
-        dbmsId: string,
-        version: string,
-        migrate?: boolean,
-        backup?: boolean,
-        noCache?: boolean,
-    ): Promise<IDbmsInfo>;
+    abstract upgrade(dbmsId: string, version: string, options?: IDbmsUpgradeOptions): Promise<IDbmsInfo>;
 
     /**
      * Links an existing DBMS to relate

@@ -5,7 +5,7 @@ import path from 'path';
 import semver from 'semver';
 import {List} from '@relate/types';
 
-import {DbmsPluginVersionModel, IDbmsInfo, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
+import {DbmsPluginVersionModel, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
 import {NotFoundError} from '../../errors';
 
 export async function listVersions(
@@ -36,15 +36,10 @@ export async function listVersions(
 }
 
 export function getLatestCompatibleVersion(
-    dbms: IDbmsInfo,
+    dbmsVersion: string,
     pluginSource: IDbmsPluginSource,
     pluginVersions: List<IDbmsPluginVersion>,
 ): IDbmsPluginVersion {
-    const dbmsVersion = dbms.version;
-    if (!dbmsVersion) {
-        throw new NotFoundError(`Could not get version for DBMS "${dbms.name}"`);
-    }
-
     const latestCompatibleVersion = pluginVersions
         .filter((plugin) => semver.satisfies(dbmsVersion, plugin.neo4jVersion))
         .reduce<IDbmsPluginVersion | null>((newest, current) => {
@@ -62,7 +57,7 @@ export function getLatestCompatibleVersion(
 
     if (!latestCompatibleVersion) {
         throw new NotFoundError(
-            `Could not find any version of ${pluginSource.name} compatible with Neo4j ${dbms.version}`,
+            `Could not find any version of ${pluginSource.name} compatible with Neo4j ${dbmsVersion}`,
         );
     }
 
