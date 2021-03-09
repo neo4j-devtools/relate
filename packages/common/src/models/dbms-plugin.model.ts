@@ -2,6 +2,7 @@ import {assign} from 'lodash';
 import {IsBoolean, IsHash, IsOptional, IsString, IsUrl} from 'class-validator';
 import {ModelAbstract} from './model.abstract';
 import {IsPluginConfig} from './custom-validators';
+import {IDbmsVersion} from './dbms.model';
 
 export type DbmsPluginConfig = Record<string, string | string[] | boolean | undefined>;
 
@@ -41,6 +42,11 @@ export interface IDbmsPluginVersion {
 
 export interface IDbmsPluginInstalled extends IDbmsPluginSource {
     version: IDbmsPluginVersion;
+}
+
+export interface IDbmsPluginUpgradable {
+    installed: IDbmsPluginInstalled;
+    upgradable?: IDbmsVersion;
 }
 
 export class DbmsPluginSourceModel extends ModelAbstract<IDbmsPluginSource> implements IDbmsPluginSource {

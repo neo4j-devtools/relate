@@ -3,7 +3,7 @@ import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
 import {HttpAdapterHost} from '@nestjs/core';
 import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
 import {Application} from 'express';
-import useSofa, {OpenAPI} from 'sofa-api';
+import {OpenAPI, useSofa} from 'sofa-api';
 import swaggerUi from 'swagger-ui-express';
 import multer from 'multer';
 
@@ -95,6 +95,7 @@ export class WebModule implements OnModuleInit {
         app.use(
             '/api',
             useSofa({
+                basePath: '/api',
                 schema,
                 onRoute(info) {
                     openApi.addRoute(info, {

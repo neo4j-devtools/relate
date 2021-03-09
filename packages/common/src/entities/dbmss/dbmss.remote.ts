@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import {List} from '@relate/types';
 import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {NEO4J_EDITION, RemoteEnvironment} from '../environments';
@@ -141,13 +141,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return data[PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS];
     }
 
-    upgrade(
-        _dbmsId: string,
-        _version: string,
-        _migrate = true,
-        _backup?: boolean,
-        _noCache?: boolean,
-    ): Promise<IDbmsInfo> {
+    upgrade(_dbmsId: string, _version: string, _options?: IDbmsUpgradeOptions): Promise<IDbmsInfo> {
         throw new NotSupportedError(`${RemoteDbmss.name} does not support upgrading DBMSs`);
     }
 

@@ -2,7 +2,7 @@ import {flags} from '@oclif/command';
 import {ENVIRONMENT_TYPES} from '@relate/common';
 
 import BaseCommand from '../../base.command';
-import {REQUIRED_FOR_SCRIPTS} from '../../constants';
+import {ARGS} from '../../constants';
 import {InitModule} from '../../modules/environment/init.module';
 
 export default class InitCommand extends BaseCommand {
@@ -13,25 +13,42 @@ export default class InitCommand extends BaseCommand {
     static description = 'Initialize a new relate environment';
 
     static examples = [
-        '$ relate env:init',
-        '$ relate env:init --name=local-environment-name --type=LOCAL',
-        '$ relate env:init --name=remote-environment-name --type=REMOTE --httpOrigin=https://url.of.hosted.relate.com',
+        '$ relate env:init local-environment-name',
+        '$ relate env:init local-environment-name --use',
+        '$ relate env:init remote-environment-name https://url.of.hosted.relate.com --type=REMOTE',
+        '$ relate env:init environment-name --interactive',
     ];
 
     static aliases = ['env:init'];
 
+    static args = [
+        ARGS.ENVIRONMENT,
+        {
+            description: 'URL of the hosted instance of relate (only applies to --type=REMOTE)',
+            name: 'httpOrigin',
+            required: false,
+        },
+    ];
+
     static flags = {
-        httpOrigin: flags.string({
-            description: `URL of the hosted instance of relate (only applies to --type=${ENVIRONMENT_TYPES.REMOTE})`,
-        }),
-        name: flags.string({
-            description: 'Name of the environment to initialize',
-            required: REQUIRED_FOR_SCRIPTS,
-        }),
         type: flags.enum({
             description: 'Type of environment',
             options: Object.values(ENVIRONMENT_TYPES),
-            required: REQUIRED_FOR_SCRIPTS,
+        }),
+        interactive: flags.boolean({
+            description: 'Get prompted for each configuration option available',
+            char: 'i',
+        }),
+        use: flags.boolean({
+            description: 'Set environment as active right after creating it',
+        }),
+        noRuntime: flags.boolean({
+            description: 'Skip downloading the Java runtime required by the DBMS',
+        }),
+        apiToken: flags.boolean({
+            description:
+                // eslint-disable-next-line max-len
+                'If this flag is provided and the environment created is set as active, all requests to @relate/web will require API tokens',
         }),
     };
 }

@@ -27,6 +27,19 @@ export interface IDbmsVersion {
     origin: NEO4J_ORIGIN;
 }
 
+export enum PLUGIN_UPGRADE_MODE {
+    ALL = 'ALL',
+    NONE = 'NONE',
+    UPGRADABLE = 'UPGRADABLE',
+}
+
+export interface IDbmsUpgradeOptions {
+    noCache?: boolean;
+    migrate?: boolean;
+    backup?: boolean;
+    pluginUpgradeMode?: PLUGIN_UPGRADE_MODE;
+}
+
 export interface IDbms extends IManifest {
     rootPath?: string;
     secure?: boolean;

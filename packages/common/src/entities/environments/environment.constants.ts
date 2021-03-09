@@ -50,6 +50,7 @@ export const NEO4J_IMPORT_DIR = 'import';
 export const NEO4J_RUN_DIR = 'run';
 export const NEO4J_LIB_DIR = 'lib';
 export const NEO4J_PLUGIN_DIR = 'plugins';
+export const NEO4J_PLUGINS_PRE_UPGRADE_DIR = 'plugins-pre-upgrade';
 export const NEO4J_CERT_DIR = 'certificates';
 export const NEO4J_LOG_FILE = 'neo4j.log';
 export const NEO4J_RELATE_PID_FILE = 'neo4j-relate.pid';
