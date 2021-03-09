@@ -1,6 +1,6 @@
 import {List} from '@relate/types';
 
-import {IDbmsPluginInstalled, IDbmsPluginSource} from '../../models';
+import {IDbmsPluginInstalled, IDbmsPluginSource, IDbmsPluginUpgradable} from '../../models';
 import {IRelateFilter} from '../../utils/generic';
 import {NotSupportedError} from '../../errors';
 import {DbmsPluginsAbstract} from './dbms-plugins.abstract';
@@ -28,6 +28,10 @@ export class RemoteDbmsPlugins extends DbmsPluginsAbstract<RemoteEnvironment> {
         _filters?: List<IRelateFilter> | IRelateFilter[],
     ): Promise<List<IDbmsPluginInstalled>> {
         throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support listing plugins`);
+    }
+
+    public previewUpgrade(_dbmsNameOrId: string, _dbmsTargetVersion: string): Promise<List<IDbmsPluginUpgradable>> {
+        throw new NotSupportedError(`${RemoteDbmsPlugins.name} does not support previewing upgrades`);
     }
 
     public install(_dbmsNamesOrIds: string[] | List<string>, _pluginName: string): Promise<List<IDbmsPluginInstalled>> {

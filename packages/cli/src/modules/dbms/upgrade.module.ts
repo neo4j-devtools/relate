@@ -79,8 +79,13 @@ export class UpgradeModule implements OnApplicationBootstrap {
             version = choices.get(selected)!.version;
         }
 
-        return environment.dbmss.upgrade(dbms.id, version, !noMigration, noCaching).then((res) => {
-            this.utils.log(getEntityDisplayName(res));
-        });
+        return environment.dbmss
+            .upgrade(dbms.id, version, {
+                migrate: !noMigration,
+                noCache: noCaching,
+            })
+            .then((res) => {
+                this.utils.log(getEntityDisplayName(res));
+            });
     }
 }
