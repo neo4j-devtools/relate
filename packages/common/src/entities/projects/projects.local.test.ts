@@ -80,6 +80,26 @@ describe('LocalProjects', () => {
                 },
             ]),
         ).toEqual(List.from([TEST_CREATED]));
+
+        expect(
+            await environment.projects.list([
+                {
+                    field: 'name',
+                    type: FILTER_COMPARATORS.IS_INCLUDED,
+                    value: [TEST_MANIFEST.name],
+                },
+            ]),
+        ).toEqual(List.from([TEST_CREATED]));
+
+        expect(
+            await environment.projects.list([
+                {
+                    field: 'name',
+                    type: FILTER_COMPARATORS.CONTAINS,
+                    value: TEST_MANIFEST.name,
+                },
+            ]),
+        ).toEqual(List.from([TEST_CREATED]));
     });
 
     test('projects.addFile() - no destination', async () => {
