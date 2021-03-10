@@ -28,7 +28,7 @@ export interface IDbmsPluginVersion {
     neo4jVersion: string;
 
     /** Plugin homepage URL */
-    homepageUrl: string;
+    homepageUrl?: string;
 
     /** Plugin download URL */
     downloadUrl: string;
@@ -80,8 +80,9 @@ export class DbmsPluginVersionModel extends ModelAbstract<IDbmsPluginVersion> im
     @IsString()
     public neo4jVersion!: string;
 
+    @IsOptional()
     @IsString()
-    public homepageUrl!: string;
+    public homepageUrl?: string;
 
     // eslint-disable-next-line @typescript-eslint/camelcase,camelcase
     @IsUrl({require_tld: false})
