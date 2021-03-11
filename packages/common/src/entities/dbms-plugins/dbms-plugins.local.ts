@@ -198,25 +198,26 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 }
 
                 const pluginToInstall = getLatestCompatibleVersion(dbmsVersion, pluginSource, pluginVersions);
+                const pluginFileName = this.getDbmsPluginFilename({
+                    ...pluginSource,
+                    version: pluginToInstall,
+                });
 
                 const pluginCacheDir = path.join(envPaths().cache, PLUGINS_DIR_NAME);
-                const pluginFilePath = path.join(
-                    dbmsRootPath,
-                    NEO4J_PLUGIN_DIR,
-                    this.getDbmsPluginFilename({
-                        ...pluginSource,
-                        version: pluginToInstall,
-                    }),
-                );
+                const pluginCacheFilePath = path.join(pluginCacheDir, pluginFileName);
+                const pluginDbmsFilePath = path.join(dbmsRootPath, NEO4J_PLUGIN_DIR, pluginFileName);
 
-                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
-                const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
-                if (pluginToInstall.sha256) {
-                    await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                if (!(await fse.pathExists(pluginCacheFilePath))) {
+                    await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
+                    const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
+                    if (pluginToInstall.sha256) {
+                        await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                    }
+                    await fse.move(downloadedFilePath, pluginCacheFilePath, {overwrite: true});
+                    await emitHookEvent(HOOK_EVENTS.DOWNLOAD_STOP, null);
                 }
-                await emitHookEvent(HOOK_EVENTS.DOWNLOAD_STOP, null);
 
-                await fse.move(downloadedFilePath, pluginFilePath, {overwrite: true});
+                await fse.copy(pluginCacheFilePath, pluginDbmsFilePath, {overwrite: true});
 
                 const config = await this.environment.dbmss.getDbmsConfig(dbms.id);
                 updateDbmsConfig(config, pluginToInstall.config);

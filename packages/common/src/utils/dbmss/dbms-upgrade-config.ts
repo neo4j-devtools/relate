@@ -46,7 +46,7 @@ export async function dbmsUpgradeConfigs(
 
     await fse.copy(
         path.join(dbms.rootPath, NEO4J_PLUGIN_DIR),
-        path.join(dbms.rootPath, NEO4J_PLUGINS_PRE_UPGRADE_DIR),
+        path.join(upgradedDbms.rootPath, NEO4J_PLUGINS_PRE_UPGRADE_DIR),
         {
             overwrite: true,
         },
