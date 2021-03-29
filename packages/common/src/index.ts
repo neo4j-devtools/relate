@@ -3,6 +3,7 @@ export {IAuthToken} from '@huboneo/tapestry';
 export {IExtensionVersion, loadExtensionsFor, getAppLaunchUrl} from './utils/extensions';
 export {TestDbmss, TestExtensions, TestEnvironment} from './utils/system';
 export {GraphQLClient, GraphQLAbstract} from './utils/graphql';
+export {getLatestCompatibleVersion, listVersions} from './utils/dbms-plugins';
 export * from './system';
 export * from './models';
 export * from './errors';
@@ -19,6 +20,8 @@ export {
     NEO4J_ORIGIN,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
+    NEO4J_PLUGIN_SOURCES_URL,
+    NEO4J_PLUGINS_PRE_UPGRADE_DIR,
 } from './entities/environments';
 export * from './entities/environments/authentication';
 export * from './token.service';
