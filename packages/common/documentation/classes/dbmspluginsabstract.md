@@ -24,6 +24,7 @@
 * [install](dbmspluginsabstract.md#abstract-install)
 * [list](dbmspluginsabstract.md#abstract-list)
 * [listSources](dbmspluginsabstract.md#abstract-listsources)
+* [previewUpgrade](dbmspluginsabstract.md#abstract-previewupgrade)
 * [removeSources](dbmspluginsabstract.md#abstract-removesources)
 * [uninstall](dbmspluginsabstract.md#abstract-uninstall)
 
@@ -85,7 +86,7 @@ ___
 
 ▸ **install**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹List‹IDbmsPluginInstalled››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:56
+Defined in dbms-plugins/dbms-plugins.abstract.ts:64
 
 Install a plugin in the specified DBMS
 
@@ -137,6 +138,26 @@ Name | Type | Description |
 
 ___
 
+### `Abstract` previewUpgrade
+
+▸ **previewUpgrade**(`dbmsNameOrId`: string, `dbmsTargetVersion`: string): *Promise‹List‹IDbmsPluginUpgradable››*
+
+Defined in dbms-plugins/dbms-plugins.abstract.ts:57
+
+Preview plugin versions that would be installed if the DBMS
+containing them would be upgraded.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`dbmsNameOrId` | string | - |
+`dbmsTargetVersion` | string | Version the DBMS would be upgraded to  |
+
+**Returns:** *Promise‹List‹IDbmsPluginUpgradable››*
+
+___
+
 ### `Abstract` removeSources
 
 ▸ **removeSources**(`names`: string[]): *Promise‹List‹IDbmsPluginSource››*
@@ -159,7 +180,7 @@ ___
 
 ▸ **uninstall**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹void›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:63
+Defined in dbms-plugins/dbms-plugins.abstract.ts:71
 
 Uninstall a plugin from the specified DBMS
 

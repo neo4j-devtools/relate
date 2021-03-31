@@ -29,7 +29,7 @@ EXAMPLES
   $ relate backup:create <entity-id> -t dbms
 ```
 
-_See code: [dist/commands/backup/create.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/backup/create.ts)_
+_See code: [dist/commands/backup/create.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.23/packages/cli/src/commands/backup/create.ts)_
 
 ## `relate backup:list`
 
@@ -56,7 +56,7 @@ EXAMPLES
   $ relate backup:list --sort=created
 ```
 
-_See code: [dist/commands/backup/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/backup/list.ts)_
+_See code: [dist/commands/backup/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.23/packages/cli/src/commands/backup/list.ts)_
 
 ## `relate backup:remove BACKUPID`
 
@@ -77,7 +77,7 @@ EXAMPLES
   $ relate backup:remove -e environment-name
 ```
 
-_See code: [dist/commands/backup/remove.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/backup/remove.ts)_
+_See code: [dist/commands/backup/remove.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.23/packages/cli/src/commands/backup/remove.ts)_
 
 ## `relate backup:restore BACKUPIDORPATH [OUTPUTPATH]`
 
@@ -100,4 +100,4 @@ EXAMPLES
   $ relate backup:restore <backup-id-or-path> <output-path>
 ```
 
-_See code: [dist/commands/backup/restore.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.22/packages/cli/src/commands/backup/restore.ts)_
+_See code: [dist/commands/backup/restore.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.2-alpha.23/packages/cli/src/commands/backup/restore.ts)_

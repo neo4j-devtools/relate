@@ -1,4 +1,6 @@
-# [@relate](../../README.md)/[common](../README.md) - documentation
+[@relate/common](README.md)
+
+# @relate/common
 
 ## Index
 
