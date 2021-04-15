@@ -1,6 +1,5 @@
 import got from 'got';
 import semver from 'semver';
-import {promises as fs} from 'fs';
 import _ from 'lodash';
 import fse from 'fs-extra';
 import path from 'path';
@@ -24,7 +23,7 @@ import {verifyApp} from '@neo4j/code-signer';
 import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
 
 export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionInfoModel>> => {
-    const dirFiles = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
+    const dirFiles = List.from(await fse.readdir(distributionsRoot, {withFileTypes: true}));
     const files = await dirFiles
         .mapEach(async (dir) => {
             const stats = await fse.stat(path.join(distributionsRoot, dir.name));

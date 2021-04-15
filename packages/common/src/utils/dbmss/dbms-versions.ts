@@ -1,4 +1,3 @@
-import {promises as fs} from 'fs';
 import fse from 'fs-extra';
 import got from 'got';
 import path from 'path';
@@ -39,7 +38,7 @@ export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVer
 };
 
 export const discoverNeo4jDistributions = async (distributionsRoot: string): Promise<List<IDbmsVersion>> => {
-    const files = List.from(await fs.readdir(distributionsRoot, {withFileTypes: true}));
+    const files = List.from(await fse.readdir(distributionsRoot, {withFileTypes: true}));
     const dists = await files
         .filter((file) => file.isDirectory())
         .mapEach((dir) => {

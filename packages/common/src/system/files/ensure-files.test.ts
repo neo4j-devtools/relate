@@ -1,5 +1,4 @@
 import fse from 'fs-extra';
-import {promises as fs} from 'fs';
 import path from 'path';
 import _ from 'lodash';
 
@@ -30,7 +29,7 @@ describe('ensure-files', () => {
             environmentsConfig: path.join(TMP_HOME, 'environmentsConfig'),
         };
         await ensureDirs(dirPaths);
-        const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
+        const dirFiles = await fse.readdir(TMP_HOME, {withFileTypes: true});
         expect(dirFiles.length).toBe(Object.keys(dirPaths).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());
@@ -51,7 +50,7 @@ describe('ensure-files', () => {
 
         await ensureDirs(dirPaths);
         await ensureFiles(filePaths);
-        const dirFiles = await fs.readdir(TMP_HOME, {withFileTypes: true});
+        const dirFiles = await fse.readdir(TMP_HOME, {withFileTypes: true});
         expect(dirFiles.length).toBe(Object.keys(dirPaths).length + Object.keys(filePaths).length);
 
         expect(_.map(dirFiles, (file) => file.name).sort()).toEqual(expectedFileNames.sort());

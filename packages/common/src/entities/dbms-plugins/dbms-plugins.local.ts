@@ -1,4 +1,3 @@
-import {promises as fs} from 'fs';
 import fse from 'fs-extra';
 import path from 'path';
 import semver from 'semver';
@@ -111,7 +110,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
         }
 
         const dbmsPluginsDir = path.join(dbms.rootPath, NEO4J_PLUGIN_DIR);
-        const files = await fs.readdir(dbmsPluginsDir, {withFileTypes: true});
+        const files = await fse.readdir(dbmsPluginsDir, {withFileTypes: true});
 
         const plugins = await List.from(files)
             .filter((file) => file.isFile() && path.extname(file.name) === '.jar')
