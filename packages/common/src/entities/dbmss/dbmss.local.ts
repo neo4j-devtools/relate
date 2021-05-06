@@ -2,13 +2,11 @@ import {Dict, List, Maybe, None, Str} from '@relate/types';
 import fse from 'fs-extra';
 import semver, {coerce, satisfies} from 'semver';
 import path from 'path';
-import {IAuthToken} from '@huboneo/tapestry';
-import * as rxjs from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions, IAuthToken} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -26,6 +24,7 @@ import {
 import {
     AmbiguousTargetError,
     DbmsExistsError,
+    DbmsQueryError,
     InvalidArgumentError,
     NotAllowedError,
     NotFoundError,
@@ -428,20 +427,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             );
         }
 
-        const driver = await this.getJSONDriverInstance(dbms.id, authToken);
-        const token = await this.runQuery<string>(driver, 'CALL jwt.security.requestAccess($appName)', {appName})
-            .pipe(
-                rxjs.first(),
-                rxjs.flatMap((rec) => rec.data),
-            )
-            .toPromise()
-            .finally(() => driver.shutDown().toPromise());
-
-        if (!token) {
-            throw new InvalidArgumentError('Unable to create access token');
+        const driver = await this.getDriverInstance(dbms.id, authToken);
+        try {
+            const result = await this.runReadQuery(driver, 'CALL jwt.security.requestAccess($appName)', {appName});
+            const [singleRecord] = result.records;
+            const token = singleRecord.get('token');
+            return token;
+        } catch (e) {
+            throw new DbmsQueryError('Unable to create access token', e.message);
+        } finally {
+            await driver.close();
         }
-
-        return token;
     }
 
     public getDbmsRootPath(dbmsId?: string): string {

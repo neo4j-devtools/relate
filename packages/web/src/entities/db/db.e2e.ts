@@ -192,7 +192,7 @@ describe('DBModule', () => {
                 .expect((res: request.Response) => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Unable to connect to DBMS');
+                    expect(errors[0].message).toContain('The client is unauthorized due to authentication failure.');
                 });
         });
 
@@ -271,7 +271,7 @@ describe('DBModule', () => {
                 .expect((res: request.Response) => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Unable to connect to DBMS');
+                    expect(errors[0].message).toContain('The client is unauthorized due to authentication failure.');
                 });
         });
 
@@ -356,7 +356,7 @@ describe('DBModule', () => {
                 .expect((res: request.Response) => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Unable to connect to DBMS');
+                    expect(errors[0].message).toContain('The client is unauthorized due to authentication failure.');
                 });
         });
 

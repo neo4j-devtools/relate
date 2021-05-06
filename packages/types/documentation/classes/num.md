@@ -66,7 +66,7 @@ const plain: 100 = num.get();
 
 ▪ **MAX_VALUE**: *[Num](num.md)‹›* = new Num(Number.MAX_SAFE_INTEGER)
 
-Defined in src/monads/primitive/num.monad.ts:21
+*Defined in [src/monads/primitive/num.monad.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L21)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 ▪ **MIN_VALUE**: *[Num](num.md)‹›* = new Num(Number.MIN_SAFE_INTEGER)
 
-Defined in src/monads/primitive/num.monad.ts:23
+*Defined in [src/monads/primitive/num.monad.ts:23](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L23)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 ▪ **NEG_ONE**: *[Num](num.md)‹›* = new Num(-1)
 
-Defined in src/monads/primitive/num.monad.ts:19
+*Defined in [src/monads/primitive/num.monad.ts:19](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L19)*
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 ▪ **ONE**: *[Num](num.md)‹›* = new Num(1)
 
-Defined in src/monads/primitive/num.monad.ts:17
+*Defined in [src/monads/primitive/num.monad.ts:17](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L17)*
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 ▪ **ZERO**: *[Num](num.md)‹›* = new Num(0)
 
-Defined in src/monads/primitive/num.monad.ts:15
+*Defined in [src/monads/primitive/num.monad.ts:15](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L15)*
 
 ## Accessors
 
@@ -108,7 +108,7 @@ Defined in src/monads/primitive/num.monad.ts:15
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/num.monad.ts:40
+*Defined in [src/monads/primitive/num.monad.ts:40](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L40)*
 
 Num is empty if value is not a number
 
@@ -120,7 +120,7 @@ ___
 
 • **get isEven**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:52
+*Defined in [src/monads/primitive/num.monad.ts:52](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L52)*
 
 **Returns:** *boolean*
 
@@ -130,7 +130,7 @@ ___
 
 • **get isInteger**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:64
+*Defined in [src/monads/primitive/num.monad.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L64)*
 
 **Returns:** *boolean*
 
@@ -140,7 +140,7 @@ ___
 
 • **get isNegative**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:56
+*Defined in [src/monads/primitive/num.monad.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L56)*
 
 **Returns:** *boolean*
 
@@ -150,7 +150,7 @@ ___
 
 • **get isOdd**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:48
+*Defined in [src/monads/primitive/num.monad.ts:48](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L48)*
 
 **Returns:** *boolean*
 
@@ -160,7 +160,7 @@ ___
 
 • **get isPositive**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:60
+*Defined in [src/monads/primitive/num.monad.ts:60](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L60)*
 
 **Returns:** *boolean*
 
@@ -170,7 +170,7 @@ ___
 
 • **get isZero**(): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:44
+*Defined in [src/monads/primitive/num.monad.ts:44](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L44)*
 
 **Returns:** *boolean*
 
@@ -180,7 +180,7 @@ Defined in src/monads/primitive/num.monad.ts:44
 
 ▸ **add**(`other`: number | string | [Num](num.md)): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:156
+*Defined in [src/monads/primitive/num.monad.ts:156](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L156)*
 
 **Parameters:**
 
@@ -196,7 +196,7 @@ ___
 
 ▸ **divide**(`divisor`: number | string | [Num](num.md)): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:174
+*Defined in [src/monads/primitive/num.monad.ts:174](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L174)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 *Overrides [Monad](monad.md).[equals](monad.md#equals)*
 
-Defined in src/monads/primitive/num.monad.ts:130
+*Defined in [src/monads/primitive/num.monad.ts:130](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L130)*
 
 **Parameters:**
 
@@ -230,7 +230,7 @@ ___
 
 ▸ **greaterThan**(`other`: number | string | [Num](num.md)): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:144
+*Defined in [src/monads/primitive/num.monad.ts:144](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L144)*
 
 **Parameters:**
 
@@ -246,7 +246,7 @@ ___
 
 ▸ **greaterThanOrEqual**(`other`: number | string | [Num](num.md)): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:148
+*Defined in [src/monads/primitive/num.monad.ts:148](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L148)*
 
 **Parameters:**
 
@@ -262,7 +262,7 @@ ___
 
 ▸ **lessThan**(`other`: number | string | [Num](num.md)): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:136
+*Defined in [src/monads/primitive/num.monad.ts:136](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L136)*
 
 **Parameters:**
 
@@ -278,7 +278,7 @@ ___
 
 ▸ **lessThanOrEqual**(`other`: number | string | [Num](num.md)): *boolean*
 
-Defined in src/monads/primitive/num.monad.ts:140
+*Defined in [src/monads/primitive/num.monad.ts:140](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L140)*
 
 **Parameters:**
 
@@ -294,7 +294,7 @@ ___
 
 ▸ **modulo**(`divisor`: number | string | [Num](num.md)): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:180
+*Defined in [src/monads/primitive/num.monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L180)*
 
 **Parameters:**
 
@@ -310,7 +310,7 @@ ___
 
 ▸ **multiply**(`multiplier`: number | string | [Num](num.md)): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:168
+*Defined in [src/monads/primitive/num.monad.ts:168](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L168)*
 
 **Parameters:**
 
@@ -326,7 +326,7 @@ ___
 
 ▸ **negate**(): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:152
+*Defined in [src/monads/primitive/num.monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L152)*
 
 **Returns:** *[Num](num.md)*
 
@@ -336,7 +336,7 @@ ___
 
 ▸ **subtract**(`other`: number | string | [Num](num.md)): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:162
+*Defined in [src/monads/primitive/num.monad.ts:162](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L162)*
 
 **Parameters:**
 
@@ -352,7 +352,7 @@ ___
 
 ▸ **toInt**(): *[Num](num.md)*
 
-Defined in src/monads/primitive/num.monad.ts:126
+*Defined in [src/monads/primitive/num.monad.ts:126](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L126)*
 
 Math.trunc()
 
@@ -366,7 +366,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-Defined in src/monads/primitive/num.monad.ts:119
+*Defined in [src/monads/primitive/num.monad.ts:119](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L119)*
 
 **Parameters:**
 
@@ -384,7 +384,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/num.monad.ts:103
+*Defined in [src/monads/primitive/num.monad.ts:103](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L103)*
 
 Coerces anything into a Num
 
@@ -404,7 +404,7 @@ ___
 
 ▸ **isNum**(`val`: any): *val is Num*
 
-Defined in src/monads/primitive/num.monad.ts:76
+*Defined in [src/monads/primitive/num.monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L76)*
 
 Indicates if passed value is an instance of `Num`
 ```ts
@@ -429,7 +429,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/num.monad.ts:95
+*Defined in [src/monads/primitive/num.monad.ts:95](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L95)*
 
 Returns Num representation of the passed value.
 

@@ -3,7 +3,7 @@ import nock from 'nock';
 import {TargetExistsError} from '../../errors';
 import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
-import {dbQuery} from '../../utils/dbmss/system-db-query';
+import {dbReadQuery} from '../../utils/dbmss/system-db-query';
 import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
 
@@ -170,7 +170,7 @@ describe('LocalDbmsPlugins', () => {
             scheme: 'basic',
         });
 
-        const [res] = await dbQuery(
+        const [res] = await dbReadQuery(
             {
                 database: 'neo4j',
                 dbmsUser: 'neo4j',
@@ -178,11 +178,10 @@ describe('LocalDbmsPlugins', () => {
                 dbmsId: dbms.id,
                 environment: app.environment,
             },
-            'RETURN apoc.version()',
+            'RETURN apoc.version() AS apocVersion',
         ).finally(() => app.environment.dbmss.stop([dbms.id]));
 
-        expect(res.data).toEqual(['4.0.0.17']);
-        expect(res.type).toEqual('RECORD');
+        expect(res.get('apocVersion')).toEqual('4.0.0.17');
     });
 
     test('dbmsPlugins.list - lists installed plugin', async () => {

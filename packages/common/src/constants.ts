@@ -88,7 +88,6 @@ export enum HOOK_EVENTS {
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
     DOWNLOAD_START = 'DOWNLOAD_START',
     DOWNLOAD_STOP = 'DOWNLOAD_STOP',
-    RUN_QUERY_RETRY = 'RUN_QUERY_RETRY',
     BACKUP_START = 'BACKUP_START',
     BACKUP_COMPLETE = 'BACKUP_COMPLETE',
     DBMS_MIGRATION_START = 'DBMS_MIGRATION_START',
@@ -96,10 +95,11 @@ export enum HOOK_EVENTS {
     MANIFEST_READ = 'MANIFEST_READ',
     MANIFEST_WRITE = 'MANIFEST_WRITE',
     DEBUG = 'DEBUG',
+    DBMS_TO_BE_ONLINE_ATTEMPTS = 'DBMS_TO_BE_ONLINE_ATTEMPTS',
 }
 
 export interface IHookEventPayloads {
-    [HOOK_EVENTS.RUN_QUERY_RETRY]: {query: string; params: any; retry: number};
+    [HOOK_EVENTS.DBMS_TO_BE_ONLINE_ATTEMPTS]: {maxAttempts: number; currentAttempt: number};
     [HOOK_EVENTS.BACKUP_START]: {entityType: ENTITY_TYPES; entityId: string};
     [HOOK_EVENTS.BACKUP_COMPLETE]: {backup: IRelateBackup};
     [key: string]: any;
@@ -185,8 +185,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
 }
 
 // seconds
-export const CONNECTION_RETRY_STEP = RELATE_IS_TESTING ? 12 : 4;
-export const MAX_CONNECTION_RETRIES = 5;
+export const MAX_DBMS_TO_BE_ONLINE_ATTEMPTS = 60;
 
 export const PROJECTS_DIR_NAME = 'projects';
 

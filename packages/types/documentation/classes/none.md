@@ -49,7 +49,7 @@ const plain: undefined = none.get();
 
 ▪ **EMPTY**: *[None](none.md)‹any›* = new None()
 
-Defined in src/monads/primitive/none.monad.ts:15
+*Defined in [src/monads/primitive/none.monad.ts:15](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L15)*
 
 ## Accessors
 
@@ -59,7 +59,7 @@ Defined in src/monads/primitive/none.monad.ts:15
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/none.monad.ts:28
+*Defined in [src/monads/primitive/none.monad.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L28)*
 
 None is always empty
 
@@ -73,7 +73,7 @@ None is always empty
 
 *Overrides [Monad](monad.md).[toJSON](monad.md#tojson)*
 
-Defined in src/monads/primitive/none.monad.ts:73
+*Defined in [src/monads/primitive/none.monad.ts:73](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L73)*
 
 None cannot be stringified
 
@@ -87,7 +87,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-Defined in src/monads/primitive/none.monad.ts:66
+*Defined in [src/monads/primitive/none.monad.ts:66](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L66)*
 
 **Returns:** *string*
 
@@ -99,7 +99,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/none.monad.ts:62
+*Defined in [src/monads/primitive/none.monad.ts:62](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L62)*
 
 **`see`** [None.of](none.md#static-of)
 
@@ -121,7 +121,7 @@ ___
 
 ▸ **isNone**‹**T**›(`val`: any): *val is None<T>*
 
-Defined in src/monads/primitive/none.monad.ts:40
+*Defined in [src/monads/primitive/none.monad.ts:40](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L40)*
 
 Indicates if passed value is an instance of `None`
 ```ts
@@ -150,7 +150,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/none.monad.ts:55
+*Defined in [src/monads/primitive/none.monad.ts:55](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L55)*
 
 Returns a None, regardless of value.
 
