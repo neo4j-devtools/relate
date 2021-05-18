@@ -29,6 +29,7 @@ export default abstract class BaseCommand extends Command {
             error: this.error,
             log: this.log,
             exit: this.exit,
+            warn: this.warn,
         };
         const options = IS_DEVELOPMENT_ENV ? {} : {logger: false};
         const {flags} = parsed;

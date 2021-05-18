@@ -7,7 +7,7 @@ import {neo4jAdminCmd} from '../../utils/dbmss';
 import {CypherParameterError} from '../../errors';
 import {LocalEnvironment} from '../environments';
 import {NEO4J_DB_NAME_REGEX} from './dbs.constants';
-import {dbQuery} from '../../utils/dbmss/system-db-query';
+import {dbReadQuery, dbWriteQuery} from '../../utils/dbmss/system-db-query';
 import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 import {DbsAbstract} from './dbs.abstract';
 
@@ -18,7 +18,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
-        await dbQuery(
+        await dbWriteQuery(
             {
                 database: 'system',
                 accessToken,
@@ -36,7 +36,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
-        await dbQuery(
+        await dbWriteQuery(
             {
                 database: 'system',
                 accessToken,
@@ -50,7 +50,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
 
     async list(nameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
         const dbms = await this.environment.dbmss.get(nameOrId);
-        const dbs = await dbQuery(
+        const dbs = await dbReadQuery(
             {
                 database: 'system',
                 accessToken,
@@ -61,14 +61,14 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
             `SHOW DATABASES`,
         );
 
-        return dbs.mapEach(({data}) => {
+        return dbs.mapEach((db) => {
             return {
-                name: data[0],
-                role: data[2],
-                requestedStatus: data[3],
-                currentStatus: data[4],
-                error: data[5],
-                default: Boolean(data[6]),
+                name: db.get('name'),
+                role: db.get('role'),
+                requestedStatus: db.get('requestedStatus'),
+                currentStatus: db.get('currentStatus'),
+                error: db.get('error'),
+                default: Boolean(db.get('default')),
             };
         });
     }

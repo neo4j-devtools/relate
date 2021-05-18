@@ -8,7 +8,9 @@ import {
 } from '../../entities/environments';
 import {TimeoutError} from '../../errors';
 import {IDbms} from '../../models';
+import {emitHookEvent} from '../event-hooks';
 import {isUrlAvailable} from '../generic';
+import {HOOK_EVENTS, MAX_DBMS_TO_BE_ONLINE_ATTEMPTS} from '../../constants';
 
 export const isDbmsOnline = async (dbms: IDbms): Promise<boolean> => {
     const conf = dbms.config;
@@ -42,7 +44,7 @@ const sleep = (ms: number): Promise<void> =>
 
 export const waitForDbmsToBeOnline = async (dbms: IDbms): Promise<void> => {
     const delay = 1000;
-    const maxAttempts = 60;
+    let maxAttempts = MAX_DBMS_TO_BE_ONLINE_ATTEMPTS;
     let currentAttempt = 0;
 
     /* eslint-disable no-await-in-loop */
@@ -53,10 +55,16 @@ export const waitForDbmsToBeOnline = async (dbms: IDbms): Promise<void> => {
         }
         await sleep(delay);
         currentAttempt += 1;
+        // This will allow a user defined maxAttempts value to be used via a
+        // hook actor, if the current maxAttempts is not adequate, e.g. from
+        // an input or prompt in the Desktop UI.
+        const {maxAttempts: returnedMaxAttempts} = await emitHookEvent(HOOK_EVENTS.DBMS_TO_BE_ONLINE_ATTEMPTS, {
+            maxAttempts,
+            currentAttempt,
+        });
+        maxAttempts = returnedMaxAttempts;
     }
     /* eslint-enable no-await-in-loop */
 
-    throw new TimeoutError(`Could not connect to DBMS "${dbms.id}" within 60 seconds`, [
-        'Check neo4j.log for more information',
-    ]);
+    throw new TimeoutError(`Could not connect to DBMS "${dbms.id}"`, ['Check neo4j.log for more information']);
 };

@@ -1,10 +1,9 @@
-import * as rxjsOps from 'rxjs/operators';
 import {List} from '@relate/types';
+import {Record} from 'neo4j-driver-lite';
 
-import {NotFoundError, NotAllowedError} from '../../errors';
+import {NotFoundError, NotAllowedError, DbmsQueryError} from '../../errors';
 import {EnvironmentAbstract} from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
-import {TapestryJSONResponse} from '../../entities/dbmss';
 
 export interface IQueryTarget {
     database?: string;
@@ -14,11 +13,7 @@ export interface IQueryTarget {
     accessToken: string;
 }
 
-export const dbQuery = async (
-    target: IQueryTarget,
-    query: string,
-    params: any = {},
-): Promise<List<TapestryJSONResponse>> => {
+export const dbReadQuery = async (target: IQueryTarget, query: string, params: any = {}): Promise<List<Record>> => {
     const {dbmss} = target.environment;
 
     const dbmsInfo = (await dbmss.info([target.dbmsId])).first.getOrElse(() => {
@@ -29,15 +24,47 @@ export const dbQuery = async (
         throw new NotAllowedError('Cannot connect to stopped DBMS', ['Start the DBMS']);
     }
 
-    const driver = await dbmss.getJSONDriverInstance(dbmsInfo.id, {
+    const driver = await dbmss.getDriverInstance(dbmsInfo.id, {
         credentials: target.accessToken,
         principal: target.dbmsUser,
         scheme: 'basic',
     });
 
-    return dbmss
-        .runQuery(driver, query, params, 3, {db: target.database || 'neo4j'})
-        .pipe(rxjsOps.reduce((agg, next) => agg.concat(next), List.of<TapestryJSONResponse>([])))
-        .toPromise()
-        .finally(() => driver.shutDown().toPromise());
+    try {
+        const result = await dbmss.runReadQuery(driver, query, params, {database: target.database});
+        const ret = List.of(result.records);
+        return ret;
+    } catch (e) {
+        throw new DbmsQueryError('Unable to run a database read query', e.message);
+    } finally {
+        driver.close();
+    }
+};
+
+export const dbWriteQuery = async (target: IQueryTarget, query: string, params: any = {}): Promise<List<Record>> => {
+    const {dbmss} = target.environment;
+
+    const dbmsInfo = (await dbmss.info([target.dbmsId])).first.getOrElse(() => {
+        throw new NotFoundError(`DBMS ${target.dbmsId} not found`);
+    });
+
+    if (dbmsInfo.status === DBMS_STATUS.STOPPED) {
+        throw new NotAllowedError('Cannot connect to stopped DBMS', ['Start the DBMS']);
+    }
+
+    const driver = await dbmss.getDriverInstance(dbmsInfo.id, {
+        credentials: target.accessToken,
+        principal: target.dbmsUser,
+        scheme: 'basic',
+    });
+
+    try {
+        const result = await dbmss.runWriteQuery(driver, query, params, {database: target.database});
+        const ret = List.of(result.records);
+        return ret;
+    } catch (e) {
+        throw new DbmsQueryError('Unable to run a database write query', e.message);
+    } finally {
+        driver.close();
+    }
 };

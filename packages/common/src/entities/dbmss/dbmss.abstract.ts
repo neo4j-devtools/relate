@@ -1,33 +1,15 @@
-import {List, Str} from '@relate/types';
-import {Driver, DRIVER_HEADERS, DRIVER_RESULT_TYPE, IAuthToken, JsonUnpacker, IQueryMeta} from '@huboneo/tapestry';
-import * as rxjs from 'rxjs';
-import * as rxjsOps from 'rxjs/operators';
+import {List} from '@relate/types';
+import {driver, Driver, QueryResult} from 'neo4j-driver-lite';
 
-import {DbmsManifestModel, IDbms, IDbmsInfo, IDbmsUpgradeOptions, IDbmsVersion} from '../../models';
+import {DbmsManifestModel, IAuthToken, IDbms, IDbmsInfo, IDbmsUpgradeOptions, IDbmsVersion} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
-import {
-    ConnectionError,
-    DbmsQueryError,
-    ErrorAbstract,
-    InvalidConfigError,
-    NotAllowedError,
-    NotFoundError,
-} from '../../errors';
-import {CONNECTION_RETRY_STEP, DBMS_STATUS, HOOK_EVENTS, MAX_CONNECTION_RETRIES} from '../../constants';
-import {emitHookEvent} from '../../utils';
+import {InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
+import {DBMS_SERVER_STATUS, DBMS_STATUS} from '../../constants';
 import {IRelateFilter} from '../../utils/generic';
 import {ManifestAbstract} from '../manifest';
-
-/**
- * @hidden
- */
-export type TapestryJSONResponse<Res = any> = {
-    header: {fields: string[]};
-    type: DRIVER_RESULT_TYPE;
-    data: Res;
-};
+import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 
 export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     /**
@@ -142,59 +124,52 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
     /**
      * @hidden
      */
-    runQuery<Res = any>(
-        driver: Driver<TapestryJSONResponse<Res>>,
+    runReadQuery(
+        neo4jDriver: Driver,
         query: string,
         params: any = {},
-        retry = 0,
-        meta: IQueryMeta = {},
-    ): rxjs.Observable<TapestryJSONResponse<Res>> {
-        return driver.query(query, params, meta).pipe(
-            rxjsOps.tap((res) => {
-                if (res.type === DRIVER_RESULT_TYPE.FAILURE) {
-                    throw new DbmsQueryError(`Failed to execute query`, res);
-                }
-            }),
-            rxjsOps.filter(({type}) => type === DRIVER_RESULT_TYPE.RECORD),
-            rxjsOps.catchError((e) => {
-                if (typeof retry !== 'number' || e instanceof ErrorAbstract) {
-                    throw e;
-                }
+        sessionParams: {
+            database?: string;
+        } = {},
+    ): Promise<QueryResult> {
+        const session = neo4jDriver.session(sessionParams);
 
-                const message = Str.from(e.message);
+        const readTransactionPromise = session.readTransaction((txc) => {
+            const result = txc.run(query, params);
 
-                if (!message.includes('ECONNREFUSED') && retry > 2) {
-                    throw new ConnectionError('Unable to connect to DBMS', [message]);
-                }
+            return result;
+        });
 
-                if (retry < MAX_CONNECTION_RETRIES) {
-                    const seconds = CONNECTION_RETRY_STEP * retry;
-
-                    return rxjs.from([1]).pipe(
-                        rxjsOps.flatMap(() =>
-                            rxjs.from(
-                                emitHookEvent(HOOK_EVENTS.RUN_QUERY_RETRY, {
-                                    query,
-                                    params,
-                                    retry: retry + 1,
-                                }),
-                            ),
-                        ),
-                        rxjsOps.delay(1000 * seconds),
-                        rxjsOps.flatMap((update) => this.runQuery(driver, update.query, update.params, update.retry)),
-                    );
-                }
-
-                throw new ConnectionError('Unable to connect to DBMS', [message]);
-            }),
-        );
+        return readTransactionPromise;
     }
 
     /**
      * @hidden
      */
-    public async getJSONDriverInstance(dbmsId: string, authToken: IAuthToken): Promise<Driver<TapestryJSONResponse>> {
-        const dbmsInfo = (await this.info([dbmsId])).first.getOrElse(() => {
+    runWriteQuery(
+        neo4jDriver: Driver,
+        query: string,
+        params: any = {},
+        sessionParams: {
+            database?: string;
+        } = {},
+    ): Promise<QueryResult> {
+        const session = neo4jDriver.session(sessionParams);
+
+        const writeTransactionPromise = session.writeTransaction((txc) => {
+            const result = txc.run(query, params);
+
+            return result;
+        });
+
+        return writeTransactionPromise;
+    }
+
+    /**
+     * @hidden
+     */
+    public async getDriverInstance(dbmsId: string, authToken: IAuthToken): Promise<Driver> {
+        const dbmsInfo: IDbmsInfo = (await this.info([dbmsId], true)).first.getOrElse(() => {
             throw new NotFoundError(`Could not find Dbms ${dbmsId}`);
         });
 
@@ -202,27 +177,19 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
             throw new NotAllowedError(`Dbms ${dbmsId} is not started`);
         }
 
+        if (dbmsInfo.serverStatus !== DBMS_SERVER_STATUS.ONLINE) {
+            await waitForDbmsToBeOnline({
+                ...dbmsInfo,
+                config: await this.getDbmsConfig(dbmsId),
+            });
+        }
+
         try {
-            // @todo: add support for encrypted connections
-            const {hostname, port} = new URL(dbmsInfo.connectionUri);
-            const driver = new Driver<TapestryJSONResponse>({
-                connectionConfig: {
-                    secure: dbmsInfo.secure || undefined,
-                    authToken,
-                    host: hostname,
-                    port: Number(port),
-                    unpacker: JsonUnpacker,
-                    getResponseHeader: (data): DRIVER_HEADERS => data[0] || DRIVER_HEADERS.FAILURE,
-                    getResponseData: (data): any => data[1] || [],
-                },
-                mapToResult: (headerRecord, type, data) => ({
-                    header: headerRecord,
-                    type,
-                    data,
-                }),
+            const neo4jDriver = driver(dbmsInfo.connectionUri, authToken, {
+                encrypted: Boolean(dbmsInfo.secure),
             });
 
-            return driver;
+            return neo4jDriver;
         } catch (e) {
             throw new InvalidConfigError('Unable to connect to DBMS');
         }

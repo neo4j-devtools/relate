@@ -1,8 +1,7 @@
 import gql from 'graphql-tag';
 import {List} from '@relate/types';
-import {IAuthToken} from '@huboneo/tapestry';
 
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions} from '../../models';
+import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions, IAuthToken} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {NEO4J_EDITION, RemoteEnvironment} from '../environments';

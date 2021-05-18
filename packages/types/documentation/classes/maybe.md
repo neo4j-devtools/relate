@@ -53,7 +53,7 @@ Maybe.of(List.from([1)).isEmpty // false
 
 ▪ **EMPTY**: *[Maybe](maybe.md)‹[None](none.md)‹any››* = new Maybe(None.EMPTY)
 
-Defined in src/monads/primitive/maybe.monad.ts:21
+*Defined in [src/monads/primitive/maybe.monad.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L21)*
 
 ## Accessors
 
@@ -63,7 +63,7 @@ Defined in src/monads/primitive/maybe.monad.ts:21
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/maybe.monad.ts:46
+*Defined in [src/monads/primitive/maybe.monad.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L46)*
 
 Indicates if wrapped value is null | undefined | Nil | None
 
@@ -91,7 +91,7 @@ Maybe.of(List.from([1)).isEmpty // false
 
 *Overrides [Monad](monad.md).[getOrElse](monad.md#getorelse)*
 
-Defined in src/monads/primitive/maybe.monad.ts:98
+*Defined in [src/monads/primitive/maybe.monad.ts:98](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L98)*
 
 **Type parameters:**
 
@@ -115,7 +115,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-Defined in src/monads/primitive/maybe.monad.ts:103
+*Defined in [src/monads/primitive/maybe.monad.ts:103](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L103)*
 
 **Returns:** *string*
 
@@ -127,7 +127,7 @@ ___
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/maybe.monad.ts:94
+*Defined in [src/monads/primitive/maybe.monad.ts:94](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L94)*
 
 Wraps passed value in Maybe, if not already a Maybe
 
@@ -151,7 +151,7 @@ ___
 
 ▸ **isMaybe**‹**T**›(`val`: any): *val is Maybe<T>*
 
-Defined in src/monads/primitive/maybe.monad.ts:55
+*Defined in [src/monads/primitive/maybe.monad.ts:55](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L55)*
 
 **Type parameters:**
 
@@ -173,7 +173,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/maybe.monad.ts:76
+*Defined in [src/monads/primitive/maybe.monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L76)*
 
 Wraps passed value in Maybe regardless of what it is
 

@@ -34,7 +34,7 @@
 
 • **sources**: *Record‹string, IDbmsPluginSource›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:8
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:8](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L8)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **versions**: *Record‹string, IDbmsPluginVersion[]›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:10
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:10](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L10)*
 
 ## Methods
 
@@ -50,7 +50,7 @@ Defined in dbms-plugins/dbms-plugins.abstract.ts:10
 
 ▸ **addSources**(`sources`: List‹IDbmsPluginSource› | IDbmsPluginSource[]): *Promise‹List‹IDbmsPluginSource››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:33
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:33](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L33)*
 
 Add one or more plugin sources
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **getSource**(`name`: string): *Promise‹IDbmsPluginSource›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:21
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L21)*
 
 Get the source for a plugin
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **install**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹List‹IDbmsPluginInstalled››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:64
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L64)*
 
 Install a plugin in the specified DBMS
 
@@ -105,7 +105,7 @@ ___
 
 ▸ **list**(`dbmsNameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsPluginInstalled››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:46
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L46)*
 
 List all plugins installed in the specified DBMS
 
@@ -124,7 +124,7 @@ ___
 
 ▸ **listSources**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsPluginSource››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:27
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L27)*
 
 List all plugin sources
 
@@ -142,7 +142,7 @@ ___
 
 ▸ **previewUpgrade**(`dbmsNameOrId`: string, `dbmsTargetVersion`: string): *Promise‹List‹IDbmsPluginUpgradable››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:57
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L57)*
 
 Preview plugin versions that would be installed if the DBMS
 containing them would be upgraded.
@@ -162,7 +162,7 @@ ___
 
 ▸ **removeSources**(`names`: string[]): *Promise‹List‹IDbmsPluginSource››*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:39
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L39)*
 
 Remove one or more plugin sources
 
@@ -180,7 +180,7 @@ ___
 
 ▸ **uninstall**(`dbmsNamesOrIds`: string[] | List‹string›, `pluginName`: string): *Promise‹void›*
 
-Defined in dbms-plugins/dbms-plugins.abstract.ts:71
+*Defined in [dbms-plugins/dbms-plugins.abstract.ts:71](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L71)*
 
 Uninstall a plugin from the specified DBMS
 

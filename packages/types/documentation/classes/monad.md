@@ -66,7 +66,7 @@ const plain: number | undefined = monad.get();
 
 • **get isEmpty**(): *boolean*
 
-Defined in src/monads/monad.ts:64
+*Defined in [src/monads/monad.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L64)*
 
 Indicates if Monad lacks a value
 
@@ -78,7 +78,7 @@ Indicates if Monad lacks a value
 
 ▸ **equals**(`other`: any): *boolean*
 
-Defined in src/monads/monad.ts:139
+*Defined in [src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)*
 
 Checks if other has the same raw value
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-Defined in src/monads/monad.ts:180
+*Defined in [src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)*
 
 Unpack monad value and return anything.
 ```ts
@@ -130,7 +130,7 @@ ___
 
 *Implementation of [IMonad](../interfaces/imonad.md)*
 
-Defined in src/monads/monad.ts:114
+*Defined in [src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)*
 
 Get raw value of monad
 
@@ -142,7 +142,7 @@ ___
 
 ▸ **getOrElse**(`other`: T | function): *T*
 
-Defined in src/monads/monad.ts:128
+*Defined in [src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)*
 
 Get raw value of monad if not empty, else use other
 ```ts
@@ -169,7 +169,7 @@ ___
 
 *Implementation of [IMonad](../interfaces/imonad.md)*
 
-Defined in src/monads/monad.ts:57
+*Defined in [src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)*
 
 Indicates if passed value is an instance of `this`
 ```ts
@@ -192,7 +192,7 @@ ___
 
 ▸ **map**(`project`: function): *this*
 
-Defined in src/monads/monad.ts:165
+*Defined in [src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)*
 
 Modify monad value without changing the type.
 ```ts
@@ -220,7 +220,7 @@ ___
 
 ▸ **switchMap**‹**M**›(`project`: function): *M*
 
-Defined in src/monads/monad.ts:191
+*Defined in [src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)*
 
 Switch monad for Iterable (of any type).
 ```ts
@@ -252,7 +252,7 @@ ___
 
 ▸ **tap**(`project`: function): *this*
 
-Defined in src/monads/monad.ts:152
+*Defined in [src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)*
 
 Access value without modifying it. Useful when all you need is to log etc.
 ```ts
@@ -280,7 +280,7 @@ ___
 
 ▸ **toJSON**(): *any*
 
-Defined in src/monads/monad.ts:205
+*Defined in [src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)*
 
 When calling `.toJSON()`
 
@@ -292,7 +292,7 @@ ___
 
 ▸ **toString**(): *string*
 
-Defined in src/monads/monad.ts:198
+*Defined in [src/monads/monad.ts:198](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L198)*
 
 When calling `.toString()`
 
@@ -304,7 +304,7 @@ ___
 
 ▸ **valueOf**(): *T*
 
-Defined in src/monads/monad.ts:212
+*Defined in [src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)*
 
 When calling `.valueOf()`
 
@@ -316,7 +316,7 @@ ___
 
 ▸ **from**(`val`: any): *[Monad](monad.md)‹any›*
 
-Defined in src/monads/monad.ts:98
+*Defined in [src/monads/monad.ts:98](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L98)*
 
 Wraps passed value in monad, if not already a Monad
 ```ts
@@ -338,7 +338,7 @@ ___
 
 ▸ **isMonad**‹**T**›(`val`: any): *val is Monad<T>*
 
-Defined in src/monads/monad.ts:76
+*Defined in [src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)*
 
 Indicates if passed value is an instance of `Monad`
 ```ts
@@ -365,7 +365,7 @@ ___
 
 ▸ **of**(`val`: any): *[Monad](monad.md)‹any›*
 
-Defined in src/monads/monad.ts:87
+*Defined in [src/monads/monad.ts:87](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L87)*
 
 Wraps passed value in monad regardless of what it is
 ```ts

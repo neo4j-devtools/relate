@@ -27,6 +27,7 @@ declare global {
                       suggestions?: string[];
                   },
         ) => void;
+        warn: (input: string | Error) => void;
         exit: (code?: number) => void;
     };
 }

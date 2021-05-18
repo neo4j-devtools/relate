@@ -34,17 +34,17 @@ export class AccessTokenModule implements OnApplicationBootstrap {
             scheme: 'basic',
         });
 
-        registerHookListener(HOOK_EVENTS.RUN_QUERY_RETRY, ({retry}) => {
-            if (retry < 1) {
+        registerHookListener(HOOK_EVENTS.DBMS_TO_BE_ONLINE_ATTEMPTS, ({currentAttempt}) => {
+            if (currentAttempt < 2) {
                 return;
             }
 
-            if (retry === 1) {
-                this.utils.log('DBMS connection not available, retrying...');
+            if (currentAttempt === 2) {
+                this.utils.warn('DBMS connection not available, retrying...');
                 return;
             }
 
-            this.utils.log('still retrying...');
+            this.utils.warn('still retrying...');
         });
 
         return environment.dbmss
