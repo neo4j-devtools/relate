@@ -40,9 +40,7 @@ import {
     NEO4J_CONF_FILE_BACKUP,
     NEO4J_EDITION,
     NEO4J_JWT_ADDON_NAME,
-    NEO4J_JWT_ADDON_VERSION,
     NEO4J_JWT_CONF_FILE,
-    NEO4J_PLUGIN_DIR,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
 } from '../environments';
@@ -525,67 +523,51 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
+        try {
+            await this.environment.dbmsPlugins.getSource(NEO4J_JWT_ADDON_NAME);
+        } catch (e) {
+            if (!(e instanceof NotFoundError)) {
+                throw e;
+            }
+
+            await this.environment.dbmsPlugins.addSources([
+                {
+                    name: NEO4J_JWT_ADDON_NAME,
+                    homepageUrl: 'https://github.com/neo4j-devtools/relate',
+                    versionsUrl:
+                        'https://s3-eu-west-1.amazonaws.com/dist.neo4j.org/relate/neo4j-jwt-addon/versions.json',
+                },
+            ]);
+        }
+
         const pKeyPassword = uuidv4();
         const pathToDbms = this.getDbmsRootPath(dbmsId);
-        const pluginSource = path.join(
-            this.environment.dirPaths.cache,
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
-        const pluginTarget = path.join(
-            pathToDbms,
-            NEO4J_PLUGIN_DIR,
-            `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`,
-        );
+
         const publicKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.cert.pem');
         const privateKeyTarget = path.join(pathToDbms, NEO4J_CERT_DIR, 'security.key.pem');
         const {publicKey, privateKey} = generatePluginCerts(pKeyPassword);
 
-        await fse.copy(pluginSource, pluginTarget);
         await fse.writeFile(publicKeyTarget, publicKey, 'utf8');
         await fse.writeFile(privateKeyTarget, privateKey, 'utf8');
 
         const neo4jConfig = await PropertiesFile.readFile(
             path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
         );
-        const authenticationProviders = Str.from(neo4jConfig.get('dbms.security.authentication_providers') || 'native')
-            .split(',')
-            .filter((_) => !_.isEmpty);
-        const authorizationProviders = Str.from(neo4jConfig.get('dbms.security.authorization_providers') || 'native')
-            .split(',')
-            .filter((_) => !_.isEmpty);
-        const unrestrictedProcedures = Str.from(neo4jConfig.get('dbms.security.procedures.unrestricted') || '')
-            .split(',')
-            .filter((_) => !_.isEmpty);
 
-        const securityPluginJavaPath = 'plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin';
-        if (!authenticationProviders.includes(Str.from(securityPluginJavaPath))) {
-            neo4jConfig.set(
-                `dbms.security.authentication_providers`,
-                authenticationProviders
-                    .concat([securityPluginJavaPath])
-                    .join(',')
-                    .get(),
-            );
+        const authenticationProviders = neo4jConfig.get('dbms.security.authentication_providers');
+        const authorizationProviders = neo4jConfig.get('dbms.security.authorization_providers');
+
+        // Set the default value for authentication and authorization providers if none is present
+        if (!authenticationProviders) {
+            neo4jConfig.set('dbms.security.authentication_providers', 'native');
         }
-        if (!authorizationProviders.includes(Str.from(securityPluginJavaPath))) {
-            neo4jConfig.set(
-                `dbms.security.authorization_providers`,
-                authorizationProviders
-                    .concat([securityPluginJavaPath])
-                    .join(',')
-                    .get(),
-            );
+        if (!authorizationProviders) {
+            neo4jConfig.set('dbms.security.authorization_providers', 'native');
         }
-        if (!unrestrictedProcedures.includes(Str.from('jwt.security.*'))) {
-            neo4jConfig.set(
-                `dbms.security.procedures.unrestricted`,
-                unrestrictedProcedures
-                    .concat([`jwt.security.*`])
-                    .join(',')
-                    .get(),
-            );
-        }
+
         await neo4jConfig.flush();
+
+        await this.environment.dbmsPlugins.install([dbmsId], NEO4J_JWT_ADDON_NAME);
 
         const jwtConfigPath = path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_JWT_CONF_FILE);
 

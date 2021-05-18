@@ -35,6 +35,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
 
     public async listSources(filters?: List<IRelateFilter> | IRelateFilter[]): Promise<List<IDbmsPluginSource>> {
         const official = await fetchOfficialPluginSources();
+        await fse.ensureDir(this.environment.dirPaths.pluginSources);
         const userSaved = await discoverPluginSources(this.environment.dirPaths.pluginSources);
         const allSources = official.concat(userSaved);
 
@@ -76,6 +77,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 );
 
                 await fse.writeJSON(sourcePath, source);
+                this.sources[source.name] = source;
             })
             .unwindPromises();
 
@@ -94,6 +96,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                 );
 
                 await fse.remove(sourcePath);
+                delete this.sources[source.name];
             })
             .unwindPromises();
 

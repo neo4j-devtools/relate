@@ -1,11 +1,12 @@
 import nock from 'nock';
+import fse from 'fs-extra';
 
 import {TargetExistsError} from '../../errors';
 import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbReadQuery} from '../../utils/dbmss/system-db-query';
 import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
-import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
+import {NEO4J_JWT_ADDON_NAME, NEO4J_PLUGIN_SOURCES_URL} from '../environments';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
 const PLUGIN_SOURCES_PATHNAME = new URL(NEO4J_PLUGIN_SOURCES_URL).pathname;
@@ -45,16 +46,22 @@ describe('LocalDbmsPlugins', () => {
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(200, {});
+        jest.spyOn(fse, 'readdir').mockResolvedValueOnce([]);
 
         const pluginSourcesNoDefaults = await app.environment.dbmsPlugins.listSources();
-        expect(pluginSourcesNoDefaults.toArray()).toEqual([]);
+        expect(pluginSourcesNoDefaults.filter((plugin) => plugin.name !== NEO4J_JWT_ADDON_NAME).toArray()).toEqual([]);
 
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
             .reply(500);
 
+        jest.spyOn(fse, 'readdir').mockResolvedValueOnce([]);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        jest.spyOn(fse, 'pathExists').mockResolvedValueOnce(false);
+
         const pluginSourcesFetchError = await app.environment.dbmsPlugins.listSources();
-        expect(pluginSourcesFetchError.toArray()).toEqual([]);
+        expect(pluginSourcesFetchError.filter((plugin) => plugin.name !== NEO4J_JWT_ADDON_NAME).toArray()).toEqual([]);
     });
 
     test('dbmsPlugins.listSources - default plugin sources', async () => {
@@ -203,8 +210,8 @@ describe('LocalDbmsPlugins', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                homepageUrl: undefined,
-                version: '1.0.1',
+                homepageUrl: 'https://github.com/neo4j-devtools/relate',
+                version: '1.0.2',
             },
         ]);
     });
@@ -225,8 +232,8 @@ describe('LocalDbmsPlugins', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                installed: '1.0.1',
-                upgradable: undefined,
+                installed: '1.0.2',
+                upgradable: '1.2.0',
             },
         ]);
     });
@@ -246,8 +253,8 @@ describe('LocalDbmsPlugins', () => {
         ).toEqual([
             {
                 name: 'neo4j-jwt-addon',
-                homepageUrl: undefined,
-                version: '1.0.1',
+                homepageUrl: 'https://github.com/neo4j-devtools/relate',
+                version: '1.0.2',
             },
         ]);
     });
@@ -267,8 +274,8 @@ describe('LocalDbmsPlugins', () => {
         ).toEqual([
             {
                 name: 'neo4j-jwt-addon',
-                homepageUrl: undefined,
-                version: '1.0.1',
+                homepageUrl: 'https://github.com/neo4j-devtools/relate',
+                version: '1.0.2',
             },
         ]);
     });
