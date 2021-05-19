@@ -2,6 +2,7 @@ import {InvalidArgumentError} from '../../errors';
 import {TestDbmss} from '../../utils/system';
 import {IDbmsInfo, PLUGIN_UPGRADE_MODE} from '../../models';
 import {EnvironmentAbstract} from '../environments';
+import nock from 'nock';
 
 jest.setTimeout(240000);
 
@@ -152,7 +153,7 @@ describe('LocalDbmss - upgrade', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.0.2',
             },
             {
                 name: 'streams',
@@ -168,7 +169,7 @@ describe('LocalDbmss - upgrade', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.1.0',
             },
             {
                 name: 'streams',
@@ -220,7 +221,7 @@ describe('LocalDbmss - upgrade', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.0.2',
             },
             {
                 name: 'streams',
@@ -232,20 +233,36 @@ describe('LocalDbmss - upgrade', () => {
                 // The JWT plugin is always installed in Relate DBMSs regardless
                 // of plugin upgrade mode.
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.1.0',
             },
         ]);
     });
 
     test('Upgrades only upgradable plugins when upgrading', async () => {
+        nock('https://example.com')
+            .get('/custom-plugin/versions.json')
+            .once()
+            .reply(200, [
+                {
+                    version: '4.0.0.17',
+                    neo4jVersion: '4.0.4',
+                    downloadUrl:
+                        'https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.0.0.17/apoc-4.0.0.17-all.jar',
+                    sha256: 'ed388e5e7bea1842f35dccfe2d2e03db3271c59b2b6fa52ae8cfcc50fbb5e2b6',
+                    config: {
+                        '+:dbms.security.procedures.unrestricted': ['apoc.*'],
+                    },
+                },
+            ]);
+
         dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
         await env.dbmsPlugins.install([dbms404.id], 'streams');
 
         await env.dbmsPlugins.addSources([
             {
                 name: 'custom-plugin',
-                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-                versionsUrl: 'https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json',
+                homepageUrl: 'https://example.com/custom-plugin',
+                versionsUrl: 'https://example.com/custom-plugin/versions.json',
             },
         ]);
         await env.dbmsPlugins.install([dbms404.id], 'custom-plugin');
@@ -280,7 +297,7 @@ describe('LocalDbmss - upgrade', () => {
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.0.2',
             },
             {
                 name: 'streams',
@@ -290,7 +307,7 @@ describe('LocalDbmss - upgrade', () => {
         expect(mappedUpgradedPlugins).toEqual([
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.1',
+                version: '1.1.0',
             },
             {
                 name: 'streams',

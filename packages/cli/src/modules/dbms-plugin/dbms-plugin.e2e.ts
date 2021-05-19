@@ -7,6 +7,7 @@ import AddSourcesCommand from '../../commands/dbms-plugin/add-sources';
 import InstallCommand from '../../commands/dbms-plugin/install';
 import ListCommand from '../../commands/dbms-plugin/list';
 import UninstallCommand from '../../commands/dbms-plugin/uninstall';
+import {NEO4J_JWT_ADDON_NAME} from '@relate/common/dist/entities/environments';
 
 const FIXTURES_PATH = path.resolve(envPaths().data, '..');
 
@@ -32,7 +33,7 @@ describe('$relate dbms', () => {
             '--filter=official=false',
         ]);
 
-        expect(JSON.parse(ctx.stdout)).toEqual([]);
+        expect(JSON.parse(ctx.stdout).filter((plugin: any) => plugin.name !== NEO4J_JWT_ADDON_NAME)).toEqual([]);
     });
 
     test.stdout().it('adds unofficial sources', async (ctx) => {
@@ -60,7 +61,7 @@ describe('$relate dbms', () => {
             '--filter=official=false',
         ]);
 
-        expect(JSON.parse(ctx.stdout)).toEqual([
+        expect(JSON.parse(ctx.stdout).filter((plugin: any) => plugin.name !== NEO4J_JWT_ADDON_NAME)).toEqual([
             {
                 name: 'plugin-test',
                 isOfficial: 'false',

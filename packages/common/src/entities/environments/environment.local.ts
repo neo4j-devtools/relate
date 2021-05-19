@@ -6,7 +6,7 @@ import {LocalExtensions} from '../extensions';
 import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../../utils';
 import {ensureDirs} from '../../system/files';
-import {ENVIRONMENTS_DIR_NAME, NEO4J_JWT_ADDON_NAME, NEO4J_JWT_ADDON_VERSION} from './environment.constants';
+import {ENVIRONMENTS_DIR_NAME} from './environment.constants';
 import {
     BACKUPS_DIR_NAME,
     DBMS_DIR_NAME,
@@ -88,16 +88,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
 
     async init(): Promise<void> {
         await ensureDirs(this.dirPaths);
-
-        // @todo: this needs to be done proper
-        const securityPluginFilename = `${NEO4J_JWT_ADDON_NAME}-${NEO4J_JWT_ADDON_VERSION}.jar`;
-        const securityPluginTmp = path.join(__dirname, '..', '..', '..', securityPluginFilename);
-        const securityPluginCache = path.join(this.dirPaths.cache, securityPluginFilename);
-        const pluginInCache = await fse.pathExists(securityPluginCache);
-
-        if (!pluginInCache) {
-            await fse.copy(securityPluginTmp, securityPluginCache);
-        }
     }
 
     generateAPIToken(hostName: string, clientId: string, data: any = {}): Promise<string> {
