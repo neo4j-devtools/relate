@@ -1,6 +1,7 @@
 import semver from 'semver';
 import fse from 'fs-extra';
 import path from 'path';
+import {kebabCase} from 'lodash';
 
 import {DBMS_STATUS, ENTITY_TYPES, HOOK_EVENTS} from '../../constants';
 import {LocalEnvironment, NEO4J_CONF_DIR, NEO4J_CONF_FILE, NEO4J_PLUGIN_DIR} from '../../entities/environments';
@@ -9,6 +10,7 @@ import {emitHookEvent} from '../event-hooks';
 import {dbmsUpgradeConfigs} from './dbms-upgrade-config';
 import {waitForDbmsToBeOnline} from './is-dbms-online';
 import {resolveDbms} from './resolve-dbms';
+import {PropertiesFile} from '../../system/files';
 import {IDbmsInfo, IDbmsUpgradeOptions, PLUGIN_UPGRADE_MODE} from '../../models';
 
 const upgradePlugins = async (
@@ -129,6 +131,18 @@ export const upgradeNeo4j = async (
     } catch (e) {
         if (e instanceof RelateBackupError) {
             throw e;
+        }
+
+        const dbmsRootPath = env.dbmss.getDbmsRootPath(dbms.id);
+        if (dbmsRootPath) {
+            const neo4jConfig = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
+
+            const dateISO = new Date().toISOString();
+            const [date] = dateISO.split('.');
+            await fse.copy(
+                path.join(dbmsRootPath, neo4jConfig.get('dbms.directories.logs')!),
+                path.join(env.dirPaths.upgradeLogsData, `${kebabCase(dbms.name)}-${date.replaceAll(':', '')}`),
+            );
         }
 
         await env.dbmss

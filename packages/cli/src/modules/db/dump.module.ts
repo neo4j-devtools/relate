@@ -41,7 +41,7 @@ export class DumpModule implements OnApplicationBootstrap {
 
         const dateISO = new Date().toISOString();
         const [date] = dateISO.split('.');
-        const file = path.join(to || `${dbms.name}-${database}-${date.replace(/:/g, '')}.dump`);
+        const file = path.join(to || `${dbms.name}-${database}-${date.replaceAll(':', '')}.dump`);
 
         const filePath = path.resolve(file);
 
