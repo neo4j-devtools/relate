@@ -6,7 +6,7 @@ import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbReadQuery} from '../../utils/dbmss/system-db-query';
 import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
-import {NEO4J_JWT_ADDON_NAME, NEO4J_PLUGIN_SOURCES_URL} from '../environments';
+import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
 const PLUGIN_SOURCES_PATHNAME = new URL(NEO4J_PLUGIN_SOURCES_URL).pathname;
@@ -49,7 +49,7 @@ describe('LocalDbmsPlugins', () => {
         jest.spyOn(fse, 'readdir').mockResolvedValueOnce([]);
 
         const pluginSourcesNoDefaults = await app.environment.dbmsPlugins.listSources();
-        expect(pluginSourcesNoDefaults.filter((plugin) => plugin.name !== NEO4J_JWT_ADDON_NAME).toArray()).toEqual([]);
+        expect(pluginSourcesNoDefaults.toArray()).toEqual([]);
 
         nock(PLUGIN_SOURCES_ORIGIN)
             .get(PLUGIN_SOURCES_PATHNAME)
@@ -61,7 +61,7 @@ describe('LocalDbmsPlugins', () => {
         jest.spyOn(fse, 'pathExists').mockResolvedValueOnce(false);
 
         const pluginSourcesFetchError = await app.environment.dbmsPlugins.listSources();
-        expect(pluginSourcesFetchError.filter((plugin) => plugin.name !== NEO4J_JWT_ADDON_NAME).toArray()).toEqual([]);
+        expect(pluginSourcesFetchError.toArray()).toEqual([]);
     });
 
     test('dbmsPlugins.listSources - default plugin sources', async () => {
