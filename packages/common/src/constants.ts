@@ -85,6 +85,9 @@ export enum HOOK_EVENTS {
     RELATE_EXTENSION_DIRECTORY_MOVE_STOP = 'RELATE_EXTENSION_MOVE_STOP',
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_START = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_START',
     RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP = 'RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP',
+    WILL_DOWNLOAD = 'WILL_DOWNLOAD',
+    WILL_REQUEST = 'WILL_REQUEST',
+    WILL_REQUEST_JSON = 'WILL_REQUEST_JSON',
     DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',
     DOWNLOAD_START = 'DOWNLOAD_START',
     DOWNLOAD_STOP = 'DOWNLOAD_STOP',
@@ -102,6 +105,9 @@ export interface IHookEventPayloads {
     [HOOK_EVENTS.DBMS_TO_BE_ONLINE_ATTEMPTS]: {maxAttempts: number; currentAttempt: number};
     [HOOK_EVENTS.BACKUP_START]: {entityType: ENTITY_TYPES; entityId: string};
     [HOOK_EVENTS.BACKUP_COMPLETE]: {backup: IRelateBackup};
+    [HOOK_EVENTS.WILL_DOWNLOAD]: {url: string; downloadFilePath: string; skip: boolean};
+    [HOOK_EVENTS.WILL_REQUEST]: {url: string; response: any; skip: boolean};
+    [HOOK_EVENTS.WILL_REQUEST_JSON]: {url: string; response: any; skip: boolean};
     [key: string]: any;
 }
 export type Listener<E extends HOOK_EVENTS> = (eventData: IHookEventPayloads[E]) => void | Promise<void>;

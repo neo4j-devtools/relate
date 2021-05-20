@@ -1,5 +1,4 @@
 import fse from 'fs-extra';
-import got from 'got';
 import {isArray} from 'lodash';
 import path from 'path';
 import semver from 'semver';
@@ -7,15 +6,14 @@ import {List} from '@relate/types';
 
 import {DbmsPluginVersionModel, IDbmsPluginSource, IDbmsPluginVersion} from '../../models';
 import {NotFoundError} from '../../errors';
+import {requestJson} from '../download';
 
 export async function listVersions(
     pluginsDir: string,
     pluginSource: IDbmsPluginSource,
 ): Promise<List<IDbmsPluginVersion>> {
     const cachedVersionsFile = path.join(pluginsDir, `${pluginSource.name}.json`);
-    const rawVersions = await got(pluginSource.versionsUrl)
-        .json()
-        .catch(() => null);
+    const rawVersions = await requestJson(pluginSource.versionsUrl).catch(() => null);
 
     if (!rawVersions || !isArray(rawVersions)) {
         if (await fse.pathExists(cachedVersionsFile)) {

@@ -1,5 +1,4 @@
 import fse from 'fs-extra';
-import got from 'got';
 import path from 'path';
 import semver from 'semver';
 import {Dict, List, None} from '@relate/types';
@@ -14,6 +13,7 @@ import {
     NEO4J_DIST_LIMITED_VERSIONS_URL,
     NEO4J_LIB_DIR,
 } from '../../entities/environments';
+import {requestJson} from '../download';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
@@ -81,11 +81,7 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
     }
 
     const versionsUrlsResponses: List<IVersionManifest> = await List.from(versionsUrls)
-        .mapEach((url) =>
-            got(url)
-                .json()
-                .catch(() => None.of({})),
-        )
+        .mapEach((url) => requestJson(url).catch(() => None.of({})))
         .unwindPromises();
 
     const versionManifest: IVersions = versionsUrlsResponses.compact().reduce((verManifest, verResponse) => {

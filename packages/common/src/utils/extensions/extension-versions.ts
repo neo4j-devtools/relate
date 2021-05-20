@@ -1,4 +1,3 @@
-import got from 'got';
 import semver from 'semver';
 import _ from 'lodash';
 import fse from 'fs-extra';
@@ -21,6 +20,7 @@ import {ExtensionInfoModel} from '../../models';
 import {envPaths} from '../env-paths';
 import {verifyApp} from '@neo4j/code-signer';
 import {RELATE_ROOT_CERT} from '../../entities/extensions/extensions.constants';
+import {requestJson} from '../download';
 
 export const discoverExtensionDistributions = async (distributionsRoot: string): Promise<List<ExtensionInfoModel>> => {
     const dirFiles = List.from(await fse.readdir(distributionsRoot, {withFileTypes: true}));
@@ -121,7 +121,7 @@ export async function fetchExtensionVersions(): Promise<List<IExtensionVersion>>
     const cached = await discoverExtensionDistributions(path.join(envPaths().cache, EXTENSION_DIR_NAME));
 
     try {
-        const {objects} = await got(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`).json();
+        const {objects} = await requestJson(`${EXTENSION_SEARCH_PATH}?text=keywords:${EXTENSION_KEYWORD_NAME}`);
 
         return mapNPMResponse(cached.concat(List.from<any>(objects).mapEach((obj) => obj.package)));
     } catch (e) {

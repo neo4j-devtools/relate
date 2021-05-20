@@ -32,6 +32,16 @@ export const download = async (url: string, outputDirPath: string, options?: Opt
     const downloadFileName = `Unconfirmed_${uuidv4().slice(0, 8)}${DOWNLOADING_FILE_EXTENSION}`;
     const downloadFilePath = path.join(outputDirPath, downloadFileName);
 
+    const payload = await emitHookEvent(HOOK_EVENTS.WILL_DOWNLOAD, {
+        url,
+        downloadFilePath,
+        skip: false,
+    });
+
+    if (payload.skip) {
+        return payload.downloadFilePath;
+    }
+
     await fse.ensureFile(downloadFilePath);
     const streamPipeline = promisify(stream.pipeline);
 
@@ -49,4 +59,32 @@ export const download = async (url: string, outputDirPath: string, options?: Opt
         await fse.remove(downloadFilePath);
         throw new FetchError(e);
     }
+};
+
+export const requestJson = async (url: string): Promise<any> => {
+    const payload = await emitHookEvent(HOOK_EVENTS.WILL_REQUEST_JSON, {
+        url,
+        response: null,
+        skip: false,
+    });
+
+    if (payload.skip) {
+        return payload.response;
+    }
+
+    return got(url).json();
+};
+
+export const request = async (url: string): Promise<any> => {
+    const payload = await emitHookEvent(HOOK_EVENTS.WILL_REQUEST, {
+        url,
+        response: null,
+        skip: false,
+    });
+
+    if (payload.skip) {
+        return payload.response;
+    }
+
+    return got(url);
 };

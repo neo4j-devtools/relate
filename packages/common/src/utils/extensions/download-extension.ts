@@ -1,5 +1,4 @@
 import fse from 'fs-extra';
-import got from 'got';
 import path from 'path';
 import hasha from 'hasha';
 
@@ -7,7 +6,7 @@ import {FetchError, NotFoundError, IntegrityError} from '../../errors';
 import {extractExtension} from './extract-extension';
 import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../constants';
 import {discoverExtension} from './extension-versions';
-import {download} from '../download';
+import {download, requestJson} from '../download';
 import {emitHookEvent} from '../event-hooks';
 import {IExtensionInfo} from '../../models';
 
@@ -37,7 +36,7 @@ const fetchExtensionInfo = async (extensionName: string, version: string): Promi
     let res: IExtensionRegistryManifest;
 
     try {
-        res = await got(`${EXTENSION_URL_PATH}${extensionName}`).json();
+        res = await requestJson(`${EXTENSION_URL_PATH}${extensionName}`);
     } catch (_error) {
         throw new FetchError(`Unable to find the requested extension: ${extensionName} online`);
     }

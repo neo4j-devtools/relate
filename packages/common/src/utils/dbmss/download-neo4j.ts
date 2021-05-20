@@ -1,19 +1,18 @@
 import fse from 'fs-extra';
-import got from 'got';
 import hasha from 'hasha';
 import {Str} from '@relate/types';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
 import {FetchError, IntegrityError, NotFoundError} from '../../errors';
-import {download} from '../download';
+import {download, request} from '../download';
 import {emitHookEvent} from '../event-hooks';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractNeo4j} from './extract-neo4j';
 
 export const getCheckSum = async (url: string): Promise<string> => {
     try {
-        const response = await got(url);
+        const response = await request(url);
         const {body: shaSum} = response;
         return Str.from(shaSum)
             .trim()
