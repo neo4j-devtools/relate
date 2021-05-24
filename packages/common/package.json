@@ -62,7 +62,7 @@
         "@nestjs/common": "^7.0.0",
         "@nestjs/config": "^0.4.0",
         "@nestjs/core": "^7.0.0",
-        "@relate/types": "^1.0.2-alpha.11",
+        "@relate/types": "^1.0.3-alpha.0",
         "graphql": "^15.0.0"
     },
     "dependencies": {
