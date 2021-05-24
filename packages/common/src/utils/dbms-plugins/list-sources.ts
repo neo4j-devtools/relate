@@ -1,5 +1,4 @@
 import fse from 'fs-extra';
-import got from 'got';
 import path from 'path';
 import {List} from '@relate/types';
 import {isArray, isObject} from 'lodash';
@@ -8,12 +7,11 @@ import {IDbmsPluginSource, IDbmsPluginVersion, DbmsPluginSourceModel, DbmsPlugin
 import {NEO4J_PLUGIN_SOURCES_URL} from '../../entities/environments';
 import {envPaths} from '../env-paths';
 import {DEFAULT_PLUGIN_SOURCES_FILE, PLUGIN_SOURCES_DIR_NAME} from '../../constants';
+import {requestJson} from '../download';
 
 export const fetchOfficialPluginSources = async (): Promise<List<IDbmsPluginSource>> => {
     const cachedSourcesFile = path.join(envPaths().cache, PLUGIN_SOURCES_DIR_NAME, DEFAULT_PLUGIN_SOURCES_FILE);
-    const rawSourcesMap = await got(NEO4J_PLUGIN_SOURCES_URL)
-        .json()
-        .catch(() => null);
+    const rawSourcesMap = await requestJson(NEO4J_PLUGIN_SOURCES_URL).catch(() => null);
 
     if (!rawSourcesMap || !isObject(rawSourcesMap)) {
         if (await fse.pathExists(cachedSourcesFile)) {
@@ -55,9 +53,7 @@ export const discoverPluginSources = async (rootDir: string): Promise<List<IDbms
 };
 
 export const fetchPluginVersions = async (versionsUrl: string): Promise<List<IDbmsPluginVersion> | null> => {
-    const response = await got(versionsUrl)
-        .json()
-        .catch(() => null);
+    const response = await requestJson(versionsUrl).catch(() => null);
 
     if (!isArray(response)) {
         return null;
