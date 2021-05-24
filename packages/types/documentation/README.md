@@ -32,7 +32,7 @@
 
 Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[infer K, infer V]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
 
-*Defined in [src/monads/primitive/dict.monad.ts:11](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L11)*
+Defined in src/monads/primitive/dict.monad.ts:11
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 Ƭ **RawDict**: *Map‹K, V›*
 
-*Defined in [src/monads/primitive/dict.monad.ts:8](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/dict.monad.ts#L8)*
+Defined in src/monads/primitive/dict.monad.ts:8
