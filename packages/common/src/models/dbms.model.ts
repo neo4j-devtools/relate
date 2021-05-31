@@ -1,7 +1,11 @@
+import {IsOptional, IsString} from 'class-validator';
+
 import {PropertiesFile} from '../system/files';
 import {DBMS_STATUS, DBMS_SERVER_STATUS} from '../constants';
 import {NEO4J_EDITION, NEO4J_ORIGIN} from '../entities/environments';
 import {ManifestModel, IManifest} from './manifest.model';
+import {IsValidJWT} from './custom-validators';
+import {ModelAbstract} from './model.abstract';
 
 export interface IDb {
     name: string;
@@ -10,6 +14,13 @@ export interface IDb {
     currentStatus: string;
     error: string;
     default: boolean;
+}
+
+export interface IDbConnection {
+    dbmsNameOrId: string;
+    dbmsUser: string;
+    accessToken: string;
+    dbName?: string;
 }
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
@@ -48,3 +59,18 @@ export interface IDbms extends IManifest {
 }
 
 export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {}
+
+export class DbConnectionModel extends ModelAbstract<IDbConnection> {
+    @IsString()
+    public dbmsNameOrId!: string;
+
+    @IsString()
+    public dbmsUser!: string;
+
+    @IsValidJWT()
+    public accessToken!: string;
+
+    @IsOptional()
+    @IsString()
+    public dbName?: string;
+}
