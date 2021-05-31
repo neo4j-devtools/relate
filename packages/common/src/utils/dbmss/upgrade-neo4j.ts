@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import {kebabCase} from 'lodash';
 
-import {DBMS_STATUS, ENTITY_TYPES, HOOK_EVENTS} from '../../constants';
+import {DBMS_STATUS, DEBUG_FILE, ENTITY_TYPES, HOOK_EVENTS} from '../../constants';
 import {LocalEnvironment, NEO4J_CONF_DIR, NEO4J_CONF_FILE, NEO4J_PLUGIN_DIR} from '../../entities/environments';
 import {DbmsUpgradeError, InvalidArgumentError, NotFoundError, RelateBackupError} from '../../errors';
 import {emitHookEvent} from '../event-hooks';
@@ -76,8 +76,9 @@ export const upgradeNeo4j = async (
 
     const upgradeTmpName = `[Upgrade ${version}] ${dbms.name}`;
 
+    let upgradedDbmsInfo;
     try {
-        const upgradedDbmsInfo = await env.dbmss.install(upgradeTmpName, version, dbms.edition!, '', options.noCache);
+        upgradedDbmsInfo = await env.dbmss.install(upgradeTmpName, version, dbms.edition!, '', options.noCache);
         const upgradedConfigFileName = path.join(
             env.dbmss.getDbmsRootPath(upgradedDbmsInfo.id),
             NEO4J_CONF_DIR,
@@ -132,16 +133,42 @@ export const upgradeNeo4j = async (
             throw e;
         }
 
-        const dbmsRootPath = env.dbmss.getDbmsRootPath(dbms.id);
-        if (dbmsRootPath) {
-            const neo4jConfig = await env.dbmss.getDbmsConfig(dbms.id);
+        // Backup logs and add extra debug information if an upgrade fails
+        if (upgradedDbmsInfo) {
+            const dbmsRootPath = env.dbmss.getDbmsRootPath(upgradedDbmsInfo.id);
+            if (dbmsRootPath) {
+                const neo4jConfig = await env.dbmss.getDbmsConfig(upgradedDbmsInfo.id);
 
-            const dateISO = new Date().toISOString();
-            const [date] = dateISO.split('.');
-            await fse.copy(
-                path.join(dbmsRootPath, neo4jConfig.get('dbms.directories.logs')!),
-                path.join(env.dirPaths.upgradeLogsData, `${kebabCase(dbms.name)}-${date.replace(/:/g, '')}`),
-            );
+                const dateISO = new Date().toISOString();
+                const [date] = dateISO.split('.');
+
+                const logOutputPath = path.join(
+                    env.dirPaths.upgradeLogsData,
+                    `${kebabCase(upgradedDbmsInfo.name)}-${date.replace(/:/g, '')}`,
+                );
+
+                await fse.copy(path.join(dbmsRootPath, neo4jConfig.get('dbms.directories.logs')!), logOutputPath);
+
+                const plugins = await env.dbmsPlugins.list(dbms.id).then((ps) => ps.toArray().map((p) => p.name));
+
+                const debugFilePath = path.join(logOutputPath, DEBUG_FILE);
+                await fse.ensureFile(debugFilePath);
+                await fse.writeJson(debugFilePath, {
+                    os: process.platform,
+                    backup: completeBackup.directory,
+                    sourceDbms: {
+                        id: dbms.id,
+                        version: dbms.version,
+                        path: dbms.rootPath,
+                        plugins,
+                    },
+                    targetDbms: {
+                        id: upgradedDbmsInfo.id,
+                        version,
+                        path: upgradedDbmsInfo.rootPath,
+                    },
+                });
+            }
         }
 
         await env.dbmss

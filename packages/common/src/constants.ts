@@ -10,6 +10,7 @@ export enum ENTITY_TYPES {
     EXTENSION = 'extension',
     ENVIRONMENT = 'environment',
     BACKUP = 'backup',
+    DEBUG = 'debug',
 }
 
 export const RELATE_IS_TESTING = process.env.NODE_ENV === 'test';
@@ -22,6 +23,7 @@ export const DBMS_MANIFEST_FILE = `relate.${ENTITY_TYPES.DBMS}.json`;
 export const PROJECT_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT}.json`;
 export const PROJECT_INSTALL_MANIFEST_FILE = `relate.${ENTITY_TYPES.PROJECT_INSTALL}.json`;
 export const EXTENSION_MANIFEST_FILE = `relate.${ENTITY_TYPES.EXTENSION}.json`;
+export const DEBUG_FILE = `relate.${ENTITY_TYPES.DEBUG}.json`;
 
 export const RELATE_ACCESS_TOKENS_DIR_NAME = 'access-tokens';
 export const DBMS_DIR_NAME = 'dbmss';
