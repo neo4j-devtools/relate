@@ -10,7 +10,6 @@ import {emitHookEvent} from '../event-hooks';
 import {dbmsUpgradeConfigs} from './dbms-upgrade-config';
 import {waitForDbmsToBeOnline} from './is-dbms-online';
 import {resolveDbms} from './resolve-dbms';
-import {PropertiesFile} from '../../system/files';
 import {IDbmsInfo, IDbmsUpgradeOptions, PLUGIN_UPGRADE_MODE} from '../../models';
 
 const upgradePlugins = async (
@@ -135,13 +134,13 @@ export const upgradeNeo4j = async (
 
         const dbmsRootPath = env.dbmss.getDbmsRootPath(dbms.id);
         if (dbmsRootPath) {
-            const neo4jConfig = await PropertiesFile.readFile(path.join(dbmsRootPath, NEO4J_CONF_DIR, NEO4J_CONF_FILE));
+            const neo4jConfig = await env.dbmss.getDbmsConfig(dbms.id);
 
             const dateISO = new Date().toISOString();
             const [date] = dateISO.split('.');
             await fse.copy(
                 path.join(dbmsRootPath, neo4jConfig.get('dbms.directories.logs')!),
-                path.join(env.dirPaths.upgradeLogsData, `${kebabCase(dbms.name)}-${date.replaceAll(':', '')}`),
+                path.join(env.dirPaths.upgradeLogsData, `${kebabCase(dbms.name)}-${date.replace(/:/g, '')}`),
             );
         }
 
