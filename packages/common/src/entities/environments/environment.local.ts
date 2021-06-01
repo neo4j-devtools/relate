@@ -16,6 +16,7 @@ import {
     PLUGIN_SOURCES_DIR_NAME,
     PLUGIN_VERSIONS_DIR_NAME,
     PROJECTS_DIR_NAME,
+    UPGRADE_LOGS_DIR_NAME,
 } from '../../constants';
 import {LocalProjects} from '../projects';
 import {LocalDbs} from '../dbs';
@@ -42,6 +43,7 @@ export class LocalEnvironment extends EnvironmentAbstract {
         ...envPaths(),
         dbmssData: path.join(this.dataPath, DBMS_DIR_NAME),
         backupsData: path.join(this.dataPath, BACKUPS_DIR_NAME),
+        upgradeLogsData: path.join(this.dataPath, UPGRADE_LOGS_DIR_NAME),
         projectsData: path.join(this.dataPath, PROJECTS_DIR_NAME),
         dbmssCache: path.join(this.cachePath, DBMS_DIR_NAME),
         environmentsConfig: path.join(envPaths().config, ENVIRONMENTS_DIR_NAME),
