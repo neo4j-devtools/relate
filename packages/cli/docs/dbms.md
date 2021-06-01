@@ -249,6 +249,7 @@ ARGUMENTS
 
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
+  --shutdown                     Use on Windows to stop the DBMS gracefully (uses the Neo4j shutdown procedure)
 
 EXAMPLES
   $ relate dbms:stop
