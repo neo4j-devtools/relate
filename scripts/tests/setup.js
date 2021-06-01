@@ -4,7 +4,14 @@ const fse = require('fs-extra');
 const ora = require('ora');
 
 const envSetup = require('../../e2e/jest-global.setup');
-const {TestDbmss, envPaths, download, PropertiesFile, downloadJava} = require('../../packages/common');
+const {
+    TestDbmss,
+    envPaths,
+    download,
+    PropertiesFile,
+    resolveRelateJavaHome,
+    downloadJava,
+} = require('../../packages/common');
 const {List} = require('../../packages/types');
 
 envSetup();
@@ -31,14 +38,16 @@ async function setupApoc(dbmsRootPath) {
 async function populateDistributionCache(env) {
     const versions = List.of([TestDbmss.NEO4J_VERSION, '3.5.19', '4.0.5', '4.0.6', '4.1.0']);
 
-    const spinner = ora('Downloading Java').start();
-    try {
-        await downloadJava('4.0.0');
-    } catch (err) {
-        spinner.fail();
-        throw err;
+    if (!(await resolveRelateJavaHome('4.0.0'))) {
+        const spinner = ora('Downloading Java').start();
+        try {
+            await downloadJava('4.0.0');
+        } catch (err) {
+            spinner.fail();
+            throw err;
+        }
+        spinner.succeed();
     }
-    spinner.succeed();
 
     // Running the installations in sequence to avoid hogging resources
     // (we're decompressing archives during the installation).
