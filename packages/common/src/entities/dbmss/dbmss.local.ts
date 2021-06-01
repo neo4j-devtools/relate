@@ -6,7 +6,15 @@ import {v4 as uuidv4} from 'uuid';
 import {throttle} from 'lodash';
 
 import {DbmssAbstract} from './dbmss.abstract';
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions, IAuthToken} from '../../models';
+import {
+    IDbms,
+    IDbmsInfo,
+    IDbmsVersion,
+    DbmsManifestModel,
+    IDbmsUpgradeOptions,
+    IAuthToken,
+    IDbConnection,
+} from '../../models';
 import {
     discoverNeo4jDistributions,
     downloadNeo4j,
@@ -55,9 +63,10 @@ import {
     ENTITY_TYPES,
 } from '../../constants';
 import {PropertiesFile} from '../../system/files';
-import {winNeo4jStart, winNeo4jStatus, winNeo4jStop} from '../../utils/dbmss/neo4j-process-win';
+import {winNeo4jStart, winNeo4jStatus} from '../../utils/dbmss/neo4j-process-win';
 import {ManifestLocal} from '../manifest';
 import {isSymlink} from '../../utils/files';
+import {signalStop, procedureStop} from '../../utils/dbmss/dbms-stop';
 
 export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     public readonly manifest = new ManifestLocal(
@@ -291,15 +300,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    stop(nameOrIds: string[] | List<string>): Promise<List<string>> {
+    stop(nameOrIds: Array<string | IDbConnection> | List<string | IDbConnection>): Promise<List<string>> {
         return List.from(nameOrIds)
             .mapEach(async (nameOrId) => {
-                const {id} = await this.getDbms(nameOrId);
-                if (process.platform === 'win32') {
-                    return winNeo4jStop(this.getDbmsRootPath(id));
+                if (typeof nameOrId === 'string') {
+                    return signalStop(this.environment, nameOrId);
                 }
 
-                return neo4jCmd(this.getDbmsRootPath(id), 'stop');
+                await procedureStop(this.environment, nameOrId);
+                return '';
             })
             .unwindPromises();
     }
@@ -375,7 +384,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
     }
 
     // @todo - Replace dbmss.get with this method for further performance gains.
-    private async getDbms(nameOrId: string): Promise<IDbms> {
+    async getDbms(nameOrId: string): Promise<IDbms> {
         try {
             const dbms = resolveDbms(this.dbmss, nameOrId);
             if (await this.environment.entityExists(ENTITY_TYPES.DBMS, dbms.id)) {
