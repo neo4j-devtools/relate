@@ -13,7 +13,7 @@ import {
     DbmsManifestModel,
     IDbmsUpgradeOptions,
     IAuthToken,
-    IDbConnection,
+    IQueryTarget,
 } from '../../models';
 import {
     discoverNeo4jDistributions,
@@ -300,7 +300,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             .unwindPromises();
     }
 
-    stop(nameOrIds: Array<string | IDbConnection> | List<string | IDbConnection>): Promise<List<string>> {
+    stop(nameOrIds: Array<string | IQueryTarget> | List<string | IQueryTarget>): Promise<List<string>> {
         return List.from(nameOrIds)
             .mapEach(async (nameOrId) => {
                 if (typeof nameOrId === 'string') {

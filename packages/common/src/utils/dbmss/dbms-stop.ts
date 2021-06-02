@@ -1,6 +1,6 @@
 import {DBMS_SERVER_STATUS, DBMS_STATUS, HOOK_EVENTS} from '../../constants';
 import {LocalEnvironment} from '../../entities/environments';
-import {DbConnectionModel, IDbConnection} from '../../models';
+import {QueryTargetModel, IQueryTarget} from '../../models';
 import {emitHookEvent} from '../event-hooks';
 import {waitForDbmsToStop} from './is-dbms-online';
 import {neo4jCmd} from './neo4j-cmd';
@@ -16,8 +16,8 @@ export async function signalStop(environment: LocalEnvironment, nameOrId: string
     return neo4jCmd(environment.dbmss.getDbmsRootPath(id), 'stop');
 }
 
-export async function procedureStop(environment: LocalEnvironment, dbConnection: IDbConnection): Promise<void> {
-    const conn = new DbConnectionModel(dbConnection);
+export async function procedureStop(environment: LocalEnvironment, dbConnection: IQueryTarget): Promise<void> {
+    const conn = new QueryTargetModel(dbConnection);
     const dbms = await environment.dbmss.get(conn.dbmsNameOrId, true);
 
     if (dbms.status === DBMS_STATUS.STOPPED) {

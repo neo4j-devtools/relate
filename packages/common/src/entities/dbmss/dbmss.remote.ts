@@ -8,7 +8,7 @@ import {
     DbmsManifestModel,
     IDbmsUpgradeOptions,
     IAuthToken,
-    IDbConnection,
+    IQueryTarget,
 } from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
@@ -287,7 +287,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return List.from(data[PUBLIC_GRAPHQL_METHODS.START_DBMSS]);
     }
 
-    async stop(namesOrIds: Array<string | IDbConnection> | List<string | IDbConnection>): Promise<List<string>> {
+    async stop(namesOrIds: Array<string | IQueryTarget> | List<string | IQueryTarget>): Promise<List<string>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation StopDBMSSs($environmentId: String, $namesOrIds: [String!]!) {

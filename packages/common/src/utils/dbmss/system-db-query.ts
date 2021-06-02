@@ -4,20 +4,18 @@ import {Record} from 'neo4j-driver-lite';
 import {NotFoundError, NotAllowedError, DbmsQueryError} from '../../errors';
 import {EnvironmentAbstract} from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
+import {IQueryTarget} from '../../models';
 
-export interface IQueryTarget {
-    database?: string;
-    environment: EnvironmentAbstract;
-    dbmsId: string;
-    dbmsUser: string;
-    accessToken: string;
-}
+export const dbReadQuery = async (
+    environment: EnvironmentAbstract,
+    target: IQueryTarget,
+    query: string,
+    params: any = {},
+): Promise<List<Record>> => {
+    const {dbmss} = environment;
 
-export const dbReadQuery = async (target: IQueryTarget, query: string, params: any = {}): Promise<List<Record>> => {
-    const {dbmss} = target.environment;
-
-    const dbmsInfo = (await dbmss.info([target.dbmsId])).first.getOrElse(() => {
-        throw new NotFoundError(`DBMS ${target.dbmsId} not found`);
+    const dbmsInfo = (await dbmss.info([target.dbmsNameOrId])).first.getOrElse(() => {
+        throw new NotFoundError(`DBMS ${target.dbmsNameOrId} not found`);
     });
 
     if (dbmsInfo.status === DBMS_STATUS.STOPPED) {
@@ -41,11 +39,16 @@ export const dbReadQuery = async (target: IQueryTarget, query: string, params: a
     }
 };
 
-export const dbWriteQuery = async (target: IQueryTarget, query: string, params: any = {}): Promise<List<Record>> => {
-    const {dbmss} = target.environment;
+export const dbWriteQuery = async (
+    environment: EnvironmentAbstract,
+    target: IQueryTarget,
+    query: string,
+    params: any = {},
+): Promise<List<Record>> => {
+    const {dbmss} = environment;
 
-    const dbmsInfo = (await dbmss.info([target.dbmsId])).first.getOrElse(() => {
-        throw new NotFoundError(`DBMS ${target.dbmsId} not found`);
+    const dbmsInfo = (await dbmss.info([target.dbmsNameOrId])).first.getOrElse(() => {
+        throw new NotFoundError(`DBMS ${target.dbmsNameOrId} not found`);
     });
 
     if (dbmsInfo.status === DBMS_STATUS.STOPPED) {

@@ -16,11 +16,11 @@ export interface IDb {
     default: boolean;
 }
 
-export interface IDbConnection {
+export interface IQueryTarget {
     dbmsNameOrId: string;
     dbmsUser: string;
     accessToken: string;
-    dbName?: string;
+    database?: string;
 }
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
@@ -60,7 +60,7 @@ export interface IDbms extends IManifest {
 
 export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {}
 
-export class DbConnectionModel extends ModelAbstract<IDbConnection> {
+export class QueryTargetModel extends ModelAbstract<IQueryTarget> {
     @IsString()
     public dbmsNameOrId!: string;
 
@@ -72,5 +72,5 @@ export class DbConnectionModel extends ModelAbstract<IDbConnection> {
 
     @IsOptional()
     @IsString()
-    public dbName?: string;
+    public database?: string;
 }

@@ -4,7 +4,7 @@ import {driver, Driver, QueryResult} from 'neo4j-driver-lite';
 import {
     DbmsManifestModel,
     IAuthToken,
-    IDbConnection,
+    IQueryTarget,
     IDbms,
     IDbmsInfo,
     IDbmsUpgradeOptions,
@@ -101,7 +101,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * Stop one or more DBMSs
      * @param   dbmsIds
      */
-    abstract stop(dbmsIds: Array<string | IDbConnection> | List<string | IDbConnection>): Promise<List<string>>;
+    abstract stop(dbmsIds: Array<string | IQueryTarget> | List<string | IQueryTarget>): Promise<List<string>>;
 
     /**
      * Get info for one or more DBMSs

@@ -1,7 +1,7 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {List} from '@relate/types';
-import {SystemModule, SystemProvider, DBMS_STATUS, IDbConnection} from '@relate/common';
+import {SystemModule, SystemProvider, DBMS_STATUS, IQueryTarget} from '@relate/common';
 
 import {readStdinArray, isInteractive} from '../../stdin';
 import StopCommand from '../../commands/dbms/stop';
@@ -23,7 +23,7 @@ export class StopModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        let dbmss: string[] | List<IDbConnection> = this.parsed.argv;
+        let dbmss: string[] | List<IQueryTarget> = this.parsed.argv;
 
         if (!dbmss.length) {
             if (isInteractive()) {
@@ -49,7 +49,7 @@ async function getDbConnection(
     systemProvider: SystemProvider,
     environment: EnvironmentAbstract,
     nameOrId: string,
-): Promise<IDbConnection> {
+): Promise<IQueryTarget> {
     const dbms = await environment.dbmss.get(nameOrId);
 
     let accessToken;
