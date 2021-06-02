@@ -1,7 +1,15 @@
 import {List} from '@relate/types';
 import {driver, Driver, QueryResult} from 'neo4j-driver-lite';
 
-import {DbmsManifestModel, IAuthToken, IDbms, IDbmsInfo, IDbmsUpgradeOptions, IDbmsVersion} from '../../models';
+import {
+    DbmsManifestModel,
+    IAuthToken,
+    IQueryTarget,
+    IDbms,
+    IDbmsInfo,
+    IDbmsUpgradeOptions,
+    IDbmsVersion,
+} from '../../models';
 
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
@@ -93,7 +101,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * Stop one or more DBMSs
      * @param   dbmsIds
      */
-    abstract stop(dbmsIds: string[] | List<string>): Promise<List<string>>;
+    abstract stop(dbmsIds: Array<string | IQueryTarget> | List<string | IQueryTarget>): Promise<List<string>>;
 
     /**
      * Get info for one or more DBMSs

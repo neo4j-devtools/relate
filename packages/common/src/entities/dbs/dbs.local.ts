@@ -12,51 +12,48 @@ import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
 import {DbsAbstract} from './dbs.abstract';
 
 export class LocalDbs extends DbsAbstract<LocalEnvironment> {
-    async create(nameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        const dbms = await this.environment.dbmss.get(nameOrId);
+    async create(dbmsNameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
         await dbWriteQuery(
+            this.environment,
             {
                 database: 'system',
                 accessToken,
-                dbmsId: dbms.id,
+                dbmsNameOrId,
                 dbmsUser,
-                environment: this.environment,
             },
             `CREATE DATABASE ${dbName}`,
         );
     }
 
-    async drop(nameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
-        const dbms = await this.environment.dbmss.get(nameOrId);
+    async drop(dbmsNameOrId: string, dbmsUser: string, dbName: string, accessToken: string): Promise<void> {
         if (!dbName.match(NEO4J_DB_NAME_REGEX)) {
             throw new CypherParameterError(`Cannot safely pass "${dbName}" as a Cypher parameter`);
         }
 
         await dbWriteQuery(
+            this.environment,
             {
                 database: 'system',
                 accessToken,
-                dbmsId: dbms.id,
+                dbmsNameOrId,
                 dbmsUser,
-                environment: this.environment,
             },
             `DROP DATABASE ${dbName}`,
         );
     }
 
-    async list(nameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
-        const dbms = await this.environment.dbmss.get(nameOrId);
+    async list(dbmsNameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
         const dbs = await dbReadQuery(
+            this.environment,
             {
                 database: 'system',
                 accessToken,
-                dbmsId: dbms.id,
+                dbmsNameOrId,
                 dbmsUser,
-                environment: this.environment,
             },
             `SHOW DATABASES`,
         );

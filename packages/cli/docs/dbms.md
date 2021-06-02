@@ -250,6 +250,9 @@ ARGUMENTS
 OPTIONS
   -e, --environment=environment  Name of the environment to run the command against
 
+  --shutdown                     Use the shutdown procedure, if available, to stop the DBMS (needed on Windows for a
+                                 graceful stop)
+
 EXAMPLES
   $ relate dbms:stop
   $ relate dbms:stop my-dbms

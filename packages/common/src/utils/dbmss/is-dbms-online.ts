@@ -5,12 +5,18 @@ import {
     DEFAULT_NEO4J_BOLT_PORT,
     DEFAULT_NEO4J_HTTP_PORT,
     DEFAULT_NEO4J_HTTPS_PORT,
+    LocalEnvironment,
 } from '../../entities/environments';
 import {TimeoutError} from '../../errors';
 import {IDbms} from '../../models';
 import {emitHookEvent} from '../event-hooks';
 import {isUrlAvailable} from '../generic';
-import {HOOK_EVENTS, MAX_DBMS_TO_BE_ONLINE_ATTEMPTS} from '../../constants';
+import {
+    DBMS_STATUS,
+    HOOK_EVENTS,
+    MAX_DBMS_TO_BE_ONLINE_ATTEMPTS,
+    MAX_DBMS_TO_BE_STOPPED_ATTEMPTS,
+} from '../../constants';
 
 export const isDbmsOnline = async (dbms: IDbms): Promise<boolean> => {
     const conf = dbms.config;
@@ -67,4 +73,23 @@ export const waitForDbmsToBeOnline = async (dbms: IDbms): Promise<void> => {
     /* eslint-enable no-await-in-loop */
 
     throw new TimeoutError(`Could not connect to DBMS "${dbms.id}"`, ['Check neo4j.log for more information']);
+};
+
+export const waitForDbmsToStop = async (environment: LocalEnvironment, dbmsId: string): Promise<void> => {
+    const delay = 1000;
+    const maxAttempts = MAX_DBMS_TO_BE_STOPPED_ATTEMPTS;
+    let currentAttempt = 0;
+
+    /* eslint-disable no-await-in-loop */
+    while (currentAttempt < maxAttempts) {
+        const [{status}] = await environment.dbmss.info([dbmsId]);
+        if (status === DBMS_STATUS.STOPPED) {
+            return;
+        }
+        await sleep(delay);
+        currentAttempt += 1;
+    }
+    /* eslint-enable no-await-in-loop */
+
+    throw new TimeoutError(`DBMS "${dbmsId}" is still running`, ['Check neo4j.log for more information']);
 };

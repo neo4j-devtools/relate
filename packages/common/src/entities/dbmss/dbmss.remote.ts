@@ -1,7 +1,15 @@
 import gql from 'graphql-tag';
 import {List} from '@relate/types';
 
-import {IDbms, IDbmsInfo, IDbmsVersion, DbmsManifestModel, IDbmsUpgradeOptions, IAuthToken} from '../../models';
+import {
+    IDbms,
+    IDbmsInfo,
+    IDbmsVersion,
+    DbmsManifestModel,
+    IDbmsUpgradeOptions,
+    IAuthToken,
+    IQueryTarget,
+} from '../../models';
 
 import {DbmssAbstract} from './dbmss.abstract';
 import {NEO4J_EDITION, RemoteEnvironment} from '../environments';
@@ -279,7 +287,7 @@ export class RemoteDbmss extends DbmssAbstract<RemoteEnvironment> {
         return List.from(data[PUBLIC_GRAPHQL_METHODS.START_DBMSS]);
     }
 
-    async stop(namesOrIds: string[]): Promise<List<string>> {
+    async stop(namesOrIds: Array<string | IQueryTarget> | List<string | IQueryTarget>): Promise<List<string>> {
         const {data, errors}: any = await this.environment.graphql({
             query: gql`
                 mutation StopDBMSSs($environmentId: String, $namesOrIds: [String!]!) {

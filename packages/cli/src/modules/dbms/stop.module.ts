@@ -1,10 +1,12 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
+import {List} from '@relate/types';
+import {SystemModule, SystemProvider, DBMS_STATUS, IQueryTarget} from '@relate/common';
 
-import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
 import {readStdinArray, isInteractive} from '../../stdin';
 import StopCommand from '../../commands/dbms/stop';
-import {selectDbmsPrompt} from '../../prompts';
+import {passwordPrompt, selectDbmsPrompt} from '../../prompts';
+import {EnvironmentAbstract} from '@relate/common/dist/entities/environments';
 
 @Module({
     exports: [],
@@ -21,7 +23,7 @@ export class StopModule implements OnApplicationBootstrap {
     async onApplicationBootstrap(): Promise<void> {
         const {flags} = this.parsed;
         const environment = await this.systemProvider.getEnvironment(flags.environment);
-        let dbmss = this.parsed.argv;
+        let dbmss: string[] | List<IQueryTarget> = this.parsed.argv;
 
         if (!dbmss.length) {
             if (isInteractive()) {
@@ -32,7 +34,40 @@ export class StopModule implements OnApplicationBootstrap {
             }
         }
 
+        if (flags.shutdown) {
+            dbmss = await List.from(dbmss)
+                .mapEach((nameOrId) => getDbConnection(this.systemProvider, environment, nameOrId))
+                .unwindPromises();
+        }
+
         cli.action.start('Stopping Neo4j');
         return environment.dbmss.stop(dbmss).then(() => cli.action.stop());
     }
+}
+
+async function getDbConnection(
+    systemProvider: SystemProvider,
+    environment: EnvironmentAbstract,
+    nameOrId: string,
+): Promise<IQueryTarget> {
+    const dbms = await environment.dbmss.get(nameOrId);
+
+    let accessToken;
+    try {
+        accessToken = await systemProvider.getAccessToken(environment.id, dbms.id, 'neo4j');
+    } catch {
+        accessToken = await environment.dbmss.createAccessToken('relate', dbms.id, {
+            principal: 'neo4j',
+            credentials: await passwordPrompt(`Enter password for "${dbms.name}"`),
+            scheme: 'basic',
+        });
+
+        await systemProvider.registerAccessToken(environment.id, dbms.id, 'neo4j', accessToken);
+    }
+
+    return {
+        accessToken,
+        dbmsUser: 'neo4j',
+        dbmsNameOrId: dbms.id,
+    };
 }

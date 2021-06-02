@@ -178,12 +178,12 @@ describe('LocalDbmsPlugins', () => {
         });
 
         const [res] = await dbReadQuery(
+            app.environment,
             {
                 database: 'neo4j',
                 dbmsUser: 'neo4j',
                 accessToken,
-                dbmsId: dbms.id,
-                environment: app.environment,
+                dbmsNameOrId: dbms.id,
             },
             'RETURN apoc.version() AS apocVersion',
         ).finally(() => app.environment.dbmss.stop([dbms.id]));

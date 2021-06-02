@@ -20,9 +20,8 @@ async function globalTeardown() {
         .catch((err) => console.error(err));
 
     const cacheFiles = List.from(await fse.readdir(env.cachePath))
-        .filter((filename) => !['.GITIGNORED', 'dbmss'].includes(filename))
+        .filter((filename) => !['.GITIGNORED', 'dbmss', 'runtime'].includes(filename))
         .mapEach((filename) => path.join(env.cachePath, filename));
-
 
     const dbmssPath = path.join(env.dataPath, DBMS_DIR_NAME);
     try {

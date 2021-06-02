@@ -195,6 +195,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
 
 // seconds
 export const MAX_DBMS_TO_BE_ONLINE_ATTEMPTS = 60;
+export const MAX_DBMS_TO_BE_STOPPED_ATTEMPTS = 120;
 
 export const PROJECTS_DIR_NAME = 'projects';
 
