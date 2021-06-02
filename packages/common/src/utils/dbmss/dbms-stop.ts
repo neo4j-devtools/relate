@@ -1,4 +1,4 @@
-import {DBMS_SERVER_STATUS, HOOK_EVENTS} from '../../constants';
+import {DBMS_SERVER_STATUS, DBMS_STATUS, HOOK_EVENTS} from '../../constants';
 import {LocalEnvironment} from '../../entities/environments';
 import {DbConnectionModel, IDbConnection} from '../../models';
 import {emitHookEvent} from '../event-hooks';
@@ -20,7 +20,13 @@ export async function procedureStop(environment: LocalEnvironment, dbConnection:
     const conn = new DbConnectionModel(dbConnection);
     const dbms = await environment.dbmss.get(conn.dbmsNameOrId, true);
 
+    if (dbms.status === DBMS_STATUS.STOPPED) {
+        return;
+    }
+
     if (dbms.serverStatus !== DBMS_SERVER_STATUS.ONLINE) {
+        await emitHookEvent(HOOK_EVENTS.DEBUG, `DBMS "${dbms.id}" is unreachable, falling back to signal stop`);
+        await signalStop(environment, dbms.id);
         return;
     }
 
