@@ -29,16 +29,20 @@ export const isDbmsOnline = async (dbms: IDbms): Promise<boolean> => {
 
     const reachable = await connectors
         .filter(([conn]) => conf.get(conn + NEO4J_CONFIG_KEYS.ENABLED) === 'true')
-        .mapEach(([conn, defaultPort]) => {
+        .mapEach(async ([conn, defaultPort]) => {
             const address = conf.get(conn + NEO4J_CONFIG_KEYS.LISTEN_ADDRESS);
 
             const protocol = conn.includes('https') ? 'https' : 'http';
             const [, port] = (address || defaultPort).split(':');
 
             const url = `${protocol}://127.0.0.1:${port}`;
+            const isAvail = await isUrlAvailable(url);
+            console.log('++url', url, isAvail);
             return isUrlAvailable(url);
         })
         .unwindPromises();
+    console.log('++reachable', reachable.toArray());
+    console.log('++reachable', reachable.toArray().every(Boolean));
 
     return reachable.toArray().every(Boolean);
 };
@@ -56,7 +60,9 @@ export const waitForDbmsToBeOnline = async (dbms: IDbms): Promise<void> => {
     /* eslint-disable no-await-in-loop */
     while (currentAttempt < maxAttempts) {
         const isOnline = await isDbmsOnline(dbms);
+        console.log('++isOnline', isOnline);
         if (isOnline) {
+            console.log('++isOnline RETURN');
             return;
         }
         await sleep(delay);
@@ -70,6 +76,7 @@ export const waitForDbmsToBeOnline = async (dbms: IDbms): Promise<void> => {
         });
         maxAttempts = returnedMaxAttempts;
     }
+    console.log('++OUTSIDE LOOP');
     /* eslint-enable no-await-in-loop */
 
     throw new TimeoutError(`Could not connect to DBMS "${dbms.id}"`, ['Check neo4j.log for more information']);
