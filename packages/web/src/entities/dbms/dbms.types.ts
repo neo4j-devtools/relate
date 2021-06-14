@@ -39,6 +39,9 @@ export class DbmsInfo extends Dbms {
 
     @Field(() => String, {nullable: true})
     edition?: string;
+
+    @Field(() => String, {nullable: true})
+    prerelease?: string;
 }
 
 @ArgsType()

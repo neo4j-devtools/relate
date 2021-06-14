@@ -39,6 +39,9 @@ export class InfoModule implements OnApplicationBootstrap {
                 name: {},
                 version: {},
                 edition: {},
+                prerelease: {
+                    extended: true,
+                },
                 status: {},
                 serverStatus: {
                     header: 'Server status',

@@ -29,11 +29,13 @@ export interface IDbmsInfo extends Omit<IDbms, 'config'> {
     config?: null | undefined;
     edition?: NEO4J_EDITION;
     version?: string;
+    prerelease?: string;
 }
 
 export interface IDbmsVersion {
     edition: NEO4J_EDITION;
     version: string;
+    prerelease?: string;
     dist: string;
     origin: NEO4J_ORIGIN;
 }

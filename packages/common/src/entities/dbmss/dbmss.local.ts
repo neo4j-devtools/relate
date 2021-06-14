@@ -358,6 +358,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     status,
                     serverStatus,
                     version: v?.version,
+                    prerelease: v?.prerelease,
                 };
             })
             .unwindPromises();

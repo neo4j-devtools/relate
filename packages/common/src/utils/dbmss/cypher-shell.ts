@@ -39,7 +39,7 @@ export async function cypherShellCmd(
     credentials?: string,
 ): Promise<string> {
     const cypherShellBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, CYPHER_SHELL_BIN_FILE);
-    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const {version: dbmsVersion} = await getDistributionVersion(dbmsRootPath);
     const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     let stream;
