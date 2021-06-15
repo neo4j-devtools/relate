@@ -41,7 +41,7 @@ EXAMPLES
   $ relate dbms-plugin:add-sources ./local/.neo4j-plugin-source
 ```
 
-_See code: [dist/commands/dbms-plugin/add-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/add-sources.ts)_
+_See code: [dist/commands/dbms-plugin/add-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/add-sources.ts)_
 
 ## `relate dbms-plugin:install [DBMSS]`
 
@@ -75,7 +75,7 @@ EXAMPLES
   $ relate dbms-plugin:install -e environment-name
 ```
 
-_See code: [dist/commands/dbms-plugin/install.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/install.ts)_
+_See code: [dist/commands/dbms-plugin/install.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/install.ts)_
 
 ## `relate dbms-plugin:list DBMS`
 
@@ -109,7 +109,7 @@ EXAMPLES
   $ relate dbms-plugin:list MyDbms --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms-plugin/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/list.ts)_
+_See code: [dist/commands/dbms-plugin/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/list.ts)_
 
 ## `relate dbms-plugin:list-sources`
 
@@ -140,7 +140,7 @@ EXAMPLES
   $ relate dbms-plugin:list-sources --filter=name=my-dbms --output=json
 ```
 
-_See code: [dist/commands/dbms-plugin/list-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/list-sources.ts)_
+_See code: [dist/commands/dbms-plugin/list-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/list-sources.ts)_
 
 ## `relate dbms-plugin:remove-sources [SOURCES]`
 
@@ -166,7 +166,7 @@ EXAMPLES
   $ relate dbms-plugin:remove-sources sourceName1 sourceName2
 ```
 
-_See code: [dist/commands/dbms-plugin/remove-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/remove-sources.ts)_
+_See code: [dist/commands/dbms-plugin/remove-sources.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/remove-sources.ts)_
 
 ## `relate dbms-plugin:uninstall [DBMSS]`
 
@@ -193,4 +193,4 @@ EXAMPLES
   $ relate dbms-plugin:uninstall -e environment-name
 ```
 
-_See code: [dist/commands/dbms-plugin/uninstall.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.4/packages/cli/src/commands/dbms-plugin/uninstall.ts)_
+_See code: [dist/commands/dbms-plugin/uninstall.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/dbms-plugin/uninstall.ts)_
