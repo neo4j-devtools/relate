@@ -119,11 +119,13 @@
         "build:clean": "run-s clean build:tsc",
         "build:tsc": "tsc -b",
         "build:manifest": "node -e '' | npm run dev-cli -- manifest",
-        "generate:docs": "npm run dev-cli -- readme --multi --dir=./docs",
         "clean": "rimraf dist",
         "test": "jest",
+        "generate:docs": "npm run dev-cli -- readme --multi --dir=./docs",
         "add:docs": "git add README.md docs",
-        "version": "run-s generate:docs add:docs",
+        "fix:locks": "npm install --ignore-scripts --no-audit",
+        "add:locks": "git add package-lock.json",
+        "version": "run-s generate:docs add:docs fix:locks add:locks",
         "watch": "tsc -w"
     }
 }

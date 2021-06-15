@@ -22,7 +22,10 @@
         "watch": "tsc -w",
         "test": "jest",
         "start:main": "electron ./dist/dev.js",
-        "start": "run-s build:clean start:main"
+        "start": "run-s build:clean start:main",
+        "fix:locks": "npm install --ignore-scripts --no-audit",
+        "add:locks": "git add package-lock.json",
+        "version": "run-s fix:locks add:locks"
     },
     "devDependencies": {
         "@jest-runner/electron": "3.0.0",
