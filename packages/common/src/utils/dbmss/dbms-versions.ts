@@ -17,16 +17,19 @@ import {requestJson} from '../download';
 
 export const getDistributionInfo = async (dbmsRootDir: string): Promise<IDbmsVersion | null> => {
     try {
-        const version = await getDistributionVersion(dbmsRootDir);
-        const isEnterprise = await fse.pathExists(
-            path.join(dbmsRootDir, NEO4J_LIB_DIR, `neo4j-server-enterprise-${version}.jar`),
-        );
+        const {version, prerelease} = await getDistributionVersion(dbmsRootDir);
+        const neo4jEnterpriseJar = prerelease
+            ? `neo4j-server-enterprise-${version}-${prerelease}.jar`
+            : `neo4j-server-enterprise-${version}.jar`;
+
+        const isEnterprise = await fse.pathExists(path.join(dbmsRootDir, NEO4J_LIB_DIR, neo4jEnterpriseJar));
 
         return {
             dist: dbmsRootDir,
             edition: isEnterprise ? NEO4J_EDITION.ENTERPRISE : NEO4J_EDITION.COMMUNITY,
             origin: NEO4J_ORIGIN.CACHED,
             version,
+            prerelease,
         };
     } catch (e) {
         if (e.name === DependencyError.name) {
@@ -114,25 +117,29 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
         });
 };
 
-export async function getDistributionVersion(dbmsRoot: string): Promise<string> {
-    const semverRegex = /[0-9]+\.[0-9]+\.[0-9]+/;
-    const neo4jJarRegex = /^neo4j-server-[0-9]+\.[0-9]+\.[0-9]+\.jar$/;
+export async function getDistributionVersion(dbmsRoot: string): Promise<{version: string; prerelease?: string}> {
+    const semverRegex = /([0-9]+\.[0-9]+\.[0-9]+)(-\w+)?/;
+    const neo4jJarRegex = /^neo4j-server-[0-9]+\.[0-9]+\.[0-9]+(-\w+)?\.jar$/;
     const libs = List.from(await fse.readdir(path.join(dbmsRoot, NEO4J_LIB_DIR)));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));
 
-    return neo4jJar
-        .flatMap((jar) => {
-            if (None.isNone(jar)) {
-                throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
-            }
+    return neo4jJar.flatMap((jar) => {
+        if (None.isNone(jar)) {
+            throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
+        }
 
-            return List.from(jar.match(semverRegex)).first;
-        })
-        .flatMap((version) => {
-            if (None.isNone(version)) {
-                throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
-            }
-
-            return version;
+        // If there is no match this list will be empty.
+        // If there is a match, the first element will be the full match, and
+        // then the following elements are the captured groups.
+        const capture = List.from(jar.match(semverRegex));
+        const version = capture.nth(1).getOrElse(() => {
+            throw new InvalidArgumentError(`Could not find neo4j.jar in distribution`);
         });
+        const prerelease = capture.nth(2).getOrElse(() => undefined);
+
+        return {
+            version,
+            prerelease: prerelease ? prerelease.substring(1, prerelease.length) : undefined,
+        };
+    });
 }

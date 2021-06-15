@@ -15,7 +15,7 @@ export async function neo4jAdminCmd(
     javaPath?: string,
 ): Promise<string> {
     const neo4jAdminBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_ADMIN_BIN_FILE);
-    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const {version: dbmsVersion} = await getDistributionVersion(dbmsRootPath);
     const relateJavaHome = javaPath || (await resolveRelateJavaHome(dbmsVersion));
 
     await fse.access(neo4jAdminBinPath, fse.constants.X_OK).catch(() => {

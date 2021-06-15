@@ -10,7 +10,7 @@ import {getDistributionVersion} from './dbms-versions';
 
 export async function neo4jCmd(dbmsRootPath: string, command: string): Promise<string> {
     const neo4jBinPath = path.join(dbmsRootPath, NEO4J_BIN_DIR, NEO4J_BIN_FILE);
-    const dbmsVersion = await getDistributionVersion(dbmsRootPath);
+    const {version: dbmsVersion} = await getDistributionVersion(dbmsRootPath);
     const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     await fse.access(neo4jBinPath, fse.constants.X_OK).catch(() => {

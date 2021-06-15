@@ -45,7 +45,7 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
         return 'neo4j already running';
     }
 
-    const dbmsVersion = await getDistributionVersion(dbmsRoot);
+    const {version: dbmsVersion} = await getDistributionVersion(dbmsRoot);
     const relateJavaHome = await resolveRelateJavaHome(dbmsVersion);
 
     const env = new EnvVars({cloneFromProcess: true});
