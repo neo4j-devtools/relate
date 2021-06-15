@@ -1,6 +1,6 @@
 {
     "name": "@relate/common",
-    "version": "1.0.3-alpha.4",
+    "version": "1.0.3-alpha.5",
     "description": "JS toolkit",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -24,9 +24,7 @@
         "start": "run-s build:clean watch",
         "generate:docs": "typedoc",
         "add:docs": "git add documentation",
-        "fix:locks": "npm install --ignore-scripts --no-audit",
-        "add:locks": "git add package-lock.json",
-        "version": "run-s generate:docs add:docs fix:locks add:locks"
+        "version": "run-s generate:docs add:docs"
     },
     "devDependencies": {
         "@nestjs/common": "7.6.5",
