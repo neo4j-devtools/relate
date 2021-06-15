@@ -10,13 +10,15 @@ export const spawnPromise = (
 ): Promise<string> => {
     return new Promise((resolve, reject) => {
         let commandEscaped = command;
+        let argsEscaped = args;
         if (process.platform === 'win32') {
             // https://nodejs.org/api/child_process.html#child_process_spawning_bat_and_cmd_files_on_windows
             commandEscaped = `"${command}"`;
+            argsEscaped = args.map((arg) => `"${arg}"`);
             options.shell = true;
         }
 
-        const child = spawn(commandEscaped, args, options);
+        const child = spawn(commandEscaped, argsEscaped, options);
 
         if (stream) {
             stream.pipe(child.stdin);

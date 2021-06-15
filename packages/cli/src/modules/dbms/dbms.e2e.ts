@@ -57,7 +57,7 @@ describe('$relate dbms', () => {
 
     skipTestOnWindows.stdout().it('should log failed dump', async (ctx) => {
         await DumpCommand.run([TEST_DB_ID, '--environment', TEST_ENVIRONMENT_ID]);
-        expect(ctx.stdout).toContain('Failed to dump data.');
+        expect(ctx.stdout).toContain('Database does not exist: neo4j');
     });
 
     test.stdout().it('logs start message', async (ctx) => {
@@ -157,7 +157,9 @@ describe('$relate dbms', () => {
             `--to=${path.join(envPaths().data, 'test-db.dump')}`,
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
-        expect(ctx.stdout).toContain('Successfully dumped');
+        expect(ctx.stdout).toContain('data: 100.0%');
+        expect(ctx.stdout).toContain('Done:');
+        expect(ctx.stdout).toContain('processed.');
     });
 
     skipTestOnWindows.stdout().it('should log successful load', async (ctx) => {

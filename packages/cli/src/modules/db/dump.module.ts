@@ -53,27 +53,8 @@ export class DumpModule implements OnApplicationBootstrap {
 
         cli.action.start(`Dumping ${database} from ${dbms.name}`);
         return environment.dbs.dump(dbms.id, database, filePath).then((res: string) => {
-            let result = chalk.green('done');
-
-            const message = ['------------------------------------------'];
-            if (res.search(/Done: (\d*) files, (.*) processed./) !== -1) {
-                const done = res.split('\n').reverse();
-                message.push(chalk.green(done[1]));
-                message.push(
-                    `Successfully dumped ${chalk.cyan(database)} ` +
-                        `from ${chalk.cyan(dbms.name)} to ${chalk.cyan(filePath)}`,
-                );
-            } else {
-                result = chalk.red('failed');
-                if (res.includes('Database does not exist')) {
-                    message.push(`Database does not exist: ${chalk.cyan(database)}`);
-                }
-                message.push(chalk.red(`Failed to dump data.`));
-            }
-
-            cli.action.stop(result);
-
-            this.utils.log(message.join('\n'));
+            this.utils.log(res);
+            cli.action.stop();
         });
     }
 }
