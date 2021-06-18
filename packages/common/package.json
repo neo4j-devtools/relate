@@ -81,6 +81,7 @@
         "jszip": "3.5.0",
         "neo4j-driver-lite": "4.3.0",
         "node-forge": "0.10.0",
+        "p-cancelable": "2.0.0",
         "p-limit": "3.1.0",
         "rxjs": "6.5.5",
         "semver": "7.1.3",

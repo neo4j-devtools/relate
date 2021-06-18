@@ -7,6 +7,7 @@ import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbReadQuery} from '../../utils/dbmss/system-db-query';
 import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
+import {DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS} from '../../constants';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
 const PLUGIN_SOURCES_PATHNAME = new URL(NEO4J_PLUGIN_SOURCES_URL).pathname;
@@ -166,10 +167,14 @@ describe('LocalDbmsPlugins', () => {
         expect(installedVersion.toArray()[0].version.version).toEqual('4.0.0.17');
 
         await app.environment.dbmss.start([dbms.id]);
-        await waitForDbmsToBeOnline({
-            ...dbms,
-            config: await app.environment.dbmss.getDbmsConfig(dbms.id),
-        });
+        await waitForDbmsToBeOnline(
+            {
+                ...dbms,
+                config: await app.environment.dbmss.getDbmsConfig(dbms.id),
+            },
+            app.environment,
+            DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS,
+        );
 
         const accessToken = await app.environment.dbmss.createAccessToken('tests', dbms.id, {
             credentials: TEST_NEO4J_CREDENTIALS,

@@ -24,3 +24,5 @@ export {
 } from './entities/environments';
 export * from './entities/environments/authentication';
 export * from './token.service';
+import PCancelable from 'p-cancelable';
+export {PCancelable};

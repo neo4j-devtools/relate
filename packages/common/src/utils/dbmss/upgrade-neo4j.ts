@@ -3,7 +3,13 @@ import fse from 'fs-extra';
 import path from 'path';
 import {kebabCase} from 'lodash';
 
-import {DBMS_STATUS, DEBUG_FILE, ENTITY_TYPES, HOOK_EVENTS} from '../../constants';
+import {
+    DBMS_STATUS,
+    DEBUG_FILE,
+    ENTITY_TYPES,
+    HOOK_EVENTS,
+    UPGRADE_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS,
+} from '../../constants';
 import {LocalEnvironment, NEO4J_CONF_DIR, NEO4J_CONF_FILE, NEO4J_PLUGIN_DIR} from '../../entities/environments';
 import {DbmsUpgradeError, InvalidArgumentError, NotFoundError, RelateBackupError} from '../../errors';
 import {emitHookEvent} from '../event-hooks';
@@ -99,7 +105,7 @@ export const upgradeNeo4j = async (
             await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbms});
 
             await env.dbmss.start([upgradedDbms.id]);
-            await waitForDbmsToBeOnline(upgradedDbms);
+            await waitForDbmsToBeOnline(upgradedDbms, env, UPGRADE_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS);
             await env.dbmss.stop([upgradedDbms.id]);
 
             await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbms});

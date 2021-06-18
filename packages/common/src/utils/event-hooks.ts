@@ -9,6 +9,7 @@ export async function emitHookEvent<E extends HOOK_EVENTS, T = IHookEventPayload
     eventName: E,
     eventData: T,
 ): Promise<T> {
+    console.log('++registeredActors', REGISTERED_ACTORS);
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
     const eventListeners = REGISTERED_LISTENERS.get(eventName) || new Set();
     let returnData = eventData;
@@ -44,6 +45,7 @@ export function deregisterHookActor<E extends HOOK_EVENTS>(eventName: E, actor: 
     const eventActors = REGISTERED_ACTORS.get(eventName) || new Set();
 
     REGISTERED_ACTORS.set(eventName, new Set(_.without([...eventActors], actor)));
+    console.log('++deregisterHookActor', REGISTERED_ACTORS);
 }
 
 export function deregisterHookListener<E extends HOOK_EVENTS>(eventName: E, listener: Listener<E>): void {

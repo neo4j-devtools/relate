@@ -5,7 +5,7 @@ import {InvalidArgumentError, NotAllowedError, NotFoundError, NotSupportedError}
 import * as versionUtils from '../../utils/dbmss/dbms-versions';
 import * as downloadUtils from '../../utils/dbmss/download-neo4j';
 import {TestDbmss, TestEnvironment} from '../../utils/system';
-import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
+import {DBMS_DIR_NAME, DBMS_STATUS, DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS} from '../../constants';
 import {LocalEnvironment} from '../environments';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 
@@ -134,10 +134,14 @@ describe('LocalDbmss - install', () => {
         const config = await testEnv.dbmss.getDbmsConfig(dbms.id);
 
         await testEnv.dbmss.start([dbms.id]);
-        await waitForDbmsToBeOnline({
-            ...dbms,
-            config,
-        });
+        await waitForDbmsToBeOnline(
+            {
+                ...dbms,
+                config,
+            },
+            testEnv,
+            DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS,
+        );
 
         await expect(testEnv.dbmss.uninstall(dbms.id)).rejects.toThrowError(
             new NotAllowedError('Cannot uninstall DBMS that is running'),
