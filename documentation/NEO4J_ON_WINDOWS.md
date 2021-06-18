@@ -104,3 +104,9 @@ this issue.
 Shell scripts on Windows are not executable on their own, they need to be
 attached to a shell. The shell window can be hidden, which is what we do, but it
 will still show for a fraction of a second.
+
+### Update June 2021
+
+Some versions of Neo4j (+4.1.10, +4.2.8, +4.3.0, enterprise only) now include
+the `unsupported.dbms.shutdown` procedure that can be used to gracefully
+shutdown the DBMS effectively removing the first Windows caveat.
