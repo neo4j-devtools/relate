@@ -110,3 +110,6 @@ will still show for a fraction of a second.
 Some versions of Neo4j (+4.1.10, +4.2.8, +4.3.0, enterprise only) now include
 the `unsupported.dbms.shutdown` procedure that can be used to gracefully
 shutdown the DBMS effectively removing the first Windows caveat.
+
+This procedure is used only by Relate, it's not officially supported and is
+subject to change.

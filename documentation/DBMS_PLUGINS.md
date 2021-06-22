@@ -51,9 +51,8 @@ here](https://dist.neo4j.org/relate/official-plugin-sources.json)) it's possible
 to add external plugin sources by pointing Relate to a path or URL containing a
 plugin source.
 
-Here is an example of a plugin source, a file containing the following, or a URL
-returning this object, would be a valid source that would allow Relate to manage
-the JWT plugin.
+**Example**: a file containing the following, or a URL returning this object, would be a
+valid source that would allow Relate to manage the JWT plugin.
 
 ```json
 {
