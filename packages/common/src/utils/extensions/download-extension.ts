@@ -1,12 +1,11 @@
 import fse from 'fs-extra';
 import path from 'path';
-import hasha from 'hasha';
 
-import {FetchError, NotFoundError, IntegrityError} from '../../errors';
+import {FetchError, NotFoundError} from '../../errors';
 import {extractExtension} from './extract-extension';
-import {EXTENSION_URL_PATH, EXTENSION_SHA_ALGORITHM, HOOK_EVENTS} from '../../constants';
+import {EXTENSION_URL_PATH, HOOK_EVENTS} from '../../constants';
 import {discoverExtension} from './extension-versions';
-import {download, requestJson} from '../download';
+import {download, requestJson, verifyHash} from '../download';
 import {emitHookEvent} from '../event-hooks';
 import {IExtensionInfo} from '../../models';
 
@@ -53,20 +52,6 @@ const fetchExtensionInfo = async (extensionName: string, version: string): Promi
         shasum,
         tarball,
     };
-};
-
-const verifyHash = async (
-    expectedShasumHash: string,
-    pathToFile: string,
-    algorithm = EXTENSION_SHA_ALGORITHM,
-): Promise<string> => {
-    const hash = await hasha.fromFile(pathToFile, {algorithm});
-    if (hash !== expectedShasumHash) {
-        // remove in this case since the file is neither user provided nor trusted
-        await fse.remove(pathToFile);
-        throw new IntegrityError('Expected hash mismatch');
-    }
-    return hash;
 };
 
 export const downloadExtension = async (

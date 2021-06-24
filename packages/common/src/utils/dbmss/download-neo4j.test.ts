@@ -1,7 +1,6 @@
 import fse from 'fs-extra';
 import path from 'path';
 import nock from 'nock';
-import hasha from 'hasha';
 import * as uuid from 'uuid';
 import {List} from '@relate/types';
 import {inc} from 'semver';
@@ -49,9 +48,7 @@ describe('Download Neo4j (to local cache)', () => {
             return Promise.resolve(TMP_PATH);
         });
 
-        const verifyHashSpy = jest
-            .spyOn(downloadNeo4j, 'verifyHash')
-            .mockImplementation(() => Promise.resolve(EXPECTED_HASH_VALUE));
+        const verifyHashSpy = jest.spyOn(download, 'verifyHash').mockImplementation(() => Promise.resolve());
 
         const extractFromArchiveSpy = jest.spyOn(extractNeo4j, 'extractNeo4j').mockImplementation(() =>
             Promise.resolve({
@@ -137,13 +134,13 @@ describe('Download Neo4j (to local cache)', () => {
         afterAll(() => fse.remove(TMP_PATH));
 
         test('hash match', async () => {
-            const hash = await hasha.fromFile(TMP_PATH, {algorithm: NEO4J_SHA_ALGORITHM});
+            const hash = await download.sha256(TMP_PATH);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(await downloadNeo4j.verifyHash(hash!, TMP_PATH)).toBe(hash);
+            expect(await download.verifyHash(hash!, TMP_PATH)).toBe(undefined);
         });
 
         test('hash mismatch', async () => {
-            await expect(downloadNeo4j.verifyHash(EXPECTED_HASH_VALUE, TMP_PATH)).rejects.toThrow(
+            await expect(download.verifyHash(EXPECTED_HASH_VALUE, TMP_PATH)).rejects.toThrow(
                 new IntegrityError('Expected hash mismatch'),
             );
         });
