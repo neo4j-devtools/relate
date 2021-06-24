@@ -1,21 +1,26 @@
 import fse from 'fs-extra';
+import {createHash} from 'crypto';
 import got, {Options} from 'got';
 import path from 'path';
 import stream from 'stream';
 import {promisify} from 'util';
 import {v4 as uuidv4} from 'uuid';
-import hasha, {AlgorithmName} from 'hasha';
 
 import {DOWNLOADING_FILE_EXTENSION, HOOK_EVENTS} from '../constants';
 import {FetchError, IntegrityError} from '../errors';
 import {emitHookEvent} from './event-hooks';
 
-export const verifyHash = async (
-    expectedShasumHash: string,
-    pathToFile: string,
-    algorithm: AlgorithmName,
-): Promise<void> => {
-    const hash = await hasha.fromFile(pathToFile, {algorithm});
+export const sha256 = (filePath: string): Promise<string> =>
+    new Promise((resolve, reject) => {
+        const hash = createHash('sha256');
+        const rs = fse.createReadStream(filePath);
+        rs.on('error', reject);
+        rs.on('data', (chunk) => hash.update(chunk));
+        rs.on('end', () => resolve(hash.digest('hex')));
+    });
+
+export const verifyHash = async (expectedShasumHash: string, pathToFile: string): Promise<void> => {
+    const hash = await sha256(pathToFile);
 
     if (hash !== expectedShasumHash) {
         // remove tmp output in this case as it is neither user provided nor trusted

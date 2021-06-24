@@ -76,7 +76,6 @@
         "googleapis": "50.0.0",
         "got": "10.6.0",
         "graphql-tag": "2.10.3",
-        "hasha": "5.2.0",
         "jsonwebtoken": "8.5.1",
         "jszip": "3.5.0",
         "neo4j-driver-lite": "4.3.0",

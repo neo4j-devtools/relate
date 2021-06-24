@@ -213,7 +213,7 @@ export class LocalDbmsPlugins extends DbmsPluginsAbstract<LocalEnvironment> {
                     await emitHookEvent(HOOK_EVENTS.DOWNLOAD_START, null);
                     const downloadedFilePath = await download(pluginToInstall.downloadUrl, pluginCacheDir);
                     if (pluginToInstall.sha256) {
-                        await verifyHash(pluginToInstall.sha256, downloadedFilePath, 'sha256');
+                        await verifyHash(pluginToInstall.sha256, downloadedFilePath);
                     }
                     await fse.move(downloadedFilePath, pluginCacheFilePath, {overwrite: true});
                     await emitHookEvent(HOOK_EVENTS.DOWNLOAD_STOP, null);

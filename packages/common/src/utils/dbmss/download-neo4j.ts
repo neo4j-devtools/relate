@@ -1,11 +1,10 @@
 import fse from 'fs-extra';
-import hasha from 'hasha';
 import {Str} from '@relate/types';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
-import {FetchError, IntegrityError, NotFoundError} from '../../errors';
-import {download, request} from '../download';
+import {FetchError, NotFoundError} from '../../errors';
+import {download, request, verifyHash} from '../download';
 import {emitHookEvent} from '../event-hooks';
 import {fetchNeo4jVersions} from './dbms-versions';
 import {extractNeo4j} from './extract-neo4j';
@@ -20,20 +19,6 @@ export const getCheckSum = async (url: string): Promise<string> => {
     } catch (e) {
         throw new FetchError(e);
     }
-};
-
-export const verifyHash = async (
-    expectedShasumHash: string,
-    pathToFile: string,
-    algorithm = NEO4J_SHA_ALGORITHM,
-): Promise<string> => {
-    const hash = await hasha.fromFile(pathToFile, {algorithm});
-    if (hash !== expectedShasumHash) {
-        // remove tmp output in this case as it is neither user provided nor trusted
-        await fse.remove(pathToFile);
-        throw new IntegrityError('Expected hash mismatch');
-    }
-    return hash;
 };
 
 export const downloadNeo4j = async (
