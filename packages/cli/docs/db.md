@@ -37,7 +37,7 @@ EXAMPLES
   $ relate db:create my-new-db -D started-dbms -u dbms-user-with-system-db-access
 ```
 
-_See code: [dist/commands/db/create.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/create.ts)_
+_See code: [dist/commands/db/create.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/create.ts)_
 
 ## `relate db:drop [NAME]`
 
@@ -66,7 +66,7 @@ EXAMPLES
   $ relate db:drop my-new-db -D started-dbms -u dbms-user-with-system-db-access
 ```
 
-_See code: [dist/commands/db/drop.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/drop.ts)_
+_See code: [dist/commands/db/drop.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/drop.ts)_
 
 ## `relate db:dump DBMS`
 
@@ -91,7 +91,7 @@ EXAMPLES
   $ relate db:dump dbms-containing-db-to-dump -d db-to-dump -t /path/to/save/dump/file/to
 ```
 
-_See code: [dist/commands/db/dump.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/dump.ts)_
+_See code: [dist/commands/db/dump.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/dump.ts)_
 
 ## `relate db:exec DBMS`
 
@@ -117,7 +117,7 @@ EXAMPLES
   $ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query --force
 ```
 
-_See code: [dist/commands/db/exec.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/exec.ts)_
+_See code: [dist/commands/db/exec.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/exec.ts)_
 
 ## `relate db:list`
 
@@ -157,7 +157,7 @@ EXAMPLES
   $ relate db:list --filter=name=db-name --output=json
 ```
 
-_See code: [dist/commands/db/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/list.ts)_
+_See code: [dist/commands/db/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/list.ts)_
 
 ## `relate db:load DBMS`
 
@@ -183,4 +183,4 @@ EXAMPLES
   $ relate db:load dbms-containing-db-to-load-into -f /path/to/dump/file -d db-to-load-into --force
 ```
 
-_See code: [dist/commands/db/load.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.5/packages/cli/src/commands/db/load.ts)_
+_See code: [dist/commands/db/load.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.6/packages/cli/src/commands/db/load.ts)_
