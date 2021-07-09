@@ -14,7 +14,7 @@ import {
 import {EnvironmentAbstract, NEO4J_EDITION} from '../environments';
 import {PropertiesFile} from '../../system/files';
 import {InvalidConfigError, NotAllowedError, NotFoundError} from '../../errors';
-import {DBMS_SERVER_STATUS, DBMS_STATUS} from '../../constants';
+import {DBMS_SERVER_STATUS, DBMS_STATUS, DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS} from '../../constants';
 import {IRelateFilter} from '../../utils/generic';
 import {ManifestAbstract} from '../manifest';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
@@ -186,10 +186,14 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         }
 
         if (dbmsInfo.serverStatus !== DBMS_SERVER_STATUS.ONLINE) {
-            await waitForDbmsToBeOnline({
-                ...dbmsInfo,
-                config: await this.getDbmsConfig(dbmsId),
-            });
+            await waitForDbmsToBeOnline(
+                {
+                    ...dbmsInfo,
+                    config: await this.getDbmsConfig(dbmsId),
+                },
+                this.environment,
+                DEFAULT_MAX_DBMS_TO_BE_ONLINE_ATTEMPTS,
+            );
         }
 
         try {
