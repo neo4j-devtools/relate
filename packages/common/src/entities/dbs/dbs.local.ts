@@ -25,7 +25,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
                 dbmsNameOrId,
                 dbmsUser,
             },
-            `CREATE DATABASE ${dbName}`,
+            `CREATE DATABASE ${`\`${dbName}\``}`,
         );
     }
 
