@@ -61,10 +61,8 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     // relate package are not executable. To avoid issues the starter script is
     // copied in the cache directory and it's executed from there.
     const cachedNeo4jStarterPath = path.join(envPaths().cache, 'neo4j-start.ps1');
-    if (!(await fse.pathExists(cachedNeo4jStarterPath))) {
-        const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
-        await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
-    }
+    const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
+    await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
 
     const child = spawn(
         'powershell.exe',
