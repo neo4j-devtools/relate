@@ -1,7 +1,7 @@
 {
     "name": "@relate/cli",
     "description": "Create, manage and use Neo4j graphs from the command line.",
-    "version": "1.0.3-alpha.7",
+    "version": "1.0.3-alpha.8",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
     "homepage": "https://github.com/neo4j-devtools/relate#readme",
@@ -31,7 +31,7 @@
         "@oclif/config": "1.17.0",
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
-        "@relate/common": "^1.0.3-alpha.8",
+        "@relate/common": "^1.0.3-alpha.9",
         "@relate/types": "^1.0.3-alpha.2",
         "chalk": "4.1.0",
         "cli-ux": "5.5.0",
