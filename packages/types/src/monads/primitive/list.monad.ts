@@ -204,7 +204,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * compacted.toArray() // [[], 'foo']
      * ```
      */
-    compact<R extends Exclude<T, null | undefined | None<any> | Nil>>(): List<R> {
+    compact<R extends Exclude<T, null | void | undefined | None<any> | Nil>>(): List<R> {
         // @ts-ignore
         return this.filter((val) => {
             return val !== null && val !== undefined && !Nil.isNil(val) && !None.isNone(val);
