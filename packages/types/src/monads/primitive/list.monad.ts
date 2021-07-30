@@ -1,4 +1,4 @@
-import {join, filter, find, map, forEach, without, uniq, uniqBy} from 'lodash';
+import {chunk, join, filter, find, map, forEach, without, uniq, uniqBy, ArrayIterator} from 'lodash';
 
 import Monad from '../monad';
 import Maybe from './maybe.monad';
@@ -150,6 +150,14 @@ export default class List<T> extends Monad<Iterable<T>> {
     }
 
     /**
+     * Creates an List of Nones of a given length
+     * @see {@link List.of}
+     */
+    static ofLength<T>(length: number | Num): List<None<T>> {
+        return Num.from(length).flatMap((n) => List.from(Array(n).fill(None.EMPTY)));
+    }
+
+    /**
      * @hidden
      */
     // @ts-ignore
@@ -224,7 +232,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * end.toArray() // [2,3,4]
      * ```
      */
-    mapEach<M = T>(project: (val: T) => M): List<M> {
+    mapEach<M = T>(project: ArrayIterator<T, M>): List<M> {
         return List.from(map([...this], project));
     }
 
@@ -237,7 +245,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * end.toArray() // [1,2,3]
      * ```
      */
-    forEach(project: (val: T) => void): this {
+    forEach(project: ArrayIterator<T, any>): this {
         forEach([...this], project);
 
         return this;
@@ -326,6 +334,12 @@ export default class List<T> extends Monad<Iterable<T>> {
 
         // @ts-ignore
         return this.map(uniq);
+    }
+
+    chunk(size: number | Num = 1): List<List<T>> {
+        const inChunks = chunk(this.toArray(), Num.from(size).getOrElse(1));
+
+        return List.from(inChunks).mapEach(List.from);
     }
 
     toString() {

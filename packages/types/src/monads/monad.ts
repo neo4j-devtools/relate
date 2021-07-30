@@ -163,9 +163,6 @@ export default class Monad<T> implements IMonad<T> {
      * ```
      */
     map(project: (value: T) => T): this {
-        if (this.isEmpty) {
-            return this;
-        }
         // @ts-ignore
         return new this.constructor(project(this.original));
     }

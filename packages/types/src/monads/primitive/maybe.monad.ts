@@ -57,6 +57,18 @@ export default class Maybe<T> extends Monad<T | None<T>> {
     }
 
     /**
+     * @hidden
+     */
+    map<R = T extends None<infer E> ? E : T>(project: (value: R) => R): this {
+        if (this.isEmpty) {
+            return this;
+        }
+
+        // @ts-ignore
+        return new this.constructor(project(this.original));
+    }
+
+    /**
      * Wraps passed value in Maybe regardless of what it is
      *
      * ```ts

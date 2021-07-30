@@ -33,8 +33,13 @@ export const downloadNeo4j = async (
         const mappedVersions = onlineVersions
             .mapEach((dist) => `${dist.version}-${dist.edition}`)
             .join(', ')
-            .map((versions) => `Use a valid version found online: ${versions}`)
-            .getOrElse(`Use a valid version`);
+            .flatMap((versions) => {
+                if (versions) {
+                    return `Use a valid version found online: ${versions}`;
+                }
+
+                return `Use a valid version`;
+            });
 
         throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`, [mappedVersions]);
     };
