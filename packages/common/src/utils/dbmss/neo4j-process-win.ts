@@ -62,7 +62,10 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     // copied in the cache directory and it's executed from there.
     const cachedNeo4jStarterPath = path.join(envPaths().cache, 'neo4j-start.ps1');
     const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
-    await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
+
+    if (!(await fse.pathExists(cachedNeo4jStarterPath))) {
+        await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
+    }
 
     const child = spawn(
         'powershell.exe',
