@@ -62,7 +62,7 @@ export function IsPluginConfig(validationOptions?: ValidationOptions) {
                     if (isObjectLike(value)) {
                         return Object.entries(value).every(([_, v]) => {
                             if (isArray(v)) {
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                 // @ts-ignore
                                 return Array.from(v).every(isString);
                             }

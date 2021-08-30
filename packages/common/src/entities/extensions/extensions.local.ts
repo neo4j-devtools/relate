@@ -100,10 +100,11 @@ export class LocalExtensions extends ExtensionsAbstract<LocalEnvironment> {
 
             // extract extension to tmp first
             const tmpExtractPath = path.join(tmp, uuidv4());
-            const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-                toExtract,
-                tmpExtractPath,
-            );
+            const {
+                name: extensionName,
+                dist,
+                version: extensionVersion,
+            } = await extractExtension(toExtract, tmpExtractPath);
             const cacheDir = path.join(extensionsCache, `${extensionName}@${extensionVersion}`);
 
             // move the extracted dir to cache

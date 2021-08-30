@@ -8,6 +8,13 @@ export enum WriteFileFlag {
     APPEND = 'a+',
 }
 
+export interface IProjectDbms {
+    name: string;
+    connectionUri: string;
+    user?: string;
+    accessToken?: string;
+}
+
 export interface IProjectInput extends IManifestInput {
     dbmss?: IProjectDbms[];
 }
@@ -18,13 +25,6 @@ export interface IProjectManifest extends IManifest {
 
 export interface IProject extends IProjectManifest {
     root: string;
-}
-
-export interface IProjectDbms {
-    name: string;
-    connectionUri: string;
-    user?: string;
-    accessToken?: string;
 }
 
 export class ProjectManifestModel extends ManifestModel<IProject> implements IProjectManifest {

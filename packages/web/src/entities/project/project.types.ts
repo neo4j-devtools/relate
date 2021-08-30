@@ -6,6 +6,21 @@ import {IFileUpload, GraphQLUpload} from './graphql-upload';
 import {EnvironmentArgs, RelateFile} from '../../global.types';
 
 @ObjectType()
+export class ProjectDbms implements IProjectDbms {
+    @Field(() => String)
+    name: string;
+
+    @Field(() => String)
+    connectionUri: string;
+
+    @Field(() => String, {nullable: true})
+    user?: string;
+
+    @Field(() => String, {nullable: true})
+    accessToken?: string;
+}
+
+@ObjectType()
 export class Project implements Omit<IProject, 'root'> {
     @Field(() => String)
     id: string;
@@ -27,21 +42,6 @@ export class Project implements Omit<IProject, 'root'> {
 
     @Field(() => [RelateFile])
     files: RelateFile[];
-}
-
-@ObjectType()
-export class ProjectDbms implements IProjectDbms {
-    @Field(() => String)
-    name: string;
-
-    @Field(() => String)
-    connectionUri: string;
-
-    @Field(() => String, {nullable: true})
-    user?: string;
-
-    @Field(() => String, {nullable: true})
-    accessToken?: string;
 }
 
 @ArgsType()

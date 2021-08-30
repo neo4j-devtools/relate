@@ -69,10 +69,11 @@ export const downloadExtension = async (
 
     // extract extension to cache dir first
     const extractPath = path.join(extensionDistributionsPath, `${name}@${version}.tmp`);
-    const {name: extensionName, dist, version: extensionVersion} = await extractExtension(
-        downloadFilePath,
-        extractPath,
-    );
+    const {
+        name: extensionName,
+        dist,
+        version: extensionVersion,
+    } = await extractExtension(downloadFilePath, extractPath);
     const destinationPath = path.join(extensionDistributionsPath, `${extensionName}@${extensionVersion}`);
 
     // move the extracted dir and remove the downloaded archive
