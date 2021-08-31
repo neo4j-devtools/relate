@@ -30,7 +30,7 @@
 
 ###  KeyVal
 
-Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[infer K, infer V]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
+Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
 
 Defined in src/monads/primitive/dict.monad.ts:11
 
