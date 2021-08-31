@@ -136,7 +136,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             return new RelateBackupModel({
                 directory: dirName,
                 name: fileName,
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 entityType,
                 entityId: entityNameOrId,
@@ -182,7 +182,7 @@ export class LocalBackups extends BackupAbstract<LocalEnvironment> {
             BACKUP_MANIFEST_FILE,
         );
         const manifest = await this.readManifestFile(configFileName).catch(() => ({}));
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const withUpdates = new RelateBackupModel({
             ...manifest,

@@ -52,7 +52,7 @@ export class TestEnvironment {
             type: ENVIRONMENT_TYPES.LOCAL,
         });
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const environment: LocalEnvironment = await systemProvider.getEnvironment(name);
 

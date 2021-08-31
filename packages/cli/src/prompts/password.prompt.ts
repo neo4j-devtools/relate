@@ -1,4 +1,5 @@
 import {prompt} from 'enquirer';
+import {IPromptSelection} from '../constants';
 import {readStdin, isInteractive} from '../stdin';
 
 export const passwordPrompt = async (message: string): Promise<string> => {
@@ -6,7 +7,7 @@ export const passwordPrompt = async (message: string): Promise<string> => {
         return readStdin();
     }
 
-    const {selection} = await prompt({
+    const {selection} = await prompt<IPromptSelection<string>>({
         message,
         name: 'selection',
         type: 'invisible',

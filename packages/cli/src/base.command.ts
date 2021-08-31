@@ -78,10 +78,10 @@ export default abstract class BaseCommand extends Command {
                 // the error message nicely to the user, and if debug mode is enabled
                 // it will display the stack trace too.
                 const cliError = new CLIError(err.message);
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 cliError.name = err.name;
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 cliError.stack = err.stack;
                 throw cliError;

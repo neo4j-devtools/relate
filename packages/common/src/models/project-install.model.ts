@@ -2,6 +2,14 @@ import {IsArray, IsOptional} from 'class-validator';
 import {assign} from 'lodash';
 import {ManifestModel, IManifest, IManifestInput} from './manifest.model';
 
+export interface ISampleProjectDbms {
+    name?: string;
+    description?: string;
+    dumpFile?: string;
+    scriptFile?: string;
+    targetNeo4jVersion: string;
+}
+
 export interface ISampleProjectInput extends IManifestInput {
     name: string;
     description: string;
@@ -16,14 +24,6 @@ export interface ISampleProjectManifest extends IManifest {
 export interface ISampleProject extends IManifest {
     name: string;
     description: string;
-}
-
-export interface ISampleProjectDbms {
-    name?: string;
-    description?: string;
-    dumpFile?: string;
-    scriptFile?: string;
-    targetNeo4jVersion: string;
 }
 
 export interface ISampleProjectRest {

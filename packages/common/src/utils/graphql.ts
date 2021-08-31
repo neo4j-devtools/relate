@@ -6,6 +6,11 @@ import {Dict} from '@relate/types';
 
 import {NotAllowedError} from '../errors';
 
+export interface IGraphQLConfig {
+    uri: string;
+    headers: {[key: string]: any};
+}
+
 export abstract class GraphQLAbstract {
     /**
      * @hidden
@@ -19,11 +24,6 @@ export abstract class GraphQLAbstract {
     abstract execute(operation: GraphQLRequest): Promise<FetchResult<{[key: string]: any}>>;
 }
 
-export interface IGraphQLConfig {
-    uri: string;
-    headers: {[key: string]: any};
-}
-
 export class GraphQLClient extends GraphQLAbstract {
     private client: ApolloLink;
 
@@ -31,14 +31,14 @@ export class GraphQLClient extends GraphQLAbstract {
         super(config);
         const {uri, headers} = config;
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         this.client = createHttpLink({
             // HttpLink wants a fetch implementation to make requests to a
             // GraphQL API. It wants the browser version of it which has a
             // few more options than the node version.
             credentials: 'include',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             fetch: (url: string, opts: any) => {
                 // @todo: this could definitely be done better

@@ -195,7 +195,7 @@ export class SystemProvider implements OnModuleInit {
         await fse.ensureDir(tmpDir);
 
         try {
-            const uploadPromise = new Promise((resolve, reject) =>
+            const uploadPromise = new Promise<void>((resolve, reject) =>
                 readStream
                     .pipe(fse.createWriteStream(tmpFileName))
                     .on('finish', () => resolve())

@@ -14,6 +14,7 @@
         "experimentalDecorators": true,
         "skipLibCheck": true,
         "declaration": true,
-        "downlevelIteration": true
+        "downlevelIteration": true,
+        "useUnknownInCatchVariables": false
     }
 }

@@ -37,7 +37,7 @@ export default class None<T extends any = any> extends Monad<T> {
      * }
      * ```
      */
-    static isNone<T extends any = any>(val: any): val is None<T> {
+    static isNone<N extends any = any>(val: any): val is None<N> {
         return val instanceof None;
     }
 
@@ -52,14 +52,14 @@ export default class None<T extends any = any> extends Monad<T> {
      * const listNone: None<List<string>> = None.of(listMonad);
      * ```
      */
-    static of<T extends any = any>(_?: any): None<T> {
+    static of<N extends any = any>(_?: any): None<N> {
         return None.EMPTY;
     }
 
     /**
      * @see {@link None.of}
      */
-    static from<T extends any = any>(_?: any): None<T> {
+    static from<N extends any = any>(_?: any): None<N> {
         return None.EMPTY;
     }
 
