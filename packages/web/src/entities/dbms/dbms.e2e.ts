@@ -1,6 +1,5 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
-import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import {
     TestDbmss,
@@ -10,6 +9,7 @@ import {
     NEO4J_EDITION,
     NEO4J_ORIGIN,
     IDbmsVersion,
+    ConfigModule,
 } from '@relate/common';
 import nock from 'nock';
 

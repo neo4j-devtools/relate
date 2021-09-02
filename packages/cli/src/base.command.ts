@@ -10,8 +10,8 @@ import {
     loadExtensionsFor,
     registerHookListener,
     HOOK_EVENTS,
+    ConfigModule,
 } from '@relate/common';
-import {ConfigModule} from '@nestjs/config';
 
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 

@@ -1,8 +1,7 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
-import {TestDbmss} from '@relate/common';
-import {ConfigModule} from '@nestjs/config';
+import {TestDbmss, ConfigModule} from '@relate/common';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
