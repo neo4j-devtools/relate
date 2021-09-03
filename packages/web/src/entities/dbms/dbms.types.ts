@@ -1,5 +1,5 @@
-import {ObjectType, ArgsType, Field, ID} from '@nestjs/graphql';
-import {IDbms, NEO4J_EDITION} from '@relate/common';
+import {ObjectType, ArgsType, Field, ID, InputType} from '@nestjs/graphql';
+import {IDbms, IDbmsUpgradeOptions, NEO4J_EDITION, PLUGIN_UPGRADE_MODE} from '@relate/common';
 import GraphQLJSON, {GraphQLJSONObject} from 'graphql-type-json';
 
 import {AuthTokenInput} from './dto/auth-token.input';
@@ -165,4 +165,31 @@ export class UpdateDbmsConfigArgs {
 
     @Field(() => [[String, String]])
     properties: [string, string][];
+}
+
+@InputType()
+export class DbmsUpgradeOptions implements IDbmsUpgradeOptions {
+    @Field(() => Boolean, {nullable: true})
+    noCache?: boolean;
+
+    @Field(() => Boolean, {nullable: true})
+    migrate?: boolean;
+
+    @Field(() => Boolean, {nullable: true})
+    backup?: boolean;
+
+    @Field(() => String, {nullable: true})
+    pluginUpgradeMode?: PLUGIN_UPGRADE_MODE;
+}
+
+@ArgsType()
+export class UpgradeDbmsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    dbmsId: string;
+
+    @Field(() => String)
+    version: string;
+
+    @Field(() => DbmsUpgradeOptions, {nullable: true})
+    options?: DbmsUpgradeOptions;
 }

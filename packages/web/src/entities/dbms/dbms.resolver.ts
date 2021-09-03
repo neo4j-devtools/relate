@@ -18,6 +18,7 @@ import {
     RemoveDbmsTagsArgs,
     AddDbmsMetadataArgs,
     RemoveDbmsMetadataArgs,
+    UpgradeDbmsArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -142,5 +143,13 @@ export class DBMSResolver {
         @Args() {dbmsId, keys}: RemoveDbmsMetadataArgs,
     ): Promise<IDbmsInfo> {
         return environment.dbmss.manifest.removeMetadata(dbmsId, ...keys);
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.UPGRADE_DBMS](
+        @Context('environment') environment: Environment,
+        @Args() {dbmsId, version, options}: UpgradeDbmsArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.upgrade(dbmsId, version, options);
     }
 }
