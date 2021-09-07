@@ -13,7 +13,7 @@ import {DBMS_DIR_NAME} from '../../constants';
 export class TestDbmss {
     static DBMS_CREDENTIALS = 'password';
 
-    static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
+    static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.12';
 
     static NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
         .values.find((e) => e === process.env.TEST_NEO4J_EDITION)
