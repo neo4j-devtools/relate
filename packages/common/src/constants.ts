@@ -162,6 +162,14 @@ export enum PUBLIC_GRAPHQL_METHODS {
     DROP_DB = 'dropDb',
     LIST_DBS = 'listDbs',
 
+    // dbms-plugins
+    LIST_DBMS_PLUGINS = 'listDbmsPlugins',
+    INSTALL_DBMS_PLUGIN = 'installDbmsPlugin',
+    UNINSTALL_DBMS_PLUGIN = 'uninstallDbmsPlugin',
+    LIST_DBMS_PLUGIN_SOURCES = 'listDbmsPluginSources',
+    ADD_DBMS_PLUGIN_SOURCES = 'addDbmsPluginSources',
+    REMOVE_DBMS_PLUGIN_SOURCES = 'removeDbmsPluginSources',
+
     // apps
     LIST_APPS = 'listApps',
     APP_LAUNCH_DATA = 'appLaunchData',
