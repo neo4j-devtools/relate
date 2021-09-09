@@ -17,6 +17,7 @@ import {List} from '@relate/types';
 
 import {inputPrompt} from './input.prompt';
 import {getEntityDisplayName} from '../utils/display.utils';
+import {IPromptSelection} from '../constants';
 
 interface IChoice {
     name: string;
@@ -27,7 +28,7 @@ interface IChoice {
 }
 
 export const selectPrompt = async (message: string, choices: string[] | IChoice[]): Promise<string> => {
-    const {selection} = await prompt({
+    const {selection} = await prompt<IPromptSelection<string>>({
         message,
         choices,
         name: 'selection',
@@ -70,7 +71,7 @@ export const selectEntityPrompt = async (
 };
 
 export const confirmPrompt = async (message: string): Promise<boolean> => {
-    const {confirmed} = await prompt({
+    const {confirmed} = await prompt<{confirmed: boolean}>({
         message,
         name: 'confirmed',
         type: 'confirm',
@@ -83,7 +84,7 @@ export const selectMultiplePrompt = async <R = string>(
     message: string,
     choices: string[] | IChoice[],
 ): Promise<R[]> => {
-    const {selection} = await prompt({
+    const {selection} = await prompt<IPromptSelection<R[]>>({
         message,
         choices,
         name: 'selection',

@@ -25,7 +25,7 @@ export class GoogleAuthentication implements IAuthentication {
 
     login(redirectTo?: string) {
         const authUrl = this.oAuth2Client.generateAuthUrl({
-            // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
+            // eslint-disable-next-line camelcase
             access_type: 'offline',
             scope: 'email',
             state: redirectTo,

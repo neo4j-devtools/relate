@@ -546,7 +546,7 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**T**›(`val?`: Iterable‹T› | null): *[List](list.md)‹T›*
+▸ **from**‹**L**›(`val?`: Iterable‹L› | null): *[List](list.md)‹L›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
@@ -558,21 +558,21 @@ Coerces any value to a List, if not one already
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | Iterable‹T› &#124; null |
+`val?` | Iterable‹L› &#124; null |
 
-**Returns:** *[List](list.md)‹T›*
+**Returns:** *[List](list.md)‹L›*
 
 ___
 
 ### `Static` isList
 
-▸ **isList**‹**T**›(`val`: any): *val is List<T>*
+▸ **isList**‹**L**›(`val`: any): *val is List<L>*
 
 Defined in src/monads/primitive/list.monad.ts:113
 
@@ -585,7 +585,7 @@ if (List.isList(val)) {
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
@@ -593,13 +593,13 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is List<T>*
+**Returns:** *val is List<L>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**T**›(`val`: Iterable‹T›): *[List](list.md)‹T›*
+▸ **of**‹**L**›(`val`: Iterable‹L›): *[List](list.md)‹L›*
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
@@ -623,12 +623,12 @@ const listList: List<false> = List.of(listMonad);
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | Iterable‹T› |
+`val` | Iterable‹L› |
 
-**Returns:** *[List](list.md)‹T›*
+**Returns:** *[List](list.md)‹L›*

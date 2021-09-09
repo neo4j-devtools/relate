@@ -35,7 +35,7 @@ EXAMPLES
   $ relate env:api-token my-app -h localhost:3000
 ```
 
-_See code: [dist/commands/environment/api-token.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/api-token.ts)_
+_See code: [dist/commands/environment/api-token.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/api-token.ts)_
 
 ## `relate environment:init [ENVIRONMENT] [HTTPORIGIN]`
 
@@ -71,7 +71,7 @@ EXAMPLES
   $ relate env:init environment-name --interactive
 ```
 
-_See code: [dist/commands/environment/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/init.ts)_
+_See code: [dist/commands/environment/init.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/init.ts)_
 
 ## `relate environment:list`
 
@@ -81,6 +81,15 @@ List all available environments
 USAGE
   $ relate environment:list
 
+OPTIONS
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
+
 ALIASES
   $ relate env:list
 
@@ -88,7 +97,7 @@ EXAMPLE
   $ relate env:list
 ```
 
-_See code: [dist/commands/environment/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/list.ts)_
+_See code: [dist/commands/environment/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/list.ts)_
 
 ## `relate environment:login [ENVIRONMENT]`
 
@@ -109,7 +118,7 @@ EXAMPLES
   $ relate env:login environment-supporting-login
 ```
 
-_See code: [dist/commands/environment/login.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/login.ts)_
+_See code: [dist/commands/environment/login.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/login.ts)_
 
 ## `relate environment:open [ENVIRONMENT]`
 
@@ -134,7 +143,7 @@ EXAMPLES
   $ relate env:open environment-name -L
 ```
 
-_See code: [dist/commands/environment/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/open.ts)_
+_See code: [dist/commands/environment/open.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/open.ts)_
 
 ## `relate environment:use ENVIRONMENT`
 
@@ -154,4 +163,4 @@ EXAMPLE
   $ relate env:use environment-to-set-as-active
 ```
 
-_See code: [dist/commands/environment/use.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.3-alpha.9/packages/cli/src/commands/environment/use.ts)_
+_See code: [dist/commands/environment/use.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.0/packages/cli/src/commands/environment/use.ts)_

@@ -123,7 +123,7 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**T**›(`val?`: T): *[Maybe](maybe.md)‹T›*
+▸ **from**‹**M**›(`val?`: M): *[Maybe](maybe.md)‹M›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
@@ -135,27 +135,27 @@ Wraps passed value in Maybe, if not already a Maybe
 
 **Type parameters:**
 
-▪ **T**
+▪ **M**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | T |
+`val?` | M |
 
-**Returns:** *[Maybe](maybe.md)‹T›*
+**Returns:** *[Maybe](maybe.md)‹M›*
 
 ___
 
 ### `Static` isMaybe
 
-▸ **isMaybe**‹**T**›(`val`: any): *val is Maybe<T>*
+▸ **isMaybe**‹**M**›(`val`: any): *val is Maybe<M>*
 
 Defined in src/monads/primitive/maybe.monad.ts:55
 
 **Type parameters:**
 
-▪ **T**
+▪ **M**
 
 **Parameters:**
 
@@ -163,13 +163,13 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is Maybe<T>*
+**Returns:** *val is Maybe<M>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**T**›(`val?`: T | [None](none.md) | [Nil](nil.md)): *[Maybe](maybe.md)‹T›*
+▸ **of**‹**M**›(`val?`: M | [None](none.md) | [Nil](nil.md)): *[Maybe](maybe.md)‹M›*
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
@@ -193,12 +193,12 @@ maybeEmptyList.get() // Maybe<string>
 
 **Type parameters:**
 
-▪ **T**
+▪ **M**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | T &#124; [None](none.md) &#124; [Nil](nil.md) |
+`val?` | M &#124; [None](none.md) &#124; [Nil](nil.md) |
 
-**Returns:** *[Maybe](maybe.md)‹T›*
+**Returns:** *[Maybe](maybe.md)‹M›*

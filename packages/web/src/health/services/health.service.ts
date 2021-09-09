@@ -1,8 +1,7 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
-import {ConfigService} from '@nestjs/config';
 import {Request, Response} from 'express';
-import {HEALTH_BASE_ENDPOINT, SystemProvider, STATIC_APP_BASE_ENDPOINT} from '@relate/common';
+import {HEALTH_BASE_ENDPOINT, SystemProvider, STATIC_APP_BASE_ENDPOINT, ConfigService} from '@relate/common';
 
 import {IWebModuleConfig} from '../../web.module';
 

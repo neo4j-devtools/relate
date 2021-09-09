@@ -168,41 +168,13 @@ describe('List', () => {
         });
 
         test('returns correct value', () => {
-            expect(
-                List.from('bar')
-                    .nth(0)
-                    .get(),
-            ).toBe('b');
-            expect(
-                List.from('bar')
-                    .nth(1)
-                    .get(),
-            ).toBe('a');
-            expect(
-                List.from('bar')
-                    .nth(2)
-                    .get(),
-            ).toBe('r');
-            expect(
-                List.from([1, 2])
-                    .nth(0)
-                    .get(),
-            ).toBe(1);
-            expect(
-                List.from([1, 2])
-                    .nth(1)
-                    .get(),
-            ).toBe(2);
-            expect(
-                List.from([false, true])
-                    .nth(0)
-                    .get(),
-            ).toBe(false);
-            expect(
-                List.from([false, true])
-                    .nth(1)
-                    .get(),
-            ).toBe(true);
+            expect(List.from('bar').nth(0).get()).toBe('b');
+            expect(List.from('bar').nth(1).get()).toBe('a');
+            expect(List.from('bar').nth(2).get()).toBe('r');
+            expect(List.from([1, 2]).nth(0).get()).toBe(1);
+            expect(List.from([1, 2]).nth(1).get()).toBe(2);
+            expect(List.from([false, true]).nth(0).get()).toBe(false);
+            expect(List.from([false, true]).nth(1).get()).toBe(true);
         });
     });
 

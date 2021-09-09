@@ -10,8 +10,8 @@ import {
     loadExtensionsFor,
     registerHookListener,
     HOOK_EVENTS,
+    ConfigModule,
 } from '@relate/common';
-import {ConfigModule} from '@nestjs/config';
 
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 
@@ -31,7 +31,7 @@ export default abstract class BaseCommand extends Command {
             exit: this.exit,
             warn: this.warn,
         };
-        const options = IS_DEVELOPMENT_ENV ? {} : {logger: false};
+        const options: {logger?: false} = IS_DEVELOPMENT_ENV ? {} : {logger: false};
         const {flags} = parsed;
         const cliExtensions = loadExtensionsFor(EXTENSION_TYPES.CLI, flags.environment);
         const systemConfig: ISystemModuleConfig = {defaultEnvironmentNameOrId: flags.environment};
@@ -78,10 +78,10 @@ export default abstract class BaseCommand extends Command {
                 // the error message nicely to the user, and if debug mode is enabled
                 // it will display the stack trace too.
                 const cliError = new CLIError(err.message);
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 cliError.name = err.name;
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 cliError.stack = err.stack;
                 throw cliError;

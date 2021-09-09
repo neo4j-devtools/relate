@@ -109,9 +109,7 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('getCheckSum: valid response from sha URL', async () => {
-        nock(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`)
-            .get('/')
-            .reply(200, EXPECTED_HASH_VALUE);
+        nock(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`).get('/').reply(200, EXPECTED_HASH_VALUE);
 
         expect(await downloadNeo4j.getCheckSum(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`)).toBe(
             EXPECTED_HASH_VALUE,
@@ -119,9 +117,7 @@ describe('Download Neo4j (to local cache)', () => {
     });
 
     test('getCheckSum: invalid response from sha URL', async () => {
-        nock(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`)
-            .get('/')
-            .replyWithError('something bad happened');
+        nock(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`).get('/').replyWithError('something bad happened');
 
         await expect(downloadNeo4j.getCheckSum(`${DBMS_VERSION.dist}.${NEO4J_SHA_ALGORITHM}`)).rejects.toThrow(
             new FetchError('RequestError: something bad happened'),
