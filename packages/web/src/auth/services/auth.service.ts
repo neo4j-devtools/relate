@@ -15,7 +15,6 @@ import {
     VALIDATION_ENDPOINT,
     VERIFICATION_ENDPOINT,
 } from '@relate/common';
-import {Str} from '@relate/types';
 
 @Injectable()
 export class AuthService {
@@ -95,7 +94,7 @@ export class AuthService {
     registerAuthenticationHandlers(app: Application): void {
         app.get(AUTHENTICATION_ENDPOINT, async (req, res): Promise<void> => {
             const environment = await this.systemProvider.getEnvironment();
-            const redirectTo = Str.from(req.query.redirectTo).toString();
+            const {redirectTo} = req.query;
 
             try {
                 const {authUrl} = await environment.login(redirectTo);
@@ -126,8 +125,7 @@ export class AuthService {
 
                 // @todo: this is Google OAuth specific
                 if (queryObject.state) {
-                    const state = Str.from(queryObject.state).toString();
-                    res.redirect(getAuthRedirect(environment.httpOrigin, state, authToken));
+                    res.redirect(getAuthRedirect(environment.httpOrigin, queryObject.state, authToken));
                     return;
                 }
 
