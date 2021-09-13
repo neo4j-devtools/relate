@@ -55,7 +55,7 @@
         "@nestjs/core": "7.0.8",
         "@nestjs/graphql": "7.10.6",
         "@nestjs/platform-express": "7.0.8",
-        "@relate/common": "^1.0.3-alpha.10",
+        "@relate/common": "^1.0.3-alpha.11",
         "@relate/types": "^1.0.3-alpha.3",
         "apollo-server-express": "2.14.2",
         "class-transformer": "0.3.1",
@@ -69,7 +69,7 @@
         "lodash": "4.17.21",
         "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.0.0",
+        "rxjs": "7.3.0",
         "sofa-api": "0.10.2",
         "swagger-ui-express": "4.1.4"
     }

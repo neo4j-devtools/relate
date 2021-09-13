@@ -31,7 +31,7 @@
         "@oclif/config": "1.17.0",
         "@oclif/plugin-autocomplete": "0.2.0",
         "@oclif/plugin-help": "3.2.0",
-        "@relate/common": "^1.0.3-alpha.10",
+        "@relate/common": "^1.0.3-alpha.11",
         "@relate/types": "^1.0.3-alpha.3",
         "chalk": "4.1.0",
         "cli-ux": "5.5.0",
@@ -42,7 +42,7 @@
         "lodash": "4.17.21",
         "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.0.0",
+        "rxjs": "7.3.0",
         "semver": "7.3.2",
         "tslib": "1.10.0"
     },
