@@ -52,7 +52,7 @@ export default class Maybe<T> extends Monad<T | None<T>> {
         );
     }
 
-    static isMaybe<M>(val: any): val is Maybe<M> {
+    static isMaybe<T>(val: any): val is Maybe<T> {
         return val instanceof Maybe;
     }
 
@@ -73,7 +73,7 @@ export default class Maybe<T> extends Monad<T | None<T>> {
      * maybeEmptyList.get() // Maybe<string>
      * ```
      */
-    static of<M>(val?: M | None | Nil): Maybe<M> {
+    static of<T>(val?: T | None | Nil): Maybe<T> {
         if (None.isNone(val) || Nil.isNil(val)) {
             // @ts-ignore
             return Maybe.EMPTY;
@@ -91,8 +91,8 @@ export default class Maybe<T> extends Monad<T | None<T>> {
      * Wraps passed value in Maybe, if not already a Maybe
      * @see {@link Maybe.of}
      */
-    static from<M>(val?: M): Maybe<M> {
-        return Maybe.isMaybe<M>(val) ? val : Maybe.of<M>(val);
+    static from<T>(val?: T): Maybe<T> {
+        return Maybe.isMaybe<T>(val) ? val : Maybe.of<T>(val);
     }
 
     getOrElse<M = T, R = T extends null ? M : T>(other: M): R {

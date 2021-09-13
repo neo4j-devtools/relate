@@ -40,7 +40,7 @@ export default class Str<T extends string = string> extends Monad<T> {
      * }
      * ```
      */
-    static isStr<S extends string = string>(val: any): val is Str<S> {
+    static isStr<T extends string = string>(val: any): val is Str<T> {
         return val instanceof Str;
     }
 
@@ -59,16 +59,16 @@ export default class Str<T extends string = string> extends Monad<T> {
      * const listStr: Str<'1,2,3'> = Str.of(listMonad);
      * ```
      */
-    static of<S extends string>(val: S): Str<S> {
-        return new Str<S>(String(val));
+    static of<T extends string>(val: T): Str<T> {
+        return new Str<T>(String(val));
     }
 
     /**
      * Coerces anything into a Str
      * @see {@link Str.of}
      */
-    static from<S = string, R = S extends string ? S : S extends Str<infer V> ? V : string>(
-        val?: S,
+    static from<T = string, R = T extends string ? T : T extends Str<infer V> ? V : string>(
+        val?: T,
         // @ts-ignore
     ): Str<R> {
         if (Str.isStr(val)) {

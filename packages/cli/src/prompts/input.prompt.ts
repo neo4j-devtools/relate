@@ -1,8 +1,8 @@
 import {prompt} from 'enquirer';
-import {IInputPromptOptions, IPromptSelection} from '../constants';
+import {IInputPromptOptions} from '../constants';
 
 export const inputPrompt = async (message: string, options?: IInputPromptOptions): Promise<string> => {
-    const {selection} = await prompt<IPromptSelection<string>>({
+    const {selection} = await prompt({
         message,
         initial: options?.initial,
         name: 'selection',

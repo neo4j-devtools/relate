@@ -23,13 +23,6 @@ export interface IQueryTarget {
     database?: string;
 }
 
-export interface IDbms extends IManifest {
-    rootPath?: string;
-    secure?: boolean;
-    connectionUri: string;
-    config: PropertiesFile;
-}
-
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
     status: DBMS_STATUS;
     serverStatus: DBMS_SERVER_STATUS;
@@ -58,6 +51,13 @@ export interface IDbmsUpgradeOptions {
     migrate?: boolean;
     backup?: boolean;
     pluginUpgradeMode?: PLUGIN_UPGRADE_MODE;
+}
+
+export interface IDbms extends IManifest {
+    rootPath?: string;
+    secure?: boolean;
+    connectionUri: string;
+    config: PropertiesFile;
 }
 
 export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {}

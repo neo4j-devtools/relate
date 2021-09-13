@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-shadow */
 import {ConfigService} from '@nestjs/config';
 
 declare module '@nestjs/config' {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-shadow
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     export class ConfigService<C = any, K = keyof C> {
         get<T extends K = K>(propertyPath: T): C[T];
 

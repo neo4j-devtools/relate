@@ -57,8 +57,4 @@ export interface IInputPromptOptions {
     required?: boolean;
 }
 
-export interface IPromptSelection<T> {
-    selection: T;
-}
-
 export const VALID_BACKUP_TYPES = [ENTITY_TYPES.DBMS, ENTITY_TYPES.PROJECT];
