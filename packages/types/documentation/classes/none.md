@@ -95,7 +95,7 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**N**›(`_?`: any): *[None](none.md)‹N›*
+▸ **from**‹**T**›(`_?`: any): *[None](none.md)‹T›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
@@ -105,7 +105,7 @@ Defined in src/monads/primitive/none.monad.ts:62
 
 **Type parameters:**
 
-▪ **N**: *any*
+▪ **T**: *any*
 
 **Parameters:**
 
@@ -113,13 +113,13 @@ Name | Type |
 ------ | ------ |
 `_?` | any |
 
-**Returns:** *[None](none.md)‹N›*
+**Returns:** *[None](none.md)‹T›*
 
 ___
 
 ### `Static` isNone
 
-▸ **isNone**‹**N**›(`val`: any): *val is None<N>*
+▸ **isNone**‹**T**›(`val`: any): *val is None<T>*
 
 Defined in src/monads/primitive/none.monad.ts:40
 
@@ -132,7 +132,7 @@ if (None.isNone(val)) {
 
 **Type parameters:**
 
-▪ **N**: *any*
+▪ **T**: *any*
 
 **Parameters:**
 
@@ -140,13 +140,13 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is None<N>*
+**Returns:** *val is None<T>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**N**›(`_?`: any): *[None](none.md)‹N›*
+▸ **of**‹**T**›(`_?`: any): *[None](none.md)‹T›*
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
@@ -164,7 +164,7 @@ const listNone: None<List<string>> = None.of(listMonad);
 
 **Type parameters:**
 
-▪ **N**: *any*
+▪ **T**: *any*
 
 **Parameters:**
 
@@ -172,4 +172,4 @@ Name | Type |
 ------ | ------ |
 `_?` | any |
 
-**Returns:** *[None](none.md)‹N›*
+**Returns:** *[None](none.md)‹T›*
