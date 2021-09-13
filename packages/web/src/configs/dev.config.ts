@@ -8,4 +8,5 @@ export default (): IWebModuleConfig => ({
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : DEFAULT_PORT,
     // @todo: https?
     protocol: 'http://',
+    autoSchemaFile: true,
 });
