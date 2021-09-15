@@ -175,7 +175,6 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         const fileName = path.basename(target);
         const fileExists = await this.getFile(project, target);
 
-        // eslint-disable-next-line array-callback-return
         fileExists.flatMap((file) => {
             if (!overwrite && !None.isNone(file)) {
                 throw new InvalidArgumentError(`File ${file.name} already exists at that destination`);
@@ -315,13 +314,13 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
             return List.from(
                 JSON.parse(response.body)?.items.map(
-                    /* eslint-disable-next-line camelcase */
+                    /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
                     ({name, description, default_branch}: ISampleProjectRest) => ({
                         name,
                         description,
-                        /* eslint-disable-next-line camelcase */
+                        /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
                         default_branch,
-                        /* eslint-disable-next-line camelcase */
+                        /* eslint-disable-next-line camelcase, @typescript-eslint/camelcase */
                         downloadUrl: `https://github.com/neo4j-graph-examples/${name}/archive/${default_branch}.zip`,
                     }),
                 ),

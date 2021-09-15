@@ -4,7 +4,6 @@ import {Module} from '@nestjs/common';
 import path from 'path';
 
 // ugly hack for allowing extensions to use our dependencies in electron
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('module').globalPaths.push(path.join(__dirname, '..', 'node_modules'));
 
 import {ElectronModule, IElectronModuleConfig} from './electron.module';

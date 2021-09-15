@@ -24,4 +24,3 @@ export {
 } from './entities/environments';
 export * from './entities/environments/authentication';
 export * from './token.service';
-export {ConfigModule, ConfigService} from '@nestjs/config';

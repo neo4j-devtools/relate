@@ -29,7 +29,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
         await this.update(
             id,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore
             {
                 metadata: Dict.from(existing)
@@ -46,7 +46,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
         const {id, metadata} = await this.getEntity(nameOrId);
         const updated = Dict.from(metadata).omit(...keys);
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         await this.update(id, {metadata: updated}, false);
 
@@ -58,10 +58,13 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
         await this.update(
             id,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore
             {
-                tags: List.from(existing).concat(tags).unique().toArray(),
+                tags: List.from(existing)
+                    .concat(tags)
+                    .unique()
+                    .toArray(),
             },
             false,
         );
@@ -74,7 +77,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
 
         await this.update(
             id,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore
             {
                 tags: List.from(existing)
@@ -88,7 +91,7 @@ export class ManifestLocal<Entity extends IManifest, Manifest extends ManifestMo
     }
 
     public async get(id: string): Promise<Manifest> {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         const defaults: Entity = {
             name: '',

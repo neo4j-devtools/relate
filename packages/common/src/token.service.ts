@@ -21,7 +21,7 @@ export abstract class TokenService {
 
         return new Promise((resolve, reject) => {
             jwt.sign(data, jwtTokenSalt, optionsToUse, (err, token) => {
-                if (err || !token) {
+                if (err) {
                     reject(err);
                     return;
                 }

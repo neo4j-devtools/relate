@@ -1,8 +1,9 @@
 import {HttpAdapterHost} from '@nestjs/core';
 import {Inject, Module, OnModuleInit} from '@nestjs/common';
-import {SystemModule, ConfigModule} from '@relate/common';
+import {SystemModule} from '@relate/common';
 
 import {HealthService} from './services/health.service';
+import {ConfigModule} from '@nestjs/config';
 
 @Module({
     exports: [HealthService],

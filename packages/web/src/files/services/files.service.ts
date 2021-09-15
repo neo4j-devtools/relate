@@ -17,18 +17,21 @@ export class FilesService {
 
         const app: Application = httpAdapter.getInstance();
 
-        app.get(`${FILES_BASE_ENDPOINT}/:fileToken/:fileName`, async (req, res): Promise<void> => {
-            const {fileToken} = req.params;
+        app.get(
+            `${FILES_BASE_ENDPOINT}/:fileToken/:fileName`,
+            async (req, res): Promise<void> => {
+                const {fileToken} = req.params;
 
-            try {
-                const {projectName, directory, name} = await TokenService.verify(fileToken);
-                const environment = await this.systemProvider.getEnvironment();
-                const project = await environment.projects.get(projectName);
+                try {
+                    const {projectName, directory, name} = await TokenService.verify(fileToken);
+                    const environment = await this.systemProvider.getEnvironment();
+                    const project = await environment.projects.get(projectName);
 
-                res.sendFile(path.join(project.root, directory, name));
-            } catch (e) {
-                res.sendStatus(404);
-            }
-        });
+                    res.sendFile(path.join(project.root, directory, name));
+                } catch (e) {
+                    res.sendStatus(404);
+                }
+            },
+        );
     }
 }

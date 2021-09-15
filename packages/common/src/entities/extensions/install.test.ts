@@ -134,9 +134,7 @@ describe('Extensions - install', () => {
             expect(await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)).toHaveLength(1);
 
             await testDbmss.environment.extensions.uninstall(
-                (
-                    await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)
-                )[0].name,
+                (await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName))[0].name,
             );
 
             // extension should be deleted

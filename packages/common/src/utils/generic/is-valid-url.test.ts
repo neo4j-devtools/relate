@@ -15,7 +15,7 @@ describe('isValidUrl', () => {
         expect(isValidUrl('C:\\not\\really\\a\\url')).toBe(false);
         expect(isValidUrl('C:also\\not\\a\\url')).toBe(false);
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         expect(isValidUrl(undefined)).toBe(false);
     });

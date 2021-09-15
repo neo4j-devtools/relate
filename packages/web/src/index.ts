@@ -1,7 +1,7 @@
+import {ConfigModule} from '@nestjs/config';
 import {Module} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import fetch from 'node-fetch';
-import {ConfigModule} from '@relate/common';
 
 import {HealthService, IHealthInfo} from './health';
 import {WebModule, IWebModuleConfig} from './web.module';

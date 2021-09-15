@@ -181,7 +181,7 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**S**, **R**›(`val?`: S): *[Str](str.md)‹R›*
+▸ **from**‹**T**, **R**›(`val?`: T): *[Str](str.md)‹R›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
@@ -193,7 +193,7 @@ Coerces anything into a Str
 
 **Type parameters:**
 
-▪ **S**
+▪ **T**
 
 ▪ **R**
 
@@ -201,7 +201,7 @@ Coerces anything into a Str
 
 Name | Type |
 ------ | ------ |
-`val?` | S |
+`val?` | T |
 
 **Returns:** *[Str](str.md)‹R›*
 
@@ -209,7 +209,7 @@ ___
 
 ### `Static` isStr
 
-▸ **isStr**‹**S**›(`val`: any): *val is Str<S>*
+▸ **isStr**‹**T**›(`val`: any): *val is Str<T>*
 
 Defined in src/monads/primitive/str.monad.ts:43
 
@@ -222,7 +222,7 @@ if (Str.isStr(val)) {
 
 **Type parameters:**
 
-▪ **S**: *string*
+▪ **T**: *string*
 
 **Parameters:**
 
@@ -230,13 +230,13 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is Str<S>*
+**Returns:** *val is Str<T>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**S**›(`val`: S): *[Str](str.md)‹S›*
+▸ **of**‹**T**›(`val`: T): *[Str](str.md)‹T›*
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
@@ -258,12 +258,12 @@ const listStr: Str<'1,2,3'> = Str.of(listMonad);
 
 **Type parameters:**
 
-▪ **S**: *string*
+▪ **T**: *string*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | S |
+`val` | T |
 
-**Returns:** *[Str](str.md)‹S›*
+**Returns:** *[Str](str.md)‹T›*

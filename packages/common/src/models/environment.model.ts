@@ -11,6 +11,11 @@ export interface IEnvironmentAuth {
     getToken: () => Promise<string>;
 }
 
+export interface IEnvironmentConfig extends IEnvironmentConfigInput {
+    id: string;
+    configPath: string;
+}
+
 export interface IServerConfig {
     publicGraphQLMethods: PUBLIC_GRAPHQL_METHODS[];
     requiresAPIToken?: boolean;
@@ -27,11 +32,6 @@ export interface IEnvironmentConfigInput {
     authToken?: string;
     authentication?: IAuthenticationOptions;
     serverConfig?: IServerConfig;
-}
-
-export interface IEnvironmentConfig extends IEnvironmentConfigInput {
-    id: string;
-    configPath: string;
 }
 
 export class ServerConfigModel extends ModelAbstract<IServerConfig> implements IServerConfig {

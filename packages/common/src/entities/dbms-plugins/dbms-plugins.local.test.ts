@@ -43,16 +43,20 @@ describe('LocalDbmsPlugins', () => {
     afterAll(() => app.teardown());
 
     test('dbmsPlugins.listSources - no plugin sources', async () => {
-        nock(PLUGIN_SOURCES_ORIGIN).get(PLUGIN_SOURCES_PATHNAME).reply(200, {});
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(200, {});
         jest.spyOn(fse, 'readdir').mockResolvedValueOnce([]);
 
         const pluginSourcesNoDefaults = await app.environment.dbmsPlugins.listSources();
         expect(pluginSourcesNoDefaults.toArray()).toEqual([]);
 
-        nock(PLUGIN_SOURCES_ORIGIN).get(PLUGIN_SOURCES_PATHNAME).reply(500);
+        nock(PLUGIN_SOURCES_ORIGIN)
+            .get(PLUGIN_SOURCES_PATHNAME)
+            .reply(500);
 
         jest.spyOn(fse, 'readdir').mockResolvedValueOnce([]);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         jest.spyOn(fse, 'pathExists').mockResolvedValueOnce(false);
 
@@ -97,7 +101,7 @@ describe('LocalDbmsPlugins', () => {
         const addedSources = await app.environment.dbmsPlugins.addSources([
             {
                 ...TEST_SOURCE_2,
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
                 // @ts-ignore
                 isOfficial: true,
             },

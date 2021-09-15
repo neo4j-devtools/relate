@@ -97,7 +97,7 @@ Defined in src/monads/primitive/dict.monad.ts:68
 
 ▸ **assign**‹**O**›(`other`: O): *[Dict](dict.md)‹T & O›*
 
-Defined in src/monads/primitive/dict.monad.ts:240
+Defined in src/monads/primitive/dict.monad.ts:238
 
 Shallow merge of two Dicts (equivalent of Object.assign)
 ```ts
@@ -125,7 +125,7 @@ ___
 
 ▸ **getKey**(`index`: number): *[Maybe](maybe.md)‹K›*
 
-Defined in src/monads/primitive/dict.monad.ts:143
+Defined in src/monads/primitive/dict.monad.ts:142
 
 Gets key at index
 
@@ -143,7 +143,7 @@ ___
 
 ▸ **getValue**‹**O**, **R**›(`key`: O): *[Maybe](maybe.md)‹R›*
 
-Defined in src/monads/primitive/dict.monad.ts:160
+Defined in src/monads/primitive/dict.monad.ts:159
 
 Gets value of named key
 
@@ -169,7 +169,7 @@ ___
 
 *Overrides [List](list.md).[hasIndex](list.md#hasindex)*
 
-Defined in src/monads/primitive/dict.monad.ts:134
+Defined in src/monads/primitive/dict.monad.ts:133
 
 Checks if a key exists and a given index
 
@@ -187,7 +187,7 @@ ___
 
 ▸ **hasKey**(`key`: K): *boolean*
 
-Defined in src/monads/primitive/dict.monad.ts:152
+Defined in src/monads/primitive/dict.monad.ts:151
 
 Checks if named key exists
 
@@ -205,7 +205,7 @@ ___
 
 ▸ **merge**‹**O**›(`other`: O): *[Dict](dict.md)‹T & O›*
 
-Defined in src/monads/primitive/dict.monad.ts:223
+Defined in src/monads/primitive/dict.monad.ts:222
 
 Recursive merge of two Dicts
 ```ts
@@ -233,7 +233,7 @@ ___
 
 ▸ **omit**‹**K2**, **R**›(...`other`: K2[]): *[Dict](dict.md)‹R›*
 
-Defined in src/monads/primitive/dict.monad.ts:204
+Defined in src/monads/primitive/dict.monad.ts:202
 
 Omits one or more keys from the Dict
 ```ts
@@ -256,9 +256,9 @@ Name | Type |
 
 **Returns:** *[Dict](dict.md)‹R›*
 
-▸ **omit**‹**K2**, **R**›(...`other`: K2[]): *R*
+▸ **omit**‹**K2**, **I**, **R**›(...`other`: K2[]): *R*
 
-Defined in src/monads/primitive/dict.monad.ts:206
+Defined in src/monads/primitive/dict.monad.ts:204
 
 Omits one or more keys from the Dict
 ```ts
@@ -270,6 +270,8 @@ foo.toObject() // {foo: true}
 **Type parameters:**
 
 ▪ **K2**: *KeyVal<T>["key"]*
+
+▪ **I**
 
 ▪ **R**
 
@@ -287,7 +289,7 @@ ___
 
 ▸ **setValue**‹**O**›(`key`: O, `val`: V): *[Dict](dict.md)‹T›*
 
-Defined in src/monads/primitive/dict.monad.ts:169
+Defined in src/monads/primitive/dict.monad.ts:168
 
 Sets value of named key
 
@@ -312,7 +314,7 @@ ___
 
 *Overrides [Monad](monad.md).[toJSON](monad.md#tojson)*
 
-Defined in src/monads/primitive/dict.monad.ts:267
+Defined in src/monads/primitive/dict.monad.ts:265
 
 **Returns:** *any*
 
@@ -320,9 +322,9 @@ ___
 
 ###  toList
 
-▸ **toList**(): *[List](list.md)‹[]›*
+▸ **toList**(): *[List](list.md)‹[K, V]›*
 
-Defined in src/monads/primitive/dict.monad.ts:263
+Defined in src/monads/primitive/dict.monad.ts:261
 
 Converts Dict to List
 ```ts
@@ -330,7 +332,7 @@ const fooBar = Dict.from({foo: true, bar: 1});
 fooBar.toList().toArray() // [["foo", true], ["bar", 1]]
 ```
 
-**Returns:** *[List](list.md)‹[]›*
+**Returns:** *[List](list.md)‹[K, V]›*
 
 ___
 
@@ -338,7 +340,7 @@ ___
 
 ▸ **toObject**‹**O**, **R**›(): *R*
 
-Defined in src/monads/primitive/dict.monad.ts:183
+Defined in src/monads/primitive/dict.monad.ts:182
 
 Converts original value to it's Object representation
 
@@ -358,7 +360,7 @@ ___
 
 *Overrides [List](list.md).[toString](list.md#tostring)*
 
-Defined in src/monads/primitive/dict.monad.ts:174
+Defined in src/monads/primitive/dict.monad.ts:173
 
 **Returns:** *string*
 
@@ -366,11 +368,11 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**D**, **R**›(`val?`: D): *[Dict](dict.md)‹R›*
+▸ **from**‹**T**, **R**›(`val?`: T): *[Dict](dict.md)‹R›*
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
-Defined in src/monads/primitive/dict.monad.ts:122
+Defined in src/monads/primitive/dict.monad.ts:121
 
 Coerces any value to a Dict, if not one already
 
@@ -378,7 +380,7 @@ Coerces any value to a Dict, if not one already
 
 **Type parameters:**
 
-▪ **D**: *object*
+▪ **T**: *object*
 
 ▪ **R**
 
@@ -386,11 +388,31 @@ Coerces any value to a Dict, if not one already
 
 Name | Type |
 ------ | ------ |
-`val?` | D |
+`val?` | T |
 
 **Returns:** *[Dict](dict.md)‹R›*
 
-▸ **from**‹**D**, **R**›(`val?`: D): *[Dict](dict.md)‹R›*
+▸ **from**‹**T**, **R**›(`val?`: T): *[Dict](dict.md)‹R›*
+
+*Overrides [List](list.md).[from](list.md#static-from)*
+
+Defined in src/monads/primitive/dict.monad.ts:122
+
+**Type parameters:**
+
+▪ **T**: *Map‹any, any›*
+
+▪ **R**
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`val?` | T |
+
+**Returns:** *[Dict](dict.md)‹R›*
+
+▸ **from**‹**T**›(`val?`: T): *[Dict](dict.md)‹T›*
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
@@ -398,19 +420,17 @@ Defined in src/monads/primitive/dict.monad.ts:123
 
 **Type parameters:**
 
-▪ **D**: *Map‹any, any›*
-
-▪ **R**
+▪ **T**: *Iterable‹[any, any]›*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | D |
+`val?` | T |
 
-**Returns:** *[Dict](dict.md)‹R›*
+**Returns:** *[Dict](dict.md)‹T›*
 
-▸ **from**‹**D**›(`val?`: D): *[Dict](dict.md)‹D›*
+▸ **from**‹**T**›(`val?`: T): *[Dict](dict.md)‹T›*
 
 *Overrides [List](list.md).[from](list.md#static-from)*
 
@@ -418,39 +438,21 @@ Defined in src/monads/primitive/dict.monad.ts:124
 
 **Type parameters:**
 
-▪ **D**: *Iterable‹[]›*
+▪ **T**: *[List](list.md)‹[any, any]›*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | D |
+`val?` | T |
 
-**Returns:** *[Dict](dict.md)‹D›*
-
-▸ **from**‹**D**›(`val?`: D): *[Dict](dict.md)‹D›*
-
-*Overrides [List](list.md).[from](list.md#static-from)*
-
-Defined in src/monads/primitive/dict.monad.ts:125
-
-**Type parameters:**
-
-▪ **D**: *[List](list.md)‹[]›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`val?` | D |
-
-**Returns:** *[Dict](dict.md)‹D›*
+**Returns:** *[Dict](dict.md)‹T›*
 
 ___
 
 ### `Static` isDict
 
-▸ **isDict**‹**D**›(`val`: any): *val is Dict<D>*
+▸ **isDict**‹**T**›(`val`: any): *val is Dict<T>*
 
 Defined in src/monads/primitive/dict.monad.ts:91
 
@@ -463,7 +465,7 @@ if (Dict.isDict(val)) {
 
 **Type parameters:**
 
-▪ **D**
+▪ **T**
 
 **Parameters:**
 
@@ -471,13 +473,13 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is Dict<D>*
+**Returns:** *val is Dict<T>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**D**›(`val`: D): *[Dict](dict.md)‹D›*
+▸ **of**‹**T**›(`val`: T): *[Dict](dict.md)‹T›*
 
 *Overrides [List](list.md).[of](list.md#static-of)*
 
@@ -498,12 +500,12 @@ list.get() // Map<string, string>
 
 **Type parameters:**
 
-▪ **D**
+▪ **T**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | D |
+`val` | T |
 
-**Returns:** *[Dict](dict.md)‹D›*
+**Returns:** *[Dict](dict.md)‹T›*

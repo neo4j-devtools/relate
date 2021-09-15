@@ -15,7 +15,6 @@ import {
     VALIDATION_ENDPOINT,
     VERIFICATION_ENDPOINT,
 } from '@relate/common';
-import {Str} from '@relate/types';
 
 @Injectable()
 export class AuthService {
@@ -93,65 +92,73 @@ export class AuthService {
     }
 
     registerAuthenticationHandlers(app: Application): void {
-        app.get(AUTHENTICATION_ENDPOINT, async (req, res): Promise<void> => {
-            const environment = await this.systemProvider.getEnvironment();
-            const redirectTo = Str.from(req.query.redirectTo).toString();
-
-            try {
-                const {authUrl} = await environment.login(redirectTo);
-
-                res.redirect(authUrl);
-            } catch (e) {
-                res.status(403);
-                res.send(e.message);
-            }
-        });
-
-        app.get(VALIDATION_ENDPOINT, async (req, res): Promise<void> => {
-            const queryObject = req.query;
-
-            if (queryObject.error) {
-                res.status(401);
-                res.send(`Login failed: ${queryObject.error}`);
-                return;
-            }
-
-            try {
+        app.get(
+            AUTHENTICATION_ENDPOINT,
+            async (req, res): Promise<void> => {
                 const environment = await this.systemProvider.getEnvironment();
-                const authToken = await environment.generateAuthToken(queryObject);
+                const {redirectTo} = req.query;
 
-                // @todo: use signed cookies
-                res.cookie(AUTH_TOKEN_HEADER, authToken);
-                res.header(AUTH_TOKEN_HEADER, authToken);
+                try {
+                    const {authUrl} = await environment.login(redirectTo);
 
-                // @todo: this is Google OAuth specific
-                if (queryObject.state) {
-                    const state = Str.from(queryObject.state).toString();
-                    res.redirect(getAuthRedirect(environment.httpOrigin, state, authToken));
+                    res.redirect(authUrl);
+                } catch (e) {
+                    res.status(403);
+                    res.send(e.message);
+                }
+            },
+        );
+
+        app.get(
+            VALIDATION_ENDPOINT,
+            async (req, res): Promise<void> => {
+                const queryObject = req.query;
+
+                if (queryObject.error) {
+                    res.status(401);
+                    res.send(`Login failed: ${queryObject.error}`);
                     return;
                 }
 
-                res.status(201);
-                res.send('You are authenticated, you can close this tab now.');
-            } catch (e) {
-                res.status(403);
-                res.send(e.message);
-            }
-        });
+                try {
+                    const environment = await this.systemProvider.getEnvironment();
+                    const authToken = await environment.generateAuthToken(queryObject);
 
-        app.get(VERIFICATION_ENDPOINT, async (req, res): Promise<void> => {
-            const authToken = getRequestToken(req, AUTH_TOKEN_HEADER);
-            const environment = await this.systemProvider.getEnvironment();
+                    // @todo: use signed cookies
+                    res.cookie(AUTH_TOKEN_HEADER, authToken);
+                    res.header(AUTH_TOKEN_HEADER, authToken);
 
-            try {
-                await environment.verifyAuthToken(authToken);
-                res.sendStatus(200);
-            } catch (e) {
-                res.clearCookie(AUTH_TOKEN_HEADER);
-                res.status(403);
-                res.send(e.message);
-            }
-        });
+                    // @todo: this is Google OAuth specific
+                    if (queryObject.state) {
+                        res.redirect(getAuthRedirect(environment.httpOrigin, queryObject.state, authToken));
+                        return;
+                    }
+
+                    res.status(201);
+                    res.send('You are authenticated, you can close this tab now.');
+                } catch (e) {
+                    res.status(403);
+                    res.send(e.message);
+                }
+            },
+        );
+
+        app.get(
+            VERIFICATION_ENDPOINT,
+            async (req, res): Promise<void> => {
+                const authToken = getRequestToken(req, AUTH_TOKEN_HEADER);
+                const environment = await this.systemProvider.getEnvironment();
+
+                try {
+                    await environment.verifyAuthToken(authToken);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.clearCookie(AUTH_TOKEN_HEADER);
+                    res.status(403);
+                    res.send(e.message);
+                }
+            },
+        );
     }
 }
 

@@ -134,7 +134,9 @@ describe('DBMS versions (local environment)', () => {
                 },
             },
         };
-        nock(neo4jLimitedVersionsUrl.origin).get(neo4jLimitedVersionsUrl.pathname).reply(200, versionReply);
+        nock(neo4jLimitedVersionsUrl.origin)
+            .get(neo4jLimitedVersionsUrl.pathname)
+            .reply(200, versionReply);
         const versions = (await fetchNeo4jVersions(true)).toArray();
         expect(versions.length).toEqual(5);
         versions.forEach((v) => {
@@ -149,7 +151,9 @@ describe('DBMS versions (local environment)', () => {
     });
 
     test('list online distribution on network error', async () => {
-        nock(neo4jVersionsUrl.origin).get(neo4jVersionsUrl.pathname).replyWithError('something bad happened');
+        nock(neo4jVersionsUrl.origin)
+            .get(neo4jVersionsUrl.pathname)
+            .replyWithError('something bad happened');
         const versions = await fetchNeo4jVersions();
 
         expect(versions).toEqual(List.from([]));

@@ -94,8 +94,6 @@ export class WebModule implements OnModuleInit {
         // convert GraphQL API to REST using SOFA
         app.use(
             '/api',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             useSofa({
                 basePath: '/api',
                 schema,

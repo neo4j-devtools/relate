@@ -97,7 +97,10 @@ export async function discoverExtension(extensionRootDir: string): Promise<Exten
             .switchMap((m) =>
                 m.merge({
                     dist: extensionRootDir,
-                    official: m.getValue('name').getOrElse('').startsWith(RELATE_NPM_PREFIX),
+                    official: m
+                        .getValue('name')
+                        .getOrElse('')
+                        .startsWith(RELATE_NPM_PREFIX),
                     type: m.getValue('type').getOrElse(EXTENSION_TYPES.STATIC),
                     verification: verificationStatus,
                     // @todo: how?

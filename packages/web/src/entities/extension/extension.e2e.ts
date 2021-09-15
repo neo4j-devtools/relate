@@ -1,5 +1,6 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
+import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import {
     Environment,
@@ -12,7 +13,6 @@ import {
     getAppLaunchUrl,
     EXTENSION_ORIGIN,
     EXTENSION_TYPES,
-    ConfigModule,
 } from '@relate/common';
 import fse from 'fs-extra';
 import path from 'path';

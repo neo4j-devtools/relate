@@ -110,7 +110,7 @@ export default class List<T> extends Monad<Iterable<T>> {
      * }
      * ```
      */
-    static isList<L = any>(val: any): val is List<L> {
+    static isList<T = any>(val: any): val is List<T> {
         return val instanceof List;
     }
 
@@ -131,8 +131,8 @@ export default class List<T> extends Monad<Iterable<T>> {
      * const listList: List<false> = List.of(listMonad);
      * ```
      */
-    static of<L>(val: Iterable<L>): List<L> {
-        const sane: Iterable<L> = isIterable(val) ? val : Array.of(val);
+    static of<T>(val: Iterable<T>): List<T> {
+        const sane: Iterable<T> = isIterable(val) ? val : Array.of(val);
 
         return new List(sane);
     }
@@ -141,12 +141,12 @@ export default class List<T> extends Monad<Iterable<T>> {
      * Coerces any value to a List, if not one already
      * @see {@link List.of}
      */
-    static from<L>(val?: Iterable<L> | null): List<L> {
+    static from<T>(val?: Iterable<T> | null): List<T> {
         if (!val) {
-            return List.of<L>([]);
+            return List.of<T>([]);
         }
 
-        return List.isList<L>(val) ? val : List.of(Array.from(val));
+        return List.isList<T>(val) ? val : List.of(Array.from(val));
     }
 
     /**
@@ -284,7 +284,7 @@ export default class List<T> extends Monad<Iterable<T>> {
 
     concat<O extends string>(other: O): List<T | O>;
 
-    concat<O, I = O extends Iterable<infer L> ? L : O>(other: O): List<T | I>;
+    concat<O, I = O extends Iterable<infer I> ? I : O>(other: O): List<T | I>;
 
     concat<O>(other: O): List<T | O> {
         if (isIterable(other) && List.isList(other)) {
