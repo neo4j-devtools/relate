@@ -1,6 +1,7 @@
 import {DynamicModule, Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
 import {HttpAdapterHost} from '@nestjs/core';
+import {ConfigService} from '@nestjs/config';
 import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
 import {Application} from 'express';
 import {OpenAPI, useSofa} from 'sofa-api';
@@ -20,6 +21,7 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
     protocol?: string;
     host?: string;
     port?: number;
+    autoSchemaFile?: string | boolean;
 }
 
 @Module({
@@ -30,16 +32,19 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         ExtensionModule,
         ProjectModule,
         FilesModule,
-        HealthModule,
-        GraphQLModule.forRoot({
-            autoSchemaFile: true,
-            installSubscriptionHandlers: true,
-            playground: {
-                settings: {
-                    'request.credentials': 'same-origin',
+        GraphQLModule.forRootAsync({
+            useFactory: (configService: ConfigService<IWebModuleConfig>) => ({
+                installSubscriptionHandlers: true,
+                playground: {
+                    settings: {
+                        'request.credentials': 'same-origin',
+                    },
                 },
-            },
+                autoSchemaFile: configService.get('autoSchemaFile'),
+            }),
+            inject: [ConfigService],
         }),
+        HealthModule,
         AuthModule,
     ],
 })
