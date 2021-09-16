@@ -16,6 +16,7 @@ import {AuthModule} from './auth';
 import {FilesModule} from './files';
 import {HealthModule} from './health';
 import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
+import {DBMSPluginsModule} from './entities/dbms-plugins';
 
 export interface IWebModuleConfig extends ISystemModuleConfig {
     protocol?: string;
@@ -28,6 +29,7 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
     imports: [
         SystemModule,
         DBMSModule,
+        DBMSPluginsModule,
         DBModule,
         ExtensionModule,
         ProjectModule,
