@@ -1,16 +1,20 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import request from 'supertest';
-import {TestDbmss} from '@relate/common';
 import {ConfigModule} from '@nestjs/config';
+import {TestDbmss} from '@relate/common';
+import fse from 'fs-extra';
+import path from 'path';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
 
 let TEST_DBMS_NAME: string;
 let TEST_DBMS_ACCESS_TOKEN: string;
+let TEST_DB_DUMP_PATH: string;
+let TEST_FIXTURES_PATH: string;
 const TEST_APP_ID = 'foo';
-const TEST_DB_NAME = 'testDb';
+const TEST_DB_NAME = 'testdb';
 const HTTP_OK = 200;
 
 const queryBody = (query: string, variables?: {[key: string]: any}): {[key: string]: any} => ({
@@ -32,6 +36,8 @@ describe('DBModule', () => {
         const {name} = await dbmss.createDbms();
 
         TEST_DBMS_NAME = name;
+        TEST_FIXTURES_PATH = path.resolve(dbmss.environment.dataPath, '..');
+        TEST_DB_DUMP_PATH = path.join(path.resolve(dbmss.environment.dataPath, '..'), `${TEST_DB_NAME}.dump`);
 
         const module = await Test.createTestingModule({
             imports: [
@@ -50,7 +56,10 @@ describe('DBModule', () => {
         await app.init();
     });
 
-    afterAll(() => dbmss.teardown());
+    afterAll(() => {
+        dbmss.teardown();
+        fse.remove(TEST_DB_DUMP_PATH);
+    });
 
     describe('dbms stopped', () => {
         test('/graphql createDb (no running dbms)', () => {
@@ -134,6 +143,29 @@ describe('DBModule', () => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
                     expect(errors[0].message).toContain('Cannot connect to stopped DBMS.');
+                });
+        });
+
+        test('/graphql dumpDb (no running dbms and no access token created)', () => {
+            const defaultDb = 'neo4j';
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation DumpDb($dbmsId: String!, $database: String!, $to: String!) {
+                                dumpDb(dbmsId: $dbmsId, database: $database, to: $to)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: defaultDb,
+                            to: TEST_FIXTURES_PATH,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {dumpDb} = res.body.data;
+                    expect(dumpDb).toContain(`Database does not exist: ${defaultDb}`);
                 });
         });
     });
@@ -249,7 +281,102 @@ describe('DBModule', () => {
                 });
         });
 
-        test('/graphql dropDb (invalid accessToken)', () => {
+        test('/graphql dumpDb (running dbms)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation DumpDb($dbmsId: String!, $database: String!, $to: String!) {
+                                dumpDb(dbmsId: $dbmsId, database: $database, to: $to)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: TEST_DB_NAME,
+                            to: TEST_FIXTURES_PATH,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {dumpDb} = res.body.data;
+                    expect(dumpDb).toContain('The database is in use');
+                });
+        });
+
+        test('/graphql dumpDb (after stopping a running dbms)', async () => {
+            await dbmss.environment.dbmss.stop([TEST_DBMS_NAME]);
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation DumpDb($dbmsId: String!, $database: String!, $to: String!) {
+                                dumpDb(dbmsId: $dbmsId, database: $database, to: $to)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: TEST_DB_NAME,
+                            to: TEST_FIXTURES_PATH,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect(async (res: request.Response) => {
+                    const {dumpDb} = res.body.data;
+                    expect(dumpDb).toContain('Done');
+                    const dbDumpExists = await fse.pathExists(TEST_DB_DUMP_PATH);
+                    expect(dbDumpExists).toBeTruthy();
+                });
+        });
+
+        test('/graphql dumpDb (db dump pre-exists at path)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation DumpDb($dbmsId: String!, $database: String!, $to: String!) {
+                                dumpDb(dbmsId: $dbmsId, database: $database, to: $to)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: TEST_DB_NAME,
+                            to: TEST_FIXTURES_PATH,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect(async (res: request.Response) => {
+                    const {dumpDb} = res.body.data;
+                    expect(dumpDb).toContain('Archive already exists:');
+                    const dbDumpExists = await fse.pathExists(TEST_DB_DUMP_PATH);
+                    expect(dbDumpExists).toBeTruthy();
+                });
+        });
+
+        test('/graphql loadDb (stopped dbms)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation LoadDb($dbmsId: String!, $database: String!, $from: String!, $force: Boolean) {
+                                loadDb(dbmsId: $dbmsId, database: $database, from: $from, force: $force)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: TEST_DB_NAME,
+                            from: TEST_DB_DUMP_PATH,
+                            force: true,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {loadDb} = res.body.data;
+                    expect(loadDb).toContain('Done');
+                });
+        });
+
+        test('/graphql dropDb (invalid accessToken)', async () => {
+            await dbmss.environment.dbmss.start([TEST_DBMS_NAME]);
             const accessToken = 'invalidAccessToken1234';
 
             return request(app.getHttpServer())
@@ -272,6 +399,29 @@ describe('DBModule', () => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
                     expect(errors[0].message).toContain('The client is unauthorized due to authentication failure.');
+                });
+        });
+
+        test('/graphql loadDb (started dbms)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `mutation LoadDb($dbmsId: String!, $database: String!, $from: String!, $force: Boolean!) {
+                                loadDb(dbmsId: $dbmsId, database: $database, from: $from, force: $force)
+                            }`,
+                        {
+                            dbmsId: TEST_DBMS_NAME,
+                            database: TEST_DB_NAME,
+                            from: TEST_DB_DUMP_PATH,
+                            force: true,
+                        },
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {loadDb} = res.body.data;
+                    expect(loadDb).toContain('The database is in use');
                 });
         });
 
@@ -390,7 +540,7 @@ describe('DBModule', () => {
                     expect(listDbs).toEqual([
                         {
                             currentStatus: 'online',
-                            default: 'true',
+                            default: true,
                             error: '',
                             name: 'neo4j',
                             requestedStatus: 'online',
@@ -398,7 +548,7 @@ describe('DBModule', () => {
                         },
                         {
                             currentStatus: 'online',
-                            default: 'false',
+                            default: false,
                             error: '',
                             name: 'system',
                             requestedStatus: 'online',
@@ -440,7 +590,7 @@ describe('DBModule', () => {
                     expect(listDbs).toEqual([
                         {
                             currentStatus: 'online',
-                            default: 'true',
+                            default: true,
                             error: '',
                             name: 'neo4j',
                             requestedStatus: 'online',
@@ -448,7 +598,7 @@ describe('DBModule', () => {
                         },
                         {
                             currentStatus: 'online',
-                            default: 'false',
+                            default: false,
                             error: '',
                             name: 'system',
                             requestedStatus: 'online',
@@ -456,7 +606,7 @@ describe('DBModule', () => {
                         },
                         {
                             currentStatus: 'online',
-                            default: 'false',
+                            default: false,
                             error: '',
                             name: 'testdb',
                             requestedStatus: 'online',

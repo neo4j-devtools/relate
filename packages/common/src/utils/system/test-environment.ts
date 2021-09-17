@@ -11,7 +11,7 @@ import {NotSupportedError} from '../../errors';
 import {IDbmsInfo} from '../../models';
 import {SystemModule, SystemProvider} from '../../system';
 
-export const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.4';
+export const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.12';
 export const TEST_NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
     .values.find((e) => e === process.env.TEST_NEO4J_EDITION)
     .getOrElse(NEO4J_EDITION.ENTERPRISE);

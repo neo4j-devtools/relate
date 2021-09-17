@@ -161,6 +161,8 @@ export enum PUBLIC_GRAPHQL_METHODS {
     CREATE_DB = 'createDb',
     DROP_DB = 'dropDb',
     LIST_DBS = 'listDbs',
+    DUMP_DB = 'dumpDb',
+    LOAD_DB = 'loadDb',
 
     // dbms-plugins
     LIST_DBMS_PLUGINS = 'listDbmsPlugins',
@@ -194,11 +196,6 @@ export enum PUBLIC_GRAPHQL_METHODS {
     LIST_SAMPLES_PROJECTS = 'listSampleProjects',
     INSTALL_SAMPLE_PROJECTS = 'installSampleProjects',
     IMPORT_SAMPLE_DBMS = 'importSampleDbms',
-
-    // dump / import
-    DB_DUMP = 'dbDump',
-    DB_LOAD = 'dbLoad',
-    QUERY_FILE = 'dbExec',
 }
 
 // seconds

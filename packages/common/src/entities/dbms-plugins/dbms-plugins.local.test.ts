@@ -163,7 +163,7 @@ describe('LocalDbmsPlugins', () => {
         const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
 
         expect(installedVersion.toArray().length).toEqual(1);
-        expect(installedVersion.toArray()[0].version.version).toEqual('4.0.0.17');
+        expect(installedVersion.toArray()[0].version.version).toEqual('4.0.0.18');
 
         await app.environment.dbmss.start([dbms.id]);
         await waitForDbmsToBeOnline({
@@ -188,7 +188,7 @@ describe('LocalDbmsPlugins', () => {
             'RETURN apoc.version() AS apocVersion',
         ).finally(() => app.environment.dbmss.stop([dbms.id]));
 
-        expect(res.get('apocVersion')).toEqual('4.0.0.17');
+        expect(res.get('apocVersion')).toEqual('4.0.0.18');
     });
 
     test('dbmsPlugins.list - lists installed plugin', async () => {
@@ -206,7 +206,7 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'apoc',
                 homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-                version: '4.0.0.17',
+                version: '4.0.0.18',
             },
             {
                 name: 'neo4j-jwt-addon',
@@ -227,7 +227,7 @@ describe('LocalDbmsPlugins', () => {
         expect(upgradableMapped).toEqual([
             {
                 name: 'apoc',
-                installed: '4.0.0.17',
+                installed: '4.0.0.18',
                 upgradable: '4.2.0.0',
             },
             {
