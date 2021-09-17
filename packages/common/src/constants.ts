@@ -156,6 +156,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     REMOVE_DBMS_TAGS = 'removeDbmsTags',
     SET_DBMS_METADATA = 'setDbmsMetadata',
     REMOVE_DBMS_METADATA = 'removeDbmsMetadata',
+    UPGRADE_DBMS = 'upgradeDbms',
 
     // dbs
     CREATE_DB = 'createDb',

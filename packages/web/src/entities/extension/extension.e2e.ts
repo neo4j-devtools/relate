@@ -167,35 +167,33 @@ describe('AppsModule', () => {
             dbmss: [],
         });
 
-        return (
-            request(app.getHttpServer())
-                .post('/graphql')
-                .send({
-                    ...APP_LAUNCH_DATA,
-                    variables: {
-                        ...APP_LAUNCH_DATA.variables,
-                        appName: testExtension.name,
-                        launchToken,
-                    },
-                })
-                // .expect(HTTP_OK)
-                .expect((res: request.Response) => {
-                    const {appLaunchData = {}} = res.body.data;
+        return request(app.getHttpServer())
+            .post('/graphql')
+            .send({
+                ...APP_LAUNCH_DATA,
+                variables: {
+                    ...APP_LAUNCH_DATA.variables,
+                    appName: testExtension.name,
+                    launchToken,
+                },
+            })
+            .expect(HTTP_OK)
+            .expect((res: request.Response) => {
+                const {appLaunchData = {}} = res.body.data;
 
-                    expect(appLaunchData).toEqual({
-                        accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
-                        appName: testExtension.name,
-                        dbms: {
-                            id: TEST_DBMS_ID,
-                        },
-                        environmentId: expect.any(String),
-                        principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
-                        project: {
-                            name: projectName,
-                        },
-                    });
-                })
-        );
+                expect(appLaunchData).toEqual({
+                    accessToken: CREATE_APP_LAUNCH_TOKEN.variables.accessToken,
+                    appName: testExtension.name,
+                    dbms: {
+                        id: TEST_DBMS_ID,
+                    },
+                    environmentId: expect.any(String),
+                    principal: CREATE_APP_LAUNCH_TOKEN.variables.principal,
+                    project: {
+                        name: projectName,
+                    },
+                });
+            });
     });
 
     test('/graphql listExtensions', () => {

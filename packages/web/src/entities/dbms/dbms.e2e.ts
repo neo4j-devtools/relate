@@ -17,6 +17,7 @@ import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
 
 let TEST_DBMS_NAME: string;
+let TEST_DBMS_ID: string;
 const TEST_APP_ID = 'foo';
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
@@ -26,13 +27,15 @@ const queryBody = (query: string, variables?: {[key: string]: any}): {[key: stri
     query,
     variables: {
         dbmsName: TEST_DBMS_NAME,
+        dbmsId: TEST_DBMS_ID,
         dbmsNames: [TEST_DBMS_NAME],
         environmentNameOrId: 'test',
         ...variables,
     },
 });
-
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
+
+jest.setTimeout(240000);
 
 describe('DBMSModule', () => {
     let app: INestApplication;
@@ -40,9 +43,15 @@ describe('DBMSModule', () => {
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
-        const {name} = await dbmss.createDbms();
+        const {name, id} = await dbmss.environment.dbmss.install(
+            dbmss.createName(),
+            TestDbmss.NEO4J_VERSION,
+            TestDbmss.NEO4J_EDITION,
+            TestDbmss.DBMS_CREDENTIALS,
+        );
 
         TEST_DBMS_NAME = name;
+        TEST_DBMS_ID = id;
 
         const module = await Test.createTestingModule({
             imports: [
@@ -343,6 +352,55 @@ describe('DBMSModule', () => {
                     expect(removeDbmsMetadata).toEqual(expected);
                 });
         });
+
+        test('/graphql upgradeDbms (upgrade version <= current version)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                    mutation UpgradeDbms($environmentNameOrId: String, $dbmsId: String!, $version: String!) {
+                        upgradeDbms(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsId, version: $version) {
+                            id
+                            name
+                            version
+                        }
+                    }
+                `,
+                        {version: '4.0.1'},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {errors} = res.body;
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0].message).toContain('Target version must be greater than 4.0.12');
+                });
+        });
+
+        test('/graphql upgradeDbms (upgrade version >= current version)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                    mutation UpgradeDbms($environmentNameOrId: String, $dbmsId: String!, $version: String!) {
+                        upgradeDbms(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsId, version: $version) {
+                            id
+                            name
+                            version
+                        }
+                    }
+                `,
+                        {version: '4.1.0'},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {upgradeDbms} = res.body.data;
+                    expect(upgradeDbms.id).toBe(TEST_DBMS_ID);
+                });
+        });
     });
 
     describe('dbms started', () => {
@@ -423,6 +481,31 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {createAccessToken} = res.body.data;
                     expect(createAccessToken).toEqual(expect.stringMatching(JWT_REGEX));
+                });
+        });
+
+        test('/graphql upgradeDbms (upgrade version > current version)', () => {
+            return request(app.getHttpServer())
+                .post('/graphql')
+                .send(
+                    queryBody(
+                        `
+                    mutation UpgradeDbms($environmentNameOrId: String, $dbmsId: String!, $version: String!) {
+                        upgradeDbms(environmentNameOrId: $environmentNameOrId, dbmsId: $dbmsId, version: $version) {
+                            id
+                            name
+                            version
+                        }
+                    }
+                `,
+                        {version: '4.1.1'},
+                    ),
+                )
+                .expect(HTTP_OK)
+                .expect((res: request.Response) => {
+                    const {errors} = res.body;
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0].message).toContain('Can only upgrade stopped dbms');
                 });
         });
     });
