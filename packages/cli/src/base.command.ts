@@ -31,7 +31,7 @@ export default abstract class BaseCommand extends Command {
             exit: this.exit,
             warn: this.warn,
         };
-        const options = IS_DEVELOPMENT_ENV ? {} : {logger: false};
+        const options: {logger?: false} = IS_DEVELOPMENT_ENV ? {} : {logger: false};
         const {flags} = parsed;
         const cliExtensions = loadExtensionsFor(EXTENSION_TYPES.CLI, flags.environment);
         const systemConfig: ISystemModuleConfig = {defaultEnvironmentNameOrId: flags.environment};
