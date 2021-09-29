@@ -20,7 +20,7 @@
         "test": "run-s --continue-on-error test:setup lerna:test test:teardown",
         "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
-        "lerna:bootstrap": "lerna bootstrap",
+        "lerna:bootstrap": "lerna bootstrap --hoist",
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
         "generate:docs": "lerna run generate:docs",
