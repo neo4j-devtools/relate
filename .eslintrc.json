@@ -9,14 +9,15 @@
         "plugin:@typescript-eslint/recommended",
         "prettier",
         "plugin:prettier/recommended",
-        "plugin:jest/recommended"
+        "plugin:jest/recommended",
+        "plugin:import/typescript"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": ["@typescript-eslint/eslint-plugin"],
+    "plugins": ["@typescript-eslint/eslint-plugin", "import"],
     "overrides": [
         {
             // We use conditional expect to run tests only in certain platforms.
@@ -66,9 +67,30 @@
             "rules": {
                 "@typescript-eslint/ban-ts-comment": ["off"]
             }
+        },
+        {
+            "files": ["packages/web/src/**/*.ts"],
+            "settings": {
+                // These paths are exported by @nestjs/platform-express
+                "import/core-modules": ["multer", "express"]
+            }
+        },
+        {
+            "files": ["packages/electron/src/**/*.ts"],
+            "settings": {
+                "import/core-modules": ["electron"]
+            }
+        },
+        {
+            "files": ["packages/cli/**/*.ts"],
+            "settings": {
+                // These paths are exported by @oclif/command
+                "import/core-modules": ["@oclif/parser", "@oclif/errors"]
+            }
         }
     ],
     "rules": {
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.e2e.ts"]}],
         "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "never"}],
         "@typescript-eslint/naming-convention": [
             "error",

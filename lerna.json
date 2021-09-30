@@ -3,7 +3,9 @@
     "version": "independent",
     "command": {
         "bootstrap": {
-            "ci": true
+            "ci": true,
+            "hoist": true,
+            "strict": true
         }
     }
 }

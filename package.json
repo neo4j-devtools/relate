@@ -20,26 +20,26 @@
         "test": "run-s --continue-on-error test:setup lerna:test test:teardown",
         "test:pr": "run-s lint test",
         "lerna:clean": "lerna clean -y",
-        "lerna:bootstrap": "lerna bootstrap --hoist",
+        "lerna:bootstrap": "lerna bootstrap",
         "prepare": "run-s lerna:clean lerna:bootstrap",
         "generate:licenses": "node scripts/licenses/index.js",
         "generate:docs": "lerna run generate:docs",
         "watch": "lerna run watch --stream --parallel",
-        "fix:locks": "lerna exec \"npm install --ignore-scripts --no-audit\"",
         "add:locks": "git add packages/*/package-lock.json",
         "version": "run-s lerna:clean fix:locks add:locks"
     },
     "devDependencies": {
         "@types/node-fetch": "2.5.7",
-        "@types/supertest": "2.0.10",
         "@typescript-eslint/eslint-plugin": "4.32.0",
         "@typescript-eslint/parser": "4.32.0",
         "eslint": "7.32.0",
         "eslint-config-prettier": "8.3.0",
+        "eslint-plugin-import": "2.24.2",
         "eslint-plugin-jest": "24.5.0",
         "eslint-plugin-prettier": "4.0.0",
         "fs-extra": "9.0.1",
         "husky": "4.0.9",
+        "jest": "27.2.4",
         "lerna": "4.0.0",
         "license-checker": "25.0.1",
         "lint-staged": "9.5.0",
@@ -48,9 +48,7 @@
         "ora": "5.1.0",
         "prettier": "2.4.1",
         "rxjs": "7.2.0",
-        "supertest": "4.0.2",
-        "tar": "6.0.2",
+        "tar": "6.1.11",
         "typescript": "4.4.3"
-    },
-    "dependencies": {}
+    }
 }

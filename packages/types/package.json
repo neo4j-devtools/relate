@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "@types/jest": "27.0.2",
-        "@types/lodash": "4.14.149",
+        "@types/lodash": "4.14.175",
         "jest": "27.2.4",
         "ts-jest": "27.0.5",
         "typedoc": "0.17.7",
