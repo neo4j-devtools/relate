@@ -3,8 +3,11 @@ import {IsEnum, IsString} from 'class-validator';
 import {ModelAbstract} from './model.abstract';
 import {AUTHENTICATOR_TYPES, IGoogleAuthenticationOptions} from '../entities/environments/authentication';
 
-export class GoogleAuthenticationModel extends ModelAbstract<IGoogleAuthenticationOptions>
-    implements IGoogleAuthenticationOptions {
+/* eslint-disable brace-style */
+export class GoogleAuthenticationModel
+    extends ModelAbstract<IGoogleAuthenticationOptions>
+    implements IGoogleAuthenticationOptions
+{
     @IsEnum(AUTHENTICATOR_TYPES)
     public type!: AUTHENTICATOR_TYPES;
 
@@ -14,3 +17,4 @@ export class GoogleAuthenticationModel extends ModelAbstract<IGoogleAuthenticati
     @IsString()
     public clientSecret!: string;
 }
+/* eslint-enable brace-style */

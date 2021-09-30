@@ -13,9 +13,7 @@ export const getCheckSum = async (url: string): Promise<string> => {
     try {
         const response = await request(url);
         const {body: shaSum} = response;
-        return Str.from(shaSum)
-            .trim()
-            .get();
+        return Str.from(shaSum).trim().get();
     } catch (e) {
         throw new FetchError(e);
     }

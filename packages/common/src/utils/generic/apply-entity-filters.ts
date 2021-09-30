@@ -8,6 +8,7 @@ export interface IRelateFilter {
     connector?: FILTER_CONNECTORS;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function applyEntityFilters<T extends object>(
     entities: List<T>,
     filters?: List<IRelateFilter> | IRelateFilter[],

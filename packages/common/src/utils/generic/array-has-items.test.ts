@@ -13,13 +13,13 @@ describe('arrayHasItems', () => {
     });
 
     test('with non-array value', () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         expect(arrayHasItems(new Set([]))).toBe(false);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         expect(arrayHasItems({})).toBe(false);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         expect(arrayHasItems('something')).toBe(false);
     });

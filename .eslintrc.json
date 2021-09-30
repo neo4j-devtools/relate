@@ -7,7 +7,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "prettier/@typescript-eslint",
+        "prettier",
         "plugin:prettier/recommended",
         "plugin:jest/recommended"
     ],
@@ -18,6 +18,13 @@
     },
     "plugins": ["@typescript-eslint/eslint-plugin"],
     "overrides": [
+        {
+            // We use conditional expect to run tests only in certain platforms.
+            "files": ["packages/common/**/*.ts", "packages/web/**/*.ts", "packages/cli/**/*.ts"],
+            "rules": {
+                "jest/no-conditional-expect": "off"
+            }
+        },
         {
             "files": ["**/*.js"],
             "rules": {
@@ -57,13 +64,23 @@
         {
             "files": ["packages/types/src/**/*.ts"],
             "rules": {
-                "@typescript-eslint/ban-ts-ignore": ["off"]
+                "@typescript-eslint/ban-ts-comment": ["off"]
             }
         }
     ],
     "rules": {
         "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "never"}],
-        "@typescript-eslint/interface-name-prefix": ["error", "always"],
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "interface",
+                "format": ["PascalCase"],
+                "custom": {
+                    "regex": "^I[A-Z]",
+                    "match": true
+                }
+            }
+        ],
         "@typescript-eslint/no-unused-vars": ["error", {"args": "none"}],
         "array-bracket-spacing": ["error", "never"],
         "array-callback-return": "error",
@@ -110,7 +127,9 @@
         "max-statements": "warn",
         "max-statements-per-line": "error",
         "new-parens": "error",
-        "newline-per-chained-call": "error",
+        // This rule is conflicting with the new behavior from prettier
+        // https://prettier.io/blog/2020/03/21/2.0.0.html#improved-method-chain-breaking-heuristic-6685httpsgithubcomprettierprettierpull6685-by-mmkalhttpsgithubcommmkal
+        "newline-per-chained-call": "off",
         "no-alert": "error",
         "no-array-constructor": "error",
         "no-await-in-loop": "error",
@@ -206,7 +225,9 @@
         "no-self-compare": "error",
         "no-sequences": "error",
         "no-setter-return": "error",
-        "no-shadow": "error",
+        // The default rule flags all enums as errors
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"],
         "no-sync": "error",
         "no-tabs": "error",
         "no-template-curly-in-string": "error",

@@ -5,7 +5,7 @@ import {EnvironmentAbstract} from '../environments';
 export abstract class ManifestAbstract<
     Environment extends EnvironmentAbstract,
     Entity extends IManifest,
-    Manifest extends ManifestModel<Entity>
+    Manifest extends ManifestModel<Entity>,
 > {
     /**
      * @hidden
