@@ -24,6 +24,7 @@ export interface ISampleProjectDbms {
     dumpFile?: string;
     scriptFile?: string;
     targetNeo4jVersion: string;
+    plugins: string[];
 }
 
 export interface ISampleProjectRest {

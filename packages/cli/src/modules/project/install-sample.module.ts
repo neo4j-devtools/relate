@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {ISampleProjectRest, SystemModule, SystemProvider} from '@relate/common';
+import {ISampleProjectDbms, ISampleProjectRest, SystemModule, SystemProvider} from '@relate/common';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 import path from 'path';
@@ -77,23 +77,38 @@ export class InstallSampleModule implements OnApplicationBootstrap {
         cli.action.stop(chalk.green('done'));
 
         if (manifests?.install?.dbms) {
-            for (const dbms of manifests.install.dbms) {
-                dbms.name = dbms.name || manifests.install.name;
+            this.utils.log(' ');
+            this.utils.log(
+                chalk.cyan(
+                    `We found install instructions for:\n${manifests.install.dbms
+                        .map(
+                            (dbms) =>
+                                `${chalk.bold(dbms.name || manifests.install?.name || 'Sample DBMS')}, ${chalk.bold(
+                                    dbms.targetNeo4jVersion,
+                                )}`,
+                        )
+                        .join('\n')}`,
+                ),
+            );
+            const shouldInstall = await confirmPrompt(`Do you want do continue to the install steps?`);
+
+            if (!shouldInstall) {
+                return;
+            }
+
+            const installSampleDbms = async (dbms: ISampleProjectDbms) => {
+                dbms.name = dbms.name || manifests.install?.name || 'Sample DBMS';
 
                 this.utils.log(' ');
-                this.utils.log(
-                    chalk.cyan(`We found install instructions for '${dbms.name}, ${dbms.targetNeo4jVersion}'.`),
-                );
 
-                /* eslint-disable no-await-in-loop */
-                const selection = await confirmPrompt('Do you want to install this?');
+                const selection = await confirmPrompt(
+                    `Do you want to install '${chalk.bold(dbms.name)}, ${chalk.bold(dbms.targetNeo4jVersion)}'.`,
+                );
                 if (selection) {
                     this.utils.log(' ');
-                    /* eslint-disable no-await-in-loop */
                     const credentials = await passwordPrompt('Enter new passphrase');
 
                     cli.action.start(`Creating '${dbms.name}' DBMS and importing data`);
-                    /* eslint-disable no-await-in-loop */
                     const {created} = await environment.projects.importSampleDbms(
                         manifests.project.id,
                         dbms,
@@ -103,9 +118,24 @@ export class InstallSampleModule implements OnApplicationBootstrap {
 
                     if (created) {
                         this.utils.log(chalk.green(`Successfully created ${created.name}.`));
+
+                        if (dbms.plugins) {
+                            await Promise.all(
+                                dbms.plugins.map((plugin) =>
+                                    environment.dbmsPlugins.install([created.id], plugin).then(() => {
+                                        this.utils.log(`Plugin "${plugin}" was successfully installed.`);
+                                    }),
+                                ),
+                            );
+                        }
                     }
                 }
-            }
+            };
+
+            manifests.install.dbms.reduce(async (previousPromise, dbms) => {
+                await previousPromise;
+                return installSampleDbms(dbms);
+            }, Promise.resolve());
         }
     }
 }
