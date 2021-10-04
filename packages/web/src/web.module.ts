@@ -35,6 +35,8 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         ProjectModule,
         FilesModule,
         GraphQLModule.forRootAsync({
+            // @todo: recommended to use graphql-ws
+            // https://docs.nestjs.com/graphql/subscriptions#enable-subscriptions
             useFactory: (configService: ConfigService<IWebModuleConfig>) => ({
                 installSubscriptionHandlers: true,
                 playground: {
