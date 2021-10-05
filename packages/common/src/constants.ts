@@ -149,6 +149,7 @@ export enum PUBLIC_GRAPHQL_METHODS {
     CREATE_ACCESS_TOKEN = 'createAccessToken',
     GET_DBMS = 'getDbms',
     INFO_DBMSS = 'infoDbmss',
+    WATCH_INFO_DBMSS = 'watchInfoDbmss',
     LIST_DBMSS = 'listDbmss',
     LIST_DBMS_VERSIONS = 'listDbmsVersions',
     UPDATE_DBMS_CONFIG = 'updateDbmsConfig',

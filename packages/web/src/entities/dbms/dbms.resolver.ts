@@ -1,4 +1,4 @@
-import {Resolver, Args, Mutation, Query, Context} from '@nestjs/graphql';
+import {Resolver, Args, Mutation, Query, Context, Subscription} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
 import {Environment, SystemProvider, PUBLIC_GRAPHQL_METHODS, IDbms, IDbmsInfo, IDbmsVersion} from '@relate/common';
 import {List} from '@relate/types';
@@ -23,6 +23,35 @@ import {
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 import {EnvironmentArgs, FilterArgs} from '../../global.types';
+import path from 'path';
+import {pubSub, setWatcher} from '../../utils/file-watcher.utils';
+import {DBMSS_PID_FILE_GLOB} from '../../constants';
+import {FSWatcher} from 'chokidar';
+
+const environmentWatchers: Map<string, FSWatcher> = new Map();
+
+// taken from https://github.com/nestjs/graphql/issues/186
+// may need looking at in future
+function withCancel<T>(
+    asyncIterator: AsyncIterator<T | undefined>,
+    onCancel: () => void,
+): AsyncIterator<T | undefined> {
+    if (!asyncIterator.return) {
+        asyncIterator.return = () =>
+            Promise.resolve({
+                value: undefined,
+                done: true,
+            });
+    }
+
+    const savedReturn = asyncIterator.return.bind(asyncIterator);
+    asyncIterator.return = () => {
+        onCancel();
+        return savedReturn();
+    };
+
+    return asyncIterator;
+}
 
 @Resolver(() => String)
 @UseGuards(EnvironmentGuard)
@@ -69,6 +98,32 @@ export class DBMSResolver {
         @Args() {dbmsIds, onlineCheck}: DbmssArgs,
     ): Promise<List<IDbmsInfo>> {
         return environment.dbmss.info(dbmsIds, onlineCheck);
+    }
+
+    @Subscription(() => [DbmsInfo], {
+        resolve: (payload: any, _variables: any, context: any) => {
+            return context.environment.dbmss.info([payload.dbmsId]);
+        },
+    })
+    async [PUBLIC_GRAPHQL_METHODS.WATCH_INFO_DBMSS](
+        @Context('environment') environment: Environment,
+    ): Promise<AsyncIterator<unknown, any, undefined>> {
+        if (!environmentWatchers.get(environment.id)) {
+            // watch dbmss pid file glob
+            const watcher = setWatcher(path.join(environment.dirPaths.dbmssData, DBMSS_PID_FILE_GLOB));
+
+            // keep a record of environment watcher
+            environmentWatchers.set(environment.id, watcher);
+        }
+
+        return withCancel(pubSub.asyncIterator('infoDbmssUpdate'), async () => {
+            const watcher = environmentWatchers.get(environment.id);
+            // close and remove watcher
+            if (watcher) {
+                await watcher.close();
+                environmentWatchers.delete(environment.id);
+            }
+        });
     }
 
     @Mutation(() => [String])
