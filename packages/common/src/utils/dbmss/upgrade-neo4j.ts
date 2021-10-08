@@ -56,6 +56,17 @@ export const upgradeNeo4j = async (
     version: string,
     options: IDbmsUpgradeOptions,
 ): Promise<IDbmsInfo> => {
+    const dbms = await env.dbmss.get(dbmsId);
+    const dbmsManifest = await env.dbmss.manifest.get(dbmsId);
+
+    if (semver.lte(version, dbms.version!)) {
+        throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, ['Use valid version']);
+    }
+
+    if (dbms.status !== DBMS_STATUS.STOPPED) {
+        throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
+    }
+
     const dbmsRootPath = env.dbmss.getDbmsRootPath(dbmsId);
     try {
         const fileDescriptor = await fse.open(dbmsRootPath, fse.constants.O_RDONLY | 0x10000000);
@@ -69,17 +80,6 @@ export const upgradeNeo4j = async (
                 : 'the DBMS folder could not be opened';
         const errorMessage = `Did not attempt to upgrade the DBMS because ${reason}. Folder location: ${dbmsRootPath}`;
         throw new DbmsUpgradeError(errorMessage, openError.message);
-    }
-
-    const dbms = await env.dbmss.get(dbmsId);
-    const dbmsManifest = await env.dbmss.manifest.get(dbmsId);
-
-    if (semver.lte(version, dbms.version!)) {
-        throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, ['Use valid version']);
-    }
-
-    if (dbms.status !== DBMS_STATUS.STOPPED) {
-        throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
     }
 
     const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
