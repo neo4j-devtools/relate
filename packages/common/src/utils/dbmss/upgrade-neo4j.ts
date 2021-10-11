@@ -50,6 +50,23 @@ const upgradePlugins = async (
         .unwindPromises();
 };
 
+const checkDbmsFolderIsNotLocked = async (env: LocalEnvironment, dbmsId: string): Promise<void> => {
+    const dbmsRootPath = env.dbmss.getDbmsRootPath(dbmsId);
+    try {
+        const O_EXLOCK = 0x10000000;
+        // Attempt to open the folder to confirm it is accessible
+        const fileDescriptor = await fse.open(dbmsRootPath, fse.constants.O_RDONLY | O_EXLOCK);
+        await fse.close(fileDescriptor);
+    } catch (openError) {
+        const reason =
+            openError.code === 'EBUSY'
+                ? 'the DBMS folder is open in another program. Close the program and retry the upgrade'
+                : 'the DBMS folder could not be opened';
+        const errorMessage = `Did not attempt to upgrade the DBMS because ${reason}. Folder location: ${dbmsRootPath}`;
+        throw new DbmsUpgradeError(errorMessage, openError.message);
+    }
+};
+
 export const upgradeNeo4j = async (
     env: LocalEnvironment,
     dbmsId: string,
@@ -67,20 +84,7 @@ export const upgradeNeo4j = async (
         throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
     }
 
-    const dbmsRootPath = env.dbmss.getDbmsRootPath(dbmsId);
-    try {
-        const fileDescriptor = await fse.open(dbmsRootPath, fse.constants.O_RDONLY | 0x10000000);
-        await fse.close(fileDescriptor);
-    } catch (openError) {
-        const reason =
-            openError.code === 'EBUSY'
-                ? 'the DBMS folder is locked. This is probably because another program, ' +
-                  'for example your Terminal, is open and is using the folder. ' +
-                  'Close the program and retry the upgrade'
-                : 'the DBMS folder could not be opened';
-        const errorMessage = `Did not attempt to upgrade the DBMS because ${reason}. Folder location: ${dbmsRootPath}`;
-        throw new DbmsUpgradeError(errorMessage, openError.message);
-    }
+    await checkDbmsFolderIsNotLocked(env, dbmsId);
 
     const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
         entityType: ENTITY_TYPES.DBMS,
