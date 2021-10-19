@@ -73,7 +73,7 @@ const asArr: [1,2,3] = list.toArray();
 
 • **get first**(): *[Maybe](maybe.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:60
+Defined in packages/types/src/monads/primitive/list.monad.ts:60
 
 Returns a [Maybe](maybe.md) of the first element in the sequence
 
@@ -87,7 +87,7 @@ ___
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/list.monad.ts:49
+Defined in packages/types/src/monads/primitive/list.monad.ts:49
 
 List are empty if length is zero
 
@@ -99,7 +99,7 @@ ___
 
 • **get last**(): *[Maybe](maybe.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:93
+Defined in packages/types/src/monads/primitive/list.monad.ts:93
 
 Returns a [Maybe](maybe.md) of the last element in the sequence
 
@@ -111,7 +111,7 @@ ___
 
 • **get length**(): *[Num](num.md)*
 
-Defined in src/monads/primitive/list.monad.ts:53
+Defined in packages/types/src/monads/primitive/list.monad.ts:53
 
 **Returns:** *[Num](num.md)*
 
@@ -121,7 +121,7 @@ Defined in src/monads/primitive/list.monad.ts:53
 
 ▸ **compact**‹**R**›(): *[List](list.md)‹R›*
 
-Defined in src/monads/primitive/list.monad.ts:199
+Defined in packages/types/src/monads/primitive/list.monad.ts:199
 
 Remove all null, undefined, None, or Nil values (shallow)
 ```ts
@@ -142,7 +142,7 @@ ___
 
 ▸ **concat**‹**O**›(`other`: O): *[List](list.md)‹T | O›*
 
-Defined in src/monads/primitive/list.monad.ts:283
+Defined in packages/types/src/monads/primitive/list.monad.ts:283
 
 **Type parameters:**
 
@@ -158,7 +158,7 @@ Name | Type |
 
 ▸ **concat**‹**O**›(`other`: O): *[List](list.md)‹T | O›*
 
-Defined in src/monads/primitive/list.monad.ts:285
+Defined in packages/types/src/monads/primitive/list.monad.ts:285
 
 **Type parameters:**
 
@@ -174,7 +174,7 @@ Name | Type |
 
 ▸ **concat**‹**O**, **I**›(`other`: O): *[List](list.md)‹T | I›*
 
-Defined in src/monads/primitive/list.monad.ts:287
+Defined in packages/types/src/monads/primitive/list.monad.ts:287
 
 **Type parameters:**
 
@@ -196,7 +196,7 @@ ___
 
 ▸ **filter**(`predicate`: function): *[List](list.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:181
+Defined in packages/types/src/monads/primitive/list.monad.ts:181
 
 **Parameters:**
 
@@ -218,7 +218,7 @@ ___
 
 ▸ **find**(`predicate`: function): *[Maybe](maybe.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:168
+Defined in packages/types/src/monads/primitive/list.monad.ts:168
 
 **Parameters:**
 
@@ -240,7 +240,7 @@ ___
 
 ▸ **flatten**‹**R**›(): *[List](list.md)‹R›*
 
-Defined in src/monads/primitive/list.monad.ts:309
+Defined in packages/types/src/monads/primitive/list.monad.ts:309
 
 Flattens all iterable items (shallow)
 ```ts
@@ -261,7 +261,7 @@ ___
 
 ▸ **forEach**(`project`: function): *this*
 
-Defined in src/monads/primitive/list.monad.ts:240
+Defined in packages/types/src/monads/primitive/list.monad.ts:240
 
 Iterate over each item in the List, without modifying value
 
@@ -292,7 +292,7 @@ ___
 
 ▸ **hasIndex**(`index`: [Num](num.md) | number): *boolean*
 
-Defined in src/monads/primitive/list.monad.ts:162
+Defined in packages/types/src/monads/primitive/list.monad.ts:162
 
 **Parameters:**
 
@@ -308,7 +308,7 @@ ___
 
 ▸ **includes**(`other`: T): *boolean*
 
-Defined in src/monads/primitive/list.monad.ts:174
+Defined in packages/types/src/monads/primitive/list.monad.ts:174
 
 **Parameters:**
 
@@ -324,7 +324,7 @@ ___
 
 ▸ **indexOf**(`val`: T): *[Num](num.md)*
 
-Defined in src/monads/primitive/list.monad.ts:246
+Defined in packages/types/src/monads/primitive/list.monad.ts:246
 
 **Parameters:**
 
@@ -340,7 +340,7 @@ ___
 
 ▸ **join**(`separator?`: string | [Str](str.md)): *[Str](str.md)*
 
-Defined in src/monads/primitive/list.monad.ts:317
+Defined in packages/types/src/monads/primitive/list.monad.ts:317
 
 **Parameters:**
 
@@ -356,7 +356,7 @@ ___
 
 ▸ **mapEach**‹**M**›(`project`: function): *[List](list.md)‹M›*
 
-Defined in src/monads/primitive/list.monad.ts:227
+Defined in packages/types/src/monads/primitive/list.monad.ts:227
 
 Map over each item in the List, modifying each value
 
@@ -391,7 +391,7 @@ ___
 
 ▸ **nth**(`index`: number | string | [Num](num.md)): *[Maybe](maybe.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:75
+Defined in packages/types/src/monads/primitive/list.monad.ts:75
 
 Returns a [Maybe](maybe.md) of the nth element in the sequence
 
@@ -409,7 +409,7 @@ ___
 
 ▸ **reduce**‹**R**›(`cb`: function, `seed`: R): *R*
 
-Defined in src/monads/primitive/list.monad.ts:206
+Defined in packages/types/src/monads/primitive/list.monad.ts:206
 
 **Type parameters:**
 
@@ -439,7 +439,7 @@ ___
 
 ▸ **slice**(`from`: [Num](num.md) | number, `to?`: [Num](num.md) | number): *[List](list.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:261
+Defined in packages/types/src/monads/primitive/list.monad.ts:261
 
 **Parameters:**
 
@@ -456,7 +456,7 @@ ___
 
 ▸ **sort**(`compareFn?`: undefined | function): *[List](list.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:313
+Defined in packages/types/src/monads/primitive/list.monad.ts:313
 
 **Parameters:**
 
@@ -472,7 +472,7 @@ ___
 
 ▸ **toArray**(): *T[]*
 
-Defined in src/monads/primitive/list.monad.ts:335
+Defined in packages/types/src/monads/primitive/list.monad.ts:335
 
 **Returns:** *T[]*
 
@@ -484,7 +484,7 @@ ___
 
 *Overrides [Monad](monad.md).[toString](monad.md#tostring)*
 
-Defined in src/monads/primitive/list.monad.ts:331
+Defined in packages/types/src/monads/primitive/list.monad.ts:331
 
 **Returns:** *string*
 
@@ -494,7 +494,7 @@ ___
 
 ▸ **unique**(`predicate?`: undefined | function): *this*
 
-Defined in src/monads/primitive/list.monad.ts:321
+Defined in packages/types/src/monads/primitive/list.monad.ts:321
 
 **Parameters:**
 
@@ -510,7 +510,7 @@ ___
 
 ▸ **unwindPromises**‹**R**›(): *Promise‹[List](list.md)‹R››*
 
-Defined in src/monads/primitive/list.monad.ts:348
+Defined in packages/types/src/monads/primitive/list.monad.ts:348
 
 Unwinds any promises in list (shallow), using Promise.all()
 
@@ -532,7 +532,7 @@ ___
 
 ▸ **without**(...`other`: T[]): *[List](list.md)‹T›*
 
-Defined in src/monads/primitive/list.monad.ts:187
+Defined in packages/types/src/monads/primitive/list.monad.ts:187
 
 **Parameters:**
 
@@ -546,11 +546,11 @@ ___
 
 ### `Static` from
 
-▸ **from**‹**T**›(`val?`: Iterable‹T› | null): *[List](list.md)‹T›*
+▸ **from**‹**L**›(`val?`: Iterable‹L› | null): *[List](list.md)‹L›*
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/list.monad.ts:144
+Defined in packages/types/src/monads/primitive/list.monad.ts:144
 
 Coerces any value to a List, if not one already
 
@@ -558,23 +558,23 @@ Coerces any value to a List, if not one already
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val?` | Iterable‹T› &#124; null |
+`val?` | Iterable‹L› &#124; null |
 
-**Returns:** *[List](list.md)‹T›*
+**Returns:** *[List](list.md)‹L›*
 
 ___
 
 ### `Static` isList
 
-▸ **isList**‹**T**›(`val`: any): *val is List<T>*
+▸ **isList**‹**L**›(`val`: any): *val is List<L>*
 
-Defined in src/monads/primitive/list.monad.ts:113
+Defined in packages/types/src/monads/primitive/list.monad.ts:113
 
 Indicates if passed value is an instance of `List`
 ```ts
@@ -585,7 +585,7 @@ if (List.isList(val)) {
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
@@ -593,17 +593,17 @@ Name | Type |
 ------ | ------ |
 `val` | any |
 
-**Returns:** *val is List<T>*
+**Returns:** *val is List<L>*
 
 ___
 
 ### `Static` of
 
-▸ **of**‹**T**›(`val`: Iterable‹T›): *[List](list.md)‹T›*
+▸ **of**‹**L**›(`val`: Iterable‹L›): *[List](list.md)‹L›*
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/list.monad.ts:134
+Defined in packages/types/src/monads/primitive/list.monad.ts:134
 
 Returns a List representing the passed value as an Iterable.
 
@@ -623,12 +623,12 @@ const listList: List<false> = List.of(listMonad);
 
 **Type parameters:**
 
-▪ **T**
+▪ **L**
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`val` | Iterable‹T› |
+`val` | Iterable‹L› |
 
-**Returns:** *[List](list.md)‹T›*
+**Returns:** *[List](list.md)‹L›*

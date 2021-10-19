@@ -49,7 +49,7 @@
 
 • **isEmpty**: *boolean*
 
-Defined in src/monads/monad.ts:4
+Defined in packages/types/src/monads/monad.ts:4
 
 ## Methods
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **equals**(`other`: [IMonad](imonad.md)‹any›): *boolean*
 
-Defined in src/monads/monad.ts:8
+Defined in packages/types/src/monads/monad.ts:8
 
 **Parameters:**
 
@@ -85,7 +85,7 @@ ___
 
 ▸ **flatMap**‹**M**›(`project`: function): *M*
 
-Defined in src/monads/monad.ts:20
+Defined in packages/types/src/monads/monad.ts:20
 
 **Type parameters:**
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **get**(): *T | undefined*
 
-Defined in src/monads/monad.ts:10
+Defined in packages/types/src/monads/monad.ts:10
 
 **Returns:** *T | undefined*
 
@@ -121,7 +121,7 @@ ___
 
 ▸ **getOrElse**(`other`: T): *T*
 
-Defined in src/monads/monad.ts:12
+Defined in packages/types/src/monads/monad.ts:12
 
 **Parameters:**
 
@@ -137,7 +137,7 @@ ___
 
 ▸ **isThis**(`other?`: any): *other is this*
 
-Defined in src/monads/monad.ts:6
+Defined in packages/types/src/monads/monad.ts:6
 
 **Parameters:**
 
@@ -153,7 +153,7 @@ ___
 
 ▸ **map**(`project`: function): *[IMonad](imonad.md)‹T›*
 
-Defined in src/monads/monad.ts:16
+Defined in packages/types/src/monads/monad.ts:16
 
 **Parameters:**
 
@@ -175,7 +175,7 @@ ___
 
 ▸ **switchMap**‹**M**›(`project`: function): *M*
 
-Defined in src/monads/monad.ts:22
+Defined in packages/types/src/monads/monad.ts:22
 
 **Type parameters:**
 
@@ -201,7 +201,7 @@ ___
 
 ▸ **tap**(`project`: function): *this*
 
-Defined in src/monads/monad.ts:18
+Defined in packages/types/src/monads/monad.ts:18
 
 **Parameters:**
 
@@ -223,7 +223,7 @@ ___
 
 ▸ **toString**(`formatter?`: undefined | function): *string*
 
-Defined in src/monads/monad.ts:14
+Defined in packages/types/src/monads/monad.ts:14
 
 **Parameters:**
 
