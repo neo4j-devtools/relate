@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import {createHash} from 'crypto';
-import got, {Options} from 'got';
+import got from 'got';
 import path from 'path';
 import stream from 'stream';
 import {promisify} from 'util';
@@ -31,7 +31,7 @@ export const verifyHash = async (expectedShasumHash: string, pathToFile: string)
 
 // @todo: this still needs a test in future as I couldn't figure out the tests just yet.
 // https://dev.to/cdanielsen/testing-streams-a-primer-3n6e has some interesting points to start with.
-export const download = async (url: string, outputDirPath: string, options?: Options): Promise<string> => {
+export const download = async (url: string, outputDirPath: string): Promise<string> => {
     // Download straight to the destination directory with a temporary name that
     // makes it obvious that the file is not finished downloading.
     const downloadFileName = `Unconfirmed_${uuidv4().slice(0, 8)}${DOWNLOADING_FILE_EXTENSION}`;
@@ -53,7 +53,7 @@ export const download = async (url: string, outputDirPath: string, options?: Opt
     try {
         await streamPipeline(
             got
-                .stream(url, options)
+                .stream(url)
                 .on('downloadProgress', (progress) => emitHookEvent(HOOK_EVENTS.DOWNLOAD_PROGRESS, progress)),
             fse.createWriteStream(downloadFilePath),
         );

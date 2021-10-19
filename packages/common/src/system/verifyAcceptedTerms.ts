@@ -33,7 +33,7 @@ export const verifyAcceptedTerms = async (): Promise<void> => {
         return;
     }
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,

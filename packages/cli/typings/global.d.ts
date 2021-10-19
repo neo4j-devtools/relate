@@ -6,7 +6,7 @@ interface IHasFlags {
     flags: any;
 }
 type UnpackFlags<InputFlags> = InputFlags extends flags.Input<infer TFlags> ? TFlags : never;
-type CommandToFlags<C> = C extends IHasFlags ? UnpackFlags<C['flags']> : {};
+type CommandToFlags<C> = C extends IHasFlags ? UnpackFlags<C['flags']> : Record<string, unknown>;
 
 declare global {
     declare type ParsedInput<C> = parser.Output<CommandToFlags<C>, {[name: string]: any}>;

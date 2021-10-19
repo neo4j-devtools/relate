@@ -88,7 +88,7 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
      * }
      * ```
      */
-    static isDict<T>(val: any): val is Dict<T> {
+    static isDict<D>(val: any): val is Dict<D> {
         return val instanceof Dict;
     }
 
@@ -106,25 +106,26 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
      * list.get() // Map<string, string>
      * ```
      */
-    static of<T>(val: T): Dict<T> {
+    static of<D>(val: D): Dict<D> {
         // @ts-ignore
         const sane = isIterable(val) ? val : entries(val);
 
         // @ts-ignore
-        return new Dict<T>(new Map(sane));
+        return new Dict<D>(new Map(sane));
     }
 
     /**
      * Coerces any value to a Dict, if not one already
      * @see {@link Dict.of}
      */
-    static from<T extends object, R = T>(val?: T): Dict<R>;
-    static from<T extends Map<any, any>, R = Map<KeyVal<T>['key'], KeyVal<T>['value']>>(val?: T): Dict<R>;
-    static from<T extends Iterable<[any, any]>>(val?: T): Dict<T>;
-    static from<T extends List<[any, any]>>(val?: T): Dict<T>;
-    static from<T = any>(val?: T): Dict<T, string, any> {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    static from<D extends object, R = D>(val?: D): Dict<R>;
+    static from<D extends Map<any, any>, R = Map<KeyVal<D>['key'], KeyVal<D>['value']>>(val?: D): Dict<R>;
+    static from<D extends Iterable<[any, any]>>(val?: D): Dict<D>;
+    static from<D extends List<[any, any]>>(val?: D): Dict<D>;
+    static from<D = any>(val?: D): Dict<D, string, any> {
         // @ts-ignore
-        return Dict.isDict<T>(val) ? val : Dict.of<T>(val || {});
+        return Dict.isDict<D>(val) ? val : Dict.of<D>(val || {});
     }
 
     /**
@@ -199,11 +200,10 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
 
     // @todo: these types can probably be done better
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-types
     omit<K2 extends K = K, R = T extends object ? Omit<T, K2> : never>(...other: K2[]): Dict<R>;
 
-    omit<K2 extends KeyVal<T>['key'], I = T extends Map<K, V> ? T : never, R = Dict<T, Exclude<K, K2>, V>>(
-        ...other: K2[]
-    ): R;
+    omit<K2 extends KeyVal<T>['key'], R = Dict<T, Exclude<K, K2>, V>>(...other: K2[]): R;
 
     /**
      * Omits one or more keys from the Dict
@@ -219,6 +219,7 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
             .switchMap(Dict.from);
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     merge<O extends object>(other: O): Dict<T & O>;
 
     /**
@@ -235,6 +236,7 @@ export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<
         return Dict.from(merge({}, this.toObject(), Dict.isDict(other) ? other.toObject() : other));
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     assign<O extends object>(other: O): Dict<T & O>;
 
     /**
