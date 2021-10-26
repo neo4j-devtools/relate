@@ -84,6 +84,9 @@ export const upgradeNeo4j = async (
         throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
     }
 
+    // The upgrade will fail if the DBMS folder is locked by another process, so we check here first
+    // N.B. if the folder gets locked after this check that could still fail the upgrade, but this should catch
+    // most typical cases
     await checkDbmsFolderIsNotLocked(env, dbmsId);
 
     const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
