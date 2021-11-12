@@ -19,12 +19,13 @@ import {
     AddDbmsMetadataArgs,
     RemoveDbmsMetadataArgs,
     UpgradeDbmsArgs,
+    DbmsSubscription,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 import {EnvironmentArgs, FilterArgs} from '../../global.types';
 import path from 'path';
-import {pubSub, setWatcher} from '../../utils/file-watcher.utils';
+import {DBMS_EVENT_TYPE, pubSub, setWatcher} from '../../utils/file-watcher.utils';
 import {DBMSS_PID_FILE_GLOB} from '../../constants';
 import {FSWatcher} from 'chokidar';
 
@@ -100,17 +101,26 @@ export class DBMSResolver {
         return environment.dbmss.info(dbmsIds, onlineCheck);
     }
 
-    @Subscription(() => [DbmsInfo], {
-        resolve: (payload: any, _variables: any, context: any) => {
-            return context.environment.dbmss.info([payload.dbmsId]);
+    @Subscription(() => DbmsSubscription, {
+        resolve: async (payload: any, _variables: any, context: any) => {
+            return {
+                [payload.eventType]:
+                    payload.eventType !== DBMS_EVENT_TYPE.UNINSTALLED
+                        ? await context.environment.dbmss.info([payload.dbmsId])
+                        : [payload.dbmsId],
+            };
         },
     })
     async [PUBLIC_GRAPHQL_METHODS.WATCH_INFO_DBMSS](
         @Context('environment') environment: Environment,
     ): Promise<AsyncIterator<unknown, any, undefined>> {
         if (!environmentWatchers.get(environment.id)) {
+            const watchPaths = [];
             // watch dbmss pid file glob
-            const watcher = setWatcher(path.join(environment.dirPaths.dbmssData, DBMSS_PID_FILE_GLOB));
+            watchPaths.push(path.join(environment.dirPaths.dbmssData, DBMSS_PID_FILE_GLOB));
+            // watch dbmss directory
+            watchPaths.push(path.join(environment.dirPaths.dbmssData));
+            const watcher = setWatcher(watchPaths);
 
             // keep a record of environment watcher
             environmentWatchers.set(environment.id, watcher);

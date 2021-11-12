@@ -29,6 +29,7 @@ const TEST_SOURCE_2: IDbmsPluginSource = {
     versionsUrl: 'https://neo4j-contrib.github.io/test-plugin-2/versions.json',
 };
 
+// eslint-disable-next-line max-statements, max-lines-per-function
 describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
     let dbms: IDbmsInfo;

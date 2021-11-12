@@ -44,6 +44,21 @@ export class DbmsInfo extends Dbms {
     prerelease?: string;
 }
 
+@ObjectType()
+export class DbmsSubscription {
+    @Field(() => [DbmsInfo], {nullable: true})
+    started?: [DbmsInfo];
+
+    @Field(() => [DbmsInfo], {nullable: true})
+    stopped?: [DbmsInfo];
+
+    @Field(() => [DbmsInfo], {nullable: true})
+    installed?: [DbmsInfo];
+
+    @Field(() => [String], {nullable: true})
+    uninstalled?: [string];
+}
+
 @ArgsType()
 export class DbmsArgs extends EnvironmentArgs {
     @Field(() => String)
