@@ -25,7 +25,7 @@ import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
 import {EnvironmentArgs, FilterArgs} from '../../global.types';
 import path from 'path';
-import {DBMS_EVENT_TYPE, pubSub, setWatcher} from '../../utils/file-watcher.utils';
+import {DBMS_EVENT_TYPE, pubSub, setDbmsWatcher} from '../../utils/file-watcher.utils';
 import {DBMSS_PID_FILE_GLOB} from '../../constants';
 import {FSWatcher} from 'chokidar';
 
@@ -120,7 +120,7 @@ export class DBMSResolver {
             watchPaths.push(path.join(environment.dirPaths.dbmssData, DBMSS_PID_FILE_GLOB));
             // watch dbmss directory
             watchPaths.push(path.join(environment.dirPaths.dbmssData));
-            const watcher = setWatcher(watchPaths);
+            const watcher = setDbmsWatcher(watchPaths);
 
             // keep a record of environment watcher
             environmentWatchers.set(environment.id, watcher);
