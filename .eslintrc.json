@@ -143,10 +143,10 @@
         "max-depth": "error",
         "max-len": ["error", {"code": 120, "comments": 120, "ignoreUrls": true}],
         "max-lines": ["warn", 500],
-        "max-lines-per-function": ["warn", 100],
+        "max-lines-per-function": ["off"],
         "max-nested-callbacks": ["error", 5],
         "max-params": ["warn", 4],
-        "max-statements": "warn",
+        "max-statements": ["off"],
         "max-statements-per-line": "error",
         "new-parens": "error",
         // This rule is conflicting with the new behavior from prettier
