@@ -50,6 +50,23 @@ const upgradePlugins = async (
         .unwindPromises();
 };
 
+const checkDbmsFolderIsNotLocked = async (env: LocalEnvironment, dbmsId: string): Promise<void> => {
+    const dbmsRootPath = env.dbmss.getDbmsRootPath(dbmsId);
+    try {
+        const O_EXLOCK = 0x10000000;
+        // Attempt to open the folder to confirm it is accessible
+        const fileDescriptor = await fse.open(dbmsRootPath, fse.constants.O_RDONLY | O_EXLOCK);
+        await fse.close(fileDescriptor);
+    } catch (openError) {
+        const reason =
+            openError.code === 'EBUSY'
+                ? 'the DBMS folder is open in another program. Close the program and retry the upgrade'
+                : 'the DBMS folder could not be opened';
+        const errorMessage = `Did not attempt to upgrade the DBMS because ${reason}. Folder location: ${dbmsRootPath}`;
+        throw new DbmsUpgradeError(errorMessage, openError.message);
+    }
+};
+
 export const upgradeNeo4j = async (
     env: LocalEnvironment,
     dbmsId: string,
@@ -66,6 +83,11 @@ export const upgradeNeo4j = async (
     if (dbms.status !== DBMS_STATUS.STOPPED) {
         throw new InvalidArgumentError(`Can only upgrade stopped dbms`, ['Stop dbms']);
     }
+
+    // The upgrade will fail if the DBMS folder is locked by another process, so we check here first
+    // N.B. if the folder gets locked after this check that could still fail the upgrade, but this should catch
+    // most typical cases
+    await checkDbmsFolderIsNotLocked(env, dbmsId);
 
     const {entityType, entityId} = await emitHookEvent(HOOK_EVENTS.BACKUP_START, {
         entityType: ENTITY_TYPES.DBMS,
@@ -129,14 +151,18 @@ export const upgradeNeo4j = async (
 
         return env.dbmss.get(dbms.id);
     } catch (e) {
+        await emitHookEvent(HOOK_EVENTS.DEBUG, {
+            message: 'Error upgrading',
+            error: e,
+        });
         if (e instanceof RelateBackupError) {
             throw e;
         }
 
         // Backup logs and add extra debug information if an upgrade fails
         if (upgradedDbmsInfo) {
-            const dbmsRootPath = env.dbmss.getDbmsRootPath(upgradedDbmsInfo.id);
-            if (dbmsRootPath) {
+            const upgradedDbmsRootPath = env.dbmss.getDbmsRootPath(upgradedDbmsInfo.id);
+            if (upgradedDbmsRootPath) {
                 const neo4jConfig = await env.dbmss.getDbmsConfig(upgradedDbmsInfo.id);
 
                 const dateISO = new Date().toISOString();
@@ -147,7 +173,10 @@ export const upgradeNeo4j = async (
                     `${kebabCase(upgradedDbmsInfo.name)}-${date.replace(/:/g, '')}`,
                 );
 
-                await fse.copy(path.join(dbmsRootPath, neo4jConfig.get('dbms.directories.logs')!), logOutputPath);
+                await fse.copy(
+                    path.join(upgradedDbmsRootPath, neo4jConfig.get('dbms.directories.logs')!),
+                    logOutputPath,
+                );
 
                 const plugins = await env.dbmsPlugins.list(dbms.id).then((ps) => ps.toArray().map((p) => p.name));
 
@@ -174,12 +203,35 @@ export const upgradeNeo4j = async (
         await env.dbmss
             .get(upgradeTmpName)
             .then(({id}) => env.dbmss.uninstall(id))
-            .catch(() => null);
-        await env.dbmss.uninstall(dbms.id).catch(() => null);
+            .catch((error) =>
+                emitHookEvent(HOOK_EVENTS.DEBUG, {
+                    message: 'Error during upgrade cleanup - could not uninstall temporary DBMS',
+                    error,
+                }),
+            );
+        await env.dbmss.uninstall(dbms.id).catch((error) =>
+            emitHookEvent(HOOK_EVENTS.DEBUG, {
+                message: 'Error during upgrade cleanup - could not uninstall original DBMS',
+                error,
+            }),
+        );
 
-        const restored = await env.backups.restore(completeBackup.directory);
+        const restored = await env.backups.restore(completeBackup.directory).catch(async (error) => {
+            await emitHookEvent(HOOK_EVENTS.DEBUG, {
+                message: 'Error during upgrade cleanup - could not restore DBMS from backup',
+                error,
+            });
+            throw error;
+        });
 
-        await fse.move(env.dbmss.getDbmsRootPath(restored.entityId)!, dbms.rootPath!);
+        await fse.move(env.dbmss.getDbmsRootPath(restored.entityId)!, dbms.rootPath!).catch(async (error) => {
+            await emitHookEvent(HOOK_EVENTS.DEBUG, {
+                message: 'Error during upgrade cleanup - could not move restored DBMS to original DBMS folder',
+                error,
+            });
+            throw error;
+        });
+
         await env.dbmss.manifest.update(dbms.id, {
             name: dbms.name,
         });
