@@ -114,6 +114,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         credentials = '',
         overrideCache = false,
         limited = false,
+        installPath?: string,
     ): Promise<IDbmsInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
@@ -131,11 +132,22 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new DbmsExistsError(`DBMS with name "${name}" already exists`);
         }
 
+        if (installPath) {
+            fse.access(installPath, fse.constants.W_OK, (err) => {
+                throw new NotAllowedError(`Unable to create "${name}" in the location "${installPath}": ${err}`);
+            });
+        }
+
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const tmpPath = path.join(this.environment.dirPaths.tmp, uuidv4());
             const {extractedDistPath} = await extractNeo4j(version, tmpPath);
-            const dbms = await this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
+            const dbms = await this.installNeo4j(
+                name,
+                installPath || this.getDbmsRootPath(),
+                extractedDistPath,
+                credentials,
+            );
 
             await fse.remove(tmpPath);
 

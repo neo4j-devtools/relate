@@ -99,6 +99,9 @@ export class InstallDbmsArgs extends EnvironmentArgs {
 
     @Field(() => Boolean, {nullable: true})
     limited?: boolean;
+
+    @Field(() => String, {nullable: true})
+    installPath: string;
 }
 
 @ArgsType()
