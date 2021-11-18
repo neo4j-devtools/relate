@@ -43,7 +43,7 @@ const plain: null = nil.get();
 
 ▪ **NULL**: *[Nil](nil.md)‹›* = new Nil()
 
-Defined in src/monads/primitive/nil.monad.ts:15
+Defined in packages/types/src/monads/primitive/nil.monad.ts:15
 
 ## Accessors
 
@@ -53,7 +53,7 @@ Defined in src/monads/primitive/nil.monad.ts:15
 
 *Overrides [Monad](monad.md).[isEmpty](monad.md#isempty)*
 
-Defined in src/monads/primitive/nil.monad.ts:27
+Defined in packages/types/src/monads/primitive/nil.monad.ts:27
 
 Nil is always empty
 
@@ -67,7 +67,7 @@ Nil is always empty
 
 *Overrides [Monad](monad.md).[from](monad.md#static-from)*
 
-Defined in src/monads/primitive/nil.monad.ts:61
+Defined in packages/types/src/monads/primitive/nil.monad.ts:61
 
 **`see`** [Nil.of](nil.md#static-of)
 
@@ -85,7 +85,7 @@ ___
 
 ▸ **isNil**(`val`: any): *val is Nil*
 
-Defined in src/monads/primitive/nil.monad.ts:39
+Defined in packages/types/src/monads/primitive/nil.monad.ts:39
 
 Indicates if passed value is an instance of `Nil`
 ```ts
@@ -110,7 +110,7 @@ ___
 
 *Overrides [Monad](monad.md).[of](monad.md#static-of)*
 
-Defined in src/monads/primitive/nil.monad.ts:54
+Defined in packages/types/src/monads/primitive/nil.monad.ts:54
 
 Returns a Nil, regardless of value.
 

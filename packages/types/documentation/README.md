@@ -30,9 +30,9 @@
 
 ###  KeyVal
 
-Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[infer K, infer V]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
+Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
 
-Defined in src/monads/primitive/dict.monad.ts:11
+Defined in packages/types/src/monads/primitive/dict.monad.ts:11
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 Ƭ **RawDict**: *Map‹K, V›*
 
-Defined in src/monads/primitive/dict.monad.ts:8
+Defined in packages/types/src/monads/primitive/dict.monad.ts:8
