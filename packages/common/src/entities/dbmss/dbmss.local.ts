@@ -133,7 +133,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         if (installPath) {
-            fse.access(installPath, fse.constants.W_OK, (err) => {
+            await fse.access(installPath, fse.constants.W_OK, (err) => {
                 throw new NotAllowedError(`Unable to create "${name}" in the location "${installPath}": ${err}`);
             });
         }
