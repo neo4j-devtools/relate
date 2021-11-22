@@ -1,17 +1,11 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {AbstractHttpAdapter} from '@nestjs/core';
 import {Application, Request} from 'express';
-import cookieParser from 'cookie-parser';
 import _ from 'lodash';
 import {
     AUTH_TOKEN_HEADER,
-    API_TOKEN_HEADER,
-    CLIENT_ID_HEADER,
     SystemProvider,
-    AUTHENTICATION_BASE_ENDPOINT,
     AUTHENTICATION_ENDPOINT,
-    HEALTH_BASE_ENDPOINT,
-    STATIC_APP_BASE_ENDPOINT,
     VALIDATION_ENDPOINT,
     VERIFICATION_ENDPOINT,
 } from '@relate/common';
@@ -28,68 +22,7 @@ export class AuthService {
 
         const app: Application = httpAdapter.getInstance();
 
-        app.use(cookieParser());
-        this.registerAPITokenHandlers(app);
         this.registerAuthenticationHandlers(app);
-    }
-
-    registerAPITokenHandlers(app: Application): void {
-        app.use(async (req, res, next) => {
-            if (_.startsWith(req.path, HEALTH_BASE_ENDPOINT) || _.startsWith(req.path, STATIC_APP_BASE_ENDPOINT)) {
-                next();
-                return;
-            }
-
-            const clientId = getRequestToken(req, CLIENT_ID_HEADER) || '';
-            const apiToken = getRequestToken(req, API_TOKEN_HEADER) || '';
-            const environment = await this.systemProvider.getEnvironment();
-
-            if (!environment.requiresAPIToken) {
-                next();
-                return;
-            }
-
-            const origin = req.get('origin');
-            // Use the client URL otherwise fallback to the Relate server URL.
-            // Requests coming from files might contain either 'null' or 'file://' in the Origin header.
-            const requestUrl = origin && origin !== 'null' && new URL(origin).host ? origin : environment.httpOrigin;
-            const requestHost = new URL(requestUrl).host;
-
-            try {
-                await environment.verifyAPIToken(requestHost, clientId, apiToken);
-                next();
-            } catch (e) {
-                res.clearCookie(CLIENT_ID_HEADER);
-                res.clearCookie(API_TOKEN_HEADER);
-                res.sendStatus(401);
-            }
-        });
-
-        app.use(async (req, res, next) => {
-            if (_.startsWith(req.path, AUTHENTICATION_BASE_ENDPOINT) || _.startsWith(req.path, HEALTH_BASE_ENDPOINT)) {
-                next();
-                return;
-            }
-
-            const authToken = getRequestToken(req, AUTH_TOKEN_HEADER);
-            const environment = await this.systemProvider.getEnvironment();
-
-            try {
-                await environment.verifyAuthToken(authToken);
-                next();
-            } catch (e) {
-                res.clearCookie(AUTH_TOKEN_HEADER);
-
-                if (req.method !== 'GET') {
-                    res.sendStatus(401);
-                    return;
-                }
-
-                const {authUrl} = await environment.login(req.url);
-
-                res.redirect(authUrl);
-            }
-        });
     }
 
     registerAuthenticationHandlers(app: Application): void {
@@ -155,7 +88,7 @@ export class AuthService {
     }
 }
 
-function getRequestToken(req: Request, key: string): string | undefined {
+export function getRequestToken(req: Request, key: string): string | undefined {
     const lowerCased = key.toLowerCase();
 
     if (_.has(req.headers, key)) {
