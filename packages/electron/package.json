@@ -1,6 +1,6 @@
 {
     "name": "@relate/electron",
-    "version": "1.0.4-alpha.3",
+    "version": "1.0.4-alpha.4",
     "description": "Web",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
@@ -46,7 +46,7 @@
         "@nestjs/platform-express": "8.1.1",
         "@relate/common": "^1.0.4-alpha.3",
         "@relate/types": "^1.0.4-alpha.1",
-        "@relate/web": "^1.0.4-alpha.3",
+        "@relate/web": "^1.0.4-alpha.4",
         "apollo-server-express": "3.4.0",
         "class-transformer": "0.4.0",
         "class-validator": "0.13.1",
