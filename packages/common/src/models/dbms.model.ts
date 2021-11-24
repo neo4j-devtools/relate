@@ -1,4 +1,5 @@
-import {IsOptional, IsString} from 'class-validator';
+import {IsBoolean, IsOptional, IsString} from 'class-validator';
+import {assign} from 'lodash';
 
 import {PropertiesFile} from '../system/files';
 import {DBMS_STATUS, DBMS_SERVER_STATUS} from '../constants';
@@ -28,6 +29,7 @@ export interface IDbms extends IManifest {
     secure?: boolean;
     connectionUri: string;
     config: PropertiesFile;
+    isCustomPathInstallation?: boolean;
 }
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {
@@ -60,7 +62,18 @@ export interface IDbmsUpgradeOptions {
     pluginUpgradeMode?: PLUGIN_UPGRADE_MODE;
 }
 
-export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {}
+export class DbmsManifestModel extends ManifestModel<IManifest> implements IManifest {
+    constructor(props: any) {
+        super(props);
+
+        // reassigning default values doesn't work when it's done from the parent class
+        assign(this, props);
+    }
+
+    @IsOptional()
+    @IsBoolean()
+    public isCustomPathInstallation = false;
+}
 
 export class QueryTargetModel extends ModelAbstract<IQueryTarget> {
     @IsString()
