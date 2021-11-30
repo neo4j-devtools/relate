@@ -2,7 +2,14 @@ import {DynamicModule, Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
 import {HttpAdapterHost} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
-import {envPaths, SystemModule, EXTENSION_TYPES, loadExtensionsFor, ISystemModuleConfig} from '@relate/common';
+import {
+    envPaths,
+    SystemModule,
+    EXTENSION_TYPES,
+    loadExtensionsFor,
+    ISystemModuleConfig,
+    SystemProvider,
+} from '@relate/common';
 import {Application} from 'express';
 import {OpenAPI, useSofa} from 'sofa-api';
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +24,7 @@ import {FilesModule} from './files';
 import {HealthModule} from './health';
 import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
 import {DBMSPluginsModule} from './entities/dbms-plugins';
+import {graphqlWs, subscriptionsTransportWs} from './utils/subscription.utils';
 
 export interface IWebModuleConfig extends ISystemModuleConfig {
     protocol?: string;
@@ -35,18 +43,27 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         ProjectModule,
         FilesModule,
         GraphQLModule.forRootAsync({
-            // @todo: recommended to use graphql-ws
-            // https://docs.nestjs.com/graphql/subscriptions#enable-subscriptions
-            useFactory: (configService: ConfigService<IWebModuleConfig>) => ({
-                installSubscriptionHandlers: true,
+            useFactory: (configService: ConfigService<IWebModuleConfig>, systemProvider: SystemProvider) => ({
                 playground: {
                     settings: {
                         'request.credentials': 'same-origin',
                     },
                 },
                 autoSchemaFile: configService.get('autoSchemaFile'),
+                subscriptions: {
+                    // @todo - This is temporarily enabled in development
+                    // because graphql playground and apollo explorer don't yet
+                    // support `graphql-ws`. It shouldn't be enabled in
+                    // production because `subscriptions-transport-ws` has a bug
+                    // that will allow certain connections to skip the
+                    // onConnection handler, bypassing the token check.
+                    'subscriptions-transport-ws':
+                        process.env.NODE_ENV === 'development' ? subscriptionsTransportWs(systemProvider) : false,
+                    'graphql-ws': graphqlWs(systemProvider),
+                },
             }),
-            inject: [ConfigService],
+            imports: [SystemModule],
+            inject: [ConfigService, SystemProvider],
         }),
         HealthModule,
         AuthModule,
