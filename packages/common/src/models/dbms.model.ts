@@ -29,7 +29,7 @@ export interface IDbms extends IManifest {
     secure?: boolean;
     connectionUri: string;
     config: PropertiesFile;
-    isCustomPathInstallation?: boolean;
+    isCustomPathInstallation: boolean;
 }
 
 export interface IDbmsInfo extends Omit<IDbms, 'config'> {

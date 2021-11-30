@@ -26,7 +26,7 @@ export class Dbms implements Omit<IDbms, 'config'> {
     connectionUri: string;
 
     @Field(() => String)
-    isCustomPathInstallation?: boolean;
+    isCustomPathInstallation: boolean;
 }
 
 @ObjectType()
