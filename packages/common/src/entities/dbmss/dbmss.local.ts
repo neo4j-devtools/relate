@@ -482,29 +482,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new DbmsExistsError(`DBMS: ${dbmsIdFilename} already exists`);
         }
 
-        let targetDirAlreadyExists = false;
-
         if (targetDir) {
-            try {
-                targetDirAlreadyExists = await fse.pathExists(targetDir);
-                if (!targetDirAlreadyExists) {
-                    await fse.ensureDir(targetDir);
-                }
-                const files = await fse.readdir(targetDir);
-                if (files.length) {
-                    throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
-                }
-                // manually create a symlink in the dbmssDir to the user target dir
-                await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
-            } catch (error) {
-                if (!targetDirAlreadyExists) {
-                    await fse.remove(targetDir);
-                } else if (!(error instanceof TargetExistsError)) {
-                    // empty the dir if it was user created and already empty
-                    await fse.emptyDir(targetDir);
-                }
-                throw error;
+            await fse.ensureDir(targetDir);
+
+            const files = await fse.readdir(targetDir);
+            if (files.length) {
+                throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
             }
+
+            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
         }
 
         try {
@@ -549,15 +535,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             return installed;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
-            // if installing to a custom path, remove/empty the target DBMS dir
+
+            // if installing to a custom path, empty the target DBMS dir
             if (targetDir) {
-                if (!targetDirAlreadyExists) {
-                    await fse.remove(targetDir);
-                } else {
-                    // only empty the dir if it was user created and already empty
-                    await fse.emptyDir(targetDir);
-                }
+                await fse.emptyDir(targetDir);
             }
+
             throw error;
         }
     }
