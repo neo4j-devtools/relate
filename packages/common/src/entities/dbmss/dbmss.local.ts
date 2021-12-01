@@ -37,6 +37,7 @@ import {
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
+    TargetExistsError,
 } from '../../errors';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
@@ -483,26 +484,37 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
         let targetDirAlreadyExists = false;
 
-        try {
-            if (targetDir) {
+        if (targetDir) {
+            try {
                 targetDirAlreadyExists = await fse.pathExists(targetDir);
                 if (!targetDirAlreadyExists) {
                     await fse.ensureDir(targetDir);
                 }
-                const files = (await fse.readdir(targetDir)).filter((file) => !file.startsWith('.'));
+                const files = await fse.readdir(targetDir);
                 if (files.length) {
-                    throw new AmbiguousTargetError(`Unable to install to non-empty target directory: ${targetDir}`);
+                    throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
                 }
+                // manually create a symlink in the dbmssDir to the user target dir
                 await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
+            } catch (error) {
+                if (!targetDirAlreadyExists) {
+                    await fse.remove(targetDir);
+                } else if (!(error instanceof TargetExistsError)) {
+                    // empty the dir if it was user created and already empty
+                    await fse.emptyDir(targetDir);
+                }
+                throw error;
             }
+        }
 
+        try {
             await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
+
+            await this.manifest.update(dbmsId, {name});
 
             if (targetDir) {
                 await this.manifest.update(dbmsId, {isCustomPathInstallation: true});
             }
-
-            await this.manifest.update(dbmsId, {name});
 
             const neo4jConfig = await PropertiesFile.readFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -537,11 +549,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             return installed;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
-            // if installing to a custom path, remove the linked DBMS dir
+            // if installing to a custom path, remove/empty the target DBMS dir
             if (targetDir) {
                 if (!targetDirAlreadyExists) {
                     await fse.remove(targetDir);
-                } else if (!(error instanceof AmbiguousTargetError)) {
+                } else {
+                    // only empty the dir if it was user created and already empty
                     await fse.emptyDir(targetDir);
                 }
             }
