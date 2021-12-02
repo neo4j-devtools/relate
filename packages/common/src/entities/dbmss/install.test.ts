@@ -1,10 +1,11 @@
 import path from 'path';
 import {List} from '@relate/types';
+import fse from 'fs-extra';
 
-import {InvalidArgumentError, NotAllowedError, NotFoundError, NotSupportedError} from '../../errors';
+import {InvalidArgumentError, NotAllowedError, NotFoundError, NotSupportedError, TargetExistsError} from '../../errors';
 import * as versionUtils from '../../utils/dbmss/dbms-versions';
 import * as downloadUtils from '../../utils/dbmss/download-neo4j';
-import {TestDbmss, TestEnvironment} from '../../utils/system';
+import {TestDbmss, TestEnvironment, TEST_NEO4J_CREDENTIALS, TEST_NEO4J_EDITION} from '../../utils/system';
 import {DBMS_DIR_NAME, DBMS_STATUS} from '../../constants';
 import {LocalEnvironment} from '../environments';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
@@ -127,6 +128,71 @@ describe('LocalDbmss - install', () => {
         const config = await testEnv.dbmss.getDbmsConfig(dbmsId);
 
         expect(config.get('dbms.security.procedures.unrestricted')).toEqual('jwt.security.*');
+    });
+
+    test('with valid version (semver) and installing to a non-existent target directory', async () => {
+        const testTargetPath = path.join(app.environment.dataPath, 'test-dbms-target-1');
+        const {id: dbmsId} = await testEnv.dbmss.install(
+            app.createName(),
+            NEO4J_VERSION,
+            TEST_NEO4J_EDITION,
+            TEST_NEO4J_CREDENTIALS,
+            false,
+            false,
+            testTargetPath,
+        );
+
+        const testTargetPathExists = await fse.pathExists(testTargetPath);
+        expect(testTargetPathExists).toBeTruthy();
+
+        const testDbmsInfo = (await testEnv.dbmss.info([dbmsId])).toArray();
+        expect(testDbmsInfo[0].id).toEqual(dbmsId);
+    });
+
+    test('with valid version (semver) and installing to an empty existing target directory', async () => {
+        const testTargetPath = path.join(app.environment.dataPath, 'test-dbms-target-2');
+        // ensure dir before
+        await fse.ensureDir(testTargetPath);
+        const {id: dbmsId} = await testEnv.dbmss.install(
+            app.createName(),
+            NEO4J_VERSION,
+            TEST_NEO4J_EDITION,
+            TEST_NEO4J_CREDENTIALS,
+            false,
+            false,
+            testTargetPath,
+        );
+
+        const testTargetPathExists = await fse.pathExists(testTargetPath);
+        expect(testTargetPathExists).toBeTruthy();
+
+        const testDbmsInfo = (await testEnv.dbmss.info([dbmsId])).toArray();
+        expect(testDbmsInfo[0].id).toEqual(dbmsId);
+    });
+
+    test('with valid version (semver) and installing to a non-empty existing target directory', async () => {
+        const testTargetPath = path.join(app.environment.dataPath, 'test-dbms-target-3');
+        // ensure dir before
+        await fse.ensureDir(testTargetPath);
+        // populate with a test file
+        await fse.writeFile(path.join(testTargetPath, 'test.txt'), '', 'utf8');
+
+        await expect(
+            testEnv.dbmss.install(
+                app.createName(),
+                NEO4J_VERSION,
+                TEST_NEO4J_EDITION,
+                TEST_NEO4J_CREDENTIALS,
+                false,
+                false,
+                testTargetPath,
+            ),
+        ).rejects.toThrowError(
+            new TargetExistsError(`Unable to install to non-empty target directory: ${testTargetPath}`),
+        );
+
+        const testTargetPathExists = await fse.pathExists(testTargetPath);
+        expect(testTargetPathExists).toBeTruthy();
     });
 
     test('Cannot uninstall a started DBMS', async () => {
