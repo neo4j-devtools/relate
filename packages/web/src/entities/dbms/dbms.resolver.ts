@@ -19,7 +19,7 @@ import {
     AddDbmsMetadataArgs,
     RemoveDbmsMetadataArgs,
     UpgradeDbmsArgs,
-    DbmsSubscription,
+    DbmsEvent,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -101,7 +101,7 @@ export class DBMSResolver {
         return environment.dbmss.info(dbmsIds, onlineCheck);
     }
 
-    @Subscription(() => DbmsSubscription, {
+    @Subscription(() => DbmsEvent, {
         resolve: async (payload: any, _variables: any, context: any) => {
             return {
                 [payload.eventType]:
@@ -111,7 +111,7 @@ export class DBMSResolver {
             };
         },
     })
-    async [PUBLIC_GRAPHQL_METHODS.WATCH_INFO_DBMSS](
+    async [PUBLIC_GRAPHQL_METHODS.WATCH_DBMSS](
         @Context('environment') environment: Environment,
     ): Promise<AsyncIterator<unknown, any, undefined>> {
         if (!environmentWatchers.get(environment.id)) {

@@ -48,7 +48,7 @@ export class DbmsInfo extends Dbms {
 }
 
 @ObjectType()
-export class DbmsSubscription {
+export class DbmsEvent {
     @Field(() => [DbmsInfo], {nullable: true})
     started?: [DbmsInfo];
 

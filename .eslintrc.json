@@ -91,6 +91,13 @@
     ],
     "rules": {
         "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.e2e.ts"]}],
+        "@typescript-eslint/ban-ts-comment": [
+            "error",
+            {
+                "ts-expect-error": true,
+                "ts-ignore": "allow-with-description"
+            }
+        ],
         "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "never"}],
         "@typescript-eslint/naming-convention": [
             "error",
