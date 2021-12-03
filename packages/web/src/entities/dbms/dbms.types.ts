@@ -24,6 +24,9 @@ export class Dbms implements Omit<IDbms, 'config'> {
 
     @Field(() => String)
     connectionUri: string;
+
+    @Field(() => String)
+    isCustomPathInstallation: boolean;
 }
 
 @ObjectType()
@@ -99,6 +102,9 @@ export class InstallDbmsArgs extends EnvironmentArgs {
 
     @Field(() => Boolean, {nullable: true})
     limited?: boolean;
+
+    @Field(() => String, {nullable: true})
+    installPath: string;
 }
 
 @ArgsType()

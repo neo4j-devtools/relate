@@ -47,6 +47,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
      * @param   edition         neo4j edition
      * @param   overrideCache   Download distribution even if it's present in cache
      * @param   limited         Is limited version
+     * @param   installPath     A user selected path to install to, if not provided the default location will be used.
      */
     abstract install(
         name: string,
@@ -55,6 +56,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         credentials?: string,
         overrideCache?: boolean,
         limited?: boolean,
+        installPath?: string,
     ): Promise<IDbmsInfo>;
 
     abstract upgrade(dbmsId: string, version: string, options?: IDbmsUpgradeOptions): Promise<IDbmsInfo>;
