@@ -63,9 +63,9 @@ export class DBMSResolver {
     @Mutation(() => DbmsInfo)
     async [PUBLIC_GRAPHQL_METHODS.INSTALL_DBMS](
         @Context('environment') environment: Environment,
-        @Args() {name, credentials, version, edition, noCaching, limited}: InstallDbmsArgs,
+        @Args() {name, credentials, version, edition, noCaching, limited, installPath}: InstallDbmsArgs,
     ): Promise<DbmsInfo> {
-        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited);
+        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited, installPath);
     }
 
     @Mutation(() => DbmsInfo)

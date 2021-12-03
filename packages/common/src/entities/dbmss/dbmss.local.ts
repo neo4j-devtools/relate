@@ -37,6 +37,7 @@ import {
     NotAllowedError,
     NotFoundError,
     NotSupportedError,
+    TargetExistsError,
 } from '../../errors';
 import {applyEntityFilters, IRelateFilter, isValidUrl} from '../../utils/generic';
 import {
@@ -114,6 +115,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         credentials = '',
         overrideCache = false,
         limited = false,
+        installPath?: string,
     ): Promise<IDbmsInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
@@ -135,7 +137,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const tmpPath = path.join(this.environment.dirPaths.tmp, uuidv4());
             const {extractedDistPath} = await extractNeo4j(version, tmpPath);
-            const dbms = await this.installNeo4j(name, this.getDbmsRootPath(), extractedDistPath, credentials);
+            const dbms = await this.installNeo4j(
+                name,
+                this.getDbmsRootPath(),
+                extractedDistPath,
+                credentials,
+                installPath,
+            );
 
             await fse.remove(tmpPath);
 
@@ -180,7 +188,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
-                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials);
+                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials, installPath);
             });
         }
 
@@ -351,6 +359,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     description: dbms.description,
                     edition: v?.edition,
                     id: dbms.id,
+                    isCustomPathInstallation: dbms.isCustomPathInstallation,
                     name: dbms.name,
                     rootPath: dbms.rootPath,
                     tags: dbms.tags,
@@ -461,6 +470,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         dbmssDir: string,
         extractedDistPath: string,
         credentials?: string,
+        targetDir?: string,
     ): Promise<IDbmsInfo> {
         if (!(await fse.pathExists(extractedDistPath))) {
             throw new AmbiguousTargetError(`Path to Neo4j distribution does not exist "${extractedDistPath}"`);
@@ -469,13 +479,28 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         const dbmsIdFilename = `dbms-${dbmsId}`;
 
         if (await fse.pathExists(path.join(dbmssDir, dbmsIdFilename))) {
-            throw new DbmsExistsError(`DBMS with name ${dbmsIdFilename} already exists`);
+            throw new DbmsExistsError(`DBMS: ${dbmsIdFilename} already exists`);
         }
 
-        await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
+        if (targetDir) {
+            await fse.ensureDir(targetDir);
+
+            const files = await fse.readdir(targetDir);
+            if (files.length) {
+                throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
+            }
+
+            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
+        }
 
         try {
+            await fse.copy(extractedDistPath, path.join(dbmssDir, dbmsIdFilename));
+
             await this.manifest.update(dbmsId, {name});
+
+            if (targetDir) {
+                await this.manifest.update(dbmsId, {isCustomPathInstallation: true});
+            }
 
             const neo4jConfig = await PropertiesFile.readFile(
                 path.join(this.getDbmsRootPath(dbmsId), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
@@ -510,6 +535,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             return installed;
         } catch (error) {
             await fse.remove(path.join(dbmssDir, dbmsIdFilename));
+
+            // if installing to a custom path, empty the target DBMS dir
+            if (targetDir) {
+                await fse.emptyDir(targetDir);
+            }
+
             throw error;
         }
     }
@@ -523,6 +554,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new AmbiguousTargetError(`DBMS ${dbmsId} not found`);
         }
 
+        // Remove DBMS directory from custom installation path
+        if (dbms.isCustomPathInstallation) {
+            const targetPath = await fse.readlink(dbmsRootPath);
+            await fse.remove(targetPath);
+        }
+
+        // Remove DBMS directory or symlink from Relate data dir
         await fse.unlink(dbmsRootPath).catch(() => fse.remove(dbmsRootPath));
 
         return dbms;
