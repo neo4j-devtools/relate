@@ -298,6 +298,17 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return List.from(nameOrIds)
             .mapEach(async (nameOrId) => {
                 const {id} = await this.getDbms(nameOrId);
+                const {version} = await this.get(nameOrId);
+
+                // Add settings that protects users from Log4j 0-day exploit
+                if (version && semver.gte(version, '4.2.0')) {
+                    const neo4jConfig = await PropertiesFile.readFile(
+                        path.join(this.getDbmsRootPath(id), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
+                    );
+
+                    neo4jConfig.set('dbms.jvm.additional=-Dlog4j2.formatMsgNoLookups', 'true');
+                    await neo4jConfig.flush();
+                }
 
                 if (process.platform === 'win32') {
                     return winNeo4jStart(this.getDbmsRootPath(id));
