@@ -47,7 +47,7 @@ Defined in dbmss/dbmss.abstract.ts:28
 
 ▸ **clone**(`id`: string, `name`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:74
+Defined in dbmss/dbmss.abstract.ts:76
 
 Clone a DBMS
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **createAccessToken**(`appName`: string, `dbmsId`: string, `authToken`: IAuthToken): *Promise‹string›*
 
-Defined in dbmss/dbmss.abstract.ts:118
+Defined in dbmss/dbmss.abstract.ts:120
 
 Creates an access token for a given app, DBMS, and DBMS credentials
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **get**(`nameOrId`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:92
+Defined in dbmss/dbmss.abstract.ts:94
 
 Get a DBMS by name or id
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **getDbmsConfig**(`dbmsId`: string): *Promise‹PropertiesFile›*
 
-Defined in dbmss/dbmss.abstract.ts:124
+Defined in dbmss/dbmss.abstract.ts:126
 
 Get dbms configuration (neo4j.conf)
 
@@ -122,7 +122,7 @@ ___
 
 ▸ **info**(`dbmsIds`: string[] | List‹string›, `onlineCheck?`: undefined | false | true): *Promise‹List‹IDbmsInfo››*
 
-Defined in dbmss/dbmss.abstract.ts:110
+Defined in dbmss/dbmss.abstract.ts:112
 
 Get info for one or more DBMSs
 
@@ -139,9 +139,9 @@ ___
 
 ### `Abstract` install
 
-▸ **install**(`name`: string, `version`: string, `edition?`: NEO4J_EDITION, `credentials?`: undefined | string, `overrideCache?`: undefined | false | true, `limited?`: undefined | false | true): *Promise‹IDbmsInfo›*
+▸ **install**(`name`: string, `version`: string, `edition?`: NEO4J_EDITION, `credentials?`: undefined | string, `overrideCache?`: undefined | false | true, `limited?`: undefined | false | true, `installPath?`: undefined | string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:51
+Defined in dbmss/dbmss.abstract.ts:52
 
 Installs new DBMS
 
@@ -154,7 +154,8 @@ Name | Type | Description |
 `edition?` | NEO4J_EDITION | neo4j edition |
 `credentials?` | undefined &#124; string | Initial password to set |
 `overrideCache?` | undefined &#124; false &#124; true | Download distribution even if it's present in cache |
-`limited?` | undefined &#124; false &#124; true | Is limited version  |
+`limited?` | undefined &#124; false &#124; true | Is limited version |
+`installPath?` | undefined &#124; string | A user selected path to install to, if not provided the default location will be used.  |
 
 **Returns:** *Promise‹IDbmsInfo›*
 
@@ -164,7 +165,7 @@ ___
 
 ▸ **link**(`externalPath`: string, `name`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:67
+Defined in dbmss/dbmss.abstract.ts:69
 
 Links an existing DBMS to relate
 
@@ -183,7 +184,7 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbms››*
 
-Defined in dbmss/dbmss.abstract.ts:86
+Defined in dbmss/dbmss.abstract.ts:88
 
 List all DBMS
 
@@ -201,7 +202,7 @@ ___
 
 ▸ **start**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹string››*
 
-Defined in dbmss/dbmss.abstract.ts:98
+Defined in dbmss/dbmss.abstract.ts:100
 
 Start one or more DBMSs
 
@@ -219,7 +220,7 @@ ___
 
 ▸ **stop**(`dbmsIds`: Array‹string | IQueryTarget› | List‹string | IQueryTarget›): *Promise‹List‹string››*
 
-Defined in dbmss/dbmss.abstract.ts:104
+Defined in dbmss/dbmss.abstract.ts:106
 
 Stop one or more DBMSs
 
@@ -237,7 +238,7 @@ ___
 
 ▸ **uninstall**(`dbmsId`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:80
+Defined in dbmss/dbmss.abstract.ts:82
 
 Uninstall a DBMS
 
@@ -255,7 +256,7 @@ ___
 
 ▸ **updateConfig**(`nameOrId`: string, `properties`: Map‹string, string›): *Promise‹boolean›*
 
-Defined in dbmss/dbmss.abstract.ts:130
+Defined in dbmss/dbmss.abstract.ts:132
 
 Set dbms configuration properties (neo4j.conf)
 
@@ -274,7 +275,7 @@ ___
 
 ▸ **upgrade**(`dbmsId`: string, `version`: string, `options?`: IDbmsUpgradeOptions): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:60
+Defined in dbmss/dbmss.abstract.ts:62
 
 **Parameters:**
 
