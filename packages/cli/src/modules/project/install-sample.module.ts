@@ -70,7 +70,7 @@ export class InstallSampleModule implements OnApplicationBootstrap {
         cli.action.stop(chalk.green('done'));
 
         cli.action.start(`Creating project '${selected}'.`);
-        const manifests = await environment.projects.installSampleProject(downloadPath, {
+        const manifests = await environment.projects.prepareSampleProject(downloadPath, {
             name: selected,
             temp,
         });
