@@ -1,5 +1,4 @@
 import {List} from '@relate/types';
-import {Got} from 'got';
 
 import {EnvironmentAbstract} from '../environments';
 import {ManifestAbstract} from '../manifest';
@@ -130,7 +129,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     /**
      * Lists sample projects from github (https://github.com/neo4j-graph-examples)
      */
-    abstract listSampleProjects(fetch?: () => any | Got): Promise<List<ISampleProjectRest>>;
+    abstract listSampleProjects(): Promise<List<ISampleProjectRest>>;
 
     /**
      * Download sample project from github (https://github.com/neo4j-graph-examples)
@@ -144,7 +143,7 @@ export abstract class ProjectsAbstract<Env extends EnvironmentAbstract> {
     /**
      * Install sample project from file
      */
-    abstract installSampleProject(
+    abstract prepareSampleProject(
         srcPath: string,
         args: {
             name?: string;

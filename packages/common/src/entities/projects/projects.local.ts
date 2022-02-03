@@ -1,9 +1,9 @@
+import url from 'url';
 import path from 'path';
 import fse from 'fs-extra';
 import semver from 'semver';
 import Plimit from 'p-limit';
 import {v4 as uuidv4} from 'uuid';
-import got, {Got} from 'got';
 import {Dict, List, Maybe, None, Str} from '@relate/types';
 
 import {
@@ -28,6 +28,7 @@ import {AmbiguousTargetError, FetchError, InvalidArgumentError, NotFoundError} f
 import {getAbsoluteProjectPath, getRelativeProjectPath, isSymlink, mapFileToModel} from '../../utils/files';
 import {applyEntityFilters, IRelateFilter} from '../../utils/generic';
 import {download, extract} from '../../utils';
+import {requestJson} from '../../utils/download';
 
 export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     public readonly manifest = new ManifestLocal(
@@ -305,16 +306,14 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
             });
     }
 
-    async listSampleProjects(fetch?: () => any | Got): Promise<List<ISampleProjectRest>> {
-        const get = fetch || got;
-
+    async listSampleProjects(): Promise<List<ISampleProjectRest>> {
         try {
-            const response = await get(
+            const response = await requestJson(
                 'https://api.github.com/search/repositories?q=topic:neo4j-approved+org:neo4j-graph-examples',
             );
 
             return List.from(
-                JSON.parse(response.body)?.items.map(
+                response.items.map(
                     /* eslint-disable-next-line camelcase */
                     ({name, description, default_branch}: ISampleProjectRest) => ({
                         name,
@@ -326,16 +325,20 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
                     }),
                 ),
             );
-        } catch (_error) {
-            throw new FetchError(`Unable to fetch Sample Projects from GitHub`);
+        } catch (error) {
+            throw new FetchError(`Unable to fetch Sample Projects from GitHub. ${error}`);
         }
     }
 
-    async downloadSampleProject(url: string, name: string, destPath?: string): Promise<{path: string; temp: boolean}> {
+    async downloadSampleProject(
+        downloadUrl: string,
+        name: string,
+        destPath?: string,
+    ): Promise<{path: string; temp: boolean}> {
         const {tmp} = this.environment.dirPaths;
 
         const diskPath = destPath || path.join(tmp, uuidv4());
-        const sampleProject = await download(url, destPath ? destPath : path.join(diskPath, name));
+        const sampleProject = await download(downloadUrl, destPath ? destPath : path.join(diskPath, name));
 
         const extractedPath = await extract(sampleProject, diskPath);
 
@@ -345,7 +348,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
         };
     }
 
-    async installSampleProject(
+    async prepareSampleProject(
         srcPath: string,
         args: {
             name?: string;
@@ -413,14 +416,52 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
 
         const project = await this.get(projectId);
 
+        const handleProjectFile = async ({
+            file,
+            pathPrefix = '',
+            projectPath,
+        }: {
+            file: string;
+            pathPrefix: string;
+            projectPath: string;
+        }): Promise<string> => {
+            if (!file.startsWith('http')) {
+                return file;
+            }
+
+            const parsed = url.parse(file);
+            const fileName = path.basename(parsed.pathname || file);
+            const outputPath = path.join(projectPath, pathPrefix, fileName);
+
+            const downloadFilePath = await download(file, projectPath).catch((error) => {
+                throw new FetchError(`Unable to download project file: ${file} - (${error})`);
+            });
+
+            if (downloadFilePath) {
+                await fse.move(downloadFilePath, outputPath);
+            }
+
+            return outputPath;
+        };
+
         let dump;
         if (created.id && dbms.dumpFile) {
-            dump = await this.environment.dbs.load(created.id, 'neo4j', path.join(project.root, dbms.dumpFile));
+            const dumpFile = await handleProjectFile({
+                file: dbms.dumpFile,
+                pathPrefix: 'data',
+                projectPath: project.root,
+            });
+            dump = await this.environment.dbs.load(created.id, 'neo4j', dumpFile);
         }
 
         let script;
         if (created.id && !dbms.dumpFile && dbms.scriptFile) {
-            script = await this.environment.dbs.exec(created.id, path.join(project.root, dbms.scriptFile), {
+            const scriptFile = await handleProjectFile({
+                file: dbms.scriptFile,
+                pathPrefix: 'scripts',
+                projectPath: project.root,
+            });
+            script = await this.environment.dbs.exec(created.id, scriptFile, {
                 user: 'neo4j',
                 database: 'neo4j',
                 accessToken: credentials,

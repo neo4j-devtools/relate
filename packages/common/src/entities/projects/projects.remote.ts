@@ -89,7 +89,7 @@ export class RemoteProjects extends ProjectsAbstract<RemoteEnvironment> {
         throw new NotSupportedError(`${RemoteProjects.name} does not support downloading sample projects`);
     }
 
-    installSampleProject(
+    prepareSampleProject(
         _srcPath: string,
         _args: {
             name?: string;
