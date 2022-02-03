@@ -24,12 +24,12 @@
 * [downloadSampleProject](projectsabstract.md#abstract-downloadsampleproject)
 * [get](projectsabstract.md#abstract-get)
 * [importSampleDbms](projectsabstract.md#abstract-importsampledbms)
-* [installSampleProject](projectsabstract.md#abstract-installsampleproject)
 * [link](projectsabstract.md#abstract-link)
 * [list](projectsabstract.md#abstract-list)
 * [listDbmss](projectsabstract.md#abstract-listdbmss)
 * [listFiles](projectsabstract.md#abstract-listfiles)
 * [listSampleProjects](projectsabstract.md#abstract-listsampleprojects)
+* [prepareSampleProject](projectsabstract.md#abstract-preparesampleproject)
 * [removeDbms](projectsabstract.md#abstract-removedbms)
 * [removeFile](projectsabstract.md#abstract-removefile)
 * [unlink](projectsabstract.md#abstract-unlink)
@@ -41,7 +41,7 @@
 
 • **manifest**: *[ManifestAbstract](manifestabstract.md)‹Env, IProject, ProjectManifestModel›*
 
-Defined in projects/projects.abstract.ts:26
+Defined in projects/projects.abstract.ts:25
 
 ## Methods
 
@@ -49,7 +49,7 @@ Defined in projects/projects.abstract.ts:26
 
 ▸ **addDbms**(`nameOrId`: string, `dbmsName`: string, `dbmsId`: string, `principal?`: undefined | string, `accessToken?`: undefined | string): *Promise‹IProjectDbms›*
 
-Defined in projects/projects.abstract.ts:115
+Defined in projects/projects.abstract.ts:114
 
 Adds DBMS to given project
 
@@ -71,7 +71,7 @@ ___
 
 ▸ **addFile**(`nameOrId`: string, `source`: string, `destination?`: undefined | string, `overwrite?`: undefined | false | true): *Promise‹IRelateFile›*
 
-Defined in projects/projects.abstract.ts:77
+Defined in projects/projects.abstract.ts:76
 
 Adds file (copy) to project
 
@@ -92,7 +92,7 @@ ___
 
 ▸ **create**(`manifest`: Omit‹IProjectInput, "id"›): *Promise‹IProject›*
 
-Defined in projects/projects.abstract.ts:37
+Defined in projects/projects.abstract.ts:36
 
 Creates new project
 
@@ -110,7 +110,7 @@ ___
 
 ▸ **downloadSampleProject**(`url`: string, `name`: string, `destPath?`: undefined | string): *Promise‹object›*
 
-Defined in projects/projects.abstract.ts:138
+Defined in projects/projects.abstract.ts:137
 
 Download sample project from github (https://github.com/neo4j-graph-examples)
 
@@ -130,7 +130,7 @@ ___
 
 ▸ **get**(`nameOrId`: string): *Promise‹IProject›*
 
-Defined in projects/projects.abstract.ts:43
+Defined in projects/projects.abstract.ts:42
 
 Gets a project by name
 
@@ -148,7 +148,7 @@ ___
 
 ▸ **importSampleDbms**(`projectId`: string, `dbms`: ISampleProjectDbms, `credentials`: string): *Promise‹object›*
 
-Defined in projects/projects.abstract.ts:159
+Defined in projects/projects.abstract.ts:158
 
 Install sample DBMSs from file
 
@@ -164,11 +164,98 @@ Name | Type |
 
 ___
 
-### `Abstract` installSampleProject
+### `Abstract` link
 
-▸ **installSampleProject**(`srcPath`: string, `args`: object): *Promise‹object›*
+▸ **link**(`externalPath`: string, `name`: string): *Promise‹IProject›*
 
-Defined in projects/projects.abstract.ts:147
+Defined in projects/projects.abstract.ts:55
+
+Links an existing project
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`externalPath` | string | Path to project root |
+`name` | string |   |
+
+**Returns:** *Promise‹IProject›*
+
+___
+
+### `Abstract` list
+
+▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProject››*
+
+Defined in projects/projects.abstract.ts:48
+
+List all available projects
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
+
+**Returns:** *Promise‹List‹IProject››*
+
+___
+
+### `Abstract` listDbmss
+
+▸ **listDbmss**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProjectDbms››*
+
+Defined in projects/projects.abstract.ts:104
+
+Lists DBMSs for given project
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`nameOrId` | string | - |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
+
+**Returns:** *Promise‹List‹IProjectDbms››*
+
+___
+
+### `Abstract` listFiles
+
+▸ **listFiles**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IRelateFile››*
+
+Defined in projects/projects.abstract.ts:68
+
+List files for given project
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`nameOrId` | string | - |
+`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
+
+**Returns:** *Promise‹List‹IRelateFile››*
+
+___
+
+### `Abstract` listSampleProjects
+
+▸ **listSampleProjects**(): *Promise‹List‹ISampleProjectRest››*
+
+Defined in projects/projects.abstract.ts:132
+
+Lists sample projects from github (https://github.com/neo4j-graph-examples)
+
+**Returns:** *Promise‹List‹ISampleProjectRest››*
+
+___
+
+### `Abstract` prepareSampleProject
+
+▸ **prepareSampleProject**(`srcPath`: string, `args`: object): *Promise‹object›*
+
+Defined in projects/projects.abstract.ts:146
 
 Install sample project from file
 
@@ -188,104 +275,11 @@ Name | Type |
 
 ___
 
-### `Abstract` link
-
-▸ **link**(`externalPath`: string, `name`: string): *Promise‹IProject›*
-
-Defined in projects/projects.abstract.ts:56
-
-Links an existing project
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`externalPath` | string | Path to project root |
-`name` | string |   |
-
-**Returns:** *Promise‹IProject›*
-
-___
-
-### `Abstract` list
-
-▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProject››*
-
-Defined in projects/projects.abstract.ts:49
-
-List all available projects
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
-
-**Returns:** *Promise‹List‹IProject››*
-
-___
-
-### `Abstract` listDbmss
-
-▸ **listDbmss**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IProjectDbms››*
-
-Defined in projects/projects.abstract.ts:105
-
-Lists DBMSs for given project
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`nameOrId` | string | - |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
-
-**Returns:** *Promise‹List‹IProjectDbms››*
-
-___
-
-### `Abstract` listFiles
-
-▸ **listFiles**(`nameOrId`: string, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IRelateFile››*
-
-Defined in projects/projects.abstract.ts:69
-
-List files for given project
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`nameOrId` | string | - |
-`filters?` | List‹IRelateFilter› &#124; IRelateFilter[] | Filters to apply  |
-
-**Returns:** *Promise‹List‹IRelateFile››*
-
-___
-
-### `Abstract` listSampleProjects
-
-▸ **listSampleProjects**(`fetch?`: undefined | function): *Promise‹List‹ISampleProjectRest››*
-
-Defined in projects/projects.abstract.ts:133
-
-Lists sample projects from github (https://github.com/neo4j-graph-examples)
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`fetch?` | undefined &#124; function |
-
-**Returns:** *Promise‹List‹ISampleProjectRest››*
-
-___
-
 ### `Abstract` removeDbms
 
 ▸ **removeDbms**(`nameOrId`: string, `dbmsName`: string): *Promise‹IProjectDbms›*
 
-Defined in projects/projects.abstract.ts:128
+Defined in projects/projects.abstract.ts:127
 
 removes DBMS from given project
 
@@ -304,7 +298,7 @@ ___
 
 ▸ **removeFile**(`nameOrId`: string, `relativePath`: string): *Promise‹IRelateFile›*
 
-Defined in projects/projects.abstract.ts:98
+Defined in projects/projects.abstract.ts:97
 
 Removes file from given project
 
@@ -323,7 +317,7 @@ ___
 
 ▸ **unlink**(`nameOrId`: string): *Promise‹IProject›*
 
-Defined in projects/projects.abstract.ts:62
+Defined in projects/projects.abstract.ts:61
 
 Unlinks a linked project
 
@@ -341,7 +335,7 @@ ___
 
 ▸ **writeFile**(`nameOrId`: string, `destination`: string, `data`: string | Buffer, `writeFlag?`: WriteFileFlag): *Promise‹IRelateFile›*
 
-Defined in projects/projects.abstract.ts:86
+Defined in projects/projects.abstract.ts:85
 
 Adds file (write) to project
 
