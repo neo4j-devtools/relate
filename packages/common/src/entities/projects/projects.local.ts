@@ -309,7 +309,7 @@ export class LocalProjects extends ProjectsAbstract<LocalEnvironment> {
     async listSampleProjects(): Promise<List<ISampleProjectRest>> {
         try {
             const response = await requestJson(
-                'https://api.github.com/search/repositories?q=topic:neo4j-approved+org:neo4j-graph-examples',
+                'https://api.github.com/search/repositories?q=topic:neo4j-approved+org:neo4j-graph-examples+fork:true',
             );
 
             return List.from(
