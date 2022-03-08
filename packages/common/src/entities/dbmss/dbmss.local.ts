@@ -306,7 +306,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         path.join(this.getDbmsRootPath(id), NEO4J_CONF_DIR, NEO4J_CONF_FILE),
                     );
 
-                    neo4jConfig.set('dbms.jvm.additional=-Dlog4j2.formatMsgNoLookups', 'true');
+                    const log4jVulnFix = neo4jConfig.config.find(
+                        (item) => item[0] === 'dbms.jvm.additional' && item[1] === '-Dlog4j2.formatMsgNoLookups=true',
+                    );
+                    if (!log4jVulnFix) {
+                        neo4jConfig.set('dbms.jvm.additional=-Dlog4j2.formatMsgNoLookups', 'true');
+                    }
                     await neo4jConfig.flush();
                 }
 
