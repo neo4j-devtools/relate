@@ -8,7 +8,6 @@ import {
     RUNTIME_DIR_NAME,
     ZULU_JAVA_DOWNLOAD_URL,
     ZULU_JAVA_VERSION,
-    NEO4J_JAVA_11_VERSION_RANGE,
 } from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
 
@@ -19,6 +18,10 @@ interface IJavaName {
 }
 
 export const resolveJavaName = (dbmsVersion: string): IJavaName => {
+    if (process.arch !== 'x64') {
+        throw new NotSupportedError('Unsupported architecture, install Java manually');
+    }
+
     let platform: string;
     let ext: string;
 
@@ -36,13 +39,15 @@ export const resolveJavaName = (dbmsVersion: string): IJavaName => {
             ext = 'tar.gz';
     }
 
-    const javaVersion = semver.satisfies(dbmsVersion, NEO4J_JAVA_11_VERSION_RANGE)
-        ? ZULU_JAVA_VERSION.JAVA_11
-        : ZULU_JAVA_VERSION.JAVA_8;
-
-    if (process.arch !== 'x64') {
-        throw new NotSupportedError('Unsupported architecture, install Java manually');
-    }
+    const majorVersion = semver.major(dbmsVersion);
+    const neo4jJavaVersionMapping = {
+        3: ZULU_JAVA_VERSION.JAVA_8,
+        4: ZULU_JAVA_VERSION.JAVA_11,
+        5: ZULU_JAVA_VERSION.JAVA_17,
+    };
+    const [, javaVersion] = Object.entries(neo4jJavaVersionMapping).find((item) => {
+        return item[0] === majorVersion.toString();
+    }) || ['', ZULU_JAVA_VERSION.JAVA_17];
 
     const dirname = `zulu${javaVersion}-${platform}_${process.arch}`;
 
