@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import {ENTITY_TYPES} from '@relate/common';
 
 import {isInteractive} from './stdin';
@@ -30,21 +30,21 @@ export const ARGS = {
 
 export const FLAGS = {
     ENVIRONMENT: {
-        environment: flags.string({
+        environment: Flags.string({
             char: 'e',
             description: 'Name of the environment to run the command against',
             required: false,
         }),
     },
     PROJECT: {
-        project: flags.string({
+        project: Flags.string({
             char: 'p',
             description: 'Name of the project to run the command against',
             required: REQUIRED_FOR_SCRIPTS,
         }),
     },
     VERSION: {
-        version: flags.string({
+        version: Flags.string({
             char: 'v',
             description: 'Version to install (semver, url, or path)',
             required: REQUIRED_FOR_SCRIPTS,

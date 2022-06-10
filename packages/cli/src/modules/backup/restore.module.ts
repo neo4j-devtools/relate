@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {SystemModule, SystemProvider} from '@relate/common';
 
 import RestoreCommand from '../../commands/backup/restore';
@@ -25,9 +25,9 @@ export class RestoreModule implements OnApplicationBootstrap {
         const backup = await environment.backups.get(backupIdOrPath).catch(() => null);
         const backupPath = backup ? backup.directory : backupIdOrPath;
 
-        cli.action.start(`Restoring backup from "${backupPath}".`);
+        CliUx.ux.action.start(`Restoring backup from "${backupPath}".`);
         await environment.backups.restore(backupPath, outputPath).then((restored) => {
-            cli.action.stop();
+            CliUx.ux.action.stop();
             this.utils.log(
                 outputPath
                     ? `Restored ${restored.entityType} ${restored.entityId} at ${outputPath}`

@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -24,16 +24,16 @@ export default class LoadCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        database: flags.string({
+        database: Flags.string({
             char: 'd',
             default: 'neo4j',
             description: 'Database to load data into',
         }),
-        force: flags.boolean({
+        force: Flags.boolean({
             default: false,
             description: 'Force load data (WARNING! this will erase any existing data)',
         }),
-        from: flags.string({
+        from: Flags.string({
             char: 'f',
             description: 'Dump to load data from',
             required: true,

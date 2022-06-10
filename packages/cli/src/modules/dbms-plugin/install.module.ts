@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {HOOK_EVENTS, registerHookListener, SystemModule, SystemProvider} from '@relate/common';
 import InstallCommand from '../../commands/dbms-plugin/install';
@@ -19,7 +19,7 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = cli.progress({
+        const downloadBar = CliUx.ux.progress({
             format: 'Download progress [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
@@ -42,7 +42,7 @@ export class InstallModule implements OnApplicationBootstrap {
             : await selectDbmssPrompt('Select DBMSs in which to install the plugin', environment);
 
         return environment.dbmsPlugins.install(dbmss, plugin).then((plugins) => {
-            cli.table(
+            CliUx.ux.table(
                 plugins.toArray(),
                 {
                     name: {},

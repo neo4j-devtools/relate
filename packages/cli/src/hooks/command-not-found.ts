@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config';
+import {Hook} from '@oclif/core';
 import {spawnSync} from 'child_process';
 import fse from 'fs-extra';
 import path from 'path';

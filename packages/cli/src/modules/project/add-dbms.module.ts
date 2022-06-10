@@ -1,4 +1,4 @@
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {AuthTokenModel, HOOK_EVENTS, registerHookListener, SystemModule, SystemProvider} from '@relate/common';
 
@@ -36,7 +36,7 @@ export class AddDbmsModule implements OnApplicationBootstrap {
             scheme: 'basic',
         });
 
-        cli.action.start('Creating access token');
+        CliUx.ux.action.start('Creating access token');
         registerHookListener(HOOK_EVENTS.DBMS_TO_BE_ONLINE_ATTEMPTS, ({currentAttempt}) => {
             if (currentAttempt < 2) {
                 return;
@@ -49,7 +49,7 @@ export class AddDbmsModule implements OnApplicationBootstrap {
 
             this.utils.warn('still retrying...');
         });
-        cli.action.stop();
+        CliUx.ux.action.stop();
 
         return environment.dbmss
             .createAccessToken(project.name, dbms.id, authToken)

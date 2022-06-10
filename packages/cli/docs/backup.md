@@ -3,101 +3,115 @@
 
 Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
 
-* [`relate backup:create ENTITYNAMEORID`](#relate-backupcreate-entitynameorid)
-* [`relate backup:list`](#relate-backuplist)
-* [`relate backup:remove BACKUPID`](#relate-backupremove-backupid)
-* [`relate backup:restore BACKUPIDORPATH [OUTPUTPATH]`](#relate-backuprestore-backupidorpath-outputpath)
+* [`relate backup create ENTITYNAMEORID`](#relate-backup-create-entitynameorid)
+* [`relate backup list`](#relate-backup-list)
+* [`relate backup remove BACKUPID`](#relate-backup-remove-backupid)
+* [`relate backup restore BACKUPIDORPATH [OUTPUTPATH]`](#relate-backup-restore-backupidorpath-outputpath)
 
-## `relate backup:create ENTITYNAMEORID`
+## `relate backup create ENTITYNAMEORID`
 
 Create a new resource backup
 
 ```
 USAGE
-  $ relate backup:create ENTITYNAMEORID
+  $ relate backup create [ENTITYNAMEORID] -t dbms|project [-e <value>]
 
 ARGUMENTS
   ENTITYNAMEORID  Entity id
 
-OPTIONS
-  -e, --environment=environment  Name of the environment to run the command against
-  -t, --type=(dbms|project)      (required) The relate entity type
+FLAGS
+  -e, --environment=<value>  Name of the environment to run the command against
+  -t, --type=(dbms|project)  (required) The relate entity type
+
+DESCRIPTION
+  Create a new resource backup
 
 EXAMPLES
   $ relate backup:create
+
   $ relate backup:create -e environment-name
+
   $ relate backup:create <entity-id> -t dbms
 ```
 
-_See code: [dist/commands/backup/create.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/backup/create.ts)_
-
-## `relate backup:list`
+## `relate backup list`
 
 List resource backups
 
 ```
 USAGE
-  $ relate backup:list
+  $ relate backup list [-e <value>] [--columns <value> | ] [--sort <value>] [--filter <value>] [--output
+    csv|json|yaml | --no-truncate | ] [--no-header | ] [-t dbms|project]
 
-OPTIONS
-  -e, --environment=environment  Name of the environment to run the command against
-  -t, --type=(dbms|project)      The relate entity type
-  --columns=columns              only show provided columns (comma-separated)
-  --filter=filter                filter property by partial string matching, ex: name=foo
-  --no-header                    hide table header from output
-  --no-truncate                  do not truncate output to fit screen
-  --output=csv|json|yaml         output in a more machine friendly format
-  --sort=sort                    property to sort by (prepend '-' for descending)
+FLAGS
+  -e, --environment=<value>  Name of the environment to run the command against
+  -t, --type=(dbms|project)  The relate entity type
+  --columns=<value>          only show provided columns (comma-separated)
+  --filter=<value>           filter property by partial string matching, ex: name=foo
+  --no-header                hide table header from output
+  --no-truncate              do not truncate output to fit screen
+  --output=<option>          output in a more machine friendly format
+                             <options: csv|json|yaml>
+  --sort=<value>             property to sort by (prepend '-' for descending)
+
+DESCRIPTION
+  List resource backups
 
 EXAMPLES
   $ relate backup:list
+
   $ relate backup:list -e environment-name
+
   $ relate backup:list --columns=entityType,entityId --no-header --no-truncate
+
   $ relate backup:list --sort=created
 ```
 
-_See code: [dist/commands/backup/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/backup/list.ts)_
-
-## `relate backup:remove BACKUPID`
+## `relate backup remove BACKUPID`
 
 Remove a resource backup
 
 ```
 USAGE
-  $ relate backup:remove BACKUPID
+  $ relate backup remove [BACKUPID] [-e <value>]
 
 ARGUMENTS
   BACKUPID  Backup ID
 
-OPTIONS
-  -e, --environment=environment  Name of the environment to run the command against
+FLAGS
+  -e, --environment=<value>  Name of the environment to run the command against
+
+DESCRIPTION
+  Remove a resource backup
 
 EXAMPLES
   $ relate backup:remove <backup-id-or-path>
+
   $ relate backup:remove -e environment-name
 ```
 
-_See code: [dist/commands/backup/remove.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/backup/remove.ts)_
-
-## `relate backup:restore BACKUPIDORPATH [OUTPUTPATH]`
+## `relate backup restore BACKUPIDORPATH [OUTPUTPATH]`
 
 Restore resource from a backup
 
 ```
 USAGE
-  $ relate backup:restore BACKUPIDORPATH [OUTPUTPATH]
+  $ relate backup restore [BACKUPIDORPATH] [OUTPUTPATH] [-e <value>]
 
 ARGUMENTS
   BACKUPIDORPATH  Backup ID or path
   OUTPUTPATH      destination of backup
 
-OPTIONS
-  -e, --environment=environment  Name of the environment to run the command against
+FLAGS
+  -e, --environment=<value>  Name of the environment to run the command against
+
+DESCRIPTION
+  Restore resource from a backup
 
 EXAMPLES
   $ relate backup:restore <backup-id-or-path>
+
   $ relate backup:restore -e environment-name
+
   $ relate backup:restore <backup-id-or-path> <output-path>
 ```
-
-_See code: [dist/commands/backup/restore.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/backup/restore.ts)_

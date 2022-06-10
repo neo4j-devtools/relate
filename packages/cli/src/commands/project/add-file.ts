@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 
@@ -29,11 +29,11 @@ export default class AddFileCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,
-        destination: flags.string({
+        destination: Flags.string({
             char: 'd',
             description: 'The relative path of the file (including name) in the project',
         }),
-        overwrite: flags.boolean({
+        overwrite: Flags.boolean({
             default: false,
             description: 'Overwrite existing destination file',
         }),

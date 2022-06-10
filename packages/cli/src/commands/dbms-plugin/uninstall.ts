@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {UninstallModule} from '../../modules/dbms-plugin/uninstall.module';
@@ -25,7 +25,7 @@ export default class UninstallCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        plugin: flags.string({
+        plugin: Flags.string({
             char: 'p',
             description: 'Name of the plugin to uninstall',
             required: REQUIRED_FOR_SCRIPTS,

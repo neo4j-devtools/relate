@@ -50,7 +50,7 @@ $ relate <topic>:<command> --help
 * [`relate dbms-plugin`](./docs/dbms-plugin.md) - Neo4j DBMS plugins.
 * [`relate environment`](./docs/environment.md) - Managed sets of related resources and services.
 * [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
-* [`relate help`](./docs/help.md) - display help for relate
+* [`relate help`](./docs/help.md) - Display help for relate.
 * [`relate project`](./docs/project.md) - Projects bring files and data together.
 
 <!-- commandsstop -->

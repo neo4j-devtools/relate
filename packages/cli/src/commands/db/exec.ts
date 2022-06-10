@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -24,17 +24,17 @@ export default class ExecCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        database: flags.string({
+        database: Flags.string({
             char: 'd',
             default: 'neo4j',
             description: 'Database',
         }),
-        from: flags.string({
+        from: Flags.string({
             char: 'f',
             description: 'Cypher file to run',
             required: true,
         }),
-        user: flags.string({
+        user: Flags.string({
             char: 'u',
             default: 'neo4j',
             description: 'DBMS user',

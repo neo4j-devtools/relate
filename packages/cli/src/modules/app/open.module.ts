@@ -1,6 +1,6 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {Environment, getAppLaunchUrl, isValidUrl, NotFoundError, SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import _ from 'lodash';
 import fetch from 'node-fetch';
 
@@ -24,7 +24,7 @@ export class OpenModule implements OnApplicationBootstrap {
         if (this.parsed.flags.log) {
             this.utils.log(path);
         } else {
-            cli.open(path);
+            CliUx.ux.open(path);
         }
     }
 

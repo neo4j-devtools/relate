@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
 import {StopModule} from '../../modules/dbms/stop.module';
@@ -23,7 +23,7 @@ export default class StopCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        shutdown: flags.boolean({
+        shutdown: Flags.boolean({
             description:
                 'Use the shutdown procedure, if available, to stop the DBMS (needed on Windows for a graceful stop)',
             allowNo: process.platform === 'win32',

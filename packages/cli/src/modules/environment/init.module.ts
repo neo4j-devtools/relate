@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {
     ENVIRONMENT_TYPES,
     IEnvironmentConfigInput,
@@ -27,7 +27,7 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = cli.progress({
+        const downloadBar = CliUx.ux.progress({
             format: 'Downloading Java [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
@@ -38,8 +38,8 @@ export class InitModule implements OnApplicationBootstrap {
             downloadBar.update(Math.round(percent * 100)),
         );
 
-        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_START, (val) => cli.action.start(val));
-        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_STOP, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_START, (val) => CliUx.ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_STOP, () => CliUx.ux.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {
@@ -69,9 +69,9 @@ export class InitModule implements OnApplicationBootstrap {
             }
         }
 
-        cli.action.start('Creating environment');
+        CliUx.ux.action.start('Creating environment');
         await this.systemProvider.createEnvironment(config);
-        cli.action.stop();
+        CliUx.ux.action.stop();
 
         const relateJavaExists = await resolveRelateJavaHome('4.0.0');
         if (!noRuntime && !relateJavaExists) {

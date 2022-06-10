@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -24,12 +24,12 @@ export default class DumpCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        database: flags.string({
+        database: Flags.string({
             char: 'd',
             default: 'neo4j',
             description: 'Database',
         }),
-        to: flags.string({
+        to: Flags.string({
             char: 't',
             description: 'Path and filename for dump (defaults to a "dbmsName-db-date-time.dump")',
         }),

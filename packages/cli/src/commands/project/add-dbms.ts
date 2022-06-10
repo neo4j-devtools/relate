@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -23,11 +23,11 @@ export default class AddDbmsCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,
-        name: flags.string({
+        name: Flags.string({
             char: 'n',
             description: 'Project DBMS name',
         }),
-        user: flags.string({
+        user: Flags.string({
             char: 'u',
             default: 'neo4j',
             description: 'Neo4j DBMS user to create the token for',

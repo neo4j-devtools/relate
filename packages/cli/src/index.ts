@@ -1,1 +1,1 @@
-export {run as bootstrap} from '@oclif/command';
+export {run as bootstrap} from '@oclif/core';

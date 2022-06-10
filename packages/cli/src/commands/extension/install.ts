@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 
@@ -29,7 +29,7 @@ export default class InstallCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        version: flags.string({
+        version: Flags.string({
             char: 'V',
             description: 'Version to install (semver), or path to tarball',
         }),

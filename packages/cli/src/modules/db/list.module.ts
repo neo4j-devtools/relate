@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
 import ListCommand from '../../commands/db/list';
@@ -29,7 +29,7 @@ export class ListModule implements OnApplicationBootstrap {
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
         const dbs = await environment.dbs.list(dbms, user, accessToken);
-        cli.table(
+        CliUx.ux.table(
             dbs.toArray(),
             {
                 name: {},

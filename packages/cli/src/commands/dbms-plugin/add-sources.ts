@@ -1,4 +1,4 @@
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -31,6 +31,6 @@ export default class AddSourcesCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...cli.table.flags({except: ['csv']}),
+        ...CliUx.ux.table.flags({except: ['csv']}),
     };
 }

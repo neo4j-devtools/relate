@@ -1,6 +1,4 @@
-import Command from '@oclif/command';
-import parser from '@oclif/parser';
-import {CLIError} from '@oclif/errors';
+import {Command, Interfaces, Errors} from '@oclif/core';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {
@@ -16,20 +14,20 @@ import {ConfigModule} from '@nestjs/config';
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 
 export default abstract class BaseCommand extends Command {
-    protected abstract commandClass: parser.Input<parser.flags.Output>;
+    protected abstract commandClass: Interfaces.Input<Interfaces.FlagOutput>;
 
     // Any nestjs module should be a valid command module.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected abstract commandModule: Type<any>;
 
-    run(): Promise<INestApplicationContext> {
-        const parsed = this.parse(this.commandClass);
+    async run(): Promise<INestApplicationContext> {
+        const parsed = await this.parse(this.commandClass);
         const utils = {
-            debug: this.debug,
-            error: this.error,
-            log: this.log,
-            exit: this.exit,
-            warn: this.warn,
+            debug: this.debug.bind(this),
+            error: this.error.bind(this),
+            log: this.log.bind(this),
+            exit: this.exit.bind(this),
+            warn: this.warn.bind(this),
         };
         const options: {logger?: false} = IS_DEVELOPMENT_ENV ? {} : {logger: false};
         const {flags} = parsed;
@@ -77,7 +75,7 @@ export default abstract class BaseCommand extends Command {
                 // even when not in debug mode. If it's passed a message it will display
                 // the error message nicely to the user, and if debug mode is enabled
                 // it will display the stack trace too.
-                const cliError = new CLIError(err.message);
+                const cliError = new Errors.CLIError(err.message);
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 cliError.name = err.name;

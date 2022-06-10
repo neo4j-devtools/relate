@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {LinkModule} from '../../modules/project/link.module';
@@ -20,7 +20,7 @@ export default class LinkCommand extends BaseCommand {
     ];
 
     static flags = {
-        name: flags.string({
+        name: Flags.string({
             char: 'n',
             description: 'Name of the project',
             required: REQUIRED_FOR_SCRIPTS,
