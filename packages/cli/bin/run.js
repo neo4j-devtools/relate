@@ -4,5 +4,5 @@ const path = require('path');
 
 require(path.join(__dirname, '../dist/index.js'))
     .bootstrap()
-    .then(require('@oclif/command/flush'))
-    .catch(require('@oclif/errors/handle'));
+    .then(require('@oclif/core/flush'))
+    .catch(require('@oclif/core/handle'));

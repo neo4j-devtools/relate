@@ -14,8 +14,9 @@ export interface IFileUpload {
 export const GraphQLUpload = new GraphQLScalarType({
     name: 'Upload',
     description: 'The `Upload` scalar type represents a file upload.',
-    async parseValue(value: Promise<IFileUpload>): Promise<IFileUpload> {
-        const upload = await value;
+    async parseValue(value: unknown): Promise<IFileUpload> {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const upload = (await value) as IFileUpload;
 
         // if we are coming from the sofa REST API the file has already been flushed to disk
         if (upload.path) {
@@ -39,10 +40,12 @@ export const GraphQLUpload = new GraphQLScalarType({
 
         return upload;
     },
-    parseLiteral(ast): void {
+    parseLiteral(ast): Promise<IFileUpload> {
         throw new GraphQLError('Upload literal unsupported.', ast);
     },
-    serialize(value: IFileUpload): any {
+    serialize(unknownValue: unknown): any {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const value = unknownValue as IFileUpload;
         // sofa-api calls .serialize() on GraphQL scalars
         return {
             filename: value.filename,

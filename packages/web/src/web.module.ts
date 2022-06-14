@@ -25,6 +25,7 @@ import {HealthModule} from './health';
 import {fixAddProjectFilesOpenAPIDef} from './utils/open-api.utils';
 import {DBMSPluginsModule} from './entities/dbms-plugins';
 import {graphqlWs, subscriptionsTransportWs} from './utils/subscription.utils';
+import {ApolloDriver} from '@nestjs/apollo';
 
 export interface IWebModuleConfig extends ISystemModuleConfig {
     protocol?: string;
@@ -43,6 +44,7 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         ProjectModule,
         FilesModule,
         GraphQLModule.forRootAsync({
+            driver: ApolloDriver,
             useFactory: (configService: ConfigService<IWebModuleConfig>, systemProvider: SystemProvider) => ({
                 playground: {
                     settings: {

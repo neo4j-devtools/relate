@@ -39,12 +39,12 @@ export function subscriptionsTransportWs(systemProvider: SystemProvider): IGraph
 }
 
 interface IGraphQLWsSubscriptionsConfig {
-    onConnect: (context: Context<unknown>) => Promise<boolean>;
+    onConnect: (context: Context<Record<string, unknown>>) => Promise<boolean>;
 }
 
 export function graphqlWs(systemProvider: SystemProvider): IGraphQLWsSubscriptionsConfig {
     return {
-        async onConnect(context: Context<unknown>) {
+        async onConnect(context: Context<Record<string, unknown>>) {
             const {connectionParams = {}, extra} = context;
 
             const clientId = Str.from(connectionParams[CLIENT_ID_HEADER]).toString();
