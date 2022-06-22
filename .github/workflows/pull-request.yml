@@ -1,0 +1,34 @@
+name: 'PR Tests'
+
+on:
+    pull_request:
+        branches:
+            - master
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 14.18
+                  cache: npm
+            - run: npm ci
+            - run: npm run lint
+
+    e2e:
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [macos-latest, ubuntu-latest, windows-latest]
+
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 14.18
+                  cache: npm
+            - run: npm ci
+            - run: npm test
