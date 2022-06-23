@@ -13,9 +13,9 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 16.15
-                  cache: npm
-            - run: npm ci
-            - run: npm run lint
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run lint
 
     e2e:
         runs-on: ${{ matrix.os }}
@@ -29,6 +29,6 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 16.15
-                  cache: npm
-            - run: npm ci
-            - run: npm test
+                  cache: pnpm
+            - run: pnpm ci
+            - run: pnpm test
