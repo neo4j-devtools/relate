@@ -1,16 +1,9 @@
 import fse from 'fs-extra';
 import {List} from '@relate/types';
 
-import {EnvironmentConfigModel, IEnvironmentAuth, GoogleAuthenticationModel} from '../../models';
+import {EnvironmentConfigModel} from '../../models';
 import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.constants';
-import {
-    AUTHENTICATOR_TYPES,
-    GoogleAuthentication,
-    ClientAuthentication,
-    IGoogleAuthenticationOptions,
-    IAuthentication,
-} from './authentication';
-import {NotSupportedError} from '../../errors';
+
 import {arrayHasItems} from '../../utils/generic';
 import {DbmssAbstract} from '../dbmss';
 import {DbsAbstract} from '../dbs';
@@ -38,8 +31,6 @@ export abstract class EnvironmentAbstract {
      * @hidden
      */
     public readonly dirPaths!: {[key: string]: string};
-
-    private readonly authentication = this.getAuthentication();
 
     get id(): string {
         return this.config.id;
@@ -78,13 +69,6 @@ export abstract class EnvironmentAbstract {
     /**
      * @hidden
      */
-    get remoteEnvironmentId(): string | undefined {
-        return this.config.remoteEnvironmentId;
-    }
-
-    /**
-     * @hidden
-     */
     public get cachePath(): string {
         return envPaths().cache;
     }
@@ -100,33 +84,6 @@ export abstract class EnvironmentAbstract {
      * @hidden
      */
     constructor(protected config: EnvironmentConfigModel) {}
-
-    private getAuthentication(): IAuthentication | undefined {
-        const {authentication} = this.config;
-
-        if (!authentication) {
-            return undefined;
-        }
-
-        switch (authentication.type) {
-            case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2: {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                const authOptions: IGoogleAuthenticationOptions = authentication;
-                const googleOptions = new GoogleAuthenticationModel(authOptions);
-
-                return new GoogleAuthentication(this, googleOptions);
-            }
-
-            case AUTHENTICATOR_TYPES.CLIENT: {
-                return new ClientAuthentication(this);
-            }
-
-            default: {
-                throw new NotSupportedError(`Authenticator type ${authentication.type} not supported`);
-            }
-        }
-    }
 
     /**
      * Environment initialisation logic
@@ -149,43 +106,6 @@ export abstract class EnvironmentAbstract {
      * @param   token       token to verify
      */
     abstract verifyAPIToken(hostName: string, clientId: string, token?: string): Promise<void>;
-
-    /**
-     * Environment Authentication logic
-     */
-    login(redirectTo?: string): Promise<IEnvironmentAuth> {
-        if (!this.authentication) {
-            throw new NotSupportedError(`Environment ${this.id} does not support login.`);
-        }
-
-        return this.authentication.login(redirectTo);
-    }
-
-    /**
-     * Generates an authentication token
-     * @param   data    authentication response data
-     * @return          token
-     */
-    generateAuthToken(data: any): Promise<string> {
-        if (!this.authentication) {
-            return Promise.resolve('');
-        }
-
-        return this.authentication.generateAuthToken(data);
-    }
-
-    /**
-     * Verifies an authentication token
-     * @param   token                   token to verify
-     * @throws  AuthenticationError
-     */
-    verifyAuthToken(token = ''): Promise<void> {
-        if (!this.authentication) {
-            return Promise.resolve();
-        }
-
-        return this.authentication.verifyAuthToken(token);
-    }
 
     /**
      * Checks if given GraphQL method is supported

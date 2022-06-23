@@ -39,7 +39,7 @@
 
 • **manifest**: *[ManifestAbstract](manifestabstract.md)‹Env, IDbmsInfo, DbmsManifestModel›*
 
-Defined in dbmss/dbmss.abstract.ts:28
+*Defined in [dbmss/dbmss.abstract.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L28)*
 
 ## Methods
 
@@ -47,7 +47,7 @@ Defined in dbmss/dbmss.abstract.ts:28
 
 ▸ **clone**(`id`: string, `name`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:76
+*Defined in [dbmss/dbmss.abstract.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L76)*
 
 Clone a DBMS
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **createAccessToken**(`appName`: string, `dbmsId`: string, `authToken`: IAuthToken): *Promise‹string›*
 
-Defined in dbmss/dbmss.abstract.ts:120
+*Defined in [dbmss/dbmss.abstract.ts:120](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L120)*
 
 Creates an access token for a given app, DBMS, and DBMS credentials
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **get**(`nameOrId`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:94
+*Defined in [dbmss/dbmss.abstract.ts:94](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L94)*
 
 Get a DBMS by name or id
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **getDbmsConfig**(`dbmsId`: string): *Promise‹PropertiesFile›*
 
-Defined in dbmss/dbmss.abstract.ts:126
+*Defined in [dbmss/dbmss.abstract.ts:126](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L126)*
 
 Get dbms configuration (neo4j.conf)
 
@@ -122,7 +122,7 @@ ___
 
 ▸ **info**(`dbmsIds`: string[] | List‹string›, `onlineCheck?`: undefined | false | true): *Promise‹List‹IDbmsInfo››*
 
-Defined in dbmss/dbmss.abstract.ts:112
+*Defined in [dbmss/dbmss.abstract.ts:112](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L112)*
 
 Get info for one or more DBMSs
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **install**(`name`: string, `version`: string, `edition?`: NEO4J_EDITION, `credentials?`: undefined | string, `overrideCache?`: undefined | false | true, `limited?`: undefined | false | true, `installPath?`: undefined | string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:52
+*Defined in [dbmss/dbmss.abstract.ts:52](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L52)*
 
 Installs new DBMS
 
@@ -165,7 +165,7 @@ ___
 
 ▸ **link**(`externalPath`: string, `name`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:69
+*Defined in [dbmss/dbmss.abstract.ts:69](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L69)*
 
 Links an existing DBMS to relate
 
@@ -184,7 +184,7 @@ ___
 
 ▸ **list**(`filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbms››*
 
-Defined in dbmss/dbmss.abstract.ts:88
+*Defined in [dbmss/dbmss.abstract.ts:88](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L88)*
 
 List all DBMS
 
@@ -202,7 +202,7 @@ ___
 
 ▸ **start**(`dbmsIds`: string[] | List‹string›): *Promise‹List‹string››*
 
-Defined in dbmss/dbmss.abstract.ts:100
+*Defined in [dbmss/dbmss.abstract.ts:100](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L100)*
 
 Start one or more DBMSs
 
@@ -220,7 +220,7 @@ ___
 
 ▸ **stop**(`dbmsIds`: Array‹string | IQueryTarget› | List‹string | IQueryTarget›): *Promise‹List‹string››*
 
-Defined in dbmss/dbmss.abstract.ts:106
+*Defined in [dbmss/dbmss.abstract.ts:106](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L106)*
 
 Stop one or more DBMSs
 
@@ -238,7 +238,7 @@ ___
 
 ▸ **uninstall**(`dbmsId`: string): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:82
+*Defined in [dbmss/dbmss.abstract.ts:82](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L82)*
 
 Uninstall a DBMS
 
@@ -256,7 +256,7 @@ ___
 
 ▸ **updateConfig**(`nameOrId`: string, `properties`: Map‹string, string›): *Promise‹boolean›*
 
-Defined in dbmss/dbmss.abstract.ts:132
+*Defined in [dbmss/dbmss.abstract.ts:132](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L132)*
 
 Set dbms configuration properties (neo4j.conf)
 
@@ -275,7 +275,7 @@ ___
 
 ▸ **upgrade**(`dbmsId`: string, `version`: string, `options?`: IDbmsUpgradeOptions): *Promise‹IDbmsInfo›*
 
-Defined in dbmss/dbmss.abstract.ts:62
+*Defined in [dbmss/dbmss.abstract.ts:62](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L62)*
 
 **Parameters:**
 
@@ -293,7 +293,7 @@ ___
 
 ▸ **versions**(`limited?`: undefined | false | true, `filters?`: List‹IRelateFilter› | IRelateFilter[]): *Promise‹List‹IDbmsVersion››*
 
-Defined in dbmss/dbmss.abstract.ts:40
+*Defined in [dbmss/dbmss.abstract.ts:40](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L40)*
 
 List all available DBMS versions to install
 

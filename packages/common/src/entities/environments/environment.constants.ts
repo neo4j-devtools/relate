@@ -5,7 +5,6 @@ export const RUNTIME_DIR_NAME = 'runtime';
 
 export enum ENVIRONMENT_TYPES {
     LOCAL = 'LOCAL',
-    REMOTE = 'REMOTE',
 }
 
 export enum NEO4J_CONFIG_KEYS {

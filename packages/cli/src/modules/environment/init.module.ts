@@ -2,8 +2,6 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import cli from 'cli-ux';
 import {
     ENVIRONMENT_TYPES,
-    HEALTH_BASE_ENDPOINT,
-    InvalidArgumentError,
     IEnvironmentConfigInput,
     SystemModule,
     SystemProvider,
@@ -12,16 +10,9 @@ import {
     HOOK_EVENTS,
     resolveRelateJavaHome,
 } from '@relate/common';
-import fetch from 'node-fetch';
 
 import InitCommand from '../../commands/environment/init';
-import {
-    confirmPrompt,
-    inputPrompt,
-    selectAllowedMethodsPrompt,
-    selectAuthenticatorPrompt,
-    selectPrompt,
-} from '../../prompts';
+import {confirmPrompt, inputPrompt, selectAllowedMethodsPrompt} from '../../prompts';
 
 @Module({
     exports: [],
@@ -52,59 +43,30 @@ export class InitModule implements OnApplicationBootstrap {
     }
 
     async onApplicationBootstrap(): Promise<void> {
-        let {environment: name, httpOrigin} = this.parsed.args;
-        let {type} = this.parsed.flags;
+        let {environment: name} = this.parsed.args;
         const {interactive, use, noRuntime, apiToken} = this.parsed.flags;
-        let remoteEnvironmentId: string | undefined = undefined;
 
         this.registerHookListeners();
 
         name = name || (await inputPrompt('Enter environment name'));
 
-        let config: IEnvironmentConfigInput = {
-            type: type || ENVIRONMENT_TYPES.LOCAL,
+        const config: IEnvironmentConfigInput = {
+            type: ENVIRONMENT_TYPES.LOCAL,
             name,
         };
 
         if (interactive) {
-            const envChoices = Object.values(ENVIRONMENT_TYPES).map((envType) => ({
-                name: envType,
-                message: envType.charAt(0).toLocaleUpperCase() + envType.toLocaleLowerCase().slice(1),
-            }));
-
-            type = type || (await selectPrompt('Choose environment type', envChoices));
-        }
-
-        if (interactive && type === ENVIRONMENT_TYPES.REMOTE) {
-            httpOrigin = httpOrigin || (await inputPrompt('Enter remote URL (without trailing slash)'));
-
-            try {
-                remoteEnvironmentId = await fetch(`${httpOrigin}${HEALTH_BASE_ENDPOINT}`)
-                    .then((res) => res.json())
-                    .then(({relateEnvironmentId}) => relateEnvironmentId);
-            } catch (_e) {
-                throw new InvalidArgumentError(`${httpOrigin} does not seem to be a valid @relate/web server instance`);
-            }
-
-            if (!remoteEnvironmentId) {
-                throw new InvalidArgumentError(`${httpOrigin} does not seem to be a valid @relate/web server instance`);
-            }
-
-            const authentication = await selectAuthenticatorPrompt();
-            const publicGraphQLMethods = await selectAllowedMethodsPrompt();
             const requiresAPIToken =
                 apiToken || (await confirmPrompt('Are HTTP consumers required to have an API key?'));
-            config = {
-                name,
-                type,
-                httpOrigin: httpOrigin && new URL(httpOrigin).origin,
-                remoteEnvironmentId,
-                authentication,
-                serverConfig: {
-                    publicGraphQLMethods,
+
+            if (requiresAPIToken) {
+                const publicGraphQLMethods = await selectAllowedMethodsPrompt();
+
+                config.serverConfig = {
                     requiresAPIToken,
-                },
-            };
+                    publicGraphQLMethods,
+                };
+            }
         }
 
         cli.action.start('Creating environment');
@@ -112,7 +74,7 @@ export class InitModule implements OnApplicationBootstrap {
         cli.action.stop();
 
         const relateJavaExists = await resolveRelateJavaHome('4.0.0');
-        if ((!type || type === ENVIRONMENT_TYPES.LOCAL) && !noRuntime && !relateJavaExists) {
+        if (!noRuntime && !relateJavaExists) {
             await downloadJava('4.0.0');
         }
 

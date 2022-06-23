@@ -48,7 +48,7 @@ $ relate <topic>:<command> --help
 * [`relate db`](./docs/db.md) - Individual databases within a DBMS.
 * [`relate dbms`](./docs/dbms.md) - Neo4j DBMS installations.
 * [`relate dbms-plugin`](./docs/dbms-plugin.md) - Neo4j DBMS plugins.
-* [`relate environment`](./docs/environment.md) - Managed sets of related resources and services, which may be local or remote.
+* [`relate environment`](./docs/environment.md) - Managed sets of related resources and services.
 * [`relate extension`](./docs/extension.md) - Extensions to the Relate framework.
 * [`relate help`](./docs/help.md) - display help for relate
 * [`relate project`](./docs/project.md) - Projects bring files and data together.

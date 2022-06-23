@@ -6,11 +6,10 @@ import {
     ILocalEnvironmentDirPaths,
     ISystemProviderDirPaths,
     ISystemProviderFilePaths,
-    IRemoteEnvironmentDirPaths,
 } from './ensure-files.constants';
 
 export const ensureDirs = (
-    paths: IRemoteEnvironmentDirPaths | ILocalEnvironmentDirPaths | ICacheDirPaths | ISystemProviderDirPaths,
+    paths: ILocalEnvironmentDirPaths | ICacheDirPaths | ISystemProviderDirPaths,
 ): Promise<void[]> => {
     const ensureDirPromises = _.map(paths, (path) => fse.ensureDir(path));
 

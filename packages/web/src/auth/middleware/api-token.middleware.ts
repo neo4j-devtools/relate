@@ -8,7 +8,6 @@ import {
     API_TOKEN_HEADER,
     STATIC_APP_BASE_ENDPOINT,
 } from '@relate/common';
-import {getRequestToken} from '../services/auth.service';
 
 @Injectable()
 export class ApiTokenMiddleware implements NestMiddleware {
@@ -44,4 +43,26 @@ export class ApiTokenMiddleware implements NestMiddleware {
             res.sendStatus(401);
         }
     }
+}
+
+function getRequestToken(req: Request, key: string): string | undefined {
+    const lowerCased = key.toLowerCase();
+
+    if (_.has(req.headers, key)) {
+        return `${req.headers[key]}`;
+    }
+
+    if (_.has(req.headers, lowerCased)) {
+        return `${req.headers[lowerCased]}`;
+    }
+
+    if (_.has(req.cookies, key)) {
+        return `${req.cookies[key]}`;
+    }
+
+    if (_.has(req.cookies, lowerCased)) {
+        return `${req.cookies[lowerCased]}`;
+    }
+
+    return undefined;
 }
