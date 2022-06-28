@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {IProjectInput, SystemModule, SystemProvider} from '@relate/common';
 
 import InitCommand from '../../commands/project/init';
@@ -30,10 +30,10 @@ export class InitModule implements OnApplicationBootstrap {
             dbmss: [],
         };
 
-        cli.action.start('Creating project');
+        CliUx.ux.action.start('Creating project');
 
         return projects.create(config).then((created) => {
-            cli.action.stop();
+            CliUx.ux.action.stop();
             this.utils.log(created.name);
         });
     }

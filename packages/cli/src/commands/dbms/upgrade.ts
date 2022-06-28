@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -22,11 +22,11 @@ export default class UpgradeCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.VERSION,
-        noCaching: flags.boolean({
+        noCaching: Flags.boolean({
             default: false,
             description: 'Prevent caching of the downloaded DBMS',
         }),
-        noMigration: flags.boolean({
+        noMigration: Flags.boolean({
             default: false,
             description: 'Prevent migrating the data to new formats',
         }),

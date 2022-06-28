@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {SystemModule, SystemProvider} from '@relate/common';
 import ListCommand from '../../commands/dbms-plugin/list';
@@ -25,7 +25,7 @@ export class ListModule implements OnApplicationBootstrap {
         const dbmsId = args.dbms || (await selectDbmsPrompt('Select a DBMS to list plugins from', environment));
 
         return environment.dbmsPlugins.list(dbmsId).then((plugins) => {
-            cli.table(
+            CliUx.ux.table(
                 plugins.toArray(),
                 {
                     name: {},

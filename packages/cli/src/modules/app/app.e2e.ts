@@ -1,4 +1,5 @@
 import {test} from '@oclif/test';
+import {CliUx} from '@oclif/core';
 import {TestDbmss, TestExtensions, IInstalledExtension} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
@@ -7,11 +8,7 @@ import StartCommand from '../../commands/dbms/start';
 
 const appRoot = '/fakeRoot';
 
-jest.mock('cli-ux', () => {
-    return {
-        open: (): Promise<void> => Promise.resolve(),
-    };
-});
+jest.spyOn(CliUx.ux, 'open').mockReturnValue(Promise.resolve());
 
 jest.mock('node-fetch', () => {
     return () =>

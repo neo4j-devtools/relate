@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {SystemModule, SystemProvider} from '@relate/common';
 import ListCommand from '../../commands/backup/list';
@@ -22,7 +22,7 @@ export class ListModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         return environment.backups.list().then((backups) => {
-            cli.table(
+            CliUx.ux.table(
                 backups.filter(({entityType}) => (flags.type ? flags.type === entityType : true)).toArray(),
                 {
                     id: {},

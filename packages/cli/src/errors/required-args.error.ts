@@ -1,6 +1,6 @@
-import {CLIError} from '@oclif/errors';
+import {Errors} from '@oclif/core';
 
-export class RequiredArgsError extends CLIError {
+export class RequiredArgsError extends Errors.CLIError {
     constructor(args: string[]) {
         let message = `Missing ${args.length} required arg${args.length === 1 ? '' : 's'}`;
         message += `\n${args}`;

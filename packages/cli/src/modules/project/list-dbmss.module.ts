@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {selectProjectPrompt} from '../../prompts';
 import ListDbmssCommand from '../../commands/project/list-dbmss';
@@ -24,7 +24,7 @@ export class ListDbmssModule implements OnApplicationBootstrap {
         const projectId = flags.project || (await selectProjectPrompt('Select a Project', environment));
         const projectDbmss = await environment.projects.listDbmss(projectId);
 
-        cli.table(
+        CliUx.ux.table(
             projectDbmss.toArray(),
             {
                 name: {},

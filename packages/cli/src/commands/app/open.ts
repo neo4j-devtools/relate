@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -27,22 +27,22 @@ export default class OpenCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        dbmsId: flags.string({
+        dbmsId: Flags.string({
             char: 'D',
             description: 'The DBMS to automatically connect to',
             required: false,
         }),
-        log: flags.boolean({
+        log: Flags.boolean({
             char: 'L',
             description: 'If set, log the path instead',
             required: false,
         }),
-        user: flags.string({
+        user: Flags.string({
             char: 'u',
             description: 'The Neo4j DBMS user to automatically connect with, assuming an access token exists',
             required: false,
         }),
-        project: flags.string({
+        project: Flags.string({
             char: 'p',
             description: 'Name of a project context to connect with',
             required: false,

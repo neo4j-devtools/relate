@@ -1,4 +1,4 @@
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ListModule} from '../../modules/project/list.module';
@@ -15,6 +15,6 @@ export default class ListCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...cli.table.flags({except: ['csv']}),
+        ...CliUx.ux.table.flags({except: ['csv']}),
     };
 }

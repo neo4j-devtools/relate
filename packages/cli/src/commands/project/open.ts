@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 
@@ -22,7 +22,7 @@ export default class OpenCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,
-        log: flags.boolean({
+        log: Flags.boolean({
             char: 'L',
             description: 'If set, log the path instead',
         }),

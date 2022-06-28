@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {LinkModule} from '../../modules/dbms/link.module';
@@ -25,7 +25,7 @@ export default class LinkCommand extends BaseCommand {
     ];
 
     static flags = {
-        confirm: flags.boolean({
+        confirm: Flags.boolean({
             char: 'y',
             description: 'Confirm DBMS configuration changes',
             required: REQUIRED_FOR_SCRIPTS,

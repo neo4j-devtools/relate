@@ -12,7 +12,7 @@ import {
 import path from 'path';
 import fse from 'fs-extra';
 import _ from 'lodash';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import semver from 'semver';
 
 import InstallCommand from '../../commands/extension/install';
@@ -31,7 +31,7 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = cli.progress({
+        const downloadBar = CliUx.ux.progress({
             format: 'DOWNLOAD PROGRESS [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
@@ -41,13 +41,15 @@ export class InstallModule implements OnApplicationBootstrap {
         registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
             downloadBar.update(Math.round(percent * 100)),
         );
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => cli.action.start(val));
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => cli.action.stop());
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => cli.action.start(val));
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => cli.action.stop());
-        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) => cli.action.start(val));
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_START, (val) => CliUx.ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_EXTRACT_STOP, () => CliUx.ux.action.stop());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_START, (val) => CliUx.ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DIRECTORY_MOVE_STOP, () => CliUx.ux.action.stop());
+        registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_START, (val) =>
+            CliUx.ux.action.start(val),
+        );
         registerHookListener(HOOK_EVENTS.RELATE_EXTENSION_DEPENDENCIES_INSTALL_STOP, ({stdout, stderr}) => {
-            cli.action.stop();
+            CliUx.ux.action.stop();
             this.utils.debug(stdout);
             this.utils.debug(stderr);
         });

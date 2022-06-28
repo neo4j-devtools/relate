@@ -1,7 +1,7 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {ISampleProjectDbms, ISampleProjectRest, SystemModule, SystemProvider} from '@relate/common';
 import chalk from 'chalk';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import path from 'path';
 
 import InstallSampleCommand from '../../commands/project/install-sample';
@@ -32,7 +32,7 @@ export class InstallSampleModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const sampleProjects = await (await environment.projects.listSampleProjects()).toArray();
 
-        cli.table(
+        CliUx.ux.table(
             sampleProjects,
             {
                 name: {},
@@ -61,20 +61,20 @@ export class InstallSampleModule implements OnApplicationBootstrap {
             return;
         }
 
-        cli.action.start(`Downloading '${selected}'.`);
+        CliUx.ux.action.start(`Downloading '${selected}'.`);
         const {path: downloadPath, temp} = await environment.projects.downloadSampleProject(
             item.downloadUrl,
             selected,
             destPath,
         );
-        cli.action.stop(chalk.green('done'));
+        CliUx.ux.action.stop(chalk.green('done'));
 
-        cli.action.start(`Creating project '${selected}'.`);
+        CliUx.ux.action.start(`Creating project '${selected}'.`);
         const manifests = await environment.projects.prepareSampleProject(downloadPath, {
             name: selected,
             temp,
         });
-        cli.action.stop(chalk.green('done'));
+        CliUx.ux.action.stop(chalk.green('done'));
 
         if (manifests?.install?.dbms) {
             this.utils.log(' ');
@@ -108,13 +108,13 @@ export class InstallSampleModule implements OnApplicationBootstrap {
                     this.utils.log(' ');
                     const credentials = await passwordPrompt('Enter new passphrase');
 
-                    cli.action.start(`Creating '${dbms.name}' DBMS and importing data`);
+                    CliUx.ux.action.start(`Creating '${dbms.name}' DBMS and importing data`);
                     const {created} = await environment.projects.importSampleDbms(
                         manifests.project.id,
                         dbms,
                         credentials,
                     );
-                    cli.action.stop(chalk.green('done'));
+                    CliUx.ux.action.stop(chalk.green('done'));
 
                     if (created) {
                         this.utils.log(chalk.green(`Successfully created ${created.name}.`));

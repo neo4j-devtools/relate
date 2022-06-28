@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {selectProjectPrompt} from '../../prompts';
 import OpenCommand from '../../commands/project/open';
@@ -21,7 +21,7 @@ export class OpenModule implements OnApplicationBootstrap {
         if (this.parsed.flags.log) {
             this.utils.log(path);
         } else {
-            cli.open(path);
+            CliUx.ux.open(path);
         }
     }
 

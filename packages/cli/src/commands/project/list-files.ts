@@ -1,5 +1,4 @@
-import {flags} from '@oclif/command';
-import cli from 'cli-ux';
+import {CliUx, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -23,14 +22,14 @@ export default class ListFilesCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,
-        ...cli.table.flags({except: ['csv']}),
-        ignore: flags.string({
+        ...CliUx.ux.table.flags({except: ['csv']}),
+        ignore: Flags.string({
             description: 'List of directories to ignore',
             char: 'i',
             multiple: true,
             default: ['node_modules', '.git'],
         }),
-        limit: flags.integer({
+        limit: Flags.integer({
             description: 'Max number of files to list',
             char: 'l',
         }),

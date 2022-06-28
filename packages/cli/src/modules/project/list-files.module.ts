@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {FILTER_COMPARATORS, SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import ListFilesCommand from '../../commands/project/list-files';
 import {selectProjectPrompt} from '../../prompts';
@@ -38,7 +38,7 @@ export class ListFilesModule implements OnApplicationBootstrap {
         }));
         const files = await environment.projects.listFiles(projectId, filter);
 
-        cli.table(
+        CliUx.ux.table(
             files.toArray().slice(0, limit),
             {
                 name: {},

@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -30,7 +30,7 @@ export default class APITokenCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        hostName: flags.string({
+        hostName: Flags.string({
             char: 'h',
             description: 'Client host name (if other than current environment)',
         }),

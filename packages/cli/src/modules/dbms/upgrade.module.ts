@@ -2,7 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, InvalidArgumentError, HOOK_EVENTS, registerHookListener} from '@relate/common';
 import _ from 'lodash';
 import semver from 'semver';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {isInteractive} from '../../stdin';
 import UpgradeCommand from '../../commands/dbms/upgrade';
@@ -22,7 +22,7 @@ export class UpgradeModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = cli.progress({
+        const downloadBar = CliUx.ux.progress({
             format: 'Download progress [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
@@ -32,14 +32,16 @@ export class UpgradeModule implements OnApplicationBootstrap {
         registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
             downloadBar.update(Math.round(percent * 100)),
         );
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => cli.action.start(val));
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => CliUx.ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => CliUx.ux.action.stop());
 
-        registerHookListener(HOOK_EVENTS.BACKUP_START, () => cli.action.start('Creating backup of the original DBMS'));
-        registerHookListener(HOOK_EVENTS.BACKUP_COMPLETE, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.BACKUP_START, () =>
+            CliUx.ux.action.start('Creating backup of the original DBMS'),
+        );
+        registerHookListener(HOOK_EVENTS.BACKUP_COMPLETE, () => CliUx.ux.action.stop());
 
-        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_START, () => cli.action.start('Migrating DBMS data'));
-        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_STOP, () => cli.action.stop());
+        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_START, () => CliUx.ux.action.start('Migrating DBMS data'));
+        registerHookListener(HOOK_EVENTS.DBMS_MIGRATION_STOP, () => CliUx.ux.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {

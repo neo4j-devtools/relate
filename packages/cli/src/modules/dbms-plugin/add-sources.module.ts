@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {List} from '@relate/types';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import fse from 'fs-extra';
 import fetch from 'node-fetch';
 
@@ -50,7 +50,7 @@ export class AddSourcesModule implements OnApplicationBootstrap {
         }
 
         return environment.dbmsPlugins.addSources(sources).then((addedSources) => {
-            cli.table(
+            CliUx.ux.table(
                 addedSources.toArray(),
                 {
                     name: {},

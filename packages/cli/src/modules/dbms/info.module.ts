@@ -1,7 +1,7 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {IDbmsInfo, SystemModule, SystemProvider} from '@relate/common';
 import {List} from '@relate/types';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import InfoCommand from '../../commands/dbms/info';
 
@@ -32,7 +32,7 @@ export class InfoModule implements OnApplicationBootstrap {
             dbmss = await environment.dbmss.info(namesOrIds, onlineCheck);
         }
 
-        cli.table(
+        CliUx.ux.table(
             dbmss.toArray(),
             {
                 id: {},

@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import ListCommand from '../../commands/project/list';
 
@@ -22,7 +22,7 @@ export class ListModule implements OnApplicationBootstrap {
         const {projects} = await this.systemProvider.getEnvironment(environment);
         const allProjects = await projects.list();
 
-        cli.table(
+        CliUx.ux.table(
             allProjects.toArray(),
             {
                 id: {},

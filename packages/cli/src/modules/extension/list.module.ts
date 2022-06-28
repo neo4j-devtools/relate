@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import InstallCommand from '../../commands/extension/install';
 
@@ -23,7 +23,7 @@ export class ListModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(environmentId);
         const installed = await environment.extensions.list();
 
-        cli.table(
+        CliUx.ux.table(
             installed.toArray(),
             {
                 name: {},

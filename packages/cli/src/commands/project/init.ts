@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -19,7 +19,7 @@ export default class InitCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        name: flags.string({
+        name: Flags.string({
             description: 'Name of the project to initialize',
             required: REQUIRED_FOR_SCRIPTS,
         }),

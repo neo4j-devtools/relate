@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import {NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE, NEO4J_EDITION} from '@relate/common';
 
 import BaseCommand from '../../base.command';
@@ -24,7 +24,7 @@ export default class AccessTokenCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        user: flags.string({
+        user: Flags.string({
             char: 'u',
             default: 'neo4j',
             description: 'Neo4j DBMS user to create the token for',

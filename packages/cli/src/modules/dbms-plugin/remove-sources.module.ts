@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import cli from 'cli-ux';
+import {CliUx} from '@oclif/core';
 
 import {NotFoundError, SystemModule, SystemProvider} from '@relate/common';
 import RemoveSourcesCommand from '../../commands/dbms-plugin/remove-sources';
@@ -41,7 +41,7 @@ export class RemoveSourcesModule implements OnApplicationBootstrap {
         const selectedSources = argv || (await selectSources());
 
         return environment.dbmsPlugins.removeSources(selectedSources).then((sources) => {
-            cli.table(
+            CliUx.ux.table(
                 sources.toArray(),
                 {
                     name: {},

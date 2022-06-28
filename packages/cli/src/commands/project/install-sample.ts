@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 
@@ -17,7 +17,7 @@ export default class InstallSampleCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...FLAGS.PROJECT,
-        to: flags.string({
+        to: Flags.string({
             char: 't',
             description: 'Path where the project directory will be created.',
         }),

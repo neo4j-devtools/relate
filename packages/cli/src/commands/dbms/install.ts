@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -23,16 +23,16 @@ export default class InstallCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        name: flags.string({
+        name: Flags.string({
             char: 'n',
             description: 'Name to give the newly installed DBMS',
             required: REQUIRED_FOR_SCRIPTS,
         }),
-        noCaching: flags.boolean({
+        noCaching: Flags.boolean({
             default: false,
             description: 'Prevent caching of the downloaded DBMS',
         }),
-        limited: flags.boolean({
+        limited: Flags.boolean({
             default: false,
             description: 'Display limited versions of DBMSs',
         }),

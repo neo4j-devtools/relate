@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -28,12 +28,12 @@ export default class DropCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        user: flags.string({
+        user: Flags.string({
             char: 'u',
             description: 'The Neo4j DBMS user to drop the database with (needs to have access to the system database)',
             default: 'neo4j',
         }),
-        dbms: flags.string({
+        dbms: Flags.string({
             char: 'D',
             description: 'DBMS containing the database to drop (needs to be started and have an access token created)',
             required: REQUIRED_FOR_SCRIPTS,

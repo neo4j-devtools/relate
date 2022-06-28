@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS} from '../../constants';
@@ -22,17 +22,17 @@ export default class InitCommand extends BaseCommand {
     static args = [ARGS.ENVIRONMENT];
 
     static flags = {
-        interactive: flags.boolean({
+        interactive: Flags.boolean({
             description: 'Get prompted for each configuration option available',
             char: 'i',
         }),
-        use: flags.boolean({
+        use: Flags.boolean({
             description: 'Set environment as active right after creating it',
         }),
-        noRuntime: flags.boolean({
+        noRuntime: Flags.boolean({
             description: 'Skip downloading the Java runtime required by the DBMS',
         }),
-        apiToken: flags.boolean({
+        apiToken: Flags.boolean({
             description:
                 // eslint-disable-next-line max-len
                 'If this flag is provided and the environment created is set as active, all requests to @relate/web will require API tokens',
