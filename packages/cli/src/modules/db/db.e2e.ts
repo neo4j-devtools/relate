@@ -83,7 +83,8 @@ describe('$relate db', () => {
                 '--user=neo4j',
             ]);
         } catch (err) {
-            expect(err.message).toContain('Database already exists');
+            expect(err.message).toContain('Database');
+            expect(err.message).toContain('already exists');
         }
     });
 

@@ -14,7 +14,7 @@ export default class UpgradeCommand extends BaseCommand {
     static examples = [
         '$ relate dbms:upgrade',
         '$ relate dbms:upgrade -e environment-name',
-        'relate dbms:upgrade <dbms-id> -v 4.0.5',
+        'relate dbms:upgrade <dbms-id> -v 4.4.11',
     ];
 
     static args = [ARGS.DBMS];

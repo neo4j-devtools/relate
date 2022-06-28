@@ -5,7 +5,7 @@ import {TargetExistsError} from '../../errors';
 import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbReadQuery} from '../../utils/dbmss/system-db-query';
-import {TestEnvironment, TEST_NEO4J_CREDENTIALS} from '../../utils/system';
+import {TestEnvironment, TEST_NEO4J_CREDENTIALS, TEST_NEO4J_VERSIONS, TEST_APOC_VERSIONS} from '../../utils/system';
 import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
@@ -32,10 +32,12 @@ const TEST_SOURCE_2: IDbmsPluginSource = {
 describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
     let dbms: IDbmsInfo;
+    let dbmsUpgradable: IDbmsInfo;
 
     beforeAll(async () => {
         app = await TestEnvironment.init(__filename);
         dbms = await app.createDbms();
+        dbmsUpgradable = await app.createDbms(TEST_NEO4J_VERSIONS.minorUpgradeSource);
     });
 
     afterEach(() => nock.cleanAll());
@@ -159,7 +161,7 @@ describe('LocalDbmsPlugins', () => {
         const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
 
         expect(installedVersion.toArray().length).toEqual(1);
-        expect(installedVersion.toArray()[0].version.version).toEqual('4.0.0.18');
+        expect(installedVersion.toArray()[0].version.version).toEqual(TEST_APOC_VERSIONS.default);
 
         await app.environment.dbmss.start([dbms.id]);
         await waitForDbmsToBeOnline({
@@ -184,10 +186,10 @@ describe('LocalDbmsPlugins', () => {
             'RETURN apoc.version() AS apocVersion',
         ).finally(() => app.environment.dbmss.stop([dbms.id]));
 
-        expect(res.get('apocVersion')).toEqual('4.0.0.18');
+        expect(res.get('apocVersion')).toEqual(TEST_APOC_VERSIONS.default);
     });
 
-    test('dbmsPlugins.list - lists installed plugin', async () => {
+    test('dbmsPlugins.list - lists installed plugins', async () => {
         const plugins = await app.environment.dbmsPlugins.list(dbms.name);
 
         expect(
@@ -202,18 +204,23 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'apoc',
                 homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-                version: '4.0.0.18',
+                version: TEST_APOC_VERSIONS.default,
             },
             {
                 name: 'neo4j-jwt-addon',
                 homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.0.2',
+                version: '1.2.0',
             },
         ]);
     });
 
     test('dbmsPlugins.previewUpgrade - lists correct plugin versions', async () => {
-        const upgradable = await app.environment.dbmsPlugins.previewUpgrade(dbms.name, '4.2.0');
+        await app.environment.dbmsPlugins.install([dbmsUpgradable.id], 'apoc');
+
+        const upgradable = await app.environment.dbmsPlugins.previewUpgrade(
+            dbmsUpgradable.name,
+            TEST_NEO4J_VERSIONS.minorUpgradeTarget,
+        );
         const upgradableMapped = upgradable.toArray().map((plugin) => ({
             name: plugin.installed.name,
             installed: plugin.installed.version.version,
@@ -223,12 +230,12 @@ describe('LocalDbmsPlugins', () => {
         expect(upgradableMapped).toEqual([
             {
                 name: 'apoc',
-                installed: '4.0.0.18',
-                upgradable: '4.2.0.0',
+                installed: TEST_APOC_VERSIONS.lower,
+                upgradable: TEST_APOC_VERSIONS.default,
             },
             {
                 name: 'neo4j-jwt-addon',
-                installed: '1.0.2',
+                installed: '1.2.0',
                 upgradable: '1.2.0',
             },
         ]);
@@ -250,7 +257,7 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'neo4j-jwt-addon',
                 homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.0.2',
+                version: '1.2.0',
             },
         ]);
     });
@@ -271,7 +278,7 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'neo4j-jwt-addon',
                 homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.0.2',
+                version: '1.2.0',
             },
         ]);
     });

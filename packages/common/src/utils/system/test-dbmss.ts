@@ -9,11 +9,12 @@ import {EnvironmentAbstract, ENVIRONMENTS_DIR_NAME, LocalEnvironment, NEO4J_EDIT
 import {NotFoundError, NotSupportedError} from '../../errors';
 import {envPaths} from '../env-paths';
 import {DBMS_DIR_NAME} from '../../constants';
+import {TEST_NEO4J_VERSIONS, TEST_NEO4J_CREDENTIALS} from './test-environment';
 
 export class TestDbmss {
-    static DBMS_CREDENTIALS = 'password';
+    static DBMS_CREDENTIALS = TEST_NEO4J_CREDENTIALS;
 
-    static NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.12';
+    static NEO4J_VERSION = TEST_NEO4J_VERSIONS.default;
 
     static NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
         .values.find((e) => e === process.env.TEST_NEO4J_EDITION)

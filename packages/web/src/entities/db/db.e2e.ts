@@ -251,7 +251,8 @@ describe('DBModule', () => {
                 .expect((res: request.Response) => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Database already exist');
+                    expect(errors[0].message).toContain('database');
+                    expect(errors[0].message).toContain('already exists');
                 });
         });
 

@@ -11,11 +11,28 @@ import {NotSupportedError} from '../../errors';
 import {IDbmsInfo} from '../../models';
 import {SystemModule, SystemProvider} from '../../system';
 
-export const TEST_NEO4J_VERSION = process.env.TEST_NEO4J_VERSION || '4.0.12';
 export const TEST_NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
     .values.find((e) => e === process.env.TEST_NEO4J_EDITION)
     .getOrElse(NEO4J_EDITION.ENTERPRISE);
 export const TEST_NEO4J_CREDENTIALS = 'password';
+
+export const TEST_NEO4J_VERSIONS = {
+    default: process.env.TEST_NEO4J_VERSION || '4.4.11',
+
+    majorUpgradeSource: '3.5.34',
+    majorUpgradeTarget: '4.0.12',
+
+    minorUpgradeSource: '4.3.18',
+    minorUpgradeTarget: '4.4.11',
+};
+
+// https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json
+export const TEST_APOC_VERSIONS = {
+    lower: '4.3.0.8',
+    lowerSha256: 'f36b840090373de88557a861440d041abde7faed4200194fd181c0f4eb2a5237',
+
+    default: '4.4.0.8',
+};
 
 export class TestEnvironment {
     constructor(
@@ -76,10 +93,10 @@ export class TestEnvironment {
         return `[${shortUUID}] ${path.relative('..', this.filename)}`;
     }
 
-    async createDbms(): Promise<IDbmsInfo> {
+    async createDbms(version: string = TEST_NEO4J_VERSIONS.default): Promise<IDbmsInfo> {
         const {id: dbmsId} = await this.environment.dbmss.install(
             this.createName(),
-            TEST_NEO4J_VERSION,
+            version,
             TEST_NEO4J_EDITION,
             TEST_NEO4J_CREDENTIALS,
         );

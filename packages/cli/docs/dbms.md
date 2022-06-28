@@ -350,5 +350,5 @@ EXAMPLES
 
   $ relate dbms:upgrade -e environment-name
 
-  $ relate dbms:upgrade <dbms-id> -v 4.0.5
+  $ relate dbms:upgrade <dbms-id> -v 4.4.11
 ```

@@ -2,56 +2,60 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
+import {major, minor, patch} from 'semver';
 import {
-    TestDbmss,
     IDbms,
     DBMS_STATUS,
     NEO4J_DIST_VERSIONS_URL,
     NEO4J_EDITION,
     NEO4J_ORIGIN,
+    TEST_NEO4J_VERSIONS,
     IDbmsVersion,
+    TestEnvironment,
+    IDbmsInfo,
+    TEST_NEO4J_CREDENTIALS,
 } from '@relate/common';
 import nock from 'nock';
 
 import configuration from '../../configs/dev.config';
 import {WebModule} from '../../web.module';
 
-let TEST_DBMS_NAME: string;
-let TEST_DBMS_ID: string;
 const TEST_APP_ID = 'foo';
 
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 const HTTP_OK = 200;
 
-const queryBody = (query: string, variables?: {[key: string]: any}): {[key: string]: any} => ({
-    query,
-    variables: {
-        dbmsName: TEST_DBMS_NAME,
-        dbmsId: TEST_DBMS_ID,
-        dbmsNames: [TEST_DBMS_NAME],
-        environmentNameOrId: 'test',
-        ...variables,
-    },
-});
 const neo4jVersionsUrl = new URL(NEO4J_DIST_VERSIONS_URL);
 
 jest.setTimeout(240000);
 
 describe('DBMSModule', () => {
     let app: INestApplication;
-    let dbmss: TestDbmss;
+    let testEnv: TestEnvironment;
+
+    let dbms: IDbmsInfo;
+    let dbmsUpgradable: IDbmsInfo;
+
+    const queryBody = (
+        query: string,
+        variables?: {[key: string]: any},
+        targetDbms: IDbmsInfo = dbms,
+    ): {[key: string]: any} => ({
+        query,
+        variables: {
+            dbmsName: targetDbms.name,
+            dbmsId: targetDbms.id,
+            dbmsNames: [targetDbms.name],
+            environmentNameOrId: testEnv.environment.id,
+            ...variables,
+        },
+    });
 
     beforeAll(async () => {
-        dbmss = await TestDbmss.init(__filename);
-        const {name, id} = await dbmss.environment.dbmss.install(
-            dbmss.createName(),
-            TestDbmss.NEO4J_VERSION,
-            TestDbmss.NEO4J_EDITION,
-            TestDbmss.DBMS_CREDENTIALS,
-        );
+        testEnv = await TestEnvironment.init(__filename);
 
-        TEST_DBMS_NAME = name;
-        TEST_DBMS_ID = id;
+        dbms = await testEnv.createDbms(TEST_NEO4J_VERSIONS.default);
+        dbmsUpgradable = await testEnv.createDbms(TEST_NEO4J_VERSIONS.minorUpgradeSource);
 
         const module = await Test.createTestingModule({
             imports: [
@@ -60,7 +64,7 @@ describe('DBMSModule', () => {
                     load: [configuration],
                 }),
                 WebModule.register({
-                    defaultEnvironmentNameOrId: dbmss.environment.id,
+                    defaultEnvironmentNameOrId: testEnv.environment.id,
                     ...configuration(),
                 }),
             ],
@@ -70,7 +74,9 @@ describe('DBMSModule', () => {
         await app.init();
     });
 
-    afterAll(() => dbmss.teardown());
+    afterAll(async () => {
+        await testEnv.teardown();
+    });
 
     describe('dbms stopped', () => {
         test('/graphql listDbmss', () => {
@@ -90,7 +96,7 @@ describe('DBMSModule', () => {
                 .expect(HTTP_OK)
                 .expect((res: request.Response) => {
                     const {listDbmss} = res.body.data;
-                    expect(listDbmss.map(({name}: IDbms) => name)).toContain(TEST_DBMS_NAME);
+                    expect(listDbmss.map(({name}: IDbms) => name)).toContain(dbms.name);
                 });
         });
 
@@ -110,7 +116,7 @@ describe('DBMSModule', () => {
                 .expect(HTTP_OK)
                 .expect((res: request.Response) => {
                     const {infoDbmss} = res.body.data;
-                    expect(infoDbmss[0].name).toEqual(TEST_DBMS_NAME);
+                    expect(infoDbmss[0].name).toEqual(dbms.name);
                     expect(infoDbmss[0].status).toEqual(DBMS_STATUS.STOPPED);
                 });
         });
@@ -236,7 +242,7 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {addDbmsTags} = res.body.data;
                     const expected = {
-                        name: TEST_DBMS_NAME,
+                        name: dbms.name,
                         tags: ['tag1', 'tag2'],
                     };
 
@@ -264,7 +270,7 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {removeDbmsTags} = res.body.data;
                     const expected = {
-                        name: TEST_DBMS_NAME,
+                        name: dbms.name,
                         tags: [],
                     };
 
@@ -310,7 +316,7 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {setDbmsMetadata} = res.body.data;
                     const expected = {
-                        name: TEST_DBMS_NAME,
+                        name: dbms.name,
                         metadata: {
                             someKey: {
                                 value1: 'someValue',
@@ -345,7 +351,7 @@ describe('DBMSModule', () => {
                 .expect((res: request.Response) => {
                     const {removeDbmsMetadata} = res.body.data;
                     const expected = {
-                        name: TEST_DBMS_NAME,
+                        name: dbms.name,
                         metadata: {},
                     };
 
@@ -354,6 +360,9 @@ describe('DBMSModule', () => {
         });
 
         test('/graphql upgradeDbms (upgrade version <= current version)', () => {
+            const currentVersion = TEST_NEO4J_VERSIONS.minorUpgradeSource;
+            const lowerVersion = `${major(currentVersion)}.${minor(currentVersion)}.${patch(currentVersion) - 1}`;
+
             return request(app.getHttpServer())
                 .post('/graphql')
                 .send(
@@ -367,14 +376,17 @@ describe('DBMSModule', () => {
                         }
                     }
                 `,
-                        {version: '4.0.1'},
+                        {version: lowerVersion},
+                        dbmsUpgradable,
                     ),
                 )
                 .expect(HTTP_OK)
                 .expect((res: request.Response) => {
                     const {errors} = res.body;
                     expect(errors).toHaveLength(1);
-                    expect(errors[0].message).toContain('Target version must be greater than 4.0.12');
+                    expect(errors[0].message).toContain(
+                        `Target version must be greater than ${TEST_NEO4J_VERSIONS.minorUpgradeSource}`,
+                    );
                 });
         });
 
@@ -392,13 +404,14 @@ describe('DBMSModule', () => {
                         }
                     }
                 `,
-                        {version: '4.1.0'},
+                        {version: TEST_NEO4J_VERSIONS.minorUpgradeTarget},
+                        dbmsUpgradable,
                     ),
                 )
                 .expect(HTTP_OK)
                 .expect((res: request.Response) => {
                     const {upgradeDbms} = res.body.data;
-                    expect(upgradeDbms.id).toBe(TEST_DBMS_ID);
+                    expect(upgradeDbms.id).toBe(dbmsUpgradable.id);
                 });
         });
     });
@@ -444,7 +457,7 @@ describe('DBMSModule', () => {
                 .expect(HTTP_OK)
                 .expect((res: request.Response) => {
                     const {infoDbmss} = res.body.data;
-                    expect(infoDbmss[0].name).toEqual(TEST_DBMS_NAME);
+                    expect(infoDbmss[0].name).toEqual(dbms.name);
                     expect(infoDbmss[0].status).toEqual(DBMS_STATUS.STARTED);
                 });
         });
@@ -470,7 +483,7 @@ describe('DBMSModule', () => {
                         {
                             appName: TEST_APP_ID,
                             authToken: {
-                                credentials: TestDbmss.DBMS_CREDENTIALS,
+                                credentials: TEST_NEO4J_CREDENTIALS,
                                 principal: 'neo4j',
                                 scheme: 'basic',
                             },
@@ -485,6 +498,9 @@ describe('DBMSModule', () => {
         });
 
         test('/graphql upgradeDbms (upgrade version > current version)', () => {
+            const currentVersion = TEST_NEO4J_VERSIONS.default;
+            const higherVersion = `${major(currentVersion)}.${minor(currentVersion)}.${patch(currentVersion) + 1}`;
+
             return request(app.getHttpServer())
                 .post('/graphql')
                 .send(
@@ -498,7 +514,7 @@ describe('DBMSModule', () => {
                         }
                     }
                 `,
-                        {version: '4.1.1'},
+                        {version: higherVersion},
                     ),
                 )
                 .expect(HTTP_OK)

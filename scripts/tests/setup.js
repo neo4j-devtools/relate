@@ -7,22 +7,23 @@ const envSetup = require('../../e2e/jest-global.setup');
 const {
     TestDbmss,
     envPaths,
-    download,
-    PropertiesFile,
     resolveRelateJavaHome,
     downloadJava,
+    TEST_NEO4J_VERSIONS,
+    TEST_NEO4J_EDITION,
+    TEST_DBMS_CREDENTIALS,
 } = require('../../packages/common');
 const {List} = require('../../packages/types');
 
 envSetup();
 
 async function populateDistributionCache(env) {
-    const versions = List.of([TestDbmss.NEO4J_VERSION, '3.5.19', '4.0.5', '4.0.6', '4.1.0']);
+    const versions = List.of(Object.values(TEST_NEO4J_VERSIONS));
 
-    if (!(await resolveRelateJavaHome('4.0.0'))) {
+    if (!(await resolveRelateJavaHome(TEST_NEO4J_VERSIONS.default))) {
         const spinner = ora('Downloading Java').start();
         try {
-            await downloadJava('4.0.0');
+            await downloadJava(TEST_NEO4J_VERSIONS.default);
         } catch (err) {
             spinner.fail();
             throw err;
@@ -44,8 +45,8 @@ async function populateDistributionCache(env) {
             await env.dbmss.install(
                 `global-setup-${version}`,
                 version,
-                TestDbmss.NEO4J_EDITION,
-                TestDbmss.DBMS_CREDENTIALS,
+                TEST_NEO4J_EDITION,
+                TEST_DBMS_CREDENTIALS,
                 false,
             );
             await env.dbmss.uninstall(`global-setup-${version}`);
@@ -74,9 +75,9 @@ async function globalSetup() {
     // during installation we only keep the extracted directory, so we compress
     // that directory here.
     const version = (await env.dbmss.versions())
-        .find((v) => v.version === TestDbmss.NEO4J_VERSION)
+        .find((v) => v.version === TEST_NEO4J_VERSIONS.default)
         .getOrElse(() => {
-            throw new Error(`Couldn't find Neo4j version: ${TestDbmss.NEO4J_VERSION}`);
+            throw new Error(`Couldn't find Neo4j version: ${TEST_NEO4J_VERSIONS.default}`);
         });
 
     // The value of TestDbmss.ARCHIVE_PATH is set before we override the environment
