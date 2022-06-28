@@ -29,15 +29,12 @@
 ### Methods
 
 * [generateAPIToken](environmentabstract.md#abstract-generateapitoken)
-* [generateAuthToken](environmentabstract.md#generateauthtoken)
 * [getConfigValue](environmentabstract.md#getconfigvalue)
 * [init](environmentabstract.md#abstract-init)
-* [login](environmentabstract.md#login)
 * [reloadConfig](environmentabstract.md#reloadconfig)
 * [supports](environmentabstract.md#supports)
 * [updateConfig](environmentabstract.md#updateconfig)
 * [verifyAPIToken](environmentabstract.md#abstract-verifyapitoken)
-* [verifyAuthToken](environmentabstract.md#verifyauthtoken)
 
 ## Properties
 
@@ -45,7 +42,7 @@
 
 • **backups**: *[BackupAbstract](backupabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:35
+*Defined in [environments/environment.abstract.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L28)*
 
 ___
 
@@ -53,7 +50,7 @@ ___
 
 • **dbmsPlugins**: *[DbmsPluginsAbstract](dbmspluginsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:27
+*Defined in [environments/environment.abstract.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L20)*
 
 ___
 
@@ -61,7 +58,7 @@ ___
 
 • **dbmss**: *[DbmssAbstract](dbmssabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:25
+*Defined in [environments/environment.abstract.ts:18](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L18)*
 
 ___
 
@@ -69,7 +66,7 @@ ___
 
 • **dbs**: *[DbsAbstract](dbsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:29
+*Defined in [environments/environment.abstract.ts:22](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L22)*
 
 ___
 
@@ -77,7 +74,7 @@ ___
 
 • **extensions**: *[ExtensionsAbstract](extensionsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:31
+*Defined in [environments/environment.abstract.ts:24](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L24)*
 
 ___
 
@@ -85,7 +82,7 @@ ___
 
 • **projects**: *[ProjectsAbstract](projectsabstract.md)‹[EnvironmentAbstract](environmentabstract.md)›*
 
-Defined in environments/environment.abstract.ts:33
+*Defined in [environments/environment.abstract.ts:26](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L26)*
 
 ## Accessors
 
@@ -93,7 +90,7 @@ Defined in environments/environment.abstract.ts:33
 
 • **get httpOrigin**(): *string*
 
-Defined in environments/environment.abstract.ts:63
+*Defined in [environments/environment.abstract.ts:54](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L54)*
 
 **Returns:** *string*
 
@@ -103,7 +100,7 @@ ___
 
 • **get id**(): *string*
 
-Defined in environments/environment.abstract.ts:44
+*Defined in [environments/environment.abstract.ts:35](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L35)*
 
 **Returns:** *string*
 
@@ -113,7 +110,7 @@ ___
 
 • **get isActive**(): *boolean*
 
-Defined in environments/environment.abstract.ts:55
+*Defined in [environments/environment.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L46)*
 
 Indicates if environment is current active
 
@@ -125,7 +122,7 @@ ___
 
 • **get name**(): *string*
 
-Defined in environments/environment.abstract.ts:48
+*Defined in [environments/environment.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L39)*
 
 **Returns:** *string*
 
@@ -135,7 +132,7 @@ ___
 
 • **get requiresAPIToken**(): *boolean*
 
-Defined in environments/environment.abstract.ts:67
+*Defined in [environments/environment.abstract.ts:58](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L58)*
 
 **Returns:** *boolean*
 
@@ -145,7 +142,7 @@ ___
 
 • **get type**(): *ENVIRONMENT_TYPES*
 
-Defined in environments/environment.abstract.ts:59
+*Defined in [environments/environment.abstract.ts:50](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L50)*
 
 **Returns:** *ENVIRONMENT_TYPES*
 
@@ -155,7 +152,7 @@ Defined in environments/environment.abstract.ts:59
 
 ▸ **generateAPIToken**(`hostName`: string, `clientId`: string, `data`: any): *Promise‹string›*
 
-Defined in environments/environment.abstract.ts:143
+*Defined in [environments/environment.abstract.ts:100](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L100)*
 
 Generates an API token
 
@@ -173,31 +170,11 @@ token
 
 ___
 
-###  generateAuthToken
-
-▸ **generateAuthToken**(`data`: any): *Promise‹string›*
-
-Defined in environments/environment.abstract.ts:169
-
-Generates an authentication token
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`data` | any | authentication response data |
-
-**Returns:** *Promise‹string›*
-
-token
-
-___
-
 ###  getConfigValue
 
 ▸ **getConfigValue**‹**K**›(`key`: K): *Promise‹EnvironmentConfigModel[K]›*
 
-Defined in environments/environment.abstract.ts:207
+*Defined in [environments/environment.abstract.ts:127](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L127)*
 
 Gets config value for given key
 
@@ -219,7 +196,7 @@ ___
 
 ▸ **init**(): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:134
+*Defined in [environments/environment.abstract.ts:91](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L91)*
 
 Environment initialisation logic
 
@@ -227,29 +204,11 @@ Environment initialisation logic
 
 ___
 
-###  login
-
-▸ **login**(`redirectTo?`: undefined | string): *Promise‹IEnvironmentAuth›*
-
-Defined in environments/environment.abstract.ts:156
-
-Environment Authentication logic
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`redirectTo?` | undefined &#124; string |
-
-**Returns:** *Promise‹IEnvironmentAuth›*
-
-___
-
 ###  reloadConfig
 
 ▸ **reloadConfig**(): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:214
+*Defined in [environments/environment.abstract.ts:134](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L134)*
 
 Reloads config from disk
 
@@ -261,7 +220,7 @@ ___
 
 ▸ **supports**(`methodName`: PUBLIC_GRAPHQL_METHODS): *boolean*
 
-Defined in environments/environment.abstract.ts:194
+*Defined in [environments/environment.abstract.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L114)*
 
 Checks if given GraphQL method is supported
 
@@ -279,7 +238,7 @@ ___
 
 ▸ **updateConfig**(`key`: string, `value`: any): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:226
+*Defined in [environments/environment.abstract.ts:146](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L146)*
 
 Updates config on disk
 
@@ -298,7 +257,7 @@ ___
 
 ▸ **verifyAPIToken**(`hostName`: string, `clientId`: string, `token?`: undefined | string): *Promise‹void›*
 
-Defined in environments/environment.abstract.ts:151
+*Defined in [environments/environment.abstract.ts:108](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L108)*
 
 Verifies an API token
 
@@ -309,25 +268,5 @@ Name | Type | Description |
 `hostName` | string | host name of token request |
 `clientId` | string | client ID of token request |
 `token?` | undefined &#124; string | token to verify  |
-
-**Returns:** *Promise‹void›*
-
-___
-
-###  verifyAuthToken
-
-▸ **verifyAuthToken**(`token`: string): *Promise‹void›*
-
-Defined in environments/environment.abstract.ts:182
-
-Verifies an authentication token
-
-**`throws`** AuthenticationError
-
-**Parameters:**
-
-Name | Type | Default | Description |
------- | ------ | ------ | ------ |
-`token` | string | "" | token to verify |
 
 **Returns:** *Promise‹void›*

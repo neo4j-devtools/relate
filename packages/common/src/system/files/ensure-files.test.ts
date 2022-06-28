@@ -42,7 +42,7 @@ describe('ensure-files', () => {
         const expectedFileNames = [...defaultFileNames, 'environments', 'known_connections'];
         const dirPaths: ISystemProviderDirPaths = {
             ...defaultPaths,
-            environments: path.join(TMP_HOME, 'environments'),
+            environmentsConfig: path.join(TMP_HOME, 'environments'),
         };
         const filePaths: ISystemProviderFilePaths = {
             knownConnections: path.join(TMP_HOME, 'known_connections'),

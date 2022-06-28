@@ -1,12 +1,11 @@
 `relate environment`
 ====================
 
-Managed sets of related resources and services, which may be local or remote.
+Managed sets of related resources and services.
 
 * [`relate environment:api-token [CLIENTID]`](#relate-environmentapi-token-clientid)
-* [`relate environment:init [ENVIRONMENT] [HTTPORIGIN]`](#relate-environmentinit-environment-httporigin)
+* [`relate environment:init [ENVIRONMENT]`](#relate-environmentinit-environment)
 * [`relate environment:list`](#relate-environmentlist)
-* [`relate environment:login [ENVIRONMENT]`](#relate-environmentlogin-environment)
 * [`relate environment:open [ENVIRONMENT]`](#relate-environmentopen-environment)
 * [`relate environment:use ENVIRONMENT`](#relate-environmentuse-environment)
 
@@ -37,37 +36,33 @@ EXAMPLES
 
 _See code: [dist/commands/environment/api-token.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/environment/api-token.ts)_
 
-## `relate environment:init [ENVIRONMENT] [HTTPORIGIN]`
+## `relate environment:init [ENVIRONMENT]`
 
 Initialize a new relate environment
 
 ```
 USAGE
-  $ relate environment:init [ENVIRONMENT] [HTTPORIGIN]
+  $ relate environment:init [ENVIRONMENT]
 
 ARGUMENTS
   ENVIRONMENT  Name of the environment to run the command against
-  HTTPORIGIN   URL of the hosted instance of relate (only applies to --type=REMOTE)
 
 OPTIONS
-  -i, --interactive      Get prompted for each configuration option available
+  -i, --interactive  Get prompted for each configuration option available
 
-  --apiToken             If this flag is provided and the environment created is set as active, all requests to
-                         @relate/web will require API tokens
+  --apiToken         If this flag is provided and the environment created is set as active, all requests to @relate/web
+                     will require API tokens
 
-  --noRuntime            Skip downloading the Java runtime required by the DBMS
+  --noRuntime        Skip downloading the Java runtime required by the DBMS
 
-  --type=(LOCAL|REMOTE)  Type of environment
-
-  --use                  Set environment as active right after creating it
+  --use              Set environment as active right after creating it
 
 ALIASES
   $ relate env:init
 
 EXAMPLES
-  $ relate env:init local-environment-name
-  $ relate env:init local-environment-name --use
-  $ relate env:init remote-environment-name https://url.of.hosted.relate.com --type=REMOTE
+  $ relate env:init environment-name
+  $ relate env:init environment-name --use
   $ relate env:init environment-name --interactive
 ```
 
@@ -89,27 +84,6 @@ EXAMPLE
 ```
 
 _See code: [dist/commands/environment/list.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/environment/list.ts)_
-
-## `relate environment:login [ENVIRONMENT]`
-
-Log in to an environment
-
-```
-USAGE
-  $ relate environment:login [ENVIRONMENT]
-
-ARGUMENTS
-  ENVIRONMENT  Name of the environment to run the command against
-
-ALIASES
-  $ relate env:login
-
-EXAMPLES
-  $ relate env:login
-  $ relate env:login environment-supporting-login
-```
-
-_See code: [dist/commands/environment/login.ts](https://github.com/neo4j-devtools/relate/blob/v1.0.4-alpha.7/packages/cli/src/commands/environment/login.ts)_
 
 ## `relate environment:open [ENVIRONMENT]`
 

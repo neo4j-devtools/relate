@@ -92,7 +92,7 @@
                 "description": "Neo4j DBMS plugins."
             },
             "environment": {
-                "description": "Managed sets of related resources and services, which may be local or remote."
+                "description": "Managed sets of related resources and services."
             },
             "extension": {
                 "description": "Extensions to the Relate framework."

@@ -55,9 +55,6 @@ OPTIONS
   -p, --project=project          (required) Name of the project to run the command against
   --overwrite                    Overwrite existing destination file
 
-DESCRIPTION
-  Useful for remote environments.
-
 EXAMPLES
   $ relate project:add-file
   $ relate project:add-file -e environment-name

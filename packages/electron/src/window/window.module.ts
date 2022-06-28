@@ -45,10 +45,7 @@ export class WindowModule {
         const res = await fetch(`${httpOrigin}/health`);
 
         if (!res.ok) {
-            throw new NotFoundError(`Could not connect to the @relate/web server`, [
-                'If you are connecting locally, try restarting the application.',
-                'If you are connecting to a remote, ensure the "@relate/web" package is installed and running.',
-            ]);
+            throw new NotFoundError(`Could not connect to the @relate/web server`, ['Try restarting the application.']);
         }
 
         const {appRoot} = await res.json();

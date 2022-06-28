@@ -61,8 +61,7 @@ export class OpenModule implements OnApplicationBootstrap {
 
         if (!appRoot && !isValidUrl(appPath)) {
             throw new NotFoundError(`Could not connect to the @relate/web server`, [
-                'If you are connecting locally, run "relate-web start" and try again.',
-                'If you are connecting to a remote, ensure that you are logged in',
+                'Run "relate-web start" and try again.',
             ]);
         }
 

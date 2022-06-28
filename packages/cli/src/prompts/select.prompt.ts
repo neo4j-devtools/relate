@@ -1,11 +1,8 @@
 import _ from 'lodash';
 import {prompt} from 'enquirer';
 import {
-    AUTHENTICATOR_TYPES,
     Environment,
-    IAuthenticationOptions,
     IProjectDbms,
-    IGoogleAuthenticationOptions,
     NotFoundError,
     PUBLIC_GRAPHQL_METHODS,
     DBMS_STATUS,
@@ -15,7 +12,6 @@ import {
 } from '@relate/common';
 import {List} from '@relate/types';
 
-import {inputPrompt} from './input.prompt';
 import {getEntityDisplayName} from '../utils/display.utils';
 import {IPromptSelection} from '../constants';
 
@@ -222,17 +218,6 @@ export const selectAppPrompt = async (message: string, environment: Environment)
     );
 };
 
-export const googleAuthenticatorPrompt = async (): Promise<IGoogleAuthenticationOptions> => {
-    const clientId = await inputPrompt('OAuth Client ID');
-    const clientSecret = await inputPrompt('OAuth Client Secret');
-
-    return {
-        type: AUTHENTICATOR_TYPES.GOOGLE_OAUTH2,
-        clientId,
-        clientSecret,
-    };
-};
-
 export const selectAllowedMethodsPrompt = async (): Promise<PUBLIC_GRAPHQL_METHODS[]> => {
     const needsWhitelist = await confirmPrompt('Do you need to restrict access to the GraphQL API methods?');
 
@@ -245,26 +230,4 @@ export const selectAllowedMethodsPrompt = async (): Promise<PUBLIC_GRAPHQL_METHO
     );
 
     return selectMultiplePrompt<PUBLIC_GRAPHQL_METHODS>('Select allowed GraphQL API methods', choices);
-};
-
-export const selectAuthenticatorPrompt = async (): Promise<IAuthenticationOptions | undefined> => {
-    const needsAuthentication = await confirmPrompt('Do you need to enable authentication?');
-
-    if (!needsAuthentication) {
-        return undefined;
-    }
-
-    const type = await selectPrompt(
-        'Authentication type',
-        _.map(_.values(AUTHENTICATOR_TYPES), (name) => ({name})),
-    );
-
-    switch (type) {
-        case AUTHENTICATOR_TYPES.GOOGLE_OAUTH2:
-            return googleAuthenticatorPrompt();
-        case AUTHENTICATOR_TYPES.CLIENT:
-            return {type};
-        default:
-            return undefined;
-    }
 };

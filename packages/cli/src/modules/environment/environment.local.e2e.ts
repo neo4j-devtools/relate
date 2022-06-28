@@ -29,7 +29,7 @@ describe('$relate environment', () => {
         test.stdout()
             .stderr()
             .it('creates environment', async (ctx) => {
-                await InitCommand.run([`${ENV_NAME}`, '--type=LOCAL']);
+                await InitCommand.run([`${ENV_NAME}`]);
 
                 expect(ctx.stderr).toContain('done');
                 expect(ctx.stdout).not.toContain(`Environment "${ENV_NAME}" is now set as active.`);
@@ -38,7 +38,7 @@ describe('$relate environment', () => {
         test.stdout()
             .stderr()
             .it('creates environment and activates it', async (ctx) => {
-                await InitCommand.run([`${ENV_NAME_2}`, '--type=LOCAL', '--use']);
+                await InitCommand.run([`${ENV_NAME_2}`, '--use']);
 
                 expect(ctx.stderr).toContain('done');
                 expect(ctx.stdout).toContain(`Environment "${ENV_NAME_2}" is now set as active.`);

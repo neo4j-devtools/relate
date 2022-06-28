@@ -11,10 +11,6 @@ export interface ICacheDirPaths {
 }
 
 export interface ISystemProviderDirPaths extends EnvPaths {
-    environments: string;
-}
-
-export interface IRemoteEnvironmentDirPaths {
     environmentsConfig: string;
 }
 

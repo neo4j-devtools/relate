@@ -1,5 +1,4 @@
 import {flags} from '@oclif/command';
-import {ENVIRONMENT_TYPES} from '@relate/common';
 
 import BaseCommand from '../../base.command';
 import {ARGS} from '../../constants';
@@ -13,28 +12,16 @@ export default class InitCommand extends BaseCommand {
     static description = 'Initialize a new relate environment';
 
     static examples = [
-        '$ relate env:init local-environment-name',
-        '$ relate env:init local-environment-name --use',
-        '$ relate env:init remote-environment-name https://url.of.hosted.relate.com --type=REMOTE',
+        '$ relate env:init environment-name',
+        '$ relate env:init environment-name --use',
         '$ relate env:init environment-name --interactive',
     ];
 
     static aliases = ['env:init'];
 
-    static args = [
-        ARGS.ENVIRONMENT,
-        {
-            description: 'URL of the hosted instance of relate (only applies to --type=REMOTE)',
-            name: 'httpOrigin',
-            required: false,
-        },
-    ];
+    static args = [ARGS.ENVIRONMENT];
 
     static flags = {
-        type: flags.enum({
-            description: 'Type of environment',
-            options: Object.values(ENVIRONMENT_TYPES),
-        }),
         interactive: flags.boolean({
             description: 'Get prompted for each configuration option available',
             char: 'i',

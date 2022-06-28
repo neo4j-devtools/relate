@@ -3,7 +3,6 @@ import {IsEnum, IsString, IsOptional, IsBoolean, IsUUID, Validate} from 'class-v
 import {ModelAbstract} from './model.abstract';
 import {ENVIRONMENT_TYPES} from '../entities/environments/environment.constants';
 import {IsValidUrl} from './custom-validators';
-import {IAuthenticationOptions} from '../entities/environments/authentication';
 import {PUBLIC_GRAPHQL_METHODS} from '../constants';
 
 export interface IEnvironmentAuth {
@@ -23,9 +22,7 @@ export interface IEnvironmentConfigInput {
     user?: any;
     relateDataPath?: string;
     httpOrigin?: string;
-    remoteEnvironmentId?: string;
     authToken?: string;
-    authentication?: IAuthenticationOptions;
     serverConfig?: IServerConfig;
 }
 
@@ -73,13 +70,6 @@ export class EnvironmentConfigModel extends ModelAbstract<IEnvironmentConfig> im
     @IsValidUrl()
     @IsOptional()
     public httpOrigin?: string;
-
-    @IsUUID('4')
-    @IsOptional()
-    public remoteEnvironmentId?: string;
-
-    @IsOptional()
-    public authentication?: IAuthenticationOptions;
 
     @IsOptional()
     @Validate(ServerConfigModel)
