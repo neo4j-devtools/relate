@@ -15,15 +15,14 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "prepare": "pnpm run build:clean",
+        "prepare": "pnpm build:clean",
         "clean": "rimraf dist",
         "test": "jest",
         "build": "tsc",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
-        "generate:docs": "typedoc",
-        "add:docs": "pnpm generate:docs && git add documentation"
+        "generate:docs": "typedoc"
     },
     "devDependencies": {
         "@nestjs/common": "8.4.7",

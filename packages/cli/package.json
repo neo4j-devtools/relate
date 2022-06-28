@@ -113,17 +113,15 @@
     },
     "scripts": {
         "dev-cli": "cross-env NODE_PATH=./node_modules oclif",
-        "prepare": "pnpm run build",
+        "prepare": "pnpm build:clean",
         "postpack": "rimraf oclif.manifest.json",
         "prepack": "run-s build:clean build:manifest generate:docs",
-        "build": "pnpm run prepack",
-        "build:clean": "run-s clean build:tsc",
-        "build:tsc": "tsc -b",
-        "build:manifest": "node -e '' | pnpm run dev-cli manifest",
+        "build": "tsc -b",
+        "build:clean": "run-s clean build",
+        "build:manifest": "node -e '' | pnpm dev-cli manifest",
         "clean": "rimraf dist",
         "test": "jest",
-        "generate:docs": "pnpm run dev-cli readme --multi --dir=./docs",
-        "add:docs": "pnpm generate:docs && git add README.md docs",
+        "generate:docs": "pnpm dev-cli readme --multi --dir=./docs",
         "watch": "tsc -w"
     }
 }

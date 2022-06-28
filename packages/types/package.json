@@ -21,8 +21,7 @@
         "build:clean": "run-s clean build",
         "start": "tsc -w",
         "test": "jest",
-        "generate:docs": "typedoc",
-        "add:docs": "pnpm generate:docs && git add documentation"
+        "generate:docs": "typedoc"
     },
     "dependencies": {
         "lodash": "4.17.21"

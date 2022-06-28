@@ -16,7 +16,7 @@
         "lint": "eslint . --ext .ts --quiet",
         "test:teardown": "node scripts/tests/teardown.js",
         "test:setup": "node scripts/tests/setup.js",
-        "test:e2e": "pnpm --recursive --stream test",
+        "test:e2e": "pnpm --recursive --workspace-concurrency 1 test",
         "test": "run-s --continue-on-error test:setup test:e2e test:teardown",
         "test:pr": "run-s lint test",
         "generate:licenses": "node scripts/licenses/index.js",
@@ -24,6 +24,7 @@
         "watch": "pnpm --recursive --parallel watch"
     },
     "devDependencies": {
+        "@changesets/cli": "2.23.0",
         "@types/node-fetch": "2.5.7",
         "@typescript-eslint/eslint-plugin": "4.32.0",
         "@typescript-eslint/parser": "4.32.0",
@@ -33,7 +34,7 @@
         "eslint-plugin-jest": "25.7.0",
         "eslint-plugin-prettier": "4.0.0",
         "fs-extra": "9.0.1",
-        "husky": "4.0.9",
+        "husky": "8.0.1",
         "jest": "28.1.1",
         "license-checker": "25.0.1",
         "lint-staged": "11.2.3",
