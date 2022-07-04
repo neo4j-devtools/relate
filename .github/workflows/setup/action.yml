@@ -1,0 +1,42 @@
+name: Relate Setup
+description: Composite action to setup node and pnpm
+
+inputs:
+    NODE_VERSION:
+        description: Node version
+        required: false
+        default: 16.15
+    PNPM_VERSION:
+        description: PNPM version
+        required: false
+        default: 6.31.0
+
+runs:
+    using: composite
+    steps:
+        - uses: actions/setup-node@v3
+          with:
+              node-version: ${{ inputs.NODE_VERSION }}
+
+        - uses: pnpm/action-setup@v2.2.2
+          id: pnpm-install
+          with:
+              version: ${{ inputs.PNPM_VERSION }}
+              run_install: false
+
+        - name: Get pnpm store directory
+          shell: bash
+          id: pnpm-cache
+          run: 'echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"'
+
+        - uses: actions/cache@v3
+          name: Setup pnpm cache
+          with:
+              path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+              key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                  ${{ runner.os }}-pnpm-store-
+
+        - name: Install dependencies
+          shell: bash
+          run: pnpm install --frozen-lockfile --strict-peer-dependencies --aggregate-output

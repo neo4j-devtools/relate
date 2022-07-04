@@ -15,23 +15,21 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "prepare": "npm run build:clean",
+        "prepare": "pnpm build:clean",
         "clean": "rimraf dist",
         "test": "jest",
         "build": "tsc",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
-        "generate:docs": "typedoc",
-        "add:docs": "git add documentation",
-        "version": "run-s generate:docs add:docs"
+        "generate:docs": "typedoc"
     },
     "devDependencies": {
         "@nestjs/common": "8.4.7",
         "@nestjs/config": "2.1.0",
         "@nestjs/core": "8.4.7",
         "@nestjs/testing": "8.4.6",
-        "@relate/types": "^1.0.4-alpha.1",
+        "@relate/types": "workspace:*",
         "@types/decompress": "4.2.3",
         "@types/fs-extra": "9.0.10",
         "@types/got": "9.6.10",
@@ -49,7 +47,6 @@
         "nock": "12.0.3",
         "npm-run-all": "4.1.5",
         "reflect-metadata": "0.1.13",
-        "rimraf": "3.0.2",
         "ts-jest": "28.0.5",
         "typedoc": "0.17.7",
         "typedoc-plugin-markdown": "2.3.1",
@@ -60,7 +57,7 @@
         "@nestjs/common": "^8.0.0",
         "@nestjs/config": "^2.1.0",
         "@nestjs/core": "^8.0.0",
-        "@relate/types": "^1.0.4-alpha.1",
+        "@relate/types": "workspace:^",
         "graphql": "^16.5.0"
     },
     "dependencies": {

@@ -15,15 +15,13 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "prepare": "npm run build:clean",
+        "prepare": "pnpm build:clean",
         "clean": "rimraf dist",
         "build": "tsc",
         "build:clean": "run-s clean build",
         "start": "tsc -w",
         "test": "jest",
-        "generate:docs": "typedoc",
-        "add:docs": "git add documentation",
-        "version": "run-s generate:docs add:docs"
+        "generate:docs": "typedoc"
     },
     "dependencies": {
         "lodash": "4.17.21"
