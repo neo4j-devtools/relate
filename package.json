@@ -16,7 +16,7 @@
         "lint": "eslint . --ext .ts --quiet",
         "test:teardown": "node scripts/tests/teardown.js",
         "test:setup": "node scripts/tests/setup.js",
-        "test:e2e": "pnpm --recursive --workspace-concurrency 1 test",
+        "test:e2e": "pnpm --recursive --filter \"@relate/*\" --workspace-concurrency 1 test",
         "test": "run-s --continue-on-error test:setup test:e2e test:teardown",
         "test:pr": "run-s lint test",
         "generate:licenses": "node scripts/licenses/index.js",
