@@ -18,7 +18,7 @@
             "groupSlug": "nestjs"
         },
         {
-            "matchPackagePatterns": ["typescript"],
+            "matchPackagePatterns": ["typescript", "typedoc"],
             "groupName": "typescript dependencies",
             "groupSlug": "typescript"
         }
