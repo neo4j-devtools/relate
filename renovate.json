@@ -7,9 +7,20 @@
     "packageRules": [
         {
             "matchPackagePatterns": ["*"],
+            "excludePackagePatterns": ["^@nestjs", "^graphql", "^apollo", "typescript"],
             "matchUpdateTypes": ["minor", "patch"],
             "groupName": "all non-major dependencies",
             "groupSlug": "all-minor-patch"
+        },
+        {
+            "matchPackagePatterns": ["^@nestjs", "^graphql", "^apollo"],
+            "groupName": "nestjs dependencies",
+            "groupSlug": "nestjs"
+        },
+        {
+            "matchPackagePatterns": ["typescript"],
+            "groupName": "typescript dependencies",
+            "groupSlug": "typescript"
         }
     ]
 }
