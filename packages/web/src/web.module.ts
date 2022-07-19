@@ -113,7 +113,7 @@ export class WebModule implements OnModuleInit {
                 fileUpload: {
                     // convert multer file object to the same shape as graphql-upload
                     ...req.file,
-                    filename: req.file.originalname,
+                    filename: req.file?.originalname,
                 },
             };
             next();
