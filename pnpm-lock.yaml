@@ -155,7 +155,7 @@ importers:
       '@types/node': 16.11.45
       '@types/node-forge': 1.0.4
       '@types/semver': 7.3.10
-      '@types/tar': 4.0.5
+      '@types/tar': 6.1.1
       '@types/uuid': 8.3.4
       class-validator: 0.13.2
       decompress: 4.2.1
@@ -213,7 +213,7 @@ importers:
       '@types/node': 16.11.45
       '@types/node-forge': 1.0.4
       '@types/semver': 7.3.10
-      '@types/tar': 4.0.5
+      '@types/tar': 6.1.1
       '@types/uuid': 8.3.4
       graphql: 16.5.0
       jest: 28.1.3_@types+node@16.11.45
@@ -2739,8 +2739,8 @@ packages:
       '@types/serve-static': 1.13.10
     dev: true
 
-  /@types/tar/4.0.5:
-    resolution: {integrity: sha512-cgwPhNEabHaZcYIy5xeMtux2EmYBitfqEceBUi2t5+ETy4dW6kswt6WX4+HqLeiiKOo42EXbGiDmVJ2x+vi37Q==}
+  /@types/tar/6.1.1:
+    resolution: {integrity: sha512-8mto3YZfVpqB1CHMaYz1TUYIQfZFbh/QbEq5Hsn6D0ilCfqRVCdalmc89B7vi3jhl9UYIk+dWDABShNfOkv5HA==}
     dependencies:
       '@types/minipass': 3.1.2
       '@types/node': 18.0.0
