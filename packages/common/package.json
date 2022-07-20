@@ -26,9 +26,9 @@
     },
     "devDependencies": {
         "@nestjs/common": "8.4.7",
-        "@nestjs/config": "2.1.0",
+        "@nestjs/config": "2.2.0",
         "@nestjs/core": "8.4.7",
-        "@nestjs/testing": "8.4.6",
+        "@nestjs/testing": "8.4.7",
         "@relate/types": "workspace:*",
         "@types/decompress": "4.2.4",
         "@types/fs-extra": "9.0.13",
