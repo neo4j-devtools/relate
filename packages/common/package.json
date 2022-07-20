@@ -37,7 +37,7 @@
         "@types/jsonwebtoken": "8.5.8",
         "@types/jszip": "3.4.1",
         "@types/lodash": "4.14.182",
-        "@types/node": "13.1.7",
+        "@types/node": "16.11.45",
         "@types/node-forge": "1.0.4",
         "@types/semver": "7.3.10",
         "@types/tar": "4.0.5",
