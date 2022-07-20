@@ -40,7 +40,7 @@
         "@types/node": "16.11.45",
         "@types/node-forge": "1.0.4",
         "@types/semver": "7.3.10",
-        "@types/tar": "4.0.5",
+        "@types/tar": "6.1.1",
         "@types/uuid": "8.3.4",
         "graphql": "16.5.0",
         "jest": "28.1.3",
