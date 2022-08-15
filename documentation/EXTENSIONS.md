@@ -1,6 +1,6 @@
 # Extensions
 `@relate` can be extended by third parties using one of two main approaches:
-- Adding new [@nestjs](https://docs.nestjs.com/) modules to one of the main API surfaces (`WEB`, `SYSTEM`, `CLI`, `ELECTRON`)
+- Adding new [@nestjs](https://docs.nestjs.com/) modules to one of the main API surfaces (`WEB`, `SYSTEM`, `CLI`)
 - Adding static HTML bundles (e.g. Graph Apps)
 
 Extensions installed under the `Data` directory
@@ -82,4 +82,3 @@ Where `<APP_TYPE>` is one of:
 - `SYSTEM` Targeting the core system API (shared across all other APIs)
 - `WEB` Targeting the HTTP API
 - `CLI` Targeting the CLI API
-- `ELECTRON` Targeting the Electron API

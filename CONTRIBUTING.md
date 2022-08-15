@@ -203,7 +203,6 @@ The following is the list of supported scopes:
 * **web**
 * **cli**
 * **common**
-* **electron**
 * **documentation**
 
 ### Subject

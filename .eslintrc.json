@@ -57,7 +57,7 @@
             }
         },
         {
-            "files": ["packages/web/**/*.e2e.ts", "packages/electron/**/*.e2e.ts"],
+            "files": ["packages/web/**/*.e2e.ts"],
             "rules": {
                 "jest/expect-expect": ["off"]
             }
@@ -73,12 +73,6 @@
             "settings": {
                 // These paths are exported by @nestjs/platform-express
                 "import/core-modules": ["multer", "express"]
-            }
-        },
-        {
-            "files": ["packages/electron/src/**/*.ts"],
-            "settings": {
-                "import/core-modules": ["electron"]
             }
         },
         {
