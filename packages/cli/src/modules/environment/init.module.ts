@@ -73,11 +73,11 @@ export class InitModule implements OnApplicationBootstrap {
         await this.systemProvider.createEnvironment(config);
         CliUx.ux.action.stop();
 
-        Promise.all(
+        await Promise.all(
             ['4.0.0', '5.0.0'].map(async (version) => {
                 const relateJavaExists = await resolveRelateJavaHome(version);
                 if (!noRuntime && !relateJavaExists) {
-                    await downloadJava('4.0.0');
+                    await downloadJava(version);
                 }
             }),
         );
