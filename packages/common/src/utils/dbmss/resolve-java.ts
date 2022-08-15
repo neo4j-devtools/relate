@@ -41,7 +41,6 @@ export const resolveJavaName = (dbmsVersion: string): IJavaName => {
 
     const majorVersion = semver.major(dbmsVersion);
     const neo4jJavaVersionMapping = {
-        3: ZULU_JAVA_VERSION.JAVA_8,
         4: ZULU_JAVA_VERSION.JAVA_11,
         5: ZULU_JAVA_VERSION.JAVA_17,
     };

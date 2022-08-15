@@ -29,7 +29,6 @@ export enum NEO4J_ORIGIN {
 }
 
 export enum ZULU_JAVA_VERSION {
-    JAVA_8 = '8.48.0.53-ca-jdk8.0.265',
     JAVA_11 = '11.54.25-ca-jdk11.0.14.1',
     JAVA_17 = '17.34.19-ca-jdk17.0.3',
 }
@@ -65,7 +64,6 @@ export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shel
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
 export const NEO4J_JAVA_17_VERSION_RANGE = '>=5.0';
-export const NEO4J_JAVA_11_VERSION_RANGE = '>=3.5||<5.0';
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=3.4';
 export const NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE = '>=4.x';
 export const NEO4J_VERSION_4 = '4.0.0';
