@@ -1,43 +1,17 @@
-[@relate/types](README.md)
+@relate/types
 
 # @relate/types
 
-## Index
+## Table of contents
 
-### Classes
+### Modules
 
-* [Bool](classes/bool.md)
-* [Dict](classes/dict.md)
-* [List](classes/list.md)
-* [Maybe](classes/maybe.md)
-* [Monad](classes/monad.md)
-* [Nil](classes/nil.md)
-* [None](classes/none.md)
-* [Num](classes/num.md)
-* [Str](classes/str.md)
-
-### Interfaces
-
-* [IAsObject](interfaces/iasobject.md)
-* [IMonad](interfaces/imonad.md)
-
-### Type aliases
-
-* [KeyVal](README.md#keyval)
-* [RawDict](README.md#rawdict)
-
-## Type aliases
-
-###  KeyVal
-
-Ƭ **KeyVal**: *T extends Map<infer K, infer V> ? object : T extends List<[]> ? object : T extends List<Iterable<infer I>> ? object : T extends Array<Array<infer I>> ? object : object*
-
-Defined in packages/types/src/monads/primitive/dict.monad.ts:11
-
-___
-
-###  RawDict
-
-Ƭ **RawDict**: *Map‹K, V›*
-
-Defined in packages/types/src/monads/primitive/dict.monad.ts:8
+- [monad](modules/monad.md)
+- [primitive/bool.monad](modules/primitive_bool_monad.md)
+- [primitive/dict.monad](modules/primitive_dict_monad.md)
+- [primitive/list.monad](modules/primitive_list_monad.md)
+- [primitive/maybe.monad](modules/primitive_maybe_monad.md)
+- [primitive/nil.monad](modules/primitive_nil_monad.md)
+- [primitive/none.monad](modules/primitive_none_monad.md)
+- [primitive/num.monad](modules/primitive_num_monad.md)
+- [primitive/str.monad](modules/primitive_str_monad.md)
