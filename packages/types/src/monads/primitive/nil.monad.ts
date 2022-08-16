@@ -1,7 +1,6 @@
 import Monad from '../monad';
 
 /**
- * @noInheritDoc
  * @description
  * Represents an null value
  *

@@ -1,15 +1,12 @@
 {
-    "inputFiles": ["./src/entities"],
+    "entryPoints": ["./src/entities"],
+    "entryPointStrategy": "expand",
     "exclude": ["!./src/entities/**/*.abstract.ts"],
-    "mode": "file",
     "out": "documentation",
     "excludePrivate": true,
     "excludeProtected": true,
     "gitRevision": "master",
     "gitRemote": "upstream",
     "readme": "none",
-    "plugins": [
-        "typedoc-plugin-no-inherit",
-        "typedoc-plugin-markdown"
-    ]
+    "plugin": ["typedoc-plugin-markdown"]
 }

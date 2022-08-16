@@ -27,7 +27,6 @@ interface IAsObject<T = any> {
 }
 
 /**
- * @noInheritDoc
  * @description
  * Represents any Iterable value with named keys (i.e Object, Map)
  *
