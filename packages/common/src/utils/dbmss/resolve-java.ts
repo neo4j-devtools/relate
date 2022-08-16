@@ -40,13 +40,12 @@ export const resolveJavaName = (dbmsVersion: string): IJavaName => {
     }
 
     const majorVersion = semver.major(dbmsVersion);
-    const neo4jJavaVersionMapping = {
+    const neo4jJavaVersionMapping: Record<number, ZULU_JAVA_VERSION | undefined> = {
+        3: ZULU_JAVA_VERSION.JAVA_11,
         4: ZULU_JAVA_VERSION.JAVA_11,
         5: ZULU_JAVA_VERSION.JAVA_17,
     };
-    const [, javaVersion] = Object.entries(neo4jJavaVersionMapping).find((item) => {
-        return item[0] === majorVersion.toString();
-    }) || ['', ZULU_JAVA_VERSION.JAVA_17];
+    const javaVersion = neo4jJavaVersionMapping[majorVersion] || ZULU_JAVA_VERSION.JAVA_17;
 
     const dirname = `zulu${javaVersion}-${platform}_${process.arch}`;
 
