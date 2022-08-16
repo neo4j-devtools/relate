@@ -10,7 +10,6 @@ import Nil from './nil.monad';
 import Str from './str.monad';
 
 /**
- * @noInheritDoc
  * @description
  * Represents any Iterable value (i.e Array, String, Map, Set, etc.)
  *

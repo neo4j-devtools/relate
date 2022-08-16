@@ -3,7 +3,6 @@ import None from './none.monad';
 import Nil from './nil.monad';
 
 /**
- * @noInheritDoc
  * @description
  * Represents a potentially "empty" value (if value is null | undefined | Nil | None)
  * ```ts

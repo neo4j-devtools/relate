@@ -4,7 +4,6 @@ import Monad from '../monad';
 import List from './list.monad';
 
 /**
- * @noInheritDoc
  * @description
  * Represents a String value
  *

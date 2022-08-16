@@ -1,16 +1,16 @@
-[@relate/common](README.md)
+@relate/common
 
 # @relate/common
 
-## Index
+## Table of contents
 
-### Classes
+### Modules
 
-* [BackupAbstract](classes/backupabstract.md)
-* [DbmsPluginsAbstract](classes/dbmspluginsabstract.md)
-* [DbmssAbstract](classes/dbmssabstract.md)
-* [DbsAbstract](classes/dbsabstract.md)
-* [EnvironmentAbstract](classes/environmentabstract.md)
-* [ExtensionsAbstract](classes/extensionsabstract.md)
-* [ManifestAbstract](classes/manifestabstract.md)
-* [ProjectsAbstract](classes/projectsabstract.md)
+- [backups/backup.abstract](modules/backups_backup_abstract.md)
+- [dbms-plugins/dbms-plugins.abstract](modules/dbms_plugins_dbms_plugins_abstract.md)
+- [dbmss/dbmss.abstract](modules/dbmss_dbmss_abstract.md)
+- [dbs/dbs.abstract](modules/dbs_dbs_abstract.md)
+- [environments/environment.abstract](modules/environments_environment_abstract.md)
+- [extensions/extensions.abstract](modules/extensions_extensions_abstract.md)
+- [manifest/manifest.abstract](modules/manifest_manifest_abstract.md)
+- [projects/projects.abstract](modules/projects_projects_abstract.md)
