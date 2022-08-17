@@ -72,6 +72,7 @@
         "graphql-type-json": "0.3.2",
         "graphql-ws": "5.10.0",
         "lodash": "4.17.21",
+        "multer": "1.4.5-lts.1",
         "node-fetch": "2.6.7",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.5.6",

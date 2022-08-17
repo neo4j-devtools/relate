@@ -45,10 +45,16 @@ jobs:
                   git log -3
                   git show --name-only
 
+            - name: Setup npmrc
+              run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+
             - name: Publish NPM packages
               run: pnpm changeset publish
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Reset npmrc
+              run: git restore .npmrc
 
             - name: Push commit and tags
               run: git push --follow-tags
