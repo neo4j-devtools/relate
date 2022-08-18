@@ -1,8 +1,9 @@
 name: Release
 
 on:
-    # Allows you to run this workflow manually from the Actions tab
-    workflow_dispatch:
+    push:
+        branches:
+            - master
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -24,39 +25,23 @@ jobs:
         name: Release
         runs-on: ubuntu-latest
         environment: release
+        permissions:
+            contents: write
+            pull-requests: write
         steps:
             - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
             - uses: ./.github/workflows/setup
 
-            - name: Bump versions
-              run: pnpm changeset version
-
-            - name: Update docs
-              run: pnpm generate:docs
-
-            # Commit only if changes actually exist
-            # https://stackoverflow.com/a/40255467/3247715
-            - name: Configuring github user and commit changes from CI
-              run: |
-                  git config user.name "${{ github.actor }}"
-                  git config user.email "${{ github.actor}}@users.noreply.github.com"
-                  git add .
-                  git diff --quiet && git diff --staged --quiet || git commit -m "Publish"
-                  git log -3
-                  git show --name-only
-
-            - name: Setup npmrc
-              run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
-
-            - name: Publish NPM packages
-              run: pnpm changeset publish
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-            - name: Reset npmrc
-              run: git restore .npmrc
-
-            - name: Push commit and tags
-              run: git push --follow-tags
+            # Create a pull request with all of the package versions and
+            # changelogs updated and when there are new changesets on master,
+            # the PR will be updated. When the PR is merged the packages are
+            # published to NPM automatically.
+            - name: Create Release Pull Request or Publish to npm
+              id: changesets
+              uses: changesets/action@v1
+              with:
+                  version: pnpm changeset version && pnpm generate:docs
+                  publish: pnpm changeset publish
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
