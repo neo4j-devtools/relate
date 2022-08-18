@@ -83,7 +83,7 @@ Indicates if Monad lacks a value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L64)
+packages/types/src/monads/monad.ts:64
 
 ## Methods
 
@@ -109,7 +109,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)
+packages/types/src/monads/monad.ts:139
 
 ___
 
@@ -145,7 +145,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -165,7 +165,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -198,7 +198,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)
+packages/types/src/monads/monad.ts:128
 
 ___
 
@@ -229,7 +229,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -259,7 +259,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -295,7 +295,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -325,7 +325,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -341,7 +341,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)
+packages/types/src/monads/monad.ts:205
 
 ___
 
@@ -361,7 +361,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:198](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L198)
+packages/types/src/monads/monad.ts:198
 
 ___
 
@@ -377,7 +377,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -403,7 +403,7 @@ const strMonadAgain: Monad<'foo'> = Monad.from(Monad.of('foo'));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:98](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L98)
+packages/types/src/monads/monad.ts:98
 
 ___
 
@@ -436,7 +436,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -462,4 +462,4 @@ const strMonadMonad: Monad<Monad<'foo'>> = Monad.of(Monad.of('foo'));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:87](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L87)
+packages/types/src/monads/monad.ts:87

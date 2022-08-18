@@ -43,7 +43,7 @@
 
 #### Defined in
 
-[projects/projects.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L25)
+projects/projects.abstract.ts:25
 
 ## Methods
 
@@ -69,7 +69,7 @@ Adds DBMS to given project
 
 #### Defined in
 
-[projects/projects.abstract.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L114)
+projects/projects.abstract.ts:114
 
 ___
 
@@ -94,7 +94,7 @@ Adds file (copy) to project
 
 #### Defined in
 
-[projects/projects.abstract.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L76)
+projects/projects.abstract.ts:76
 
 ___
 
@@ -116,7 +116,7 @@ Creates new project
 
 #### Defined in
 
-[projects/projects.abstract.ts:36](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L36)
+projects/projects.abstract.ts:36
 
 ___
 
@@ -140,7 +140,7 @@ Download sample project from github (https://github.com/neo4j-graph-examples)
 
 #### Defined in
 
-[projects/projects.abstract.ts:137](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L137)
+projects/projects.abstract.ts:137
 
 ___
 
@@ -162,7 +162,7 @@ Gets a project by name
 
 #### Defined in
 
-[projects/projects.abstract.ts:42](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L42)
+projects/projects.abstract.ts:42
 
 ___
 
@@ -186,7 +186,7 @@ Install sample DBMSs from file
 
 #### Defined in
 
-[projects/projects.abstract.ts:158](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L158)
+projects/projects.abstract.ts:158
 
 ___
 
@@ -209,7 +209,7 @@ Links an existing project
 
 #### Defined in
 
-[projects/projects.abstract.ts:55](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L55)
+projects/projects.abstract.ts:55
 
 ___
 
@@ -231,7 +231,7 @@ List all available projects
 
 #### Defined in
 
-[projects/projects.abstract.ts:48](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L48)
+projects/projects.abstract.ts:48
 
 ___
 
@@ -254,7 +254,7 @@ Lists DBMSs for given project
 
 #### Defined in
 
-[projects/projects.abstract.ts:104](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L104)
+projects/projects.abstract.ts:104
 
 ___
 
@@ -277,7 +277,7 @@ List files for given project
 
 #### Defined in
 
-[projects/projects.abstract.ts:68](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L68)
+projects/projects.abstract.ts:68
 
 ___
 
@@ -293,7 +293,7 @@ Lists sample projects from github (https://github.com/neo4j-graph-examples)
 
 #### Defined in
 
-[projects/projects.abstract.ts:132](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L132)
+projects/projects.abstract.ts:132
 
 ___
 
@@ -319,7 +319,7 @@ Install sample project from file
 
 #### Defined in
 
-[projects/projects.abstract.ts:146](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L146)
+projects/projects.abstract.ts:146
 
 ___
 
@@ -342,7 +342,7 @@ removes DBMS from given project
 
 #### Defined in
 
-[projects/projects.abstract.ts:127](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L127)
+projects/projects.abstract.ts:127
 
 ___
 
@@ -365,7 +365,7 @@ Removes file from given project
 
 #### Defined in
 
-[projects/projects.abstract.ts:97](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L97)
+projects/projects.abstract.ts:97
 
 ___
 
@@ -387,7 +387,7 @@ Unlinks a linked project
 
 #### Defined in
 
-[projects/projects.abstract.ts:61](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L61)
+projects/projects.abstract.ts:61
 
 ___
 
@@ -412,4 +412,4 @@ Adds file (write) to project
 
 #### Defined in
 
-[projects/projects.abstract.ts:85](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/projects/projects.abstract.ts#L85)
+projects/projects.abstract.ts:85

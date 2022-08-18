@@ -48,7 +48,7 @@ Creates an app launch token, for passing DBMS info and credentials to app
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:66](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L66)
+extensions/extensions.abstract.ts:66
 
 ___
 
@@ -71,7 +71,7 @@ Gets path to app entry point
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:19](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L19)
+extensions/extensions.abstract.ts:19
 
 ___
 
@@ -94,7 +94,7 @@ Install given extension
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:50](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L50)
+extensions/extensions.abstract.ts:50
 
 ___
 
@@ -116,7 +116,7 @@ Link local extension (useful for development)
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:37](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L37)
+extensions/extensions.abstract.ts:37
 
 ___
 
@@ -138,7 +138,7 @@ List all installed extensions
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L25)
+extensions/extensions.abstract.ts:25
 
 ___
 
@@ -160,7 +160,7 @@ List all installed apps
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:31](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L31)
+extensions/extensions.abstract.ts:31
 
 ___
 
@@ -183,7 +183,7 @@ Decodes app launch token
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:79](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L79)
+extensions/extensions.abstract.ts:79
 
 ___
 
@@ -205,7 +205,7 @@ Uninstall given extension
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L56)
+extensions/extensions.abstract.ts:56
 
 ___
 
@@ -227,4 +227,4 @@ List all available extensions to install
 
 #### Defined in
 
-[extensions/extensions.abstract.ts:43](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/extensions/extensions.abstract.ts#L43)
+extensions/extensions.abstract.ts:43

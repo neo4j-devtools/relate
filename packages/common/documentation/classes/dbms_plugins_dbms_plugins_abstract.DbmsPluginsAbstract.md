@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:8](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L8)
+dbms-plugins/dbms-plugins.abstract.ts:8
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:10](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L10)
+dbms-plugins/dbms-plugins.abstract.ts:10
 
 ## Methods
 
@@ -68,7 +68,7 @@ Add one or more plugin sources
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:33](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L33)
+dbms-plugins/dbms-plugins.abstract.ts:33
 
 ___
 
@@ -90,7 +90,7 @@ Get the source for a plugin
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L21)
+dbms-plugins/dbms-plugins.abstract.ts:21
 
 ___
 
@@ -113,7 +113,7 @@ Install a plugin in the specified DBMS
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L64)
+dbms-plugins/dbms-plugins.abstract.ts:64
 
 ___
 
@@ -136,7 +136,7 @@ List all plugins installed in the specified DBMS
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L46)
+dbms-plugins/dbms-plugins.abstract.ts:46
 
 ___
 
@@ -158,7 +158,7 @@ List all plugin sources
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L27)
+dbms-plugins/dbms-plugins.abstract.ts:27
 
 ___
 
@@ -182,7 +182,7 @@ containing them would be upgraded.
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L57)
+dbms-plugins/dbms-plugins.abstract.ts:57
 
 ___
 
@@ -204,7 +204,7 @@ Remove one or more plugin sources
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L39)
+dbms-plugins/dbms-plugins.abstract.ts:39
 
 ___
 
@@ -227,4 +227,4 @@ Uninstall a plugin from the specified DBMS
 
 #### Defined in
 
-[dbms-plugins/dbms-plugins.abstract.ts:71](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbms-plugins/dbms-plugins.abstract.ts#L71)
+dbms-plugins/dbms-plugins.abstract.ts:71

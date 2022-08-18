@@ -69,7 +69,7 @@ const plain: 'true' = str.get();
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:17](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L17)
+packages/types/src/monads/primitive/str.monad.ts:17
 
 ## Accessors
 
@@ -89,7 +89,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:30](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L30)
+packages/types/src/monads/primitive/str.monad.ts:30
 
 ## Methods
 
@@ -109,7 +109,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:96](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L96)
+packages/types/src/monads/primitive/str.monad.ts:96
 
 ___
 
@@ -135,7 +135,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)
+packages/types/src/monads/monad.ts:139
 
 ___
 
@@ -171,7 +171,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -191,7 +191,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -224,7 +224,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)
+packages/types/src/monads/monad.ts:128
 
 ___
 
@@ -244,7 +244,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:88](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L88)
+packages/types/src/monads/primitive/str.monad.ts:88
 
 ___
 
@@ -275,7 +275,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -305,7 +305,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -326,7 +326,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:104](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L104)
+packages/types/src/monads/primitive/str.monad.ts:104
 
 ___
 
@@ -346,7 +346,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:100](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L100)
+packages/types/src/monads/primitive/str.monad.ts:100
 
 ___
 
@@ -366,7 +366,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:92](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L92)
+packages/types/src/monads/primitive/str.monad.ts:92
 
 ___
 
@@ -402,7 +402,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -432,7 +432,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -452,7 +452,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:84](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L84)
+packages/types/src/monads/primitive/str.monad.ts:84
 
 ___
 
@@ -472,7 +472,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)
+packages/types/src/monads/monad.ts:205
 
 ___
 
@@ -492,7 +492,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:198](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L198)
+packages/types/src/monads/monad.ts:198
 
 ___
 
@@ -506,7 +506,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:108](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L108)
+packages/types/src/monads/primitive/str.monad.ts:108
 
 ___
 
@@ -526,7 +526,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -563,7 +563,7 @@ Str.of
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:69](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L69)
+packages/types/src/monads/primitive/str.monad.ts:69
 
 ___
 
@@ -600,7 +600,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -633,7 +633,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:42](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L42)
+packages/types/src/monads/primitive/str.monad.ts:42
 
 ___
 
@@ -677,4 +677,4 @@ const listStr: Str<'1,2,3'> = Str.of(listMonad);
 
 #### Defined in
 
-[packages/types/src/monads/primitive/str.monad.ts:61](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/str.monad.ts#L61)
+packages/types/src/monads/primitive/str.monad.ts:61

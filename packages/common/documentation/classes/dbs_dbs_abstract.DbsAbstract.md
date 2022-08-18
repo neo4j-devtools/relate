@@ -44,7 +44,7 @@ Creates a new Database
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:21](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L21)
+dbs/dbs.abstract.ts:21
 
 ___
 
@@ -69,7 +69,7 @@ Drops a Database
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:30](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L30)
+dbs/dbs.abstract.ts:30
 
 ___
 
@@ -94,7 +94,7 @@ Dumps a databese contents
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:47](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L47)
+dbs/dbs.abstract.ts:47
 
 ___
 
@@ -121,7 +121,7 @@ Executes cypher against a given dbms
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L64)
+dbs/dbs.abstract.ts:64
 
 ___
 
@@ -145,7 +145,7 @@ Lists all databases
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:38](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L38)
+dbs/dbs.abstract.ts:38
 
 ___
 
@@ -171,4 +171,4 @@ Loads a database dump
 
 #### Defined in
 
-[dbs/dbs.abstract.ts:56](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbs/dbs.abstract.ts#L56)
+dbs/dbs.abstract.ts:56

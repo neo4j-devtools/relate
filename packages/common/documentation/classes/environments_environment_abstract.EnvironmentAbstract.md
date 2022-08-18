@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[environments/environment.abstract.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L28)
+environments/environment.abstract.ts:28
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L20)
+environments/environment.abstract.ts:20
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:18](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L18)
+environments/environment.abstract.ts:18
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:22](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L22)
+environments/environment.abstract.ts:22
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:24](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L24)
+environments/environment.abstract.ts:24
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:26](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L26)
+environments/environment.abstract.ts:26
 
 ## Accessors
 
@@ -106,7 +106,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:54](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L54)
+environments/environment.abstract.ts:54
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:35](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L35)
+environments/environment.abstract.ts:35
 
 ___
 
@@ -136,7 +136,7 @@ Indicates if environment is current active
 
 #### Defined in
 
-[environments/environment.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L46)
+environments/environment.abstract.ts:46
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L39)
+environments/environment.abstract.ts:39
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:58](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L58)
+environments/environment.abstract.ts:58
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-[environments/environment.abstract.ts:50](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L50)
+environments/environment.abstract.ts:50
 
 ## Methods
 
@@ -204,7 +204,7 @@ token
 
 #### Defined in
 
-[environments/environment.abstract.ts:100](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L100)
+environments/environment.abstract.ts:100
 
 ___
 
@@ -232,7 +232,7 @@ Gets config value for given key
 
 #### Defined in
 
-[environments/environment.abstract.ts:127](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L127)
+environments/environment.abstract.ts:127
 
 ___
 
@@ -248,7 +248,7 @@ Environment initialisation logic
 
 #### Defined in
 
-[environments/environment.abstract.ts:91](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L91)
+environments/environment.abstract.ts:91
 
 ___
 
@@ -264,7 +264,7 @@ Reloads config from disk
 
 #### Defined in
 
-[environments/environment.abstract.ts:134](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L134)
+environments/environment.abstract.ts:134
 
 ___
 
@@ -286,7 +286,7 @@ Checks if given GraphQL method is supported
 
 #### Defined in
 
-[environments/environment.abstract.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L114)
+environments/environment.abstract.ts:114
 
 ___
 
@@ -309,7 +309,7 @@ Updates config on disk
 
 #### Defined in
 
-[environments/environment.abstract.ts:146](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L146)
+environments/environment.abstract.ts:146
 
 ___
 
@@ -333,4 +333,4 @@ Verifies an API token
 
 #### Defined in
 
-[environments/environment.abstract.ts:108](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/environments/environment.abstract.ts#L108)
+environments/environment.abstract.ts:108

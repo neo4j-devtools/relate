@@ -57,7 +57,7 @@ const plain: boolean = bool.get();
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:16](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L16)
+packages/types/src/monads/primitive/bool.monad.ts:16
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:14](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L14)
+packages/types/src/monads/primitive/bool.monad.ts:14
 
 ## Accessors
 
@@ -87,7 +87,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L28)
+packages/types/src/monads/primitive/bool.monad.ts:28
 
 ## Methods
 
@@ -113,7 +113,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)
+packages/types/src/monads/monad.ts:139
 
 ___
 
@@ -149,7 +149,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -169,7 +169,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -202,7 +202,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)
+packages/types/src/monads/monad.ts:128
 
 ___
 
@@ -233,7 +233,7 @@ val is default
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -263,7 +263,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -299,7 +299,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -329,7 +329,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -349,7 +349,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)
+packages/types/src/monads/monad.ts:205
 
 ___
 
@@ -369,7 +369,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:198](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L198)
+packages/types/src/monads/monad.ts:198
 
 ___
 
@@ -389,7 +389,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -419,7 +419,7 @@ Bool.of
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:74](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L74)
+packages/types/src/monads/primitive/bool.monad.ts:74
 
 ___
 
@@ -446,7 +446,7 @@ val is default
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:40](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L40)
+packages/types/src/monads/primitive/bool.monad.ts:40
 
 ___
 
@@ -483,7 +483,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -526,4 +526,4 @@ const listBool: Bool<false> = Bool.of(listMonad);
 
 #### Defined in
 
-[packages/types/src/monads/primitive/bool.monad.ts:64](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/bool.monad.ts#L64)
+packages/types/src/monads/primitive/bool.monad.ts:64
