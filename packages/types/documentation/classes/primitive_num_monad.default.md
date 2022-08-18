@@ -77,7 +77,7 @@ const plain: 100 = num.get();
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L20)
+packages/types/src/monads/primitive/num.monad.ts:20
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:22](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L22)
+packages/types/src/monads/primitive/num.monad.ts:22
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:18](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L18)
+packages/types/src/monads/primitive/num.monad.ts:18
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:16](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L16)
+packages/types/src/monads/primitive/num.monad.ts:16
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:14](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L14)
+packages/types/src/monads/primitive/num.monad.ts:14
 
 ## Accessors
 
@@ -137,7 +137,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L39)
+packages/types/src/monads/primitive/num.monad.ts:39
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:51](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L51)
+packages/types/src/monads/primitive/num.monad.ts:51
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:63](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L63)
+packages/types/src/monads/primitive/num.monad.ts:63
 
 ___
 
@@ -179,7 +179,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:55](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L55)
+packages/types/src/monads/primitive/num.monad.ts:55
 
 ___
 
@@ -193,7 +193,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:47](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L47)
+packages/types/src/monads/primitive/num.monad.ts:47
 
 ___
 
@@ -207,7 +207,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:59](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L59)
+packages/types/src/monads/primitive/num.monad.ts:59
 
 ___
 
@@ -221,7 +221,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:43](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L43)
+packages/types/src/monads/primitive/num.monad.ts:43
 
 ## Methods
 
@@ -241,7 +241,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:155](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L155)
+packages/types/src/monads/primitive/num.monad.ts:155
 
 ___
 
@@ -261,7 +261,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:173](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L173)
+packages/types/src/monads/primitive/num.monad.ts:173
 
 ___
 
@@ -287,7 +287,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:129](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L129)
+packages/types/src/monads/primitive/num.monad.ts:129
 
 ___
 
@@ -323,7 +323,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -343,7 +343,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -376,7 +376,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)
+packages/types/src/monads/monad.ts:128
 
 ___
 
@@ -396,7 +396,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:143](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L143)
+packages/types/src/monads/primitive/num.monad.ts:143
 
 ___
 
@@ -416,7 +416,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:147](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L147)
+packages/types/src/monads/primitive/num.monad.ts:147
 
 ___
 
@@ -447,7 +447,7 @@ val is default
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -467,7 +467,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:135](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L135)
+packages/types/src/monads/primitive/num.monad.ts:135
 
 ___
 
@@ -487,7 +487,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L139)
+packages/types/src/monads/primitive/num.monad.ts:139
 
 ___
 
@@ -517,7 +517,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -537,7 +537,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:179](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L179)
+packages/types/src/monads/primitive/num.monad.ts:179
 
 ___
 
@@ -557,7 +557,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:167](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L167)
+packages/types/src/monads/primitive/num.monad.ts:167
 
 ___
 
@@ -571,7 +571,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:151](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L151)
+packages/types/src/monads/primitive/num.monad.ts:151
 
 ___
 
@@ -591,7 +591,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:161](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L161)
+packages/types/src/monads/primitive/num.monad.ts:161
 
 ___
 
@@ -627,7 +627,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -657,7 +657,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -673,7 +673,7 @@ Math.trunc()
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:125](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L125)
+packages/types/src/monads/primitive/num.monad.ts:125
 
 ___
 
@@ -693,7 +693,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)
+packages/types/src/monads/monad.ts:205
 
 ___
 
@@ -719,7 +719,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:118](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L118)
+packages/types/src/monads/primitive/num.monad.ts:118
 
 ___
 
@@ -739,7 +739,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -769,7 +769,7 @@ Num.of
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:102](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L102)
+packages/types/src/monads/primitive/num.monad.ts:102
 
 ___
 
@@ -806,7 +806,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -833,7 +833,7 @@ val is default
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:75](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L75)
+packages/types/src/monads/primitive/num.monad.ts:75
 
 ___
 
@@ -871,4 +871,4 @@ const arrBool: Num<NaN> = Num.of([1,2,3]);
 
 #### Defined in
 
-[packages/types/src/monads/primitive/num.monad.ts:94](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/num.monad.ts#L94)
+packages/types/src/monads/primitive/num.monad.ts:94

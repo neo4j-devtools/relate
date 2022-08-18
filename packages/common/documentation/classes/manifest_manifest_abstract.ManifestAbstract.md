@@ -44,7 +44,7 @@ Add tags to an entity
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L39)
+manifest/manifest.abstract.ts:39
 
 ___
 
@@ -66,7 +66,7 @@ Get an entity's manifest
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:52](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L52)
+manifest/manifest.abstract.ts:52
 
 ___
 
@@ -89,7 +89,7 @@ Remove metadata from an entity
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:32](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L32)
+manifest/manifest.abstract.ts:32
 
 ___
 
@@ -112,7 +112,7 @@ Remove tags from an entity
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:46](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L46)
+manifest/manifest.abstract.ts:46
 
 ___
 
@@ -136,7 +136,7 @@ Add metadata to an entity
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:25](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L25)
+manifest/manifest.abstract.ts:25
 
 ___
 
@@ -159,4 +159,4 @@ Update an entity's manifest
 
 #### Defined in
 
-[manifest/manifest.abstract.ts:59](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/manifest/manifest.abstract.ts#L59)
+manifest/manifest.abstract.ts:59

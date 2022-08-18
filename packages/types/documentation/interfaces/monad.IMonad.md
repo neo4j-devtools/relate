@@ -47,7 +47,7 @@
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:4](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L4)
+packages/types/src/monads/monad.ts:4
 
 ## Methods
 
@@ -85,7 +85,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:8](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L8)
+packages/types/src/monads/monad.ts:8
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L20)
+packages/types/src/monads/monad.ts:20
 
 ___
 
@@ -125,7 +125,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:10](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L10)
+packages/types/src/monads/monad.ts:10
 
 ___
 
@@ -145,7 +145,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:12](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L12)
+packages/types/src/monads/monad.ts:12
 
 ___
 
@@ -165,7 +165,7 @@ other is IMonad<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:6](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L6)
+packages/types/src/monads/monad.ts:6
 
 ___
 
@@ -185,7 +185,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:16](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L16)
+packages/types/src/monads/monad.ts:16
 
 ___
 
@@ -211,7 +211,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:22](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L22)
+packages/types/src/monads/monad.ts:22
 
 ___
 
@@ -231,7 +231,7 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:18](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L18)
+packages/types/src/monads/monad.ts:18
 
 ___
 
@@ -251,4 +251,4 @@ ___
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:14](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L14)
+packages/types/src/monads/monad.ts:14

@@ -41,7 +41,7 @@
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:28](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L28)
+dbmss/dbmss.abstract.ts:28
 
 ## Methods
 
@@ -64,7 +64,7 @@ Clone a DBMS
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L76)
+dbmss/dbmss.abstract.ts:76
 
 ___
 
@@ -88,7 +88,7 @@ Creates an access token for a given app, DBMS, and DBMS credentials
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:120](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L120)
+dbmss/dbmss.abstract.ts:120
 
 ___
 
@@ -110,7 +110,7 @@ Get a DBMS by name or id
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:94](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L94)
+dbmss/dbmss.abstract.ts:94
 
 ___
 
@@ -132,7 +132,7 @@ Get dbms configuration (neo4j.conf)
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:126](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L126)
+dbmss/dbmss.abstract.ts:126
 
 ___
 
@@ -155,7 +155,7 @@ Get info for one or more DBMSs
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:112](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L112)
+dbmss/dbmss.abstract.ts:112
 
 ___
 
@@ -183,7 +183,7 @@ Installs new DBMS
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:52](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L52)
+dbmss/dbmss.abstract.ts:52
 
 ___
 
@@ -206,7 +206,7 @@ Links an existing DBMS to relate
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:69](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L69)
+dbmss/dbmss.abstract.ts:69
 
 ___
 
@@ -228,7 +228,7 @@ List all DBMS
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:88](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L88)
+dbmss/dbmss.abstract.ts:88
 
 ___
 
@@ -250,7 +250,7 @@ Start one or more DBMSs
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:100](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L100)
+dbmss/dbmss.abstract.ts:100
 
 ___
 
@@ -272,7 +272,7 @@ Stop one or more DBMSs
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:106](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L106)
+dbmss/dbmss.abstract.ts:106
 
 ___
 
@@ -294,7 +294,7 @@ Uninstall a DBMS
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:82](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L82)
+dbmss/dbmss.abstract.ts:82
 
 ___
 
@@ -317,7 +317,7 @@ Set dbms configuration properties (neo4j.conf)
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:132](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L132)
+dbmss/dbmss.abstract.ts:132
 
 ___
 
@@ -339,7 +339,7 @@ ___
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:62](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L62)
+dbmss/dbmss.abstract.ts:62
 
 ___
 
@@ -362,4 +362,4 @@ List all available DBMS versions to install
 
 #### Defined in
 
-[dbmss/dbmss.abstract.ts:40](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/dbmss/dbmss.abstract.ts#L40)
+dbmss/dbmss.abstract.ts:40

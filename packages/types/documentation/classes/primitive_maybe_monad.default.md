@@ -66,7 +66,7 @@ Maybe.of(List.from([1)).isEmpty // false
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L20)
+packages/types/src/monads/primitive/maybe.monad.ts:20
 
 ## Accessors
 
@@ -98,7 +98,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:45](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L45)
+packages/types/src/monads/primitive/maybe.monad.ts:45
 
 ## Methods
 
@@ -124,7 +124,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)
+packages/types/src/monads/monad.ts:139
 
 ___
 
@@ -160,7 +160,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -180,7 +180,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -220,7 +220,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:97](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L97)
+packages/types/src/monads/primitive/maybe.monad.ts:97
 
 ___
 
@@ -251,7 +251,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -281,7 +281,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -317,7 +317,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -347,7 +347,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -367,7 +367,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:205](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L205)
+packages/types/src/monads/monad.ts:205
 
 ___
 
@@ -387,7 +387,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:102](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L102)
+packages/types/src/monads/primitive/maybe.monad.ts:102
 
 ___
 
@@ -407,7 +407,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -443,7 +443,7 @@ Maybe.of
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:93](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L93)
+packages/types/src/monads/primitive/maybe.monad.ts:93
 
 ___
 
@@ -469,7 +469,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:54](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L54)
+packages/types/src/monads/primitive/maybe.monad.ts:54
 
 ___
 
@@ -506,7 +506,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -552,4 +552,4 @@ maybeEmptyList.get() // Maybe<string>
 
 #### Defined in
 
-[packages/types/src/monads/primitive/maybe.monad.ts:75](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/maybe.monad.ts#L75)
+packages/types/src/monads/primitive/maybe.monad.ts:75

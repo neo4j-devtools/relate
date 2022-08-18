@@ -42,7 +42,7 @@ Creates a backup of a relate entity
 
 #### Defined in
 
-[backups/backup.abstract.ts:20](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L20)
+backups/backup.abstract.ts:20
 
 ___
 
@@ -64,7 +64,7 @@ Gets a backup
 
 #### Defined in
 
-[backups/backup.abstract.ts:33](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L33)
+backups/backup.abstract.ts:33
 
 ___
 
@@ -86,7 +86,7 @@ List all backups
 
 #### Defined in
 
-[backups/backup.abstract.ts:45](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L45)
+backups/backup.abstract.ts:45
 
 ___
 
@@ -108,7 +108,7 @@ Removes a backup
 
 #### Defined in
 
-[backups/backup.abstract.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L39)
+backups/backup.abstract.ts:39
 
 ___
 
@@ -131,4 +131,4 @@ Restores a backup from path
 
 #### Defined in
 
-[backups/backup.abstract.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/common/src/entities/backups/backup.abstract.ts#L27)
+backups/backup.abstract.ts:27

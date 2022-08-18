@@ -62,7 +62,7 @@ const plain: undefined = none.get();
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:14](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L14)
+packages/types/src/monads/primitive/none.monad.ts:14
 
 ## Accessors
 
@@ -82,7 +82,7 @@ Monad.isEmpty
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:27](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L27)
+packages/types/src/monads/primitive/none.monad.ts:27
 
 ## Methods
 
@@ -108,7 +108,7 @@ Checks if other has the same raw value
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:139](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L139)
+packages/types/src/monads/monad.ts:139
 
 ___
 
@@ -144,7 +144,7 @@ const fooBar: 'foo bar' = foo.flatMap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:180](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L180)
+packages/types/src/monads/monad.ts:180
 
 ___
 
@@ -164,7 +164,7 @@ Get raw value of monad
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:114](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L114)
+packages/types/src/monads/monad.ts:114
 
 ___
 
@@ -197,7 +197,7 @@ const throwWhenEmpty: never = Monad.of('').getOrElse(() => {
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:128](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L128)
+packages/types/src/monads/monad.ts:128
 
 ___
 
@@ -228,7 +228,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:57](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L57)
+packages/types/src/monads/monad.ts:57
 
 ___
 
@@ -258,7 +258,7 @@ const fooBar: Monad<'foo bar'> = foo.map((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:165](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L165)
+packages/types/src/monads/monad.ts:165
 
 ___
 
@@ -294,7 +294,7 @@ const fooBar: Num<3> = foo.switchMap((val: Str) => Num.from(val.length));
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:191](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L191)
+packages/types/src/monads/monad.ts:191
 
 ___
 
@@ -324,7 +324,7 @@ const stillFoo: Monad<'foo'> = foo.tap((val) => `${val} bar`);
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:152](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L152)
+packages/types/src/monads/monad.ts:152
 
 ___
 
@@ -344,7 +344,7 @@ None cannot be stringified
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:72](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L72)
+packages/types/src/monads/primitive/none.monad.ts:72
 
 ___
 
@@ -364,7 +364,7 @@ When calling `.toString()`
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:65](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L65)
+packages/types/src/monads/primitive/none.monad.ts:65
 
 ___
 
@@ -384,7 +384,7 @@ When calling `.valueOf()`
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:212](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L212)
+packages/types/src/monads/monad.ts:212
 
 ___
 
@@ -418,7 +418,7 @@ None.of
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:61](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L61)
+packages/types/src/monads/primitive/none.monad.ts:61
 
 ___
 
@@ -455,7 +455,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/monad.ts:76](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/monad.ts#L76)
+packages/types/src/monads/monad.ts:76
 
 ___
 
@@ -488,7 +488,7 @@ val is default<T\>
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:39](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L39)
+packages/types/src/monads/primitive/none.monad.ts:39
 
 ___
 
@@ -528,4 +528,4 @@ const listNone: None<List<string>> = None.of(listMonad);
 
 #### Defined in
 
-[packages/types/src/monads/primitive/none.monad.ts:54](https://github.com/neo4j-devtools/relate/blob/master/packages/types/src/monads/primitive/none.monad.ts#L54)
+packages/types/src/monads/primitive/none.monad.ts:54
