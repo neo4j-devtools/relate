@@ -136,9 +136,9 @@ describe('DBMS versions (local environment)', () => {
         };
         nock(neo4jLimitedVersionsUrl.origin).get(neo4jLimitedVersionsUrl.pathname).reply(200, versionReply);
         const versions = (await fetchNeo4jVersions(true)).toArray();
-        expect(versions.length).toEqual(5);
+        expect(versions.length).toEqual(6);
         versions.forEach((v) => {
-            if (!Object.keys(versionReply.versions).includes(v.version)) {
+            if (!Object.keys(versionReply.versions).includes(v.version) && !v.prerelease) {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.ONLINE);
             } else {
                 expect(v.origin).toEqual(NEO4J_ORIGIN.LIMITED);

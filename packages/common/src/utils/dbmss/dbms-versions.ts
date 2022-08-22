@@ -51,7 +51,11 @@ export const discoverNeo4jDistributions = async (distributionsRoot: string): Pro
         })
         .unwindPromises();
 
-    return dists.compact().filter((dist) => semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE));
+    return dists.compact().filter((dist) =>
+        semver.satisfies(dist.version, NEO4J_SUPPORTED_VERSION_RANGE, {
+            includePrerelease: true,
+        }),
+    );
 };
 
 interface IVersions {
@@ -96,7 +100,11 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
 
     return Dict.from(versionManifest)
         .toList()
-        .filter(([versionStr]) => semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE))
+        .filter(([versionStr]) =>
+            semver.satisfies(versionStr, NEO4J_SUPPORTED_VERSION_RANGE, {
+                includePrerelease: true,
+            }),
+        )
         .mapEach(([versionStr, versionObj]) => {
             let url = versionObj.dist.linux;
 
@@ -108,17 +116,20 @@ export const fetchNeo4jVersions = async (limited = false): Promise<List<IDbmsVer
                 url = versionObj.dist.win;
             }
 
+            const [version, prerelease] = versionStr.split('-');
+
             return {
                 dist: url,
                 edition: NEO4J_EDITION.ENTERPRISE,
                 origin: versionObj.limited ? NEO4J_ORIGIN.LIMITED : NEO4J_ORIGIN.ONLINE,
-                version: versionStr,
+                version,
+                prerelease,
             };
         });
 };
 
 export async function getDistributionVersion(dbmsRoot: string): Promise<{version: string; prerelease?: string}> {
-    const semverRegex = /([0-9]+\.[0-9]+\.[0-9]+)(-\w+)?/;
+    const semverRegex = /([0-9]+\.[0-9]+\.[0-9]+)(-\w+.(\d))?/;
     const neo4jJarRegex = /^neo4j-server-[0-9]+\.[0-9]+\.[0-9]+(-\w.+)?\.jar$/;
     const libs = List.from(await fse.readdir(path.join(dbmsRoot, NEO4J_LIB_DIR)));
     const neo4jJar = libs.find((name) => neo4jJarRegex.test(name));

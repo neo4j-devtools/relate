@@ -93,7 +93,8 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                         (cachedVersion) =>
                             cachedVersion.origin === 'cached' &&
                             cachedVersion.version === version.version &&
-                            cachedVersion.edition === version.edition,
+                            cachedVersion.edition === version.edition &&
+                            cachedVersion.prerelease === version.prerelease,
                     )
                     .flatMap((found) => {
                         if (None.isNone(found)) {
@@ -116,6 +117,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         overrideCache = false,
         limited = false,
         installPath?: string,
+        prerelease?: string,
     ): Promise<IDbmsInfo> {
         if (!version) {
             throw new InvalidArgumentError('Version must be specified');
@@ -156,6 +158,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         }
 
         const coercedVersion = coerce(version)?.version;
+        const pre = prerelease || version.split('-')[1];
 
         if (coercedVersion) {
             if (!satisfies(coercedVersion, NEO4J_SUPPORTED_VERSION_RANGE)) {
@@ -164,7 +167,10 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
 
             const beforeDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
             const requestedDistribution = beforeDownload.find(
-                (dist) => dist.version === coercedVersion && dist.edition === edition,
+                (dist) =>
+                    `${coerce(dist.version)}` === coercedVersion &&
+                    dist.edition === edition &&
+                    dist.prerelease === prerelease,
             );
             const found = await requestedDistribution.flatMap(async (dist) => {
                 const shouldDownload = overrideCache || None.isNone(dist);
@@ -174,10 +180,21 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 if (shouldDownload) {
-                    await downloadNeo4j(coercedVersion, edition, this.environment.dirPaths.dbmssCache, limited);
+                    await downloadNeo4j(
+                        coercedVersion,
+                        edition,
+                        this.environment.dirPaths.dbmssCache,
+                        limited,
+                        prerelease,
+                    );
                     const afterDownload = await discoverNeo4jDistributions(this.environment.dirPaths.dbmssCache);
 
-                    return afterDownload.find((down) => down.version === coercedVersion && down.edition === edition);
+                    return afterDownload.find(
+                        (down) =>
+                            `${coerce(down.version)}` === coercedVersion &&
+                            down.edition === edition &&
+                            down.prerelease === pre,
+                    );
                 }
 
                 return Maybe.of(dist);
