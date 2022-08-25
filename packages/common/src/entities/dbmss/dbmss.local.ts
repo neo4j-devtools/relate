@@ -52,6 +52,7 @@ import {
     NEO4J_JWT_CONF_FILE,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
+    NEO4J_JAVA_17_VERSION_RANGE,
 } from '../environments';
 import {
     BOLT_DEFAULT_PORT,
@@ -143,6 +144,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 name,
                 this.getDbmsRootPath(),
                 extractedDistPath,
+                version,
                 credentials,
                 installPath,
             );
@@ -205,7 +207,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                     throw new NotFoundError(`Unable to find the requested version: ${version}-${edition} online`);
                 }
 
-                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, credentials, installPath);
+                return this.installNeo4j(name, this.getDbmsRootPath(), dist.dist, version, credentials, installPath);
             });
         }
 
@@ -502,6 +504,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         name: string,
         dbmssDir: string,
         extractedDistPath: string,
+        version: string,
         credentials?: string,
         targetDir?: string,
     ): Promise<IDbmsInfo> {
@@ -556,7 +559,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             );
 
             if (credentials) {
-                await this.setInitialDatabasePassword(dbmsId, credentials);
+                await this.setInitialDatabasePassword(dbmsId, credentials, version);
             }
 
             const installed = await this.get(dbmsId);
@@ -599,8 +602,15 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return dbms;
     }
 
-    private setInitialDatabasePassword(dbmsID: string, credentials: string): Promise<string> {
-        return neo4jAdminCmd(this.getDbmsRootPath(dbmsID), ['set-initial-password'], credentials);
+    private setInitialDatabasePassword(dbmsID: string, credentials: string, version: string): Promise<string> {
+        return neo4jAdminCmd(
+            this.getDbmsRootPath(dbmsID),
+            [
+                ...[semver.satisfies(version, NEO4J_JAVA_17_VERSION_RANGE, {includePrerelease: true}) ? 'dbms' : ''],
+                'set-initial-password',
+            ].filter(Boolean),
+            credentials,
+        );
     }
 
     private async installSecurityPlugin(dbmsId: string): Promise<void> {
