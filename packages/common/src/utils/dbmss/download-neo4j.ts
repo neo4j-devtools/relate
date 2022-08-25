@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import {Str} from '@relate/types';
+import semver from 'semver';
 
 import {NEO4J_EDITION, NEO4J_SHA_ALGORITHM} from '../../entities/environments/environment.constants';
 import {HOOK_EVENTS} from '../../constants';
@@ -24,9 +25,14 @@ export const downloadNeo4j = async (
     edition: NEO4J_EDITION,
     neo4jDistributionPath: string,
     limited?: boolean,
+    prerelease?: string,
 ): Promise<void> => {
     const onlineVersions = await fetchNeo4jVersions(limited);
-    const requestedDistribution = onlineVersions.find((dist) => dist.version === version && dist.edition === edition);
+
+    const requestedDistribution = onlineVersions.find(
+        (dist) =>
+            `${semver.coerce(dist.version)}` === version && dist.edition === edition && prerelease === dist.prerelease,
+    );
     const errorMessage = () => {
         const mappedVersions = onlineVersions
             .mapEach((dist) => `${dist.version}-${dist.edition}`)

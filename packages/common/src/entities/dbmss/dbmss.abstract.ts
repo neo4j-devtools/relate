@@ -57,6 +57,7 @@ export abstract class DbmssAbstract<Env extends EnvironmentAbstract> {
         overrideCache?: boolean,
         limited?: boolean,
         installPath?: string,
+        prerelease?: string,
     ): Promise<IDbmsInfo>;
 
     abstract upgrade(dbmsId: string, version: string, options?: IDbmsUpgradeOptions): Promise<IDbmsInfo>;

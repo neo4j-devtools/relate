@@ -46,18 +46,22 @@ export class InstallModule implements OnApplicationBootstrap {
 
         let {version = ''} = args;
         let edition: NEO4J_EDITION | undefined;
+        let prerelease;
         if (!version) {
             const versions = (await environment.dbmss.versions(limited)).toArray();
-            const choices = new Map(_.entries(_.keyBy(versions, (v) => `${v.version} ${v.edition}`)));
+            const choices = new Map(_.entries(_.keyBy(versions, (v) => `${v.version} ${v.prerelease} ${v.edition}`)));
             const selected = await selectPrompt(
                 'Select a version to install',
                 [...choices].map(([k, v]) => ({
-                    message: `[${v.origin.toLowerCase()}] ${v.version} ${v.edition}`,
+                    message: `[${v.origin.toLowerCase()}] ${v.version}${v.prerelease ? `-${v.prerelease}` : ''} ${
+                        v.edition
+                    }`,
                     name: k,
                 })),
             );
 
             version = choices.get(selected)!.version;
+            prerelease = choices.get(selected)!.prerelease;
             edition = choices.get(selected)!.edition;
         }
         const pathVersion = path.resolve(version);
@@ -67,8 +71,10 @@ export class InstallModule implements OnApplicationBootstrap {
 
         const credentials = await passwordPrompt('Enter new passphrase');
 
-        return environment.dbmss.install(name, version, edition, credentials, noCaching, limited).then((res) => {
-            this.utils.log(getEntityDisplayName(res));
-        });
+        return environment.dbmss
+            .install(name, version, edition, credentials, noCaching, limited, undefined, prerelease)
+            .then((res) => {
+                this.utils.log(getEntityDisplayName(res));
+            });
     }
 }
