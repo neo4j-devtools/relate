@@ -64,7 +64,7 @@ Clone a DBMS
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:76
+dbmss/dbmss.abstract.ts:77
 
 ___
 
@@ -88,7 +88,7 @@ Creates an access token for a given app, DBMS, and DBMS credentials
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:120
+dbmss/dbmss.abstract.ts:121
 
 ___
 
@@ -110,7 +110,7 @@ Get a DBMS by name or id
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:94
+dbmss/dbmss.abstract.ts:95
 
 ___
 
@@ -132,7 +132,7 @@ Get dbms configuration (neo4j.conf)
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:126
+dbmss/dbmss.abstract.ts:127
 
 ___
 
@@ -155,13 +155,13 @@ Get info for one or more DBMSs
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:112
+dbmss/dbmss.abstract.ts:113
 
 ___
 
 ### install
 
-▸ `Abstract` **install**(`name`, `version`, `edition?`, `credentials?`, `overrideCache?`, `limited?`, `installPath?`): `Promise`<`IDbmsInfo`\>
+▸ `Abstract` **install**(`name`, `version`, `edition?`, `credentials?`, `overrideCache?`, `limited?`, `installPath?`, `prerelease?`): `Promise`<`IDbmsInfo`\>
 
 Installs new DBMS
 
@@ -176,6 +176,7 @@ Installs new DBMS
 | `overrideCache?` | `boolean` | Download distribution even if it's present in cache |
 | `limited?` | `boolean` | Is limited version |
 | `installPath?` | `string` | A user selected path to install to, if not provided the default location will be used. |
+| `prerelease?` | `string` | - |
 
 #### Returns
 
@@ -206,7 +207,7 @@ Links an existing DBMS to relate
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:69
+dbmss/dbmss.abstract.ts:70
 
 ___
 
@@ -228,7 +229,7 @@ List all DBMS
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:88
+dbmss/dbmss.abstract.ts:89
 
 ___
 
@@ -250,7 +251,7 @@ Start one or more DBMSs
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:100
+dbmss/dbmss.abstract.ts:101
 
 ___
 
@@ -272,7 +273,7 @@ Stop one or more DBMSs
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:106
+dbmss/dbmss.abstract.ts:107
 
 ___
 
@@ -294,7 +295,7 @@ Uninstall a DBMS
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:82
+dbmss/dbmss.abstract.ts:83
 
 ___
 
@@ -317,7 +318,7 @@ Set dbms configuration properties (neo4j.conf)
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:132
+dbmss/dbmss.abstract.ts:133
 
 ___
 
@@ -339,7 +340,7 @@ ___
 
 #### Defined in
 
-dbmss/dbmss.abstract.ts:62
+dbmss/dbmss.abstract.ts:63
 
 ___
 
