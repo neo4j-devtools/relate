@@ -42,7 +42,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
                 dbmsNameOrId,
                 dbmsUser,
             },
-            `DROP DATABASE ${dbName}`,
+            `DROP DATABASE ${`\`${dbName}\``}`,
         );
     }
 
