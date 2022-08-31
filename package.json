@@ -21,7 +21,8 @@
         "test:pr": "run-s lint test",
         "generate:licenses": "node scripts/licenses/index.js",
         "generate:docs": "pnpm --recursive --parallel generate:docs",
-        "watch": "pnpm --recursive --parallel watch"
+        "watch": "pnpm --recursive --parallel watch",
+        "version": "pnpm changeset version && pnpm generate:docs"
     },
     "devDependencies": {
         "@changesets/cli": "2.23.2",

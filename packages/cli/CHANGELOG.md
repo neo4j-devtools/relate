@@ -1,5 +1,13 @@
 # @relate/cli
 
+## 1.0.5
+
+### Patch Changes
+
+-   Updated dependencies [615eb64]
+-   Updated dependencies [615eb64]
+    -   @relate/common@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
