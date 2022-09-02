@@ -134,7 +134,7 @@ importers:
       '@types/jest': 28.1.6
       jest: 28.1.3
       npm-run-all: 4.1.5
-      ts-jest: 28.0.7_33d3ydo3msfjevmazphp5np3fe
+      ts-jest: 28.0.7_bi2kohzqnxavgozw3csgny5hju
       typescript: 4.7.4
 
   packages/common:
@@ -166,7 +166,7 @@ importers:
       jsonwebtoken: 8.5.1
       lodash: 4.17.21
       neo4j-driver-lite: 5.0.0-alpha01
-      nock: 12.0.3
+      nock: 13.2.9
       node-forge: 1.3.1
       npm-run-all: 4.1.5
       p-limit: 3.1.0
@@ -216,7 +216,7 @@ importers:
       '@types/uuid': 8.3.4
       graphql: 16.6.0
       jest: 28.1.3_@types+node@16.11.45
-      nock: 12.0.3
+      nock: 13.2.9
       npm-run-all: 4.1.5
       reflect-metadata: 0.1.13
       ts-jest: 28.0.7_bi2kohzqnxavgozw3csgny5hju
@@ -282,7 +282,7 @@ importers:
       jest: 28.1.3
       lodash: 4.17.21
       multer: 1.4.5-lts.1
-      nock: 12.0.3
+      nock: 13.2.9
       node-fetch: 2.6.7
       nodemon: 2.0.19
       npm-run-all: 4.1.5
@@ -335,7 +335,7 @@ importers:
       '@types/uuid': 8.3.4
       cross-env: 7.0.3
       jest: 28.1.3_@types+node@16.11.45
-      nock: 12.0.3
+      nock: 13.2.9
       nodemon: 2.0.19
       npm-run-all: 4.1.5
       supertest: 6.2.4
@@ -7689,8 +7689,8 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /nock/12.0.3:
-    resolution: {integrity: sha512-QNb/j8kbFnKCiyqi9C5DD0jH/FubFGj5rt9NQFONXwQm3IPB0CULECg/eS3AU1KgZb/6SwUa4/DTRKhVxkGABw==}
+  /nock/13.2.7:
+    resolution: {integrity: sha512-R6NUw7RIPtKwgK7jskuKoEi4VFMqIHtV2Uu9K/Uegc4TA5cqe+oNMYslZcUmnVNQCTG6wcSqUBaGTDd7sq5srg==}
     engines: {node: '>= 10.13'}
     dependencies:
       debug: 4.3.4
@@ -7701,8 +7701,8 @@ packages:
       - supports-color
     dev: true
 
-  /nock/13.2.7:
-    resolution: {integrity: sha512-R6NUw7RIPtKwgK7jskuKoEi4VFMqIHtV2Uu9K/Uegc4TA5cqe+oNMYslZcUmnVNQCTG6wcSqUBaGTDd7sq5srg==}
+  /nock/13.2.9:
+    resolution: {integrity: sha512-1+XfJNYF1cjGB+TKMWi29eZ0b82QOvQs2YoLNzbpWGqFMtRQHTa57osqdGj4FrFPgkO4D4AZinzUJR9VvW3QUA==}
     engines: {node: '>= 10.13'}
     dependencies:
       debug: 4.3.4
@@ -9749,40 +9749,6 @@ packages:
       tslib: 2.4.0
     dev: false
     optional: true
-
-  /ts-jest/28.0.7_33d3ydo3msfjevmazphp5np3fe:
-    resolution: {integrity: sha512-wWXCSmTwBVmdvWrOpYhal79bDpioDy4rTT+0vyUnE3ZzM7LOAAGG9NXwzkEL/a516rQEgnMmS/WKP9jBPCVJyA==}
-    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': '>=7.0.0-beta.0 <8'
-      '@jest/types': ^28.0.0
-      babel-jest: ^28.0.0
-      esbuild: '*'
-      jest: ^28.0.0
-      typescript: '>=4.3'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@jest/types':
-        optional: true
-      babel-jest:
-        optional: true
-      esbuild:
-        optional: true
-    dependencies:
-      '@babel/core': 7.18.5
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      jest: 28.1.3
-      jest-util: 28.1.1
-      json5: 2.2.1
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.3.7
-      typescript: 4.7.4
-      yargs-parser: 21.0.1
-    dev: true
 
   /ts-jest/28.0.7_bi2kohzqnxavgozw3csgny5hju:
     resolution: {integrity: sha512-wWXCSmTwBVmdvWrOpYhal79bDpioDy4rTT+0vyUnE3ZzM7LOAAGG9NXwzkEL/a516rQEgnMmS/WKP9jBPCVJyA==}
