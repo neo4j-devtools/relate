@@ -134,7 +134,7 @@ importers:
       '@types/jest': 28.1.6
       jest: 28.1.3
       npm-run-all: 4.1.5
-      ts-jest: 28.0.7_bi2kohzqnxavgozw3csgny5hju
+      ts-jest: 28.0.7_33d3ydo3msfjevmazphp5np3fe
       typescript: 4.7.4
 
   packages/common:
@@ -247,11 +247,11 @@ importers:
 
   packages/web:
     specifiers:
-      '@nestjs/apollo': 10.0.22
+      '@nestjs/apollo': 10.1.0
       '@nestjs/common': 8.4.7
       '@nestjs/config': 2.2.0
       '@nestjs/core': 8.4.7
-      '@nestjs/graphql': 10.0.22
+      '@nestjs/graphql': 10.1.0
       '@nestjs/platform-express': 8.4.7
       '@nestjs/testing': 8.4.7
       '@relate/common': workspace:*
@@ -294,11 +294,11 @@ importers:
       ts-jest: 28.0.7
       typescript: 4.7.4
     dependencies:
-      '@nestjs/apollo': 10.0.22_mbpsp775vnxyzbckuzb5itolnm
+      '@nestjs/apollo': 10.1.0_wwkbrtgunrgew4icq5cvnvuyyi
       '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/config': 2.2.0_zyw32gfu5yv6lfoz64j5eiekme
       '@nestjs/core': 8.4.7_vfcxgjfmqg6zhc6pfncoklq5wm
-      '@nestjs/graphql': 10.0.22_vidbvhpv4hwn234liq737aiomy
+      '@nestjs/graphql': 10.1.0_vidbvhpv4hwn234liq737aiomy
       '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
       '@relate/common': link:../common
       '@relate/types': link:../types
@@ -1509,8 +1509,8 @@ packages:
       - supports-color
     dev: false
 
-  /@nestjs/apollo/10.0.22_mbpsp775vnxyzbckuzb5itolnm:
-    resolution: {integrity: sha512-qAvEJMRRbTPs03frhthAy9XZ7m78ckhR9Zide3/wIMN2zZ/60M6FlamRaKytKAUvVrFtRRn9C17Pj8K2w9aMRg==}
+  /@nestjs/apollo/10.1.0_wwkbrtgunrgew4icq5cvnvuyyi:
+    resolution: {integrity: sha512-yfnh049lHBaF8647JQQwL5zJnpl/vhjlnoaCUWRpZK4Tw+s9pzzKScKHmPTRBvTCFANbNTl2t/NzQM32jfqpIw==}
     peerDependencies:
       '@apollo/gateway': ^0.44.1 || ^0.46.0 || ^0.48.0 || ^0.49.0 || ^0.50.0 || ^2.0.0
       '@nestjs/common': ^8.2.3 || ^9.0.0
@@ -1532,7 +1532,7 @@ packages:
     dependencies:
       '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 8.4.7_vfcxgjfmqg6zhc6pfncoklq5wm
-      '@nestjs/graphql': 10.0.22_vidbvhpv4hwn234liq737aiomy
+      '@nestjs/graphql': 10.1.0_vidbvhpv4hwn234liq737aiomy
       apollo-server-express: 3.10.2_ikriz6xqtzcvohrhb2pcry7o6y
       graphql: 16.6.0
       iterall: 1.3.0
@@ -1697,8 +1697,8 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@nestjs/graphql/10.0.22_vidbvhpv4hwn234liq737aiomy:
-    resolution: {integrity: sha512-nOMtFDZvqrUAc8f5rEen3tPcwyMxpGHoyaFnzV4zK6FH6GzWYyVyfXsTWL0p17j/cUMrQvGU55bR39qXMlLV2Q==}
+  /@nestjs/graphql/10.1.0_vidbvhpv4hwn234liq737aiomy:
+    resolution: {integrity: sha512-TgpWOTFe1j6MrXg+c6hAbVnDW7zWUQaFLQMuoT5aei4WQ7Q0FTWRX6YypRHGBSInXjMj1KYPkJq8rUvsTxRCQw==}
     peerDependencies:
       '@apollo/subgraph': ^0.1.5 || ^0.3.0 || ^0.4.0 || ^2.0.0
       '@nestjs/common': ^8.2.3 || ^9.0.0
@@ -1713,7 +1713,7 @@ packages:
         optional: true
     dependencies:
       '@graphql-tools/merge': 8.3.0_graphql@16.6.0
-      '@graphql-tools/schema': 8.5.0_graphql@16.6.0
+      '@graphql-tools/schema': 9.0.2_graphql@16.6.0
       '@graphql-tools/utils': 8.8.0_graphql@16.6.0
       '@nestjs/common': 8.4.7_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 8.4.7_vfcxgjfmqg6zhc6pfncoklq5wm
@@ -9749,6 +9749,40 @@ packages:
       tslib: 2.4.0
     dev: false
     optional: true
+
+  /ts-jest/28.0.7_33d3ydo3msfjevmazphp5np3fe:
+    resolution: {integrity: sha512-wWXCSmTwBVmdvWrOpYhal79bDpioDy4rTT+0vyUnE3ZzM7LOAAGG9NXwzkEL/a516rQEgnMmS/WKP9jBPCVJyA==}
+    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/types': ^28.0.0
+      babel-jest: ^28.0.0
+      esbuild: '*'
+      jest: ^28.0.0
+      typescript: '>=4.3'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.18.5
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 28.1.3
+      jest-util: 28.1.1
+      json5: 2.2.1
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.3.7
+      typescript: 4.7.4
+      yargs-parser: 21.0.1
+    dev: true
 
   /ts-jest/28.0.7_bi2kohzqnxavgozw3csgny5hju:
     resolution: {integrity: sha512-wWXCSmTwBVmdvWrOpYhal79bDpioDy4rTT+0vyUnE3ZzM7LOAAGG9NXwzkEL/a516rQEgnMmS/WKP9jBPCVJyA==}
