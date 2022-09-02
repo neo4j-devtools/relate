@@ -32,6 +32,9 @@ jobs:
             - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
             - uses: ./.github/workflows/setup
 
+            - name: Update .npmrc
+              run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+
             # Create a pull request with all of the package versions and
             # changelogs updated and when there are new changesets on master,
             # the PR will be updated. When the PR is merged the packages are
@@ -41,7 +44,7 @@ jobs:
               uses: changesets/action@v1
               with:
                   version: pnpm run version
-                  publish: pnpm changeset publish
+                  publish: pnpm publish -r
               env:
                   GITHUB_TOKEN: ${{ secrets.GH_PAT_PULL_REQUEST }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
