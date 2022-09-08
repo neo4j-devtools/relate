@@ -31,7 +31,7 @@ export const TEST_APOC_VERSIONS = {
     lower: '4.3.0.8',
     lowerSha256: 'f36b840090373de88557a861440d041abde7faed4200194fd181c0f4eb2a5237',
 
-    default: '4.4.0.8',
+    default: '4.4.0.9',
 };
 
 export class TestEnvironment {
