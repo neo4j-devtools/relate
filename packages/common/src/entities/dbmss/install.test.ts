@@ -192,7 +192,7 @@ describe('LocalDbmss', () => {
                     false,
                     testTargetPath,
                 ),
-            ).rejects.toThrowError(
+            ).rejects.toThrow(
                 new TargetExistsError(`Unable to install to non-empty target directory: ${testTargetPath}`),
             );
 
@@ -243,7 +243,7 @@ describe('LocalDbmss', () => {
                 config,
             });
 
-            await expect(testEnv.dbmss.uninstall(dbms.id)).rejects.toThrowError(
+            await expect(testEnv.dbmss.uninstall(dbms.id)).rejects.toThrow(
                 new NotAllowedError('Cannot uninstall DBMS that is running'),
             );
 
