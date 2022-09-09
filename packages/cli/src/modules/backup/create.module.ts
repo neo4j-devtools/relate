@@ -1,6 +1,6 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {CliUx} from '@oclif/core';
-import {SystemModule, SystemProvider} from '@relate/common';
+import {ENTITY_TYPES, SystemModule, SystemProvider} from '@relate/common';
 
 import CreateCommand from '../../commands/backup/create';
 import {selectPrompt, selectEntityPrompt} from '../../prompts';
@@ -26,7 +26,9 @@ export class CreateModule implements OnApplicationBootstrap {
         const {environment: environmentId} = flags;
         const environment = await this.systemProvider.getEnvironment(environmentId);
         let {entityNameOrId} = args;
-        const entityType = flags.type || (await selectPrompt('Select entity type to backup', VALID_BACKUP_TYPES));
+        const entityType =
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            flags.type || ((await selectPrompt('Select entity type to backup', VALID_BACKUP_TYPES)) as ENTITY_TYPES);
 
         if (!entityNameOrId) {
             entityNameOrId = await selectEntityPrompt(`Select ${entityType} to backup`, environment, entityType);
