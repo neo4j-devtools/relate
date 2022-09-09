@@ -1,8 +1,9 @@
 import {List} from '@relate/types';
 import {Record} from 'neo4j-driver-lite';
+import semver from 'semver';
 
 import {NotFoundError, NotAllowedError, DbmsQueryError} from '../../errors';
-import {EnvironmentAbstract} from '../../entities/environments';
+import {EnvironmentAbstract, NEO4J_DRIVER_MULTI_DB_SUPPORT_VERSION_RANGE} from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
 import {IQueryTarget} from '../../models';
 
@@ -29,7 +30,10 @@ export const dbReadQuery = async (
     });
 
     try {
-        const result = await dbmss.runReadQuery(driver, query, params, {database: target.database});
+        const sessionParams = semver.satisfies(dbmsInfo.version ?? '', NEO4J_DRIVER_MULTI_DB_SUPPORT_VERSION_RANGE)
+            ? {database: target.database}
+            : {};
+        const result = await dbmss.runReadQuery(driver, query, params, sessionParams);
         const ret = List.of(result.records);
         return ret;
     } catch (e) {
@@ -62,7 +66,10 @@ export const dbWriteQuery = async (
     });
 
     try {
-        const result = await dbmss.runWriteQuery(driver, query, params, {database: target.database});
+        const sessionParams = semver.satisfies(dbmsInfo.version ?? '', NEO4J_DRIVER_MULTI_DB_SUPPORT_VERSION_RANGE)
+            ? {database: target.database}
+            : {};
+        const result = await dbmss.runWriteQuery(driver, query, params, sessionParams);
         const ret = List.of(result.records);
         return ret;
     } catch (e) {

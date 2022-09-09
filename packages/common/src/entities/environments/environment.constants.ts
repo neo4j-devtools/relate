@@ -66,6 +66,7 @@ export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
 export const NEO4J_JAVA_17_VERSION_RANGE = '>=5.0';
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=3.4';
 export const NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE = '>=4.x';
+export const NEO4J_DRIVER_MULTI_DB_SUPPORT_VERSION_RANGE = '>=4.1';
 export const NEO4J_VERSION_4 = '4.0.0';
 export const NEO4J_JWT_ADDON_NAME = 'neo4j-jwt-addon';
 export const NEO4J_JWT_ADDON_VERSION = '1.0.1';
