@@ -526,7 +526,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
             }
 
-            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
+            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename), 'junction');
         }
 
         try {
