@@ -39,9 +39,7 @@ interface IAsObject<T = any> {
  * ```
  */
 // @ts-ignore
-export default class Dict<T extends any = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends List<
-    RawDict<K, V>
-> {
+export default class Dict<T = any, K = KeyVal<T>['key'], V = KeyVal<T>['value']> extends List<RawDict<K, V>> {
     protected ourKeys: Maybe<List<K>> = Maybe.of();
 
     protected ourValues: Maybe<List<V>> = Maybe.of();

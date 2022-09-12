@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import fse from 'fs-extra';
 import {List} from '@relate/types';
 

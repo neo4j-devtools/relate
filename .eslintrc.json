@@ -134,7 +134,7 @@
         "function-call-argument-newline": ["error", "consistent"],
         "generator-star-spacing": "error",
         "grouped-accessor-pairs": "warn",
-        "indent": ["error", 4, {"SwitchCase": 1}],
+        "indent": ["error", 4, {"SwitchCase": 1, "ignoredNodes": ["PropertyDefinition"]}],
         "key-spacing": "error",
         "keyword-spacing": "error",
         "line-comment-position": "error",

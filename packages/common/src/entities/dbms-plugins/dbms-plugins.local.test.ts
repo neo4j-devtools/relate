@@ -70,7 +70,7 @@ describe('LocalDbmsPlugins', () => {
 
     test('dbmsPlugins.addSources - fails when adding an already existing source', async () => {
         const addedSources = app.environment.dbmsPlugins.addSources([APOC_SOURCE]);
-        await expect(addedSources).rejects.toThrowError(
+        await expect(addedSources).rejects.toThrow(
             new TargetExistsError(`The following dbms plugin sources already exist: apoc`),
         );
 
