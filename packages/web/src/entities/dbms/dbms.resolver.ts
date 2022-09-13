@@ -20,6 +20,7 @@ import {
     RemoveDbmsMetadataArgs,
     UpgradeDbmsArgs,
     DbmsEvent,
+    StopDbmssArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -147,9 +148,10 @@ export class DBMSResolver {
     @Mutation(() => [String])
     async [PUBLIC_GRAPHQL_METHODS.STOP_DBMSS](
         @Context('environment') environment: Environment,
-        @Args() {dbmsIds}: DbmssArgs,
+        @Args() {dbmsIds, queryTargets}: StopDbmssArgs,
     ): Promise<List<string>> {
-        return environment.dbmss.stop(dbmsIds);
+        const dbmss = [...dbmsIds, ...(queryTargets ?? [])];
+        return environment.dbmss.stop(dbmss);
     }
 
     @Mutation(() => String)

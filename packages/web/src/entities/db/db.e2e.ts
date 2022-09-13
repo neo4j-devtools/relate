@@ -305,7 +305,13 @@ describe('DBModule', () => {
         });
 
         test('/graphql dumpDb (after stopping a running dbms)', async () => {
-            await dbmss.environment.dbmss.stop([TEST_DBMS_NAME]);
+            await dbmss.environment.dbmss.stop([
+                {
+                    dbmsNameOrId: TEST_DBMS_NAME,
+                    accessToken: TEST_DBMS_ACCESS_TOKEN,
+                    dbmsUser: 'neo4j',
+                },
+            ]);
             return request(app.getHttpServer())
                 .post('/graphql')
                 .send(

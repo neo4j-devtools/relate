@@ -1,5 +1,5 @@
 import {ObjectType, ArgsType, Field, ID, InputType} from '@nestjs/graphql';
-import {IDbms, IDbmsUpgradeOptions, NEO4J_EDITION, PLUGIN_UPGRADE_MODE} from '@relate/common';
+import {IDbms, IDbmsUpgradeOptions, IQueryTarget, NEO4J_EDITION, PLUGIN_UPGRADE_MODE} from '@relate/common';
 import GraphQLJSON, {GraphQLJSONObject} from 'graphql-type-json';
 
 import {AuthTokenInput} from './dto/auth-token.input';
@@ -75,6 +75,30 @@ export class DbmssArgs extends EnvironmentArgs {
 
     @Field(() => Boolean, {nullable: true})
     onlineCheck?: boolean;
+}
+
+@InputType()
+export class QueryTarget implements IQueryTarget {
+    @Field(() => String)
+    dbmsNameOrId: string;
+
+    @Field(() => String)
+    dbmsUser: string;
+
+    @Field(() => String)
+    accessToken: string;
+
+    @Field(() => String, {nullable: true})
+    database?: string;
+}
+
+@ArgsType()
+export class StopDbmssArgs extends EnvironmentArgs {
+    @Field(() => [String])
+    dbmsIds: string[];
+
+    @Field(() => [QueryTarget], {nullable: true})
+    queryTargets?: IQueryTarget[];
 }
 
 @ArgsType()
