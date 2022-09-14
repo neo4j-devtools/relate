@@ -9,7 +9,6 @@ import {DbmsUpgradeError, InvalidArgumentError, NotFoundError, RelateBackupError
 import {emitHookEvent} from '../event-hooks';
 import {dbmsUpgradeConfigs} from './dbms-upgrade-config';
 import {waitForDbmsToBeOnline} from './is-dbms-online';
-import {resolveDbms} from './resolve-dbms';
 import {IDbmsInfo, IDbmsUpgradeOptions, PLUGIN_UPGRADE_MODE} from '../../models';
 
 const upgradePlugins = async (
@@ -116,15 +115,16 @@ export const upgradeNeo4j = async (
         if (options.migrate) {
             upgradedConfig.set('dbms.allow_upgrade', 'true');
             await upgradedConfig.flush();
-            const upgradedDbms = resolveDbms(env.dbmss.dbmss, upgradedDbmsInfo.id);
 
-            await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbms});
+            await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_START, {dbms: upgradedDbmsInfo});
+            await env.dbmss.start([upgradedDbmsInfo.id]);
+            await waitForDbmsToBeOnline({
+                ...upgradedDbmsInfo,
+                config: await env.dbmss.getDbmsConfig(upgradedDbmsInfo.id),
+            });
+            await env.dbmss.stop([upgradedDbmsInfo.id]);
 
-            await env.dbmss.start([upgradedDbms.id]);
-            await waitForDbmsToBeOnline(upgradedDbms);
-            await env.dbmss.stop([upgradedDbms.id]);
-
-            await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbms});
+            await emitHookEvent(HOOK_EVENTS.DBMS_MIGRATION_STOP, {dbms: upgradedDbmsInfo});
 
             await upgradedConfig.flush();
         } else {
