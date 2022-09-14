@@ -8,20 +8,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-    e2e:
-        runs-on: ${{ matrix.os }}
-
-        strategy:
-            matrix:
-                os: [macos-latest, ubuntu-latest, windows-latest]
-
-        steps:
-            - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-            - uses: ./.github/workflows/setup
-            - run: pnpm test
-
     release:
-        needs: [e2e]
         name: Release
         runs-on: ubuntu-latest
         environment: release
@@ -30,6 +17,10 @@ jobs:
             pull-requests: write
         steps:
             - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+              with:
+                  # Needed to ensure Github actions are run even when the pull request is rebased.
+                  # https://github.com/changesets/action/issues/187#issuecomment-1228413850
+                  token: ${{ secrets.GH_PATH_PULL_REQUEST }}
             - uses: ./.github/workflows/setup
 
             - name: Update .npmrc
