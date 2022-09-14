@@ -1,119 +1,132 @@
+import nock from 'nock';
+import {major, minor, patch} from 'semver';
+
 import {InvalidArgumentError} from '../../errors';
-import {TestDbmss} from '../../utils/system';
+import {TestEnvironment, TEST_APOC_VERSIONS, TEST_NEO4J_VERSIONS} from '../../utils/system';
 import {IDbmsInfo, PLUGIN_UPGRADE_MODE} from '../../models';
 import {EnvironmentAbstract} from '../environments';
-import nock from 'nock';
 
 jest.setTimeout(240000);
 
 describe('LocalDbmss - upgrade', () => {
-    let testDbmss: TestDbmss;
+    let app: TestEnvironment;
     let env: EnvironmentAbstract;
-    let dbms404: IDbmsInfo;
-    let dbms35: IDbmsInfo;
-    let dbms352: IDbmsInfo;
+
+    let dbmsMajor: IDbmsInfo;
+    let dbmsMinor: IDbmsInfo;
 
     beforeAll(async () => {
-        testDbmss = await TestDbmss.init(__filename);
-        env = testDbmss.environment;
-        dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
-        dbms35 = await env.dbmss.install(testDbmss.createName(), '3.5.19');
-        dbms352 = await env.dbmss.install(testDbmss.createName(), '3.5.19');
+        app = await TestEnvironment.init(__filename);
+        env = app.environment;
+
+        dbmsMajor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.majorUpgradeSource);
+        dbmsMinor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.minorUpgradeSource);
     });
 
     afterAll(async () => {
-        await testDbmss.teardown();
+        await app.teardown();
     });
 
     test('Before upgrading', async () => {
-        const dbms = await env.dbmss.get(dbms404.id);
+        const dbms = await env.dbmss.get(dbmsMinor.id);
 
-        expect(dbms.version).toEqual('4.0.4');
+        expect(dbms.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeSource);
     });
 
     test('Upgrading to lower', async () => {
-        const message = 'Target version must be greater than 4.0.4.\n\nSuggested Action(s):\n- Use valid version';
+        // eslint-disable-next-line max-len
+        const message = `Target version must be greater than ${dbmsMinor.version}.\n\nSuggested Action(s):\n- Use valid version`;
 
-        await expect(env.dbmss.upgrade(dbms404.id, '4.0.3')).rejects.toThrow(new InvalidArgumentError(message));
+        const currentVersion = TEST_NEO4J_VERSIONS.minorUpgradeSource;
+        const lowerVersion = `${major(currentVersion)}.${minor(currentVersion)}.${patch(currentVersion) - 1}`;
+
+        await expect(env.dbmss.upgrade(dbmsMinor.id, lowerVersion)).rejects.toThrow(new InvalidArgumentError(message));
     });
 
     test('Upgrading to same', async () => {
-        const message = 'Target version must be greater than 4.0.4.\n\nSuggested Action(s):\n- Use valid version';
+        // eslint-disable-next-line max-len
+        const message = `Target version must be greater than ${dbmsMinor.version}.\n\nSuggested Action(s):\n- Use valid version`;
 
-        await expect(env.dbmss.upgrade(dbms404.id, '4.0.4')).rejects.toThrow(new InvalidArgumentError(message));
+        await expect(env.dbmss.upgrade(dbmsMinor.id, dbmsMinor.version || '')).rejects.toThrow(
+            new InvalidArgumentError(message),
+        );
     });
 
     test('Upgrading running', async () => {
-        await env.dbmss.start([dbms404.id]);
+        await env.dbmss.start([dbmsMinor.id]);
 
         const message = 'Can only upgrade stopped dbms.\n\nSuggested Action(s):\n- Stop dbms';
 
-        await expect(env.dbmss.upgrade(dbms404.id, '4.0.5')).rejects.toThrow(new InvalidArgumentError(message));
-        await env.dbmss.stop([dbms404.id]);
+        await expect(env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget)).rejects.toThrow(
+            new InvalidArgumentError(message),
+        );
+        await env.dbmss.stop([dbmsMinor.id]);
     });
 
-    test('Upgrading to higher', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.5', {
-            migrate: true,
+    test('Upgrading minor', async () => {
+        const upgraded = await env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget, {
+            migrate: false,
             backup: false,
             noCache: false,
         });
 
-        expect(upgraded.version).toEqual('4.0.5');
-        expect(upgraded.id).toEqual(dbms404.id);
+        expect(upgraded.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeTarget);
+        expect(upgraded.id).toEqual(dbmsMinor.id);
     });
 
-    test('Preserves config when upgrading to higher', async () => {
-        const config = await env.dbmss.getDbmsConfig(dbms404.id);
+    test('Preserves config when upgrading minor', async () => {
+        dbmsMinor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.minorUpgradeSource);
+        const config = await env.dbmss.getDbmsConfig(dbmsMinor.id);
 
         config.set('foo', 'bar');
         await config.flush();
 
-        const upgraded = await env.dbmss.upgrade(dbms404.id, '4.0.6', {
+        const upgraded = await env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget, {
             migrate: true,
             backup: false,
             noCache: false,
         });
-        const upgradedConfig = await env.dbmss.getDbmsConfig(dbms404.id);
+        const upgradedConfig = await env.dbmss.getDbmsConfig(dbmsMinor.id);
 
-        expect(upgraded.version).toEqual('4.0.6');
-        expect(upgraded.id).toEqual(dbms404.id);
+        expect(upgraded.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeTarget);
+        expect(upgraded.id).toEqual(dbmsMinor.id);
         expect(upgradedConfig.get('foo')).toEqual('bar');
     });
 
     test('Upgrading major', async () => {
-        const upgraded = await env.dbmss.upgrade(dbms35.id, '4.1.0', {
+        const upgraded = await env.dbmss.upgrade(dbmsMajor.id, TEST_NEO4J_VERSIONS.majorUpgradeTarget, {
             migrate: false,
             backup: false,
             noCache: false,
         });
 
-        expect(upgraded.version).toEqual('4.1.0');
-        expect(upgraded.id).toEqual(dbms35.id);
+        expect(upgraded.version).toEqual(TEST_NEO4J_VERSIONS.majorUpgradeTarget);
+        expect(upgraded.id).toEqual(dbmsMajor.id);
     });
 
     test('Preserves config when upgrading major', async () => {
-        const config = await env.dbmss.getDbmsConfig(dbms352.id);
+        dbmsMajor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.majorUpgradeSource);
+        const config = await env.dbmss.getDbmsConfig(dbmsMajor.id);
 
         config.set('foo', 'bar');
         await config.flush();
 
-        const upgraded = await env.dbmss.upgrade(dbms352.id, '4.1.0', {
+        const upgraded = await env.dbmss.upgrade(dbmsMajor.id, TEST_NEO4J_VERSIONS.majorUpgradeTarget, {
             migrate: false,
             backup: false,
             noCache: false,
         });
-        const upgradedConfig = await env.dbmss.getDbmsConfig(dbms352.id);
+        const upgradedConfig = await env.dbmss.getDbmsConfig(dbmsMajor.id);
 
-        expect(upgraded.version).toEqual('4.1.0');
-        expect(upgraded.id).toEqual(dbms352.id);
+        expect(upgraded.version).toEqual(TEST_NEO4J_VERSIONS.majorUpgradeTarget);
+        expect(upgraded.id).toEqual(dbmsMajor.id);
         expect(upgradedConfig.get('foo')).toEqual('bar');
     });
 
     test('Upgrades all plugins when upgrading', async () => {
-        dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
+        dbmsMinor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.minorUpgradeSource);
 
-        await env.dbmsPlugins.install([dbms404.id], 'streams');
+        await env.dbmsPlugins.install([dbmsMinor.id], 'streams');
         await env.dbmsPlugins.addSources([
             {
                 name: 'custom-plugin',
@@ -121,43 +134,43 @@ describe('LocalDbmss - upgrade', () => {
                 versionsUrl: 'https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json',
             },
         ]);
-        await env.dbmsPlugins.install([dbms404.id], 'custom-plugin');
+        await env.dbmsPlugins.install([dbmsMinor.id], 'custom-plugin');
         // Removing the source effectively emulates a plugin that was installed
         // manually by just copying the jar file.
         await env.dbmsPlugins.removeSources(['custom-plugin']);
 
-        const installedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const installedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedInstalledPlugins = installedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        const dbmsUpgraded = await env.dbmss.upgrade(dbms404.id, '4.1.0', {
+        const dbmsUpgraded = await env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget, {
             migrate: false,
             backup: false,
             noCache: false,
             pluginUpgradeMode: PLUGIN_UPGRADE_MODE.ALL,
         });
-        const upgradedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const upgradedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedUpgradedPlugins = upgradedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        expect(dbmsUpgraded.version).toEqual('4.1.0');
-        expect(dbmsUpgraded.id).toEqual(dbms404.id);
+        expect(dbmsUpgraded.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeTarget);
+        expect(dbmsUpgraded.id).toEqual(dbmsMinor.id);
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: '4.0.0.17',
+                version: TEST_APOC_VERSIONS.lower,
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.2',
+                version: '1.2.0',
             },
             {
                 name: 'streams',
-                version: '4.0.3',
+                version: '4.1.1',
             },
         ]);
         expect(mappedUpgradedPlugins).toEqual([
@@ -165,22 +178,22 @@ describe('LocalDbmss - upgrade', () => {
                 // There's no source for this plugin, so it's copied as is
                 // instead of being upgraded.
                 name: 'custom-plugin',
-                version: '4.0.0.17',
+                version: TEST_APOC_VERSIONS.lower,
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.1.0',
+                version: '1.2.0',
             },
             {
                 name: 'streams',
-                version: '4.0.6',
+                version: '4.1.2',
             },
         ]);
     });
 
     test('Upgrades no plugins when upgrading', async () => {
-        dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
-        await env.dbmsPlugins.install([dbms404.id], 'streams');
+        dbmsMinor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.minorUpgradeSource);
+        await env.dbmsPlugins.install([dbmsMinor.id], 'streams');
 
         await env.dbmsPlugins.addSources([
             {
@@ -189,43 +202,43 @@ describe('LocalDbmss - upgrade', () => {
                 versionsUrl: 'https://neo4j-contrib.github.io/neo4j-apoc-procedures/versions.json',
             },
         ]);
-        await env.dbmsPlugins.install([dbms404.id], 'custom-plugin');
+        await env.dbmsPlugins.install([dbmsMinor.id], 'custom-plugin');
         // Removing the source effectively emulates a plugin that was installed
         // manually by just copying the jar file.
         await env.dbmsPlugins.removeSources(['custom-plugin']);
 
-        const installedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const installedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedInstalledPlugins = installedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        const dbmsUpgraded = await env.dbmss.upgrade(dbms404.id, '4.1.0', {
+        const dbmsUpgraded = await env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget, {
             migrate: false,
             backup: false,
             noCache: false,
             pluginUpgradeMode: PLUGIN_UPGRADE_MODE.NONE,
         });
-        const upgradedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const upgradedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedUpgradedPlugins = upgradedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        expect(dbmsUpgraded.version).toEqual('4.1.0');
-        expect(dbmsUpgraded.id).toEqual(dbms404.id);
+        expect(dbmsUpgraded.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeTarget);
+        expect(dbmsUpgraded.id).toEqual(dbmsMinor.id);
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: '4.0.0.17',
+                version: TEST_APOC_VERSIONS.lower,
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.2',
+                version: '1.2.0',
             },
             {
                 name: 'streams',
-                version: '4.0.3',
+                version: '4.1.1',
             },
         ]);
         expect(mappedUpgradedPlugins).toEqual([
@@ -233,7 +246,7 @@ describe('LocalDbmss - upgrade', () => {
                 // The JWT plugin is always installed in Relate DBMSs regardless
                 // of plugin upgrade mode.
                 name: 'neo4j-jwt-addon',
-                version: '1.1.0',
+                version: '1.2.0',
             },
         ]);
     });
@@ -244,19 +257,18 @@ describe('LocalDbmss - upgrade', () => {
             .once()
             .reply(200, [
                 {
-                    version: '4.0.0.17',
-                    neo4jVersion: '4.0.4',
-                    downloadUrl:
-                        'https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.0.0.17/apoc-4.0.0.17-all.jar',
-                    sha256: 'ed388e5e7bea1842f35dccfe2d2e03db3271c59b2b6fa52ae8cfcc50fbb5e2b6',
+                    version: TEST_APOC_VERSIONS.lower,
+                    neo4jVersion: TEST_NEO4J_VERSIONS.minorUpgradeSource,
+                    downloadUrl: `https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/${TEST_APOC_VERSIONS.lower}/apoc-${TEST_APOC_VERSIONS.lower}-all.jar`,
+                    sha256: TEST_APOC_VERSIONS.lowerSha256,
                     config: {
                         '+:dbms.security.procedures.unrestricted': ['apoc.*'],
                     },
                 },
             ]);
 
-        dbms404 = await env.dbmss.install(testDbmss.createName(), '4.0.4');
-        await env.dbmsPlugins.install([dbms404.id], 'streams');
+        dbmsMinor = await env.dbmss.install(app.createName(), TEST_NEO4J_VERSIONS.minorUpgradeSource);
+        await env.dbmsPlugins.install([dbmsMinor.id], 'streams');
 
         await env.dbmsPlugins.addSources([
             {
@@ -265,53 +277,53 @@ describe('LocalDbmss - upgrade', () => {
                 versionsUrl: 'https://example.com/custom-plugin/versions.json',
             },
         ]);
-        await env.dbmsPlugins.install([dbms404.id], 'custom-plugin');
+        await env.dbmsPlugins.install([dbmsMinor.id], 'custom-plugin');
         // Removing the source effectively emulates a plugin that was installed
         // manually by just copying the jar file.
         await env.dbmsPlugins.removeSources(['custom-plugin']);
 
-        const installedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const installedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedInstalledPlugins = installedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        const dbmsUpgraded = await env.dbmss.upgrade(dbms404.id, '4.1.0', {
+        const dbmsUpgraded = await env.dbmss.upgrade(dbmsMinor.id, TEST_NEO4J_VERSIONS.minorUpgradeTarget, {
             migrate: false,
             backup: false,
             noCache: false,
             pluginUpgradeMode: PLUGIN_UPGRADE_MODE.UPGRADABLE,
         });
-        const upgradedPlugins = await env.dbmsPlugins.list(dbms404.id);
+        const upgradedPlugins = await env.dbmsPlugins.list(dbmsMinor.id);
         const mappedUpgradedPlugins = upgradedPlugins.toArray().map((plugin) => ({
             name: plugin.name,
             version: plugin.version.version,
         }));
 
-        expect(dbmsUpgraded.version).toEqual('4.1.0');
-        expect(dbmsUpgraded.id).toEqual(dbms404.id);
+        expect(dbmsUpgraded.version).toEqual(TEST_NEO4J_VERSIONS.minorUpgradeTarget);
+        expect(dbmsUpgraded.id).toEqual(dbmsMinor.id);
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: '4.0.0.17',
+                version: TEST_APOC_VERSIONS.lower,
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.0.2',
+                version: '1.2.0',
             },
             {
                 name: 'streams',
-                version: '4.0.3',
+                version: '4.1.1',
             },
         ]);
         expect(mappedUpgradedPlugins).toEqual([
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.1.0',
+                version: '1.2.0',
             },
             {
                 name: 'streams',
-                version: '4.0.6',
+                version: '4.1.2',
             },
         ]);
     });

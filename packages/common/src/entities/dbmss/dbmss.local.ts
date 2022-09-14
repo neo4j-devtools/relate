@@ -28,6 +28,7 @@ import {
     supportsAccessTokens,
     isDbmsOnline,
     upgradeNeo4j,
+    getDistributionVersion,
 } from '../../utils/dbmss';
 import {
     AmbiguousTargetError,
@@ -140,11 +141,13 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const tmpPath = path.join(this.environment.dirPaths.tmp, uuidv4());
             const {extractedDistPath} = await extractNeo4j(version, tmpPath);
+            const {version: semverVersion} = await getDistributionVersion(extractedDistPath);
+
             const dbms = await this.installNeo4j(
                 name,
                 this.getDbmsRootPath(),
                 extractedDistPath,
-                version,
+                semverVersion,
                 credentials,
                 installPath,
             );
@@ -526,7 +529,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 throw new TargetExistsError(`Unable to install to non-empty target directory: ${targetDir}`);
             }
 
-            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename));
+            await fse.symlink(targetDir, path.join(dbmssDir, dbmsIdFilename), 'junction');
         }
 
         try {

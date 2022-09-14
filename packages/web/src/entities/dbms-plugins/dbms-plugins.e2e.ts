@@ -101,7 +101,7 @@ describe('DBMSPluginsModule', () => {
                             name: 'neo4j-jwt-addon',
                             homepageUrl: 'https://github.com/neo4j-devtools/relate',
                             version: {
-                                version: '1.0.2',
+                                version: '1.2.0',
                             },
                             versionsUrl:
                                 'https://s3-eu-west-1.amazonaws.com/dist.neo4j.org/relate/neo4j-jwt-addon/versions.json',
