@@ -37,11 +37,6 @@ describe('LocalDbmss - info', () => {
 
     test('Get DBMS info (unknown server status)', async () => {
         await env.dbmss.start([dbms.id]);
-        await waitForDbmsToBeOnline({
-            ...dbms,
-            config: await env.dbmss.getDbmsConfig(dbms.id),
-        });
-
         const info = await env.dbmss.info([dbms.id]);
 
         expect(info.toArray()).toEqual([
@@ -54,6 +49,10 @@ describe('LocalDbmss - info', () => {
     });
 
     test('Get DBMS info with online check (online)', async () => {
+        await waitForDbmsToBeOnline({
+            ...dbms,
+            config: await env.dbmss.getDbmsConfig(dbms.id),
+        });
         const info = await env.dbmss.info([dbms.id], true);
 
         expect(info.toArray()).toEqual([

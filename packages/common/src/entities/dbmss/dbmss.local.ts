@@ -551,6 +551,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             neo4jConfig.set('dbms.memory.pagecache.size', '512m');
 
             if (process.platform === 'win32') {
+                // In case the DBMS is installed as a service ensure each DBMS gets a unique service name.
                 neo4jConfig.set(`dbms.windows_service_name`, `neo4j-relate-dbms-${dbmsId}`);
             }
 

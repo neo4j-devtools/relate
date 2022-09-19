@@ -12,6 +12,7 @@
         "url": "git+https://github.com/neo4j-devtools/relate.git"
     },
     "scripts": {
+        "prepare": "husky install",
         "changelog": "pnpm changeset",
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint . --ext .ts --quiet",
