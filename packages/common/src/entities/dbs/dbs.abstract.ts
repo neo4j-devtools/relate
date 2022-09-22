@@ -1,7 +1,7 @@
 import {List} from '@relate/types';
 import {ReadStream} from 'fs-extra';
 
-import {IDb} from '../../models';
+import {IDb4, IDb5} from '../../models';
 
 import {EnvironmentAbstract} from '../environments';
 
@@ -35,7 +35,7 @@ export abstract class DbsAbstract<Env extends EnvironmentAbstract> {
      * @param   user            DBMS user
      * @param   accessToken     DBMS access token
      */
-    abstract list(dbmsId: string, user: string, accessToken: string): Promise<List<IDb>>;
+    abstract list(dbmsId: string, user: string, accessToken: string): Promise<List<IDb4 | IDb5>>;
 
     /**
      * Dumps a databese contents

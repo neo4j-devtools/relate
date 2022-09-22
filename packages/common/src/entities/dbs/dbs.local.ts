@@ -1,11 +1,12 @@
 import {List} from '@relate/types';
 import fse, {ReadStream} from 'fs-extra';
 import path from 'path';
+import semver from 'semver';
 
-import {IDb} from '../../models';
+import {IDb4, IDb5} from '../../models';
 import {neo4jAdminCmd} from '../../utils/dbmss';
 import {CypherParameterError} from '../../errors';
-import {LocalEnvironment} from '../environments';
+import {LocalEnvironment, NEO4J_VERSION_5X} from '../environments';
 import {NEO4J_DB_NAME_REGEX} from './dbs.constants';
 import {dbReadQuery, dbWriteQuery} from '../../utils/dbmss/system-db-query';
 import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
@@ -46,7 +47,9 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         );
     }
 
-    async list(dbmsNameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb>> {
+    async list(dbmsNameOrId: string, dbmsUser: string, accessToken: string): Promise<List<IDb4 | IDb5>> {
+        const dbms = await this.environment.dbmss.get(dbmsNameOrId);
+
         const dbs = await dbReadQuery(
             this.environment,
             {
@@ -59,13 +62,33 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         );
 
         return dbs.mapEach((db) => {
+            if (dbms.version && semver.satisfies(dbms.version, NEO4J_VERSION_5X, {includePrerelease: true})) {
+                return {
+                    name: db.get('name'),
+                    type: db.get('type'),
+                    aliases: db.get('aliases'),
+                    access: db.get('access'),
+                    address: db.get('address'),
+                    role: db.get('role'),
+                    writer: db.get('writer'),
+                    requestedStatus: db.get('requestedStatus'),
+                    currentStatus: db.get('currentStatus'),
+                    statusMessage: db.get('statusMessage'),
+                    default: Boolean(db.get('default')),
+                    home: Boolean(db.get('home')),
+                    constituents: db.get('constituents'),
+                };
+            }
+
             return {
                 name: db.get('name'),
+                address: db.get('address'),
                 role: db.get('role'),
-                requestedStatus: db.get('requestedStatus'),
                 currentStatus: db.get('currentStatus'),
+                requestedStatus: db.get('requestedStatus'),
                 error: db.get('error'),
                 default: Boolean(db.get('default')),
+                home: Boolean(db.get('home')),
             };
         });
     }

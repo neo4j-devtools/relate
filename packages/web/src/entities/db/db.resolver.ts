@@ -1,6 +1,6 @@
 import {Resolver, Args, Mutation, Query, Context} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
-import {Environment, SystemProvider, PUBLIC_GRAPHQL_METHODS, IDb} from '@relate/common';
+import {Environment, SystemProvider, PUBLIC_GRAPHQL_METHODS, IDb4, IDb5} from '@relate/common';
 import {List} from '@relate/types';
 
 import {CreateOrDropDbArgs, ListDbArgs, Db, DumpDbArgs, LoadDbArgs} from './db.types';
@@ -33,7 +33,7 @@ export class DbResolver {
     async [PUBLIC_GRAPHQL_METHODS.LIST_DBS](
         @Context('environment') environment: Environment,
         @Args() {dbmsId, user, accessToken}: ListDbArgs,
-    ): Promise<List<IDb>> {
+    ): Promise<List<IDb4 | IDb5>> {
         return environment.dbs.list(dbmsId, user, accessToken);
     }
 
