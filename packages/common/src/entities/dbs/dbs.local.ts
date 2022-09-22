@@ -104,22 +104,8 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         javaPath?: string,
     ): Promise<string> {
         const dbms = await this.environment.dbmss.get(nameOrId);
-
-        this.environment.dbs.exec(nameOrId, `STOP DATABASE ${database}`, {
-            user: 'neo4j',
-            database: 'neo4j',
-            accessToken: credentials,
-        });
-
         const params = ['dump', `--database=${database}`, `--to=${to}`];
         const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);
-
-        this.environment.dbs.exec(nameOrId, `START DATABASE ${database}`, {
-            user: 'neo4j',
-            database: 'neo4j',
-            accessToken: credentials,
-        });
-
         return result;
     }
 
