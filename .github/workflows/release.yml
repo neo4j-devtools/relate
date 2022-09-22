@@ -20,7 +20,7 @@ jobs:
               with:
                   # Needed to ensure Github actions are run even when the pull request is rebased.
                   # https://github.com/changesets/action/issues/187#issuecomment-1228413850
-                  token: ${{ secrets.GH_PATH_PULL_REQUEST }}
+                  token: ${{ secrets.GH_PAT_PULL_REQUEST }}
             - uses: ./.github/workflows/setup
 
             - name: Update .npmrc
