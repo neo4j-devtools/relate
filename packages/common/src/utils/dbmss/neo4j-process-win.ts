@@ -50,9 +50,14 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
 
     const env = new EnvVars({cloneFromProcess: true});
     env.set('JAVA_HOME', relateJavaHome || process.env.JAVA_HOME);
-    // relateJavaHome is prepended to the PATH in order to take
-    // precedence over any user installed JAVA executable.
-    env.set('PATH', relateJavaHome ? `${relateJavaHome}${path.delimiter}${process.env.PATH}` : process.env.PATH);
+
+    if (relateJavaHome) {
+        const defaultPath = env.get('PATH');
+
+        // relateJavaHome is prepended to the PATH in order to take
+        // precedence over any user installed JAVA executable.
+        env.set('PATH', `${relateJavaHome}${path.delimiter}${defaultPath}`);
+    }
 
     const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
     const neo4jPs1Path = path.join(dbmsRoot, NEO4J_BIN_DIR, 'neo4j.ps1');

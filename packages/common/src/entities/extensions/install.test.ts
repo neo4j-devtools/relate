@@ -1,7 +1,7 @@
 import path from 'path';
 
 import {TestExtensions} from '../../utils/system/test-extensions';
-import {TestDbmss} from '../../utils/system/test-dbmss';
+import {TestEnvironment} from '../../utils/system/test-environment';
 import {InvalidArgumentError} from '../../errors/invalid-argument.error';
 import * as extensionVersions from '../../utils/extensions/extension-versions';
 import * as downloadExtensionUtils from '../../utils/extensions/download-extension';
@@ -12,45 +12,45 @@ import {ExtensionInfoModel, IExtensionInfo, IInstalledExtension} from '../../mod
 import {List} from '@relate/types';
 
 describe('Extensions - install', () => {
+    let testEnv: TestEnvironment;
     let testExtensions: TestExtensions;
-    let testDbmss: TestDbmss;
     const fileName = path.basename(__filename);
 
     beforeAll(async () => {
-        testExtensions = new TestExtensions(__filename);
-        testDbmss = await TestDbmss.init(__filename);
+        testEnv = await TestEnvironment.init(__filename);
+        testExtensions = new TestExtensions(__filename, testEnv.environment);
     });
 
     afterAll(async () => {
         await testExtensions.teardown();
-        await testDbmss.teardown();
+        await testEnv.teardown();
     });
 
     describe('errors thrown', () => {
         afterEach(() => jest.restoreAllMocks());
 
         test('with no version', async () => {
-            await expect(testDbmss.environment.extensions.install(testExtensions.createName(), '')).rejects.toThrow(
+            await expect(testEnv.environment.extensions.install(testExtensions.createName(), '')).rejects.toThrow(
                 new InvalidArgumentError('Version must be specified'),
             );
         });
 
         test('with invalid version', async () => {
             await expect(
-                testDbmss.environment.extensions.install(testDbmss.createName(), 'notAVersionOrUrlOrFilePath'),
+                testEnv.environment.extensions.install(testEnv.createName(), 'notAVersionOrUrlOrFilePath'),
             ).rejects.toThrow(new InvalidArgumentError('Provided version argument is not valid semver, url or path.'));
         });
 
         test('with no existing version (file path or invalid URL)', async () => {
             const message = 'Provided version argument is not valid semver, url or path.';
-            const testExtensionName = testDbmss.createName();
+            const testExtensionName = testEnv.createName();
 
             await expect(
-                testDbmss.environment.extensions.install(testExtensionName, path.join('non', 'existing', 'path')),
+                testEnv.environment.extensions.install(testExtensionName, path.join('non', 'existing', 'path')),
             ).rejects.toThrow(new InvalidArgumentError(message));
 
             await expect(
-                testDbmss.environment.extensions.install(testExtensionName, 'www/invalidurl.com'),
+                testEnv.environment.extensions.install(testExtensionName, 'www/invalidurl.com'),
             ).rejects.toThrow(new InvalidArgumentError(message));
         });
 
@@ -62,7 +62,7 @@ describe('Extensions - install', () => {
             });
 
             await expect(
-                testDbmss.environment.extensions.install(TEST_EXTENSION_NAME, invalidTestVersion),
+                testEnv.environment.extensions.install(TEST_EXTENSION_NAME, invalidTestVersion),
             ).rejects.toThrow(new NotFoundError(`Unable to find the requested version: ${invalidTestVersion} online`));
             expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledWith(
@@ -78,7 +78,7 @@ describe('Extensions - install', () => {
         let testCachedExtension: IInstalledExtension;
         const listExtensions = async (type: FILTER_COMPARATORS, value: string): Promise<IExtensionInfo[]> => {
             return (
-                await testDbmss.environment.extensions.list([
+                await testEnv.environment.extensions.list([
                     {
                         field: 'name',
                         type,
@@ -102,26 +102,26 @@ describe('Extensions - install', () => {
 
         test('with valid version (file path)', async () => {
             expect(await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)).toHaveLength(0);
-            expect(await discoverDists(testDbmss.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
+            expect(await discoverDists(testEnv.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
 
             // install
-            const extensionInfo: IExtensionInfo = await testDbmss.environment.extensions.install(
+            const extensionInfo: IExtensionInfo = await testEnv.environment.extensions.install(
                 testCachedExtensionArchive.name,
                 path.join(envPaths().cache, EXTENSION_DIR_NAME, `${testCachedExtensionArchive.name}.tgz`),
             );
             expect(extensionInfo.name).toEqual(testCachedExtensionArchive.name);
 
             expect(
-                await discoverDists(testDbmss.environment.dirPaths.extensionsCache, testCachedExtensionArchive.name),
+                await discoverDists(testEnv.environment.dirPaths.extensionsCache, testCachedExtensionArchive.name),
             ).toHaveLength(0);
-            expect(await discoverDists(testDbmss.environment.dirPaths.extensionsData, fileName)).toHaveLength(1);
+            expect(await discoverDists(testEnv.environment.dirPaths.extensionsData, fileName)).toHaveLength(1);
 
             // extension is installed
             expect(await listExtensions(FILTER_COMPARATORS.EQUALS, extensionInfo.name)).toHaveLength(1);
 
             // will not reinstall existing extension
             await expect(
-                testDbmss.environment.extensions.install(
+                testEnv.environment.extensions.install(
                     testCachedExtensionArchive.name,
                     path.join(envPaths().cache, EXTENSION_DIR_NAME, `${testCachedExtensionArchive.name}.tgz`),
                 ),
@@ -133,7 +133,7 @@ describe('Extensions - install', () => {
         test('uninstalling extension removes extension from data dir', async () => {
             expect(await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)).toHaveLength(1);
 
-            await testDbmss.environment.extensions.uninstall(
+            await testEnv.environment.extensions.uninstall(
                 (
                     await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)
                 )[0].name,
@@ -142,7 +142,7 @@ describe('Extensions - install', () => {
             // extension should be deleted
             expect(await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)).toHaveLength(0);
             // extension should be deleted from data directory
-            expect(await discoverDists(testDbmss.environment.dirPaths.extensionsData, fileName)).toHaveLength(0);
+            expect(await discoverDists(testEnv.environment.dirPaths.extensionsData, fileName)).toHaveLength(0);
         });
 
         test('with valid non-cached version (semver)', async () => {
@@ -155,20 +155,20 @@ describe('Extensions - install', () => {
                 .spyOn(downloadExtensionUtils, 'downloadExtension')
                 .mockResolvedValue(
                     extensionVersions.discoverExtension(
-                        path.join(testDbmss.environment.dirPaths.extensionsCache, `${testCachedExtension.name}`),
+                        path.join(testEnv.environment.dirPaths.extensionsCache, `${testCachedExtension.name}`),
                     ),
                 );
 
             // install extension
-            await testDbmss.environment.extensions.install(testCachedExtension.name, testCachedExtension.version);
+            await testEnv.environment.extensions.install(testCachedExtension.name, testCachedExtension.version);
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(
                 testCachedExtension.name,
                 testCachedExtension.version,
-                testDbmss.environment.dirPaths.extensionsCache,
+                testEnv.environment.dirPaths.extensionsCache,
             );
             // extracted extension in cache dir should exist in this case
-            expect(await discoverDists(testDbmss.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
+            expect(await discoverDists(testEnv.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
             // extension is installed
             expect((await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName))[0].name).toBe(
                 testCachedExtension.name,
@@ -178,16 +178,16 @@ describe('Extensions - install', () => {
         test('with valid cached version (semver)', async () => {
             // clear previous installed extension
             const installedExtensionName = (await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName))[0].name;
-            await testDbmss.environment.extensions.uninstall(installedExtensionName);
+            await testEnv.environment.extensions.uninstall(installedExtensionName);
             expect(await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName)).toHaveLength(0);
 
             const spy = jest.spyOn(downloadExtensionUtils, 'downloadExtension');
             // install from current cached extension
-            await testDbmss.environment.extensions.install(testCachedExtension.name, testCachedExtension.version);
+            await testEnv.environment.extensions.install(testCachedExtension.name, testCachedExtension.version);
 
             // should extract from cached extension, not download
             expect(spy).not.toHaveBeenCalled();
-            expect(await discoverDists(testDbmss.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
+            expect(await discoverDists(testEnv.environment.dirPaths.extensionsCache, fileName)).toHaveLength(1);
             expect((await listExtensions(FILTER_COMPARATORS.CONTAINS, fileName))[0].name).toBe(
                 testCachedExtension.name,
             );

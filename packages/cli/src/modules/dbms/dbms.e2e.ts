@@ -1,6 +1,14 @@
 import path from 'path';
 import {test} from '@oclif/test';
-import {TestDbmss, DBMS_STATUS, envPaths, NotFoundError, IProject} from '@relate/common';
+import {
+    TestDbmss,
+    DBMS_STATUS,
+    envPaths,
+    NotFoundError,
+    IProject,
+    IDbmsInfo,
+    waitForDbmsToBeOnline,
+} from '@relate/common';
 
 import AccessTokenCommand from '../../commands/dbms/access-token';
 import ListCommand from '../../commands/dbms/list';
@@ -21,8 +29,6 @@ jest.mock('../../prompts', () => {
 const skipTestOnWindows = process.platform === 'win32' ? test.skip() : test;
 const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/m;
 let TEST_ENVIRONMENT_ID: string;
-let TEST_DB_NAME: string;
-let TEST_DB_ID: string;
 
 async function createTestProject(env: EnvironmentAbstract) {
     const projectName = 'Test Project';
@@ -40,15 +46,14 @@ async function createTestProject(env: EnvironmentAbstract) {
 
 describe('$relate dbms', () => {
     let dbmss: TestDbmss;
+    let testDbms: IDbmsInfo;
     let testProject: IProject;
 
     beforeAll(async () => {
         dbmss = await TestDbmss.init(__filename);
-        const {id, name} = await dbmss.createDbms();
+        testDbms = await dbmss.createDbms();
 
         TEST_ENVIRONMENT_ID = dbmss.environment.id;
-        TEST_DB_NAME = name;
-        TEST_DB_ID = id;
 
         testProject = await createTestProject(dbmss.environment);
     });
@@ -56,12 +61,17 @@ describe('$relate dbms', () => {
     afterAll(() => dbmss.teardown());
 
     skipTestOnWindows.stdout().it('should log failed dump', async (ctx) => {
-        await DumpCommand.run([TEST_DB_ID, '--environment', TEST_ENVIRONMENT_ID]);
+        await DumpCommand.run([testDbms.id, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain('Database does not exist: neo4j');
     });
 
     test.stdout().it('logs start message', async (ctx) => {
-        await StartCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await StartCommand.run([testDbms.name, '--environment', TEST_ENVIRONMENT_ID]);
+        await waitForDbmsToBeOnline({
+            ...testDbms,
+            config: await dbmss.environment.dbmss.getDbmsConfig(testDbms.id),
+        });
+
         if (process.platform === 'win32') {
             expect(ctx.stdout).toContain('neo4j started');
         } else {
@@ -73,24 +83,24 @@ describe('$relate dbms', () => {
 
     test.stdout().it('lists DBMSs', async (ctx) => {
         await ListCommand.run(['--environment', TEST_ENVIRONMENT_ID, '--no-truncate']);
-        expect(ctx.stdout).toContain(TEST_DB_NAME);
+        expect(ctx.stdout).toContain(testDbms.name);
     });
 
     test.stdout().it('logs running status', async (ctx) => {
-        await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await InfoCommand.run([testDbms.name, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain(DBMS_STATUS.STARTED);
     });
 
     test.stdout()
         .stdin(TestDbmss.DBMS_CREDENTIALS)
         .it('logs access token', async (ctx) => {
-            await AccessTokenCommand.run([TEST_DB_NAME, '--user=neo4j', '--environment', TEST_ENVIRONMENT_ID]);
+            await AccessTokenCommand.run([testDbms.name, '--user=neo4j', '--environment', TEST_ENVIRONMENT_ID]);
             expect(ctx.stdout).toEqual(expect.stringMatching(JWT_REGEX));
         });
 
     test.stdout().it('should execute cypher', async (ctx) => {
         await ExecCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(testProject.root, 'return-true.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
@@ -101,7 +111,7 @@ describe('$relate dbms', () => {
 
     test.stdout().it('should execute unterminated cypher', async (ctx) => {
         await ExecCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(testProject.root, 'return-without-semicolon.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
@@ -112,7 +122,7 @@ describe('$relate dbms', () => {
 
     test.stdout().it('should execute blank cypher', async (ctx) => {
         await ExecCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(testProject.root, 'blank.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
@@ -123,7 +133,7 @@ describe('$relate dbms', () => {
 
     test.stderr().it('should execute but complain about bad cypher syntax', async () => {
         const command = ExecCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(testProject.root, 'bad-syntax.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
@@ -134,7 +144,7 @@ describe('$relate dbms', () => {
 
     test.stderr().it('should execute but complain about missing parameters', async () => {
         const command = ExecCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(testProject.root, 'missing-param.cypher')}`,
             '--database=neo4j',
             '--user=neo4j',
@@ -146,14 +156,14 @@ describe('$relate dbms', () => {
     test.stdout()
         .stderr()
         .it('logs stop message', async (ctx) => {
-            await StopCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+            await StopCommand.run([testDbms.name, '--environment', TEST_ENVIRONMENT_ID]);
             expect(ctx.stdout).toBe('');
             expect(ctx.stderr).toContain('done');
         });
 
     skipTestOnWindows.stdout().it('should log successful dump', async (ctx) => {
         await DumpCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--to=${path.join(envPaths().data, 'test-db.dump')}`,
             `--environment=${TEST_ENVIRONMENT_ID}`,
         ]);
@@ -164,7 +174,7 @@ describe('$relate dbms', () => {
 
     skipTestOnWindows.stdout().it('should log successful load', async (ctx) => {
         await LoadCommand.run([
-            TEST_DB_ID,
+            testDbms.id,
             `--from=${path.join(envPaths().data, 'test-db.dump')}`,
             '--database=neo4j',
             '--force',
@@ -174,7 +184,7 @@ describe('$relate dbms', () => {
     });
 
     test.stdout().it('logs stopped status', async (ctx) => {
-        await InfoCommand.run([TEST_DB_NAME, '--environment', TEST_ENVIRONMENT_ID]);
+        await InfoCommand.run([testDbms.name, '--environment', TEST_ENVIRONMENT_ID]);
         expect(ctx.stdout).toContain(DBMS_STATUS.STOPPED);
     });
 

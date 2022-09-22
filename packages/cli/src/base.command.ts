@@ -14,11 +14,15 @@ import {ConfigModule} from '@nestjs/config';
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 
 export default abstract class BaseCommand extends Command {
-    protected abstract commandClass: Interfaces.Input<Interfaces.FlagOutput>;
+    protected abstract commandClass: Interfaces.Input<Interfaces.FlagOutput, Interfaces.FlagOutput>;
 
     // Any nestjs module should be a valid command module.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected abstract commandModule: Type<any>;
+
+    static flags = {};
+
+    static globalFlags = {};
 
     async run(): Promise<INestApplicationContext> {
         const parsed = await this.parse(this.commandClass);

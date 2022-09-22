@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-import {CypherParameterError, TestDbmss, IDbmsInfo} from '@relate/common';
+import {CypherParameterError, TestDbmss, IDbmsInfo, waitForDbmsToBeOnline} from '@relate/common';
 import CreateCommand from '../../commands/db/create';
 import DropCommand from '../../commands/db/drop';
 import AccessTokenCommand from '../../commands/dbms/access-token';
@@ -32,6 +32,10 @@ describe('$relate db', () => {
         .stderr()
         .it('creates a database', async (ctx) => {
             await StartCommand.run([testDbms.id, '--environment', testEnvironmentId]);
+            await waitForDbmsToBeOnline({
+                ...testDbms,
+                config: await dbmss.environment.dbmss.getDbmsConfig(testDbms.id),
+            });
             await AccessTokenCommand.run([testDbms.id, '--environment', testEnvironmentId, '--user=neo4j']);
 
             if (process.platform === 'win32') {

@@ -31,7 +31,7 @@ export const TEST_APOC_VERSIONS = {
     lower: '4.3.0.8',
     lowerSha256: 'f36b840090373de88557a861440d041abde7faed4200194fd181c0f4eb2a5237',
 
-    default: '4.4.0.8',
+    default: '4.4.0.9',
 };
 
 export class TestEnvironment {
@@ -117,6 +117,10 @@ export class TestEnvironment {
         properties.set('dbms.connector.http.listen_address', `:${7474 + portOffset}`);
         properties.set('dbms.connector.https.listen_address', `:${7473 + portOffset}`);
         properties.set('dbms.backup.listen_address', `:${6362 + portOffset}`);
+
+        // In some tests we purposely pass wrong credentials and we don't want
+        // to lock the DBMS when tests run too fast.
+        properties.set('dbms.security.auth_max_failed_attempts', '10');
         await properties.flush();
 
         return this.environment.dbmss.get(dbmsId);
