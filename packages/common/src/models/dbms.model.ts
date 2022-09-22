@@ -8,13 +8,31 @@ import {ManifestModel, IManifest} from './manifest.model';
 import {IsValidJWT} from './custom-validators';
 import {ModelAbstract} from './model.abstract';
 
-export interface IDb {
+export interface IDb4 {
     name: string;
+    address: string;
     role: string;
     requestedStatus: string;
     currentStatus: string;
     error: string;
     default: boolean;
+    home: boolean;
+}
+
+export interface IDb5 {
+    name: string;
+    type: string;
+    aliases: string;
+    access: string;
+    address: string;
+    role: string;
+    writer: string;
+    requestedStatus: string;
+    currentStatus: string;
+    statusMessage: string;
+    default: boolean;
+    home: boolean;
+    constituents: string;
 }
 
 export interface IQueryTarget {

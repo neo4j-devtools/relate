@@ -29,20 +29,9 @@ export class ListModule implements OnApplicationBootstrap {
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
         const dbs = await environment.dbs.list(dbms, user, accessToken);
-        CliUx.ux.table(
-            dbs.toArray(),
-            {
-                name: {},
-                role: {},
-                requestedStatus: {},
-                currentStatus: {},
-                error: {},
-                default: {},
-            },
-            {
-                printLine: this.utils.log,
-                ...flags,
-            },
-        );
+        CliUx.ux.table(dbs.toArray(), Object.fromEntries(Object.keys(dbs.toArray()[0]).map((item) => [item, {}])), {
+            printLine: this.utils.log,
+            ...flags,
+        });
     }
 }
