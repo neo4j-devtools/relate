@@ -53,7 +53,7 @@ import {
     NEO4J_JWT_CONF_FILE,
     NEO4J_SUPPORTED_VERSION_RANGE,
     NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE,
-    NEO4J_JAVA_17_VERSION_RANGE,
+    NEO4J_VERSION_5X,
 } from '../environments';
 import {
     BOLT_DEFAULT_PORT,
@@ -610,7 +610,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
         return neo4jAdminCmd(
             this.getDbmsRootPath(dbmsID),
             [
-                ...[semver.satisfies(version, NEO4J_JAVA_17_VERSION_RANGE, {includePrerelease: true}) ? 'dbms' : ''],
+                ...[semver.satisfies(version, NEO4J_VERSION_5X, {includePrerelease: true}) ? 'dbms' : ''],
                 'set-initial-password',
             ].filter(Boolean),
             credentials,

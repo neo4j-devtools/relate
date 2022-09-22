@@ -6,7 +6,7 @@ import semver from 'semver';
 import {IDb4, IDb5} from '../../models';
 import {neo4jAdminCmd} from '../../utils/dbmss';
 import {CypherParameterError} from '../../errors';
-import {LocalEnvironment, NEO4J_JAVA_17_VERSION_RANGE} from '../environments';
+import {LocalEnvironment, NEO4J_VERSION_5X} from '../environments';
 import {NEO4J_DB_NAME_REGEX} from './dbs.constants';
 import {dbReadQuery, dbWriteQuery} from '../../utils/dbmss/system-db-query';
 import {cypherShellCmd} from '../../utils/dbmss/cypher-shell';
@@ -62,10 +62,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         );
 
         return dbs.mapEach((db) => {
-            if (
-                dbms.version &&
-                semver.satisfies(dbms.version, NEO4J_JAVA_17_VERSION_RANGE, {includePrerelease: true})
-            ) {
+            if (dbms.version && semver.satisfies(dbms.version, NEO4J_VERSION_5X, {includePrerelease: true})) {
                 return {
                     name: db.get('name'),
                     type: db.get('type'),
@@ -96,13 +93,7 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
         });
     }
 
-    async dump(
-        nameOrId: string,
-        database: string,
-        to: string,
-        credentials: string,
-        javaPath?: string,
-    ): Promise<string> {
+    async dump(nameOrId: string, database: string, to: string, javaPath?: string): Promise<string> {
         const dbms = await this.environment.dbmss.get(nameOrId);
         const params = ['dump', `--database=${database}`, `--to=${to}`];
         const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);

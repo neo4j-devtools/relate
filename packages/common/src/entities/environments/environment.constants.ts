@@ -63,7 +63,7 @@ export const DEFAULT_NEO4J_HTTPS_PORT = ':7473';
 export const CYPHER_SHELL_BIN_FILE = process.platform === 'win32' ? 'cypher-shell.bat' : 'cypher-shell';
 
 export const NEO4J_DISTRIBUTION_REGEX = /^neo4j-([\D]+)-([\S.-]+)-.*/;
-export const NEO4J_JAVA_17_VERSION_RANGE = '>=5.0';
+export const NEO4J_VERSION_5X = '>=5.0';
 export const NEO4J_SUPPORTED_VERSION_RANGE = '>=3.4';
 export const NEO4J_ACCESS_TOKEN_SUPPORT_VERSION_RANGE = '>=4.x';
 export const NEO4J_DRIVER_MULTI_DB_SUPPORT_VERSION_RANGE = '>=4.1';
