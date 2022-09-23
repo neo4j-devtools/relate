@@ -76,3 +76,7 @@ e2e/relate fixtures/data/
 e2e/relate fixtures/cache/
 e2e/fixtures/data/
 e2e/fixtures/cache/
+
+# Changes to npmrc should be ignored during the release process
+.npmrc
+
