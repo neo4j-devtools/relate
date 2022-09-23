@@ -1,5 +1,14 @@
 # @relate/common
 
+## 1.0.6
+
+### Patch Changes
+
+-   c93c78a: Bump @neo4j/codesigner
+-   8617730: Fix DBMS not starting on Windows in certain cases
+-   8617730: Installing a DBMS to a specific path no longer requires admin rights on Windows
+-   dc33c80: Fix installing DBMSs from archive path
+
 ## 1.0.5
 
 ### Patch Changes

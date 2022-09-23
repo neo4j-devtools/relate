@@ -127,7 +127,7 @@ ___
 
 ### list
 
-▸ `Abstract` **list**(`dbmsId`, `user`, `accessToken`): `Promise`<`default`<`IDb`\>\>
+▸ `Abstract` **list**(`dbmsId`, `user`, `accessToken`): `Promise`<`default`<`IDb4` \| `IDb5`\>\>
 
 Lists all databases
 
@@ -141,7 +141,7 @@ Lists all databases
 
 #### Returns
 
-`Promise`<`default`<`IDb`\>\>
+`Promise`<`default`<`IDb4` \| `IDb5`\>\>
 
 #### Defined in
 

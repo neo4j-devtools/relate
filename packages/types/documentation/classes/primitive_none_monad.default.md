@@ -18,7 +18,7 @@ const plain: undefined = none.get();
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends `any` = `any` |
+| `T` | `any` |
 
 ## Hierarchy
 
@@ -400,7 +400,7 @@ None.of
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends `unknown` = `any` |
+| `T` | `any` |
 
 #### Parameters
 
@@ -474,7 +474,7 @@ if (None.isNone(val)) {
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends `unknown` = `any` |
+| `T` | `any` |
 
 #### Parameters
 
@@ -510,7 +510,7 @@ const listNone: None<List<string>> = None.of(listMonad);
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends `unknown` = `any` |
+| `T` | `any` |
 
 #### Parameters
 

@@ -1,5 +1,16 @@
 # @relate/web
 
+## 1.0.6
+
+### Patch Changes
+
+-   8617730: Allow running stop procedure through web API on Windows DBMSs
+-   Updated dependencies [c93c78a]
+-   Updated dependencies [8617730]
+-   Updated dependencies [8617730]
+-   Updated dependencies [dc33c80]
+    -   @relate/common@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

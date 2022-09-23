@@ -61,11 +61,11 @@ packages/types/src/monads/monad.ts:4
 
 #### Inherited from
 
-Iterable.\_\_@iterator@14
+Iterable.\_\_@iterator@17
 
 #### Defined in
 
-node_modules/.pnpm/typescript@4.7.4/node_modules/typescript/lib/lib.es2015.iterable.d.ts:51
+node_modules/.pnpm/typescript@4.8.3/node_modules/typescript/lib/lib.es2015.iterable.d.ts:51
 
 ___
 
