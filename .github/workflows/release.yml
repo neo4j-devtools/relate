@@ -23,8 +23,8 @@ jobs:
                   token: ${{ secrets.GH_PAT_PULL_REQUEST }}
             - uses: ./.github/workflows/setup
 
-            - name: Update .npmrc
-              run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+            - name: Update npm config
+              run: npm config set '//registry.npmjs.org/:_authToken' '${NPM_TOKEN}'
 
             # Create a pull request with all of the package versions and
             # changelogs updated and when there are new changesets on master,
