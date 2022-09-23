@@ -20,7 +20,7 @@ const asObj: {foo: 'bar'} = dict.toObject();
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends `any` = `any` |
+| `T` | `any` |
 | `K` | `KeyVal`<`T`\>[``"key"``] |
 | `V` | `KeyVal`<`T`\>[``"value"``] |
 
@@ -126,7 +126,7 @@ List.isEmpty
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:78
+packages/types/src/monads/primitive/dict.monad.ts:76
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:59
+packages/types/src/monads/primitive/dict.monad.ts:57
 
 ___
 
@@ -192,7 +192,7 @@ ___
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:67
+packages/types/src/monads/primitive/dict.monad.ts:65
 
 ## Methods
 
@@ -226,7 +226,7 @@ fooBar.toObject() // {foo: true, bar: 1, baz: {key2: 'bar'}}
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:239
+packages/types/src/monads/primitive/dict.monad.ts:237
 
 ___
 
@@ -549,7 +549,7 @@ Gets key at index
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:142
+packages/types/src/monads/primitive/dict.monad.ts:140
 
 ___
 
@@ -611,7 +611,7 @@ Gets value of named key
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:159
+packages/types/src/monads/primitive/dict.monad.ts:157
 
 ___
 
@@ -637,7 +637,7 @@ Checks if a key exists and a given index
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:133
+packages/types/src/monads/primitive/dict.monad.ts:131
 
 ___
 
@@ -659,7 +659,7 @@ Checks if named key exists
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:151
+packages/types/src/monads/primitive/dict.monad.ts:149
 
 ___
 
@@ -858,7 +858,7 @@ fooBar.toObject() // {foo: true, bar: 1, baz: {key1: 'foo', key2: 'bar'}}
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:222
+packages/types/src/monads/primitive/dict.monad.ts:220
 
 ___
 
@@ -918,7 +918,7 @@ foo.toObject() // {foo: true}
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:203
+packages/types/src/monads/primitive/dict.monad.ts:201
 
 ▸ **omit**<`K2`, `R`\>(...`other`): `R`
 
@@ -933,7 +933,7 @@ foo.toObject() // {foo: true}
 
 | Name | Type |
 | :------ | :------ |
-| `K2` | extends `string` \| `symbol` |
+| `K2` | extends `unknown` |
 | `R` | [`default`](primitive_dict_monad.default.md)<`T`, `Exclude`<`K`, `K2`\>, `V`\> |
 
 #### Parameters
@@ -948,7 +948,7 @@ foo.toObject() // {foo: true}
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:205
+packages/types/src/monads/primitive/dict.monad.ts:203
 
 ___
 
@@ -1008,7 +1008,7 @@ Sets value of named key
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:168
+packages/types/src/monads/primitive/dict.monad.ts:166
 
 ___
 
@@ -1161,7 +1161,7 @@ When calling `.toJSON()`
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:266
+packages/types/src/monads/primitive/dict.monad.ts:264
 
 ___
 
@@ -1181,7 +1181,7 @@ fooBar.toList().toArray() // [["foo", true], ["bar", 1]]
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:262
+packages/types/src/monads/primitive/dict.monad.ts:260
 
 ___
 
@@ -1195,7 +1195,7 @@ Converts original value to it's Object representation
 
 | Name | Type |
 | :------ | :------ |
-| `O` | extends `unknown` = `T` |
+| `O` | `T` |
 | `R` | `O` extends `IAsObject`<`T`\> ? `O` : `never` |
 
 #### Returns
@@ -1204,7 +1204,7 @@ Converts original value to it's Object representation
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:182
+packages/types/src/monads/primitive/dict.monad.ts:180
 
 ___
 
@@ -1224,7 +1224,7 @@ When calling `.toString()`
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:173
+packages/types/src/monads/primitive/dict.monad.ts:171
 
 ___
 
@@ -1361,7 +1361,7 @@ Dict.of
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:121
+packages/types/src/monads/primitive/dict.monad.ts:119
 
 ▸ `Static` **from**<`D`, `R`\>(`val?`): [`default`](primitive_dict_monad.default.md)<`R`, `KeyVal`<`R`, keyof `R`\>[``"key"``], `KeyVal`<`R`, keyof `R`\>[``"value"``]\>
 
@@ -1388,7 +1388,7 @@ List.from
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:122
+packages/types/src/monads/primitive/dict.monad.ts:120
 
 ▸ `Static` **from**<`D`\>(`val?`): [`default`](primitive_dict_monad.default.md)<`D`, `KeyVal`<`D`, keyof `D`\>[``"key"``], `KeyVal`<`D`, keyof `D`\>[``"value"``]\>
 
@@ -1414,7 +1414,7 @@ List.from
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:123
+packages/types/src/monads/primitive/dict.monad.ts:121
 
 ▸ `Static` **from**<`D`\>(`val?`): [`default`](primitive_dict_monad.default.md)<`D`, `KeyVal`<`D`, keyof `D`\>[``"key"``], `KeyVal`<`D`, keyof `D`\>[``"value"``]\>
 
@@ -1440,7 +1440,7 @@ List.from
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:124
+packages/types/src/monads/primitive/dict.monad.ts:122
 
 ___
 
@@ -1473,7 +1473,7 @@ val is default<D, KeyVal<D, keyof D\>["key"], KeyVal<D, keyof D\>["value"]\>
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:90
+packages/types/src/monads/primitive/dict.monad.ts:88
 
 ___
 
@@ -1590,4 +1590,4 @@ list.get() // Map<string, string>
 
 #### Defined in
 
-packages/types/src/monads/primitive/dict.monad.ts:108
+packages/types/src/monads/primitive/dict.monad.ts:106

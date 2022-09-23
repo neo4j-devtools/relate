@@ -42,7 +42,7 @@
 
 #### Defined in
 
-environments/environment.abstract.ts:28
+environments/environment.abstract.ts:29
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:20
+environments/environment.abstract.ts:21
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:18
+environments/environment.abstract.ts:19
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:22
+environments/environment.abstract.ts:23
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:24
+environments/environment.abstract.ts:25
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:26
+environments/environment.abstract.ts:27
 
 ## Accessors
 
@@ -106,7 +106,7 @@ environments/environment.abstract.ts:26
 
 #### Defined in
 
-environments/environment.abstract.ts:54
+environments/environment.abstract.ts:55
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:35
+environments/environment.abstract.ts:36
 
 ___
 
@@ -136,7 +136,7 @@ Indicates if environment is current active
 
 #### Defined in
 
-environments/environment.abstract.ts:46
+environments/environment.abstract.ts:47
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:39
+environments/environment.abstract.ts:40
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:58
+environments/environment.abstract.ts:59
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:50
+environments/environment.abstract.ts:51
 
 ## Methods
 
@@ -204,7 +204,7 @@ token
 
 #### Defined in
 
-environments/environment.abstract.ts:100
+environments/environment.abstract.ts:101
 
 ___
 
@@ -232,7 +232,7 @@ Gets config value for given key
 
 #### Defined in
 
-environments/environment.abstract.ts:127
+environments/environment.abstract.ts:128
 
 ___
 
@@ -248,7 +248,7 @@ Environment initialisation logic
 
 #### Defined in
 
-environments/environment.abstract.ts:91
+environments/environment.abstract.ts:92
 
 ___
 
@@ -264,7 +264,7 @@ Reloads config from disk
 
 #### Defined in
 
-environments/environment.abstract.ts:134
+environments/environment.abstract.ts:135
 
 ___
 
@@ -286,7 +286,7 @@ Checks if given GraphQL method is supported
 
 #### Defined in
 
-environments/environment.abstract.ts:114
+environments/environment.abstract.ts:115
 
 ___
 
@@ -309,7 +309,7 @@ Updates config on disk
 
 #### Defined in
 
-environments/environment.abstract.ts:146
+environments/environment.abstract.ts:147
 
 ___
 
@@ -333,4 +333,4 @@ Verifies an API token
 
 #### Defined in
 
-environments/environment.abstract.ts:108
+environments/environment.abstract.ts:109
