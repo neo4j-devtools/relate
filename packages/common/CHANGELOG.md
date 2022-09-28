@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.7
+
+### Patch Changes
+
+-   dcc9ab6: Adds support for 5.x dump and load.
+
 ## 1.0.6
 
 ### Patch Changes
