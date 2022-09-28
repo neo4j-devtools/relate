@@ -95,14 +95,20 @@ export class LocalDbs extends DbsAbstract<LocalEnvironment> {
 
     async dump(nameOrId: string, database: string, to: string, javaPath?: string): Promise<string> {
         const dbms = await this.environment.dbmss.get(nameOrId);
-        const params = ['dump', `--database=${database}`, `--to=${to}`];
+        const params =
+            dbms.version && semver.satisfies(dbms.version, NEO4J_VERSION_5X, {includePrerelease: true})
+                ? ['database', 'dump', `--to-path=${to}`, database]
+                : ['dump', `--database=${database}`, `--to=${to}`];
         const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);
         return result;
     }
 
     async load(nameOrId: string, database: string, from: string, force?: boolean, javaPath?: string): Promise<string> {
         const dbms = await this.environment.dbmss.get(nameOrId);
-        const params = ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
+        const params =
+            dbms.version && semver.satisfies(dbms.version, NEO4J_VERSION_5X, {includePrerelease: true})
+                ? ['database', 'load', `--from-path=${from}`, database, ...(force ? ['--overwrite-destination'] : [])]
+                : ['load', `--database=${database}`, `--from=${from}`, ...(force ? ['--force'] : [])];
         const result = await neo4jAdminCmd(await this.resolveDbmsRootPath(dbms.id), params, '', javaPath);
         return result;
     }
