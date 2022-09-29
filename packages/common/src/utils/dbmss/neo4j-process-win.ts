@@ -11,10 +11,12 @@ import {
     NEO4J_BIN_DIR,
     NEO4J_RELATE_PID_FILE,
     NEO4J_LOG_FILE,
+    NEO4J_VERSION_5X,
 } from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
 import {getDistributionVersion} from './dbms-versions';
 import {envPaths} from '../env-paths';
+import {satisfies} from 'semver';
 
 const getRunningNeo4jPid = async (dbmsRoot: string): Promise<number | null> => {
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
@@ -39,7 +41,7 @@ const removePidFile = async (dbmsRoot: string): Promise<void> => {
     await fse.remove(neo4jPidPath);
 };
 
-export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
+export const winNeo4jStart = async (dbmsRoot: string, version: string | undefined): Promise<string> => {
     const existingPid = await getRunningNeo4jPid(dbmsRoot);
     if (existingPid) {
         return 'neo4j already running';
@@ -62,38 +64,45 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
     const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
     const neo4jPs1Path = path.join(dbmsRoot, NEO4J_BIN_DIR, 'neo4j.ps1');
 
+    const isDbmsVersion5 = !version || satisfies(version, NEO4J_VERSION_5X, {includePrerelease: true});
+
     // When Relate is packaged as an Electron dependency, files inside the
     // relate package are not executable. To avoid issues the starter script is
     // copied in the cache directory and it's executed from there.
-    const cachedNeo4jStarterPath = path.join(envPaths().cache, 'neo4j-start.ps1');
-    const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', 'neo4j-start.ps1');
+    const neo4jStarterFileName = isDbmsVersion5 ? 'neo4j-5-start.ps1' : 'neo4j-start.ps1';
+    const cachedNeo4jStarterPath = path.join(envPaths().cache, neo4jStarterFileName);
+    const relateNeo4jStarterPath = path.resolve(__dirname, '..', '..', '..', neo4jStarterFileName);
 
     if (!(await fse.pathExists(cachedNeo4jStarterPath))) {
         await fse.copyFile(relateNeo4jStarterPath, cachedNeo4jStarterPath);
     }
 
-    const child = spawn(
-        'powershell.exe',
-        [
-            '-ExecutionPolicy',
-            'Bypass',
-            '-File',
-            `"${cachedNeo4jStarterPath}"`,
-            '-binPath',
-            `"${neo4jPs1Path}"`,
-            '-logsPath',
-            `"${logFilePath}"`,
-        ],
-        {
-            detached: true,
-            // Windows scripts are not executable on their own and need a shell to be able to run.
-            shell: true,
-            // stdio has to be set to 'ignore' or the node process will wait for the child
-            // process to exit first, effectively making it not detached.
-            stdio: 'ignore',
-            env: env.toObject(),
-        },
-    );
+    const powershellArgs = [
+        '-ExecutionPolicy',
+        'Bypass',
+        '-File',
+        `"${cachedNeo4jStarterPath}"`,
+        '-binPath',
+        `"${neo4jPs1Path}"`,
+    ];
+
+    // Neo4j 5 is always writing logs to the neo4j.log file, which means we
+    // can't redirect the logs through Powershell, because then both processes
+    // (the Powershell script and Neo4j) will try to get a handle of the file
+    // and Neo4j, arriving later, will fail to do so and will crash on startup.
+    if (!isDbmsVersion5) {
+        powershellArgs.push('-logsPath', `"${logFilePath}"`);
+    }
+
+    const child = spawn('powershell.exe', powershellArgs, {
+        detached: true,
+        // Windows scripts are not executable on their own and need a shell to be able to run.
+        shell: true,
+        // stdio has to be set to 'ignore' or the node process will wait for the child
+        // process to exit first, effectively making it not detached.
+        stdio: 'ignore',
+        env: env.toObject(),
+    });
 
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
     await fse.writeFile(neo4jPidPath, `${child.pid}`);
