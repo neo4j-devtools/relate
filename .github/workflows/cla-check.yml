@@ -1,0 +1,35 @@
+name: CLA Check
+
+on:
+    pull_request_target:
+        branches:
+            - master
+
+jobs:
+    cla-check:
+        if: |
+            github.event.pull_request.user.login != 'renovate[bot]' &&
+            github.event.pull_request.user.login != 'github-actions[bot]' &&
+            github.event.pull_request.user.login != 'team-devtools-bot'
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  repository: neo-technology/whitelist-check
+                  token: ${{ secrets.GH_PAT_PULL_REQUEST }}
+            - uses: actions/setup-python@v4
+              with:
+                  python-version: 3
+
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            - run: |
+                  owner=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f1)
+                  repository=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f2)
+                  ./bin/examine-pull-request "$owner" "$repository" "${{ secrets.GH_PAT_PULL_REQUEST }}" "$PULL_REQUEST_NUMBER" cla-database.csv
+              env:
+                  PULL_REQUEST_NUMBER: ${{ github.event.number }}
