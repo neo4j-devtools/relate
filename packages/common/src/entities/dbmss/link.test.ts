@@ -104,7 +104,7 @@ describe('LocalDbmss - link', () => {
     });
 
     test('Security plugin config options are not changed if they are already correct', async () => {
-        const securityPluginJavaPath = 'plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin';
+        const securityPluginJavaPath = 'plugin-com.neo4j.plugin.jwt.auth.JwtAuthPlugin,native';
         const originalConfigPath = path.join(tmpDbmsPath3, NEO4J_CONF_DIR, NEO4J_CONF_FILE);
         const originalConfig = await PropertiesFile.readFile(originalConfigPath);
 

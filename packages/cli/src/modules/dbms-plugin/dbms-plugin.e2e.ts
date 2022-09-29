@@ -1,6 +1,6 @@
 import path from 'path';
 import {test} from '@oclif/test';
-import {TestEnvironment, IDbmsInfo, envPaths, TEST_APOC_VERSIONS} from '@relate/common';
+import {TestEnvironment, IDbmsInfo, envPaths, SEMVER_VERSION_REGEX} from '@relate/common';
 
 import ListSourcesCommand from '../../commands/dbms-plugin/list-sources';
 import AddSourcesCommand from '../../commands/dbms-plugin/add-sources';
@@ -48,7 +48,7 @@ describe('$relate dbms', () => {
             {
                 name: 'plugin-test',
                 isOfficial: 'false',
-                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
+                homepageUrl: 'https://github.com/neo4j/graph-data-science/',
             },
         ]);
     });
@@ -65,7 +65,7 @@ describe('$relate dbms', () => {
             {
                 name: 'plugin-test',
                 isOfficial: 'false',
-                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
+                homepageUrl: 'https://github.com/neo4j/graph-data-science/',
             },
         ]);
     });
@@ -84,8 +84,8 @@ describe('$relate dbms', () => {
             {
                 name: 'plugin-test',
                 isOfficial: 'false',
-                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-                version: TEST_APOC_VERSIONS.default,
+                homepageUrl: 'https://github.com/neo4j/graph-data-science/',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
     });
@@ -97,8 +97,8 @@ describe('$relate dbms', () => {
         expect(JSON.parse(ctx.stdout)).toContainEqual({
             name: 'plugin-test',
             isOfficial: 'false',
-            homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-            version: TEST_APOC_VERSIONS.default,
+            homepageUrl: 'https://github.com/neo4j/graph-data-science/',
+            version: expect.stringMatching(SEMVER_VERSION_REGEX),
         });
     });
 
@@ -110,8 +110,8 @@ describe('$relate dbms', () => {
         expect(JSON.parse(ctx.stdout)).not.toContainEqual({
             name: 'plugin-test',
             isOfficial: 'false',
-            homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-            version: '4.0.0.18',
+            homepageUrl: 'https://github.com/neo4j/graph-data-science/',
+            version: expect.stringMatching(SEMVER_VERSION_REGEX),
         });
     });
 });

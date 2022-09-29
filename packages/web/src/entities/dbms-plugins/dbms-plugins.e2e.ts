@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
-import {IDbmsPluginSource, NEO4J_PLUGIN_SOURCES_URL, TestDbmss} from '@relate/common';
+import {IDbmsPluginSource, JWT_PLUGIN_VERSION_REGEX, NEO4J_PLUGIN_SOURCES_URL, TestDbmss} from '@relate/common';
 import {ConfigModule} from '@nestjs/config';
 import request from 'supertest';
 import nock from 'nock';
@@ -101,7 +101,7 @@ describe('DBMSPluginsModule', () => {
                             name: 'neo4j-jwt-addon',
                             homepageUrl: 'https://github.com/neo4j-devtools/relate',
                             version: {
-                                version: '1.2.0',
+                                version: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
                             },
                             versionsUrl:
                                 'https://s3-eu-west-1.amazonaws.com/dist.neo4j.org/relate/neo4j-jwt-addon/versions.json',
