@@ -33,4 +33,5 @@ jobs:
               with:
                   path: 'e2e/relate fixtures/cache/dbmss'
                   key: relate-e2e-${{ runner.os }}
+            - run: pnpm test:setup
             - run: pnpm test
