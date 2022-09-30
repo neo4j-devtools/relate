@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-standalone-expect */
 import nock from 'nock';
 import fse from 'fs-extra';
 
@@ -5,8 +6,15 @@ import {TargetExistsError} from '../../errors';
 import {IDbmsInfo, IDbmsPluginSource} from '../../models';
 import {waitForDbmsToBeOnline} from '../../utils/dbmss';
 import {dbReadQuery} from '../../utils/dbmss/system-db-query';
-import {TestEnvironment, TEST_NEO4J_CREDENTIALS, TEST_NEO4J_VERSIONS, TEST_APOC_VERSIONS} from '../../utils/system';
-import {NEO4J_PLUGIN_SOURCES_URL} from '../environments';
+import {
+    APOC_VERSION_REGEX,
+    JWT_PLUGIN_VERSION_REGEX,
+    TestEnvironment,
+    TEST_NEO4J_CREDENTIALS,
+    TEST_NEO4J_VERSIONS,
+} from '../../utils/system';
+import {NEO4J_PLUGIN_SOURCES_URL, NEO4J_VERSION_5X} from '../environments';
+import semver from 'semver';
 
 const PLUGIN_SOURCES_ORIGIN = new URL(NEO4J_PLUGIN_SOURCES_URL).origin;
 const PLUGIN_SOURCES_PATHNAME = new URL(NEO4J_PLUGIN_SOURCES_URL).pathname;
@@ -28,6 +36,9 @@ const TEST_SOURCE_2: IDbmsPluginSource = {
     homepageUrl: 'https://github.com/neo4j-contrib/test-plugin-2',
     versionsUrl: 'https://neo4j-contrib.github.io/test-plugin-2/versions.json',
 };
+
+const IS_TESTING_5X = semver.satisfies(TEST_NEO4J_VERSIONS.default, NEO4J_VERSION_5X);
+const skipTestOn5x = IS_TESTING_5X ? test.skip : test;
 
 describe('LocalDbmsPlugins', () => {
     let app: TestEnvironment;
@@ -157,11 +168,11 @@ describe('LocalDbmsPlugins', () => {
         });
     });
 
-    test('dbmsPlugins.install - installs apoc successfully', async () => {
+    skipTestOn5x('dbmsPlugins.install - installs apoc successfully', async () => {
         const installedVersion = await app.environment.dbmsPlugins.install([dbms.id], 'apoc');
 
         expect(installedVersion.toArray().length).toEqual(1);
-        expect(installedVersion.toArray()[0].version.version).toEqual(TEST_APOC_VERSIONS.default);
+        expect(installedVersion.toArray()[0].version.version).toEqual(expect.stringMatching(APOC_VERSION_REGEX));
 
         await app.environment.dbmss.start([dbms.id]);
         await waitForDbmsToBeOnline({
@@ -186,11 +197,24 @@ describe('LocalDbmsPlugins', () => {
             'RETURN apoc.version() AS apocVersion',
         ).finally(() => app.environment.dbmss.stop([dbms.id]));
 
-        expect(res.get('apocVersion')).toEqual(TEST_APOC_VERSIONS.default);
+        expect(res.get('apocVersion')).toEqual(expect.stringMatching(APOC_VERSION_REGEX));
     });
 
     test('dbmsPlugins.list - lists installed plugins', async () => {
         const plugins = await app.environment.dbmsPlugins.list(dbms.name);
+
+        const expectedPlugins = [
+            {
+                name: 'apoc',
+                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
+                version: expect.stringMatching(APOC_VERSION_REGEX),
+            },
+            {
+                name: 'neo4j-jwt-addon',
+                homepageUrl: 'https://github.com/neo4j-devtools/relate',
+                version: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
+            },
+        ];
 
         expect(
             plugins
@@ -200,18 +224,7 @@ describe('LocalDbmsPlugins', () => {
                     version: p.version.version,
                 }))
                 .toArray(),
-        ).toEqual([
-            {
-                name: 'apoc',
-                homepageUrl: 'https://github.com/neo4j-contrib/neo4j-apoc-procedures',
-                version: TEST_APOC_VERSIONS.default,
-            },
-            {
-                name: 'neo4j-jwt-addon',
-                homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.2.0',
-            },
-        ]);
+        ).toEqual(IS_TESTING_5X ? [expectedPlugins[1]] : expectedPlugins);
     });
 
     test('dbmsPlugins.previewUpgrade - lists correct plugin versions', async () => {
@@ -230,15 +243,29 @@ describe('LocalDbmsPlugins', () => {
         expect(upgradableMapped).toEqual([
             {
                 name: 'apoc',
-                installed: TEST_APOC_VERSIONS.lower,
-                upgradable: TEST_APOC_VERSIONS.default,
+                installed: expect.stringMatching(APOC_VERSION_REGEX),
+                upgradable: expect.stringMatching(APOC_VERSION_REGEX),
             },
             {
                 name: 'neo4j-jwt-addon',
-                installed: '1.2.0',
-                upgradable: '1.2.0',
+                installed: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
+                upgradable: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
             },
         ]);
+
+        // The installed version should be lower or equal to the upgradable one.
+        expect(
+            semver.lt(
+                semver.coerce(upgradableMapped[0].installed) ?? '',
+                semver.coerce(upgradableMapped[0].upgradable) ?? '',
+            ),
+        ).toBeTruthy();
+        expect(
+            semver.lte(
+                semver.coerce(upgradableMapped[1].installed) ?? '',
+                semver.coerce(upgradableMapped[1].upgradable) ?? '',
+            ),
+        ).toBeTruthy();
     });
 
     test('dbmsPlugins.uninstall - uninstalls apoc successfully', async () => {
@@ -257,7 +284,7 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'neo4j-jwt-addon',
                 homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.2.0',
+                version: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
             },
         ]);
     });
@@ -278,7 +305,7 @@ describe('LocalDbmsPlugins', () => {
             {
                 name: 'neo4j-jwt-addon',
                 homepageUrl: 'https://github.com/neo4j-devtools/relate',
-                version: '1.2.0',
+                version: expect.stringMatching(JWT_PLUGIN_VERSION_REGEX),
             },
         ]);
     });

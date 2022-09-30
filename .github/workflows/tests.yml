@@ -1,6 +1,9 @@
-name: PR Tests
+name: Tests
 
 on:
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+
     pull_request:
         branches:
             - master
@@ -24,10 +27,19 @@ jobs:
         steps:
             - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
             - uses: ./.github/workflows/setup
+
             - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
               if: ${{ !env.ACT }}
-              id: relate-e2e-cache
+              id: relate-e2e-dbms-cache
               with:
                   path: 'e2e/relate fixtures/cache/dbmss'
-                  key: relate-e2e-${{ runner.os }}
+                  key: relate-e2e-dbms-${{ runner.os }}
+            - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
+              if: ${{ !env.ACT }}
+              id: relate-e2e-runtime-cache
+              with:
+                  path: 'e2e/relate fixtures/cache/runtime'
+                  key: relate-e2e-runtime-${{ runner.os }}
+
+            - run: pnpm test:setup
             - run: pnpm test

@@ -8,6 +8,9 @@ export {
     TEST_NEO4J_EDITION,
     TEST_NEO4J_VERSIONS,
     TEST_APOC_VERSIONS,
+    APOC_VERSION_REGEX,
+    SEMVER_VERSION_REGEX,
+    JWT_PLUGIN_VERSION_REGEX,
 } from './utils/system';
 export {getLatestCompatibleVersion, listVersions} from './utils/dbms-plugins';
 export * from './system';

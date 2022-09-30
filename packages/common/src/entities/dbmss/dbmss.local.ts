@@ -338,7 +338,7 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
                 }
 
                 if (process.platform === 'win32') {
-                    return winNeo4jStart(this.getDbmsRootPath(id));
+                    return winNeo4jStart(this.getDbmsRootPath(id), version);
                 }
 
                 return neo4jCmd(this.getDbmsRootPath(id), 'start');

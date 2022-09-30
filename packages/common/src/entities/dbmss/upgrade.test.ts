@@ -2,7 +2,13 @@ import nock from 'nock';
 import {major, minor, patch} from 'semver';
 
 import {InvalidArgumentError} from '../../errors';
-import {TestEnvironment, TEST_APOC_VERSIONS, TEST_NEO4J_VERSIONS} from '../../utils/system';
+import {
+    TestEnvironment,
+    TEST_APOC_VERSIONS,
+    TEST_NEO4J_VERSIONS,
+    APOC_VERSION_REGEX,
+    SEMVER_VERSION_REGEX,
+} from '../../utils/system';
 import {IDbmsInfo, PLUGIN_UPGRADE_MODE} from '../../models';
 import {EnvironmentAbstract} from '../environments';
 
@@ -162,15 +168,15 @@ describe('LocalDbmss - upgrade', () => {
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: TEST_APOC_VERSIONS.lower,
+                version: expect.stringMatching(APOC_VERSION_REGEX),
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
             {
                 name: 'streams',
-                version: '4.1.1',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
         expect(mappedUpgradedPlugins).toEqual([
@@ -178,15 +184,15 @@ describe('LocalDbmss - upgrade', () => {
                 // There's no source for this plugin, so it's copied as is
                 // instead of being upgraded.
                 name: 'custom-plugin',
-                version: TEST_APOC_VERSIONS.lower,
+                version: expect.stringMatching(APOC_VERSION_REGEX),
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
             {
                 name: 'streams',
-                version: '4.1.2',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
     });
@@ -230,11 +236,11 @@ describe('LocalDbmss - upgrade', () => {
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: TEST_APOC_VERSIONS.lower,
+                version: expect.stringMatching(APOC_VERSION_REGEX),
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
             {
                 name: 'streams',
@@ -246,7 +252,7 @@ describe('LocalDbmss - upgrade', () => {
                 // The JWT plugin is always installed in Relate DBMSs regardless
                 // of plugin upgrade mode.
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
     });
@@ -305,25 +311,25 @@ describe('LocalDbmss - upgrade', () => {
         expect(mappedInstalledPlugins).toEqual([
             {
                 name: 'custom-plugin',
-                version: TEST_APOC_VERSIONS.lower,
+                version: expect.stringMatching(APOC_VERSION_REGEX),
             },
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
             {
                 name: 'streams',
-                version: '4.1.1',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
         expect(mappedUpgradedPlugins).toEqual([
             {
                 name: 'neo4j-jwt-addon',
-                version: '1.2.0',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
             {
                 name: 'streams',
-                version: '4.1.2',
+                version: expect.stringMatching(SEMVER_VERSION_REGEX),
             },
         ]);
     });

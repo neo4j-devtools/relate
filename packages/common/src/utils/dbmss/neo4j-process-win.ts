@@ -11,10 +11,12 @@ import {
     NEO4J_BIN_DIR,
     NEO4J_RELATE_PID_FILE,
     NEO4J_LOG_FILE,
+    NEO4J_VERSION_5X,
 } from '../../entities/environments';
 import {DBMS_STATUS} from '../../constants';
 import {getDistributionVersion} from './dbms-versions';
 import {envPaths} from '../env-paths';
+import {satisfies} from 'semver';
 
 const getRunningNeo4jPid = async (dbmsRoot: string): Promise<number | null> => {
     const neo4jPidPath = path.join(dbmsRoot, NEO4J_RUN_DIR, NEO4J_RELATE_PID_FILE);
@@ -39,7 +41,7 @@ const removePidFile = async (dbmsRoot: string): Promise<void> => {
     await fse.remove(neo4jPidPath);
 };
 
-export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
+export const winNeo4jStart = async (dbmsRoot: string, version: string | undefined): Promise<string> => {
     const existingPid = await getRunningNeo4jPid(dbmsRoot);
     if (existingPid) {
         return 'neo4j already running';
@@ -50,6 +52,7 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
 
     const env = new EnvVars({cloneFromProcess: true});
     env.set('JAVA_HOME', relateJavaHome || process.env.JAVA_HOME);
+    env.set('NEO4J_ACCEPT_LICENSE_AGREEMENT', 'yes');
 
     if (relateJavaHome) {
         const defaultPath = env.get('PATH');
@@ -59,7 +62,15 @@ export const winNeo4jStart = async (dbmsRoot: string): Promise<string> => {
         env.set('PATH', `${relateJavaHome}${path.delimiter}${defaultPath}`);
     }
 
-    const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, NEO4J_LOG_FILE);
+    const isDbmsVersion5 = !version || satisfies(version, NEO4J_VERSION_5X, {includePrerelease: true});
+
+    // Neo4j 5 is always writing logs to the neo4j.log file, which means we
+    // can't write the logs through Powershell in the same file, because then
+    // both processes (the Powershell script and Neo4j) will try to get a handle
+    // of the same file and Neo4j, arriving later, will fail to do so and will
+    // crash on startup.
+    const logFileName = isDbmsVersion5 ? 'neo4j-relate.log' : NEO4J_LOG_FILE;
+    const logFilePath = path.join(dbmsRoot, NEO4J_LOGS_DIR, logFileName);
     const neo4jPs1Path = path.join(dbmsRoot, NEO4J_BIN_DIR, 'neo4j.ps1');
 
     // When Relate is packaged as an Electron dependency, files inside the

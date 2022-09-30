@@ -17,7 +17,7 @@ export const TEST_NEO4J_EDITION: NEO4J_EDITION = Dict.from(NEO4J_EDITION)
 export const TEST_NEO4J_CREDENTIALS = 'password';
 
 export const TEST_NEO4J_VERSIONS = {
-    default: process.env.TEST_NEO4J_VERSION || '4.4.11',
+    default: process.env.TEST_NEO4J_VERSION ?? '4.4.11',
 
     majorUpgradeSource: '3.5.34',
     majorUpgradeTarget: '4.0.12',
@@ -30,9 +30,11 @@ export const TEST_NEO4J_VERSIONS = {
 export const TEST_APOC_VERSIONS = {
     lower: '4.3.0.8',
     lowerSha256: 'f36b840090373de88557a861440d041abde7faed4200194fd181c0f4eb2a5237',
-
-    default: '4.4.0.9',
 };
+
+export const JWT_PLUGIN_VERSION_REGEX = /1\.[1-3]\.0/;
+export const SEMVER_VERSION_REGEX = /\d+\.\d+\.\d+/;
+export const APOC_VERSION_REGEX = /\d+\.\d+\.\d+\.\d+/;
 
 export class TestEnvironment {
     constructor(
