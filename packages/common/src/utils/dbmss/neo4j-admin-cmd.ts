@@ -31,6 +31,7 @@ export async function neo4jAdminCmd(
 
     const env = new EnvVars({cloneFromProcess: true});
     env.set('JAVA_HOME', relateJavaHome || process.env.JAVA_HOME);
+    env.set('NEO4J_ACCEPT_LICENSE_AGREEMENT', 'yes');
     // relateJavaHome is prepended to the PATH in order to take
     // precedence over any user installed JAVA executable.
     env.set('PATH', relateJavaHome ? `${relateJavaHome}${path.delimiter}${process.env.PATH}` : process.env.PATH);
