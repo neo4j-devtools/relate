@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.8
+
+### Patch Changes
+
+-   7fc188d: Fix Neo4j 5.0 startup script on Windows
+
 ## 1.0.7
 
 ### Patch Changes
