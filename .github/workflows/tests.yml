@@ -28,13 +28,13 @@ jobs:
             - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
             - uses: ./.github/workflows/setup
 
-            - uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120 # tag=v3
+            - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # tag=v3
               if: ${{ !env.ACT }}
               id: relate-e2e-dbms-cache
               with:
                   path: 'e2e/relate fixtures/cache/dbmss'
                   key: relate-e2e-dbms-${{ runner.os }}
-            - uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120 # tag=v3
+            - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # tag=v3
               if: ${{ !env.ACT }}
               id: relate-e2e-runtime-cache
               with:
