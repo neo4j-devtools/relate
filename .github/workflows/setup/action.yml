@@ -5,7 +5,7 @@ inputs:
     NODE_VERSION:
         description: Node version
         required: false
-        default: 16.15
+        default: lts/*
     PNPM_VERSION:
         description: PNPM version
         required: false
