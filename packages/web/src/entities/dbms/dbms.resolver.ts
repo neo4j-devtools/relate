@@ -158,8 +158,11 @@ export class DBMSResolver {
                     dbmsInfo = payload.dbmsId;
                     break;
                 }
-                default:
+                default: {
+                    const dbmssInfo = await dbmss.info([payload.dbmsId], true);
+                    dbmsInfo = dbmssInfo.first.getOrElse(null);
                     break;
+                }
             }
 
             return {[payload.eventType]: dbmsInfo};
