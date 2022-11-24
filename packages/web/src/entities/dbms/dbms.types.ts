@@ -49,17 +49,17 @@ export class DbmsInfo extends Dbms {
 
 @ObjectType()
 export class DbmsEvent {
-    @Field(() => [DbmsInfo], {nullable: true})
-    started?: [DbmsInfo];
+    @Field(() => DbmsInfo, {nullable: true})
+    started?: DbmsInfo;
 
-    @Field(() => [DbmsInfo], {nullable: true})
-    stopped?: [DbmsInfo];
+    @Field(() => DbmsInfo, {nullable: true})
+    stopped?: DbmsInfo;
 
-    @Field(() => [DbmsInfo], {nullable: true})
-    installed?: [DbmsInfo];
+    @Field(() => DbmsInfo, {nullable: true})
+    installed?: DbmsInfo;
 
-    @Field(() => [String], {nullable: true})
-    uninstalled?: [string];
+    @Field(() => String, {nullable: true})
+    uninstalled?: string;
 }
 
 @ArgsType()
@@ -72,6 +72,12 @@ export class DbmsArgs extends EnvironmentArgs {
 export class DbmssArgs extends EnvironmentArgs {
     @Field(() => [String])
     dbmsIds: string[];
+}
+
+@ArgsType()
+export class InfoDbmssArgs extends EnvironmentArgs {
+    @Field(() => [String], {nullable: true})
+    dbmsIds?: string[];
 
     @Field(() => Boolean, {nullable: true})
     onlineCheck?: boolean;

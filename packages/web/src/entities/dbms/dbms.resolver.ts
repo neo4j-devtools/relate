@@ -1,6 +1,15 @@
 import {Resolver, Args, Mutation, Query, Context, Subscription} from '@nestjs/graphql';
 import {Inject, UseGuards, UseInterceptors} from '@nestjs/common';
-import {Environment, SystemProvider, PUBLIC_GRAPHQL_METHODS, IDbms, IDbmsInfo, IDbmsVersion} from '@relate/common';
+import {
+    Environment,
+    SystemProvider,
+    PUBLIC_GRAPHQL_METHODS,
+    IDbms,
+    IDbmsInfo,
+    IDbmsVersion,
+    waitForDbmsToBeOnline,
+    waitForDbmsToStop,
+} from '@relate/common';
 import {List} from '@relate/types';
 
 import {
@@ -21,6 +30,7 @@ import {
     UpgradeDbmsArgs,
     DbmsEvent,
     StopDbmssArgs,
+    InfoDbmssArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -29,6 +39,7 @@ import path from 'path';
 import {DBMS_EVENT_TYPE, pubSub, setDbmsWatcher} from '../../utils/file-watcher.utils';
 import {DBMSS_PID_FILE_GLOB} from '../../constants';
 import {FSWatcher} from 'chokidar';
+import {LocalEnvironment} from '@relate/common/dist/entities/environments';
 
 const environmentWatchers: Map<string, FSWatcher> = new Map();
 
@@ -97,23 +108,68 @@ export class DBMSResolver {
     @Query(() => [DbmsInfo])
     async [PUBLIC_GRAPHQL_METHODS.INFO_DBMSS](
         @Context('environment') environment: Environment,
-        @Args() {dbmsIds, onlineCheck}: DbmssArgs,
+        @Args() {dbmsIds, onlineCheck}: InfoDbmssArgs,
     ): Promise<List<IDbmsInfo>> {
-        return environment.dbmss.info(dbmsIds, onlineCheck);
+        if (dbmsIds && dbmsIds.length > 0) {
+            return environment.dbmss.info(dbmsIds, onlineCheck);
+        }
+
+        const dbmsList = await environment.dbmss.list();
+        const ids = dbmsList.mapEach((dbms) => dbms.id);
+        return environment.dbmss.info(ids, onlineCheck);
     }
 
     @Subscription(() => DbmsEvent, {
-        resolve: async (payload: any, _variables: any, context: any) => {
-            return {
-                [payload.eventType]:
-                    payload.eventType !== DBMS_EVENT_TYPE.UNINSTALLED
-                        ? await context.environment.dbmss.info([payload.dbmsId])
-                        : [payload.dbmsId],
-            };
+        resolve: async (
+            payload: {eventType: DBMS_EVENT_TYPE; dbmsId: string},
+            _variables: any,
+            context: {environment: LocalEnvironment},
+        ) => {
+            const {dbmss} = context.environment;
+
+            let dbmsInfo: IDbmsInfo | string;
+            switch (payload.eventType) {
+                case DBMS_EVENT_TYPE.STARTED: {
+                    const dbms = await dbmss.get(payload.dbmsId);
+                    const config = await dbmss.getDbmsConfig(payload.dbmsId);
+
+                    await waitForDbmsToBeOnline({
+                        ...dbms,
+                        config,
+                    });
+
+                    const dbmssInfo = await dbmss.info([payload.dbmsId], true);
+                    dbmsInfo = dbmssInfo.first.getOrElse(null);
+                    break;
+                }
+                case DBMS_EVENT_TYPE.STOPPED: {
+                    await waitForDbmsToStop(context.environment, payload.dbmsId);
+
+                    const dbmssInfo = await dbmss.info([payload.dbmsId], true);
+                    dbmsInfo = dbmssInfo.first.getOrElse(null);
+                    break;
+                }
+                case DBMS_EVENT_TYPE.INSTALLED: {
+                    const dbmssInfo = await dbmss.info([payload.dbmsId]);
+                    dbmsInfo = dbmssInfo.first.getOrElse(null);
+                    break;
+                }
+                case DBMS_EVENT_TYPE.UNINSTALLED: {
+                    dbmsInfo = payload.dbmsId;
+                    break;
+                }
+                default: {
+                    const dbmssInfo = await dbmss.info([payload.dbmsId], true);
+                    dbmsInfo = dbmssInfo.first.getOrElse(null);
+                    break;
+                }
+            }
+
+            return {[payload.eventType]: dbmsInfo};
         },
     })
     async [PUBLIC_GRAPHQL_METHODS.WATCH_DBMSS](
-        @Context('environment') environment: Environment,
+        @Context('environment') environment: LocalEnvironment,
     ): Promise<AsyncIterator<unknown, any, undefined>> {
         if (!environmentWatchers.get(environment.id)) {
             const watchPaths = [];
