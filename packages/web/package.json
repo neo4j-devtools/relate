@@ -68,7 +68,7 @@
         "class-validator": "0.13.2",
         "cookie-parser": "1.4.6",
         "file-type": "16.5.4",
-        "fs-extra": "9.1.0",
+        "fs-extra": "10.1.0",
         "graphql": "16.6.0",
         "graphql-subscriptions": "2.0.0",
         "graphql-tools": "8.3.12",
