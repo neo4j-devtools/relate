@@ -1,5 +1,11 @@
 # @relate/web
 
+## 1.0.9
+
+### Patch Changes
+
+-   e83beb9: Tweak watchDbmss subscription to observe server rather than process status. No longer require IDs array on infoDbmss query.
+
 ## 1.0.8
 
 ### Patch Changes
