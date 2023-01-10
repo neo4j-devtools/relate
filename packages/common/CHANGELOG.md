@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.9
+
+### Patch Changes
+
+-   ca0ae1d: Add support for upgrades between 5.x versions.
+
 ## 1.0.8
 
 ### Patch Changes
