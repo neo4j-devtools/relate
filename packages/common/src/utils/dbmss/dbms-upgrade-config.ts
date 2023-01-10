@@ -14,7 +14,6 @@ import {
     NEO4J_LOGS_DIR,
     NEO4J_PLUGINS_PRE_UPGRADE_DIR,
     NEO4J_PLUGIN_DIR,
-    NEO4J_VERSION_4,
 } from '../../entities/environments';
 import {PropertiesFile} from '../../system/files';
 
@@ -61,7 +60,8 @@ export async function dbmsUpgradeConfigs(
     const certExists = await fse.pathExists(path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.cert'));
     const keyExists = await fse.pathExists(path.join(upgradedDbms.rootPath, NEO4J_CERT_DIR, 'neo4j.key'));
 
-    if (semver.lt(dbms.version!, NEO4J_VERSION_4) && semver.gte(upgradedDbms.version!, NEO4J_VERSION_4)) {
+    // Only update cert config when upgrading from 3 -> 4
+    if (semver.satisfies(dbms.version!, '3') && semver.satisfies(upgradedDbms.version!, '4')) {
         const upgradedConfig = await PropertiesFile.readFile(upgradedConfigFileName);
 
         if (certExists && keyExists) {

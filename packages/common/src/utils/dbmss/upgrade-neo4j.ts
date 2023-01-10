@@ -75,6 +75,13 @@ export const upgradeNeo4j = async (
     const dbms = await env.dbmss.get(dbmsId);
     const dbmsManifest = await env.dbmss.manifest.get(dbmsId);
 
+    if (semver.satisfies(dbms.version!, '4') && semver.satisfies(version, '5')) {
+        throw new InvalidArgumentError(
+            `Upgrading from Neo4j ${dbms.version} to Neo4j ${version} is currently not possible`,
+            ['Use valid version'],
+        );
+    }
+
     if (semver.lte(version, dbms.version!)) {
         throw new InvalidArgumentError(`Target version must be greater than ${dbms.version}`, ['Use valid version']);
     }
@@ -112,7 +119,7 @@ export const upgradeNeo4j = async (
         /**
          * Run Neo4j migration?
          */
-        if (options.migrate) {
+        if (semver.lt(dbms.version!, '5.0.0') && options.migrate) {
             upgradedConfig.set('dbms.allow_upgrade', 'true');
             await upgradedConfig.flush();
 
