@@ -18,25 +18,29 @@ interface IJavaName {
 }
 
 export const resolveJavaName = (dbmsVersion: string): IJavaName => {
-    if (process.arch !== 'x64') {
+    if (!['x64', 'arm64'].includes(process.arch)) {
         throw new NotSupportedError('Unsupported architecture, install Java manually');
     }
 
     let platform: string;
     let ext: string;
+    let arch: string;
 
     switch (process.platform) {
         case 'darwin':
             platform = 'macosx';
             ext = 'tar.gz';
+            arch = process.arch === 'arm64' ? 'aarch64' : 'x64';
             break;
         case 'win32':
             platform = 'win';
             ext = 'zip';
+            arch = 'x64';
             break;
         default:
             platform = 'linux';
             ext = 'tar.gz';
+            arch = 'x64';
     }
 
     const majorVersion = semver.major(dbmsVersion);
@@ -47,7 +51,7 @@ export const resolveJavaName = (dbmsVersion: string): IJavaName => {
     };
     const javaVersion = neo4jJavaVersionMapping[majorVersion] || ZULU_JAVA_VERSION.JAVA_17;
 
-    const dirname = `zulu${javaVersion}-${platform}_${process.arch}`;
+    const dirname = `zulu${javaVersion}-${platform}_${arch}`;
 
     return {
         archive: `${dirname}.${ext}`,
