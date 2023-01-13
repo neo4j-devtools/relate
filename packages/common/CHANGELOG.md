@@ -1,5 +1,11 @@
 # @relate/common
 
+## 2.0.0
+
+### Major Changes
+
+-   fcfcbf0: Allow Apple Silicon Java dists to be downloaded
+
 ## 1.0.9
 
 ### Patch Changes
