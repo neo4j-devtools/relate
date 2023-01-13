@@ -1,6 +1,6 @@
 {
     "name": "@relate/common",
-    "version": "2.0.0",
+    "version": "1.0.10",
     "description": "JS toolkit",
     "author": "Neo4j Inc.",
     "license": "GPL-3.0",
