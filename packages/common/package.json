@@ -61,7 +61,7 @@
     },
     "dependencies": {
         "@neo4j/code-signer": "1.1.4",
-        "class-validator": "0.13.2",
+        "class-validator": "0.14.0",
         "decompress": "4.2.1",
         "fs-extra": "9.1.0",
         "got": "11.8.5",
