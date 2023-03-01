@@ -51,7 +51,7 @@
         "semver": "7.3.8",
         "supertest": "6.3.3",
         "ts-jest": "29.0.5",
-        "typescript": "4.9.4"
+        "typescript": "4.9.5"
     },
     "dependencies": {
         "@nestjs/apollo": "10.2.0",
