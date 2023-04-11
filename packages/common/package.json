@@ -25,10 +25,10 @@
         "generate:docs": "typedoc"
     },
     "devDependencies": {
-        "@nestjs/common": "9.3.9",
+        "@nestjs/common": "9.4.0",
         "@nestjs/config": "2.3.1",
-        "@nestjs/core": "9.3.9",
-        "@nestjs/testing": "9.3.9",
+        "@nestjs/core": "9.4.0",
+        "@nestjs/testing": "9.4.0",
         "@relate/types": "workspace:*",
         "@types/decompress": "4.2.4",
         "@types/fs-extra": "9.0.13",
