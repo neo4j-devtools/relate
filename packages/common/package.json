@@ -25,10 +25,10 @@
         "generate:docs": "typedoc"
     },
     "devDependencies": {
-        "@nestjs/common": "9.3.9",
+        "@nestjs/common": "9.4.0",
         "@nestjs/config": "2.3.1",
-        "@nestjs/core": "9.3.9",
-        "@nestjs/testing": "9.3.9",
+        "@nestjs/core": "9.4.0",
+        "@nestjs/testing": "9.4.0",
         "@relate/types": "workspace:*",
         "@types/decompress": "4.2.4",
         "@types/fs-extra": "9.0.13",
@@ -53,9 +53,9 @@
         "typescript": "4.9.5"
     },
     "peerDependencies": {
-        "@nestjs/common": "^8.0.0 || ^9.0.0",
+        "@nestjs/common": "^9.0.0",
         "@nestjs/config": "^2.1.0",
-        "@nestjs/core": "^8.0.0 || ^9.0.0",
+        "@nestjs/core": "^9.0.0",
         "@relate/types": "workspace:^",
         "graphql": "^16.5.0"
     },
