@@ -890,7 +890,7 @@ ___
 
 ### omit
 
-▸ **omit**<`K2`, `R`\>(...`other`): [`default`](primitive_dict_monad.default.md)<`R`, `KeyVal`<`R`, keyof `R`\>[``"key"``], `KeyVal`<`R`, keyof `R`\>[``"value"``]\>
+▸ **omit**<`K2`, `R`\>(`...other`): [`default`](primitive_dict_monad.default.md)<`R`, `KeyVal`<`R`, keyof `R`\>[``"key"``], `KeyVal`<`R`, keyof `R`\>[``"value"``]\>
 
 Omits one or more keys from the Dict
 ```ts
@@ -920,7 +920,7 @@ foo.toObject() // {foo: true}
 
 packages/types/src/monads/primitive/dict.monad.ts:201
 
-▸ **omit**<`K2`, `R`\>(...`other`): `R`
+▸ **omit**<`K2`, `R`\>(`...other`): `R`
 
 Omits one or more keys from the Dict
 ```ts
@@ -1306,7 +1306,7 @@ ___
 
 ### without
 
-▸ **without**(...`other`): [`default`](primitive_list_monad.default.md)<`RawDict`<`K`, `V`\>\>
+▸ **without**(`...other`): [`default`](primitive_list_monad.default.md)<`RawDict`<`K`, `V`\>\>
 
 #### Parameters
 

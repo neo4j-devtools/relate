@@ -65,7 +65,7 @@ Iterable.\_\_@iterator@17
 
 #### Defined in
 
-node_modules/.pnpm/typescript@4.9.3/node_modules/typescript/lib/lib.es2015.iterable.d.ts:51
+node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib/lib.es2015.iterable.d.ts:51
 
 ___
 

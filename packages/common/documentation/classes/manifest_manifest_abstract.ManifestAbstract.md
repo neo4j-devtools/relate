@@ -72,7 +72,7 @@ ___
 
 ### removeMetadata
 
-▸ `Abstract` **removeMetadata**(`nameOrId`, ...`keys`): `Promise`<`Entity`\>
+▸ `Abstract` **removeMetadata**(`nameOrId`, `...keys`): `Promise`<`Entity`\>
 
 Remove metadata from an entity
 

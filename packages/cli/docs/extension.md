@@ -46,7 +46,6 @@ USAGE
 
 DESCRIPTION
   Link a Relate extension.
-
   Useful for development.
 
 ALIASES

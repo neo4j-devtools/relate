@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.11
+
+### Patch Changes
+
+-   f18f230: Update Nestjs dependencies
+
 ## 1.0.10
 
 ### Patch Changes
