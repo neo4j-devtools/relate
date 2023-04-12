@@ -1,6 +1,5 @@
 export {
     TestDbmss,
-    TestExtensions,
     TestEnvironment,
     TEST_NEO4J_CREDENTIALS,
     TEST_NEO4J_EDITION,

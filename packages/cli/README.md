@@ -42,14 +42,12 @@ $ relate <topic>:<command> --help
 <!-- commands -->
 # Command Topics
 
-* [`relate app`](./docs/app.md) - Open app using your default web browser.
 * [`relate autocomplete`](./docs/autocomplete.md) - display autocomplete installation instructions
 * [`relate backup`](./docs/backup.md) - Archives of Relate-managed resources (though not Neo4j databases; see "db:dump").
 * [`relate db`](./docs/db.md) - Individual databases within a DBMS.
 * [`relate dbms`](./docs/dbms.md) - Neo4j DBMS installations.
 * [`relate dbms-plugin`](./docs/dbms-plugin.md) - Neo4j DBMS plugins.
 * [`relate environment`](./docs/environment.md) - Managed sets of related resources and services.
-* [`relate extension`](./docs/extension.md) - Install a Relate extension
 * [`relate help`](./docs/help.md) - Display help for relate.
 * [`relate project`](./docs/project.md) - Projects bring files and data together.
 

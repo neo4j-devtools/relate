@@ -7,7 +7,6 @@ export {
 export * from './dbms.model';
 export {AuthTokenModel, IAuthToken} from './auth-token.model';
 export {AppLaunchTokenModel, IAppLaunchToken} from './app-launch-token.model';
-export * from './extension.model';
 export * from './file.model';
 export * from './dbms-plugin.model';
 export * from './project.model';

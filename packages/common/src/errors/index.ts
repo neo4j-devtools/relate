@@ -15,7 +15,6 @@ export {FileStructureError} from './file-structure.error';
 export {TargetExistsError} from './target-exists.error';
 export {FetchError} from './fetch.error';
 export {IntegrityError} from './integrity.error';
-export {ExtensionExistsError} from './extension-exists.error';
 export {GraphqlError} from './graphql.error';
 export {ErrorAbstract} from './error.abstract';
 export {FileUploadError} from './file-upload.error';
