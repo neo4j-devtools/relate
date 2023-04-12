@@ -206,18 +206,6 @@ export const selectProjectDbmsPrompt = (message: string, projectDbmss: IProjectD
     );
 };
 
-export const selectAppPrompt = async (message: string, environment: Environment): Promise<string> => {
-    const installedApps = (await environment.extensions.listApps()).toArray();
-
-    return selectPrompt(
-        message,
-        installedApps.map((app) => ({
-            name: app.name,
-            message: app.name,
-        })),
-    );
-};
-
 export const selectAllowedMethodsPrompt = async (): Promise<PUBLIC_GRAPHQL_METHODS[]> => {
     const needsWhitelist = await confirmPrompt('Do you need to restrict access to the GraphQL API methods?');
 

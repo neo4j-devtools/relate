@@ -76,9 +76,6 @@
         "description": "Create, manage and use Neo4j graphs from the command line.\nNeo4j Relate is a set of project-oriented tools and services for working with the Neo4j graph platform.",
         "topicSeparator": " ",
         "topics": {
-            "app": {
-                "description": "Single page web apps.\nApps can easily connect to any Neo4j which is managed by Relate. Install the @relate/web package for local hosting."
-            },
             "backup": {
                 "description": "Archives of Relate-managed resources (though not Neo4j databases; see \"db:dump\")."
             },
@@ -93,9 +90,6 @@
             },
             "environment": {
                 "description": "Managed sets of related resources and services."
-            },
-            "extension": {
-                "description": "Extensions to the Relate framework."
             },
             "project": {
                 "description": "Projects bring files and data together."
