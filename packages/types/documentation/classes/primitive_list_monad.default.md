@@ -898,7 +898,7 @@ ___
 
 ### without
 
-▸ **without**(...`other`): [`default`](primitive_list_monad.default.md)<`T`\>
+▸ **without**(`...other`): [`default`](primitive_list_monad.default.md)<`T`\>
 
 #### Parameters
 

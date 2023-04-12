@@ -23,7 +23,6 @@ FLAGS
 
 DESCRIPTION
   Open app using your default web browser.
-
   @relate/web must already be installed and running for this to work.
 
 EXAMPLES

@@ -152,7 +152,6 @@ FLAGS
 
 DESCRIPTION
   Link to an existing DBMS installation
-
   Linking a DBMS enables relate to manage it.
 
 EXAMPLES

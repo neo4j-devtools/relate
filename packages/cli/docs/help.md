@@ -3,18 +3,18 @@
 
 Display help for relate.
 
-* [`relate help [COMMAND]`](#relate-help-command)
+* [`relate help [COMMANDS]`](#relate-help-commands)
 
-## `relate help [COMMAND]`
+## `relate help [COMMANDS]`
 
 Display help for relate.
 
 ```
 USAGE
-  $ relate help [COMMAND] [-n]
+  $ relate help [COMMANDS] [-n]
 
 ARGUMENTS
-  COMMAND  Command to show help for.
+  COMMANDS  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
@@ -23,4 +23,4 @@ DESCRIPTION
   Display help for relate.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.12/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.8/src/commands/help.ts)_
