@@ -63,7 +63,7 @@ export class SystemProvider implements OnModuleInit {
             });
         }
 
-        const configId = this.configService.get('defaultEnvironmentNameOrId');
+        const configId = this.configService.get<string>('defaultEnvironmentNameOrId');
         if (configId) {
             const environment: Maybe<EnvironmentAbstract> = this.allEnvironments.values.find(
                 (env) => env.id === configId || env.name === configId,

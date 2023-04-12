@@ -21,7 +21,7 @@ describe('System Provider', () => {
     describe('no config', () => {
         beforeAll(async () => {
             const module: TestingModule = await Test.createTestingModule({
-                imports: [ConfigModule.forRoot({isGlobal: true}), SystemModule.register()],
+                imports: [ConfigModule.forRoot({isGlobal: true}), SystemModule],
             }).compile();
 
             provider = module.get(SystemProvider);
@@ -103,7 +103,7 @@ describe('System Provider', () => {
                             }),
                         ],
                     }),
-                    SystemModule.register(),
+                    SystemModule,
                 ],
             }).compile();
 
