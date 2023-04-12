@@ -1,21 +1,13 @@
-import {DynamicModule, Inject, Module, OnModuleInit} from '@nestjs/common';
+import {Inject, Module, OnModuleInit} from '@nestjs/common';
 import {GraphQLModule, GraphQLSchemaHost} from '@nestjs/graphql';
 import {HttpAdapterHost} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
-import {
-    envPaths,
-    SystemModule,
-    EXTENSION_TYPES,
-    loadExtensionsFor,
-    ISystemModuleConfig,
-    SystemProvider,
-} from '@relate/common';
+import {envPaths, SystemModule, SystemProvider, ISystemModuleConfig} from '@relate/common';
 import {Application} from 'express';
 import {OpenAPI, useSofa} from 'sofa-api';
 import swaggerUi from 'swagger-ui-express';
 import multer from 'multer';
 
-import {ExtensionModule} from './entities/extension';
 import {DBModule} from './entities/db';
 import {DBMSModule} from './entities/dbms';
 import {ProjectModule} from './entities/project';
@@ -40,7 +32,6 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         DBMSModule,
         DBMSPluginsModule,
         DBModule,
-        ExtensionModule,
         ProjectModule,
         FilesModule,
         GraphQLModule.forRootAsync({
@@ -70,19 +61,9 @@ export interface IWebModuleConfig extends ISystemModuleConfig {
         HealthModule,
         AuthModule,
     ],
+    exports: [SystemModule],
 })
 export class WebModule implements OnModuleInit {
-    static register(config: IWebModuleConfig): DynamicModule {
-        const {defaultEnvironmentNameOrId} = config;
-        const webExtensions = loadExtensionsFor(EXTENSION_TYPES.WEB, defaultEnvironmentNameOrId);
-
-        return {
-            imports: [SystemModule.register(config), ...webExtensions],
-            module: WebModule,
-            exports: [SystemModule, ...webExtensions],
-        };
-    }
-
     constructor(
         @Inject(GraphQLSchemaHost) private readonly schemaHost: GraphQLSchemaHost,
         @Inject(HttpAdapterHost) private readonly httpAdapterHost: HttpAdapterHost,
