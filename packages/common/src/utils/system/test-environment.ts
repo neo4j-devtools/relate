@@ -58,7 +58,7 @@ export class TestEnvironment {
                 ConfigModule.forRoot({
                     isGlobal: true,
                 }),
-                SystemModule.register(),
+                SystemModule,
             ],
         })
         class AppModule {}

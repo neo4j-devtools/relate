@@ -61,12 +61,9 @@ describe('DBMSModule', () => {
             imports: [
                 ConfigModule.forRoot({
                     isGlobal: true,
-                    load: [configuration],
+                    load: [configuration, () => ({defaultEnvironmentNameOrId: testEnv.environment.id})],
                 }),
-                WebModule.register({
-                    defaultEnvironmentNameOrId: testEnv.environment.id,
-                    ...configuration(),
-                }),
+                WebModule,
             ],
         }).compile();
 

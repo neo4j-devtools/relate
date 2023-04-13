@@ -1,14 +1,7 @@
 import {Command, Interfaces, Errors} from '@oclif/core';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
-import {
-    ISystemModuleConfig,
-    SystemModule,
-    EXTENSION_TYPES,
-    loadExtensionsFor,
-    registerHookListener,
-    HOOK_EVENTS,
-} from '@relate/common';
+import {ISystemModuleConfig, SystemModule, registerHookListener, HOOK_EVENTS} from '@relate/common';
 import {ConfigModule} from '@nestjs/config';
 
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
@@ -35,7 +28,6 @@ export default abstract class BaseCommand extends Command {
         };
         const options: {logger?: false} = IS_DEVELOPMENT_ENV ? {} : {logger: false};
         const {flags} = parsed;
-        const cliExtensions = loadExtensionsFor(EXTENSION_TYPES.CLI, flags.environment);
         const systemConfig: ISystemModuleConfig = {defaultEnvironmentNameOrId: flags.environment};
 
         registerHookListener(HOOK_EVENTS.DEBUG, (msg) => this.debug(msg));
@@ -47,8 +39,7 @@ export default abstract class BaseCommand extends Command {
                         isGlobal: true,
                         load: [() => systemConfig],
                     }),
-                    SystemModule.register(systemConfig),
-                    ...cliExtensions,
+                    SystemModule,
                 ],
                 module: this.commandModule,
                 providers: [

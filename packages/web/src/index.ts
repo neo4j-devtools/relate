@@ -7,7 +7,6 @@ import {HealthService, IHealthInfo} from './health';
 import {WebModule, IWebModuleConfig} from './web.module';
 
 export {WebModule, IWebModuleConfig, IHealthInfo};
-export {ExtensionModule} from './entities/extension';
 
 export async function bootstrapWebModule(env = 'dev'): Promise<void> {
     const {default: configuration} = await require(`./configs/${env}.config`);
@@ -20,7 +19,7 @@ export async function bootstrapWebModule(env = 'dev'): Promise<void> {
                 isGlobal: true,
                 load: [configuration],
             }),
-            WebModule.register(config),
+            WebModule,
         ],
     })
     class ServerModule {}
@@ -35,7 +34,6 @@ export async function bootstrapWebModule(env = 'dev'): Promise<void> {
 export async function infoWebModule(env = 'dev'): Promise<IHealthInfo> {
     // @todo: how to handle env?
     const {default: configuration} = await require(`./configs/${env}.config`);
-    const config = configuration();
 
     // this is weird but it allows us to have global configs
     @Module({
@@ -44,7 +42,7 @@ export async function infoWebModule(env = 'dev'): Promise<IHealthInfo> {
                 isGlobal: true,
                 load: [configuration],
             }),
-            WebModule.register(config),
+            WebModule,
         ],
     })
     class ServerModule {}

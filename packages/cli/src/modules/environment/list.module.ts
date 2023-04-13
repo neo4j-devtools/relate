@@ -2,7 +2,7 @@ import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
 import {CliUx} from '@oclif/core';
 
-import ListCommand from '../../commands/extension/list';
+import ListCommand from '../../commands/environment/list';
 
 @Module({
     exports: [],

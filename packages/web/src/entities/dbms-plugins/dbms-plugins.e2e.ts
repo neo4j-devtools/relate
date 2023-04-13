@@ -56,12 +56,9 @@ describe('DBMSPluginsModule', () => {
             imports: [
                 ConfigModule.forRoot({
                     isGlobal: true,
-                    load: [configuration],
+                    load: [configuration, () => ({defaultEnvironmentNameOrId: dbmss.environment.id})],
                 }),
-                WebModule.register({
-                    defaultEnvironmentNameOrId: dbmss.environment.id,
-                    ...configuration(),
-                }),
+                WebModule,
             ],
         }).compile();
 

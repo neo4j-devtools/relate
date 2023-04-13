@@ -2,7 +2,6 @@ import fse from 'fs-extra';
 import path from 'path';
 
 import {LocalDbmss} from '../dbmss';
-import {LocalExtensions} from '../extensions';
 import {EnvironmentAbstract} from './environment.abstract';
 import {envPaths} from '../../utils';
 import {ensureDirs} from '../../system/files';
@@ -32,8 +31,6 @@ export class LocalEnvironment extends EnvironmentAbstract {
     public readonly dbmsPlugins = new LocalDbmsPlugins(this);
 
     public readonly dbs = new LocalDbs(this);
-
-    public readonly extensions = new LocalExtensions(this);
 
     public readonly projects = new LocalProjects(this);
 

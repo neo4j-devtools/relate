@@ -8,7 +8,6 @@ import {DEFAULT_ENVIRONMENT_HTTP_ORIGIN, ENVIRONMENT_TYPES} from './environment.
 import {arrayHasItems} from '../../utils/generic';
 import {DbmssAbstract} from '../dbmss';
 import {DbsAbstract} from '../dbs';
-import {ExtensionsAbstract} from '../extensions';
 import {ProjectsAbstract} from '../projects';
 import {BackupAbstract} from '../backups';
 import {envPaths} from '../../utils';
@@ -21,8 +20,6 @@ export abstract class EnvironmentAbstract {
     public readonly dbmsPlugins!: DbmsPluginsAbstract<EnvironmentAbstract>;
 
     public readonly dbs!: DbsAbstract<EnvironmentAbstract>;
-
-    public readonly extensions!: ExtensionsAbstract<EnvironmentAbstract>;
 
     public readonly projects!: ProjectsAbstract<EnvironmentAbstract>;
 

@@ -1,8 +1,5 @@
-// @todo: better way of handling types
-export {IExtensionVersion, loadExtensionsFor, getAppLaunchUrl} from './utils/extensions';
 export {
     TestDbmss,
-    TestExtensions,
     TestEnvironment,
     TEST_NEO4J_CREDENTIALS,
     TEST_NEO4J_EDITION,
