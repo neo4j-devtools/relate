@@ -1,5 +1,12 @@
 # @relate/cli
 
+## 1.0.12
+
+### Patch Changes
+
+-   Updated dependencies [697371d]
+    -   @relate/common@1.0.12
+
 ## 1.0.11
 
 ### Patch Changes

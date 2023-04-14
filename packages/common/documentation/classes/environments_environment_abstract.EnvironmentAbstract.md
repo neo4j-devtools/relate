@@ -12,7 +12,6 @@
 - [dbmsPlugins](environments_environment_abstract.EnvironmentAbstract.md#dbmsplugins)
 - [dbmss](environments_environment_abstract.EnvironmentAbstract.md#dbmss)
 - [dbs](environments_environment_abstract.EnvironmentAbstract.md#dbs)
-- [extensions](environments_environment_abstract.EnvironmentAbstract.md#extensions)
 - [projects](environments_environment_abstract.EnvironmentAbstract.md#projects)
 
 ### Accessors
@@ -42,7 +41,7 @@
 
 #### Defined in
 
-environments/environment.abstract.ts:29
+environments/environment.abstract.ts:26
 
 ___
 
@@ -52,7 +51,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:21
+environments/environment.abstract.ts:20
 
 ___
 
@@ -62,7 +61,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:19
+environments/environment.abstract.ts:18
 
 ___
 
@@ -72,17 +71,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:23
-
-___
-
-### extensions
-
-• `Readonly` **extensions**: [`ExtensionsAbstract`](extensions_extensions_abstract.ExtensionsAbstract.md)<[`EnvironmentAbstract`](environments_environment_abstract.EnvironmentAbstract.md)\>
-
-#### Defined in
-
-environments/environment.abstract.ts:25
+environments/environment.abstract.ts:22
 
 ___
 
@@ -92,7 +81,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:27
+environments/environment.abstract.ts:24
 
 ## Accessors
 
@@ -106,7 +95,7 @@ environments/environment.abstract.ts:27
 
 #### Defined in
 
-environments/environment.abstract.ts:55
+environments/environment.abstract.ts:52
 
 ___
 
@@ -120,7 +109,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:36
+environments/environment.abstract.ts:33
 
 ___
 
@@ -136,7 +125,7 @@ Indicates if environment is current active
 
 #### Defined in
 
-environments/environment.abstract.ts:47
+environments/environment.abstract.ts:44
 
 ___
 
@@ -150,7 +139,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:40
+environments/environment.abstract.ts:37
 
 ___
 
@@ -164,7 +153,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:59
+environments/environment.abstract.ts:56
 
 ___
 
@@ -178,7 +167,7 @@ ___
 
 #### Defined in
 
-environments/environment.abstract.ts:51
+environments/environment.abstract.ts:48
 
 ## Methods
 
@@ -204,7 +193,7 @@ token
 
 #### Defined in
 
-environments/environment.abstract.ts:101
+environments/environment.abstract.ts:98
 
 ___
 
@@ -232,7 +221,7 @@ Gets config value for given key
 
 #### Defined in
 
-environments/environment.abstract.ts:128
+environments/environment.abstract.ts:125
 
 ___
 
@@ -248,7 +237,7 @@ Environment initialisation logic
 
 #### Defined in
 
-environments/environment.abstract.ts:92
+environments/environment.abstract.ts:89
 
 ___
 
@@ -264,7 +253,7 @@ Reloads config from disk
 
 #### Defined in
 
-environments/environment.abstract.ts:135
+environments/environment.abstract.ts:132
 
 ___
 
@@ -286,7 +275,7 @@ Checks if given GraphQL method is supported
 
 #### Defined in
 
-environments/environment.abstract.ts:115
+environments/environment.abstract.ts:112
 
 ___
 
@@ -309,7 +298,7 @@ Updates config on disk
 
 #### Defined in
 
-environments/environment.abstract.ts:147
+environments/environment.abstract.ts:144
 
 ___
 
@@ -333,4 +322,4 @@ Verifies an API token
 
 #### Defined in
 
-environments/environment.abstract.ts:109
+environments/environment.abstract.ts:106
