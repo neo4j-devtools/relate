@@ -5,6 +5,8 @@ import fetch from 'node-fetch';
 
 import {HealthService, IHealthInfo} from './health';
 import {WebModule, IWebModuleConfig} from './web.module';
+import {NestExpressApplication} from '@nestjs/platform-express';
+import {json, NextFunction, Request, Response} from 'express';
 
 export {WebModule, IWebModuleConfig, IHealthInfo};
 
@@ -24,11 +26,23 @@ export async function bootstrapWebModule(env = 'dev'): Promise<void> {
     })
     class ServerModule {}
 
-    const app = await NestFactory.create(ServerModule, {
+    const app = await NestFactory.create<NestExpressApplication>(ServerModule, {
         cors: true,
+        bodyParser: false,
     });
 
-    return app.listen(config.port, config.host);
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        // Don't use body parser on the REST endpoints
+        // https://github.com/Urigo/SOFA/issues/1174#issuecomment-1472363676
+        if (req.path.startsWith('/api')) {
+            next();
+            return;
+        }
+
+        json()(req, res, next);
+    });
+
+    await app.listen(config.port, config.host);
 }
 
 export async function infoWebModule(env = 'dev'): Promise<IHealthInfo> {
