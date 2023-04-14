@@ -244,3 +244,11 @@ export class UpgradeDbmsArgs extends EnvironmentArgs {
     @Field(() => DbmsUpgradeOptions, {nullable: true})
     options?: DbmsUpgradeOptions;
 }
+@ArgsType()
+export class LinkDbmsArgs extends EnvironmentArgs {
+    @Field(() => String)
+    externalPath: string;
+
+    @Field(() => String)
+    name: string;
+}

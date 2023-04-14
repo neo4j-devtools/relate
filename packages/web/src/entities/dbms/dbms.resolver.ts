@@ -31,6 +31,7 @@ import {
     DbmsEvent,
     StopDbmssArgs,
     InfoDbmssArgs,
+    LinkDbmsArgs,
 } from './dbms.types';
 import {EnvironmentGuard} from '../../guards/environment.guard';
 import {EnvironmentInterceptor} from '../../interceptors/environment.interceptor';
@@ -274,5 +275,13 @@ export class DBMSResolver {
         @Args() {dbmsId, version, options}: UpgradeDbmsArgs,
     ): Promise<IDbmsInfo> {
         return environment.dbmss.upgrade(dbmsId, version, options);
+    }
+
+    @Mutation(() => DbmsInfo)
+    async [PUBLIC_GRAPHQL_METHODS.LINK_DBMS](
+        @Context('environment') environment: Environment,
+        @Args() {externalPath, name}: LinkDbmsArgs,
+    ): Promise<IDbmsInfo> {
+        return environment.dbmss.link(externalPath, name);
     }
 }
