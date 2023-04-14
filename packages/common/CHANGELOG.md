@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.12
+
+### Patch Changes
+
+-   697371d: Add missing link dbms mutation
+
 ## 1.0.11
 
 ### Patch Changes

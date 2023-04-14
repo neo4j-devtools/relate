@@ -11,6 +11,5 @@
 - [dbmss/dbmss.abstract](modules/dbmss_dbmss_abstract.md)
 - [dbs/dbs.abstract](modules/dbs_dbs_abstract.md)
 - [environments/environment.abstract](modules/environments_environment_abstract.md)
-- [extensions/extensions.abstract](modules/extensions_extensions_abstract.md)
 - [manifest/manifest.abstract](modules/manifest_manifest_abstract.md)
 - [projects/projects.abstract](modules/projects_projects_abstract.md)

@@ -1,5 +1,14 @@
 # @relate/web
 
+## 1.0.13
+
+### Patch Changes
+
+-   27cdd49: Fix body parameters not recognized on REST endpoints
+-   697371d: Add missing link dbms mutation
+-   Updated dependencies [697371d]
+    -   @relate/common@1.0.12
+
 ## 1.0.12
 
 ### Patch Changes
