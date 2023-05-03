@@ -21,7 +21,7 @@ export default class ListCommand extends BaseCommand {
         '$ relate dbms-plugin:list MyDbms --filter=name=my-dbms --output=json',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

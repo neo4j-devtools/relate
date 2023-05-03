@@ -20,7 +20,7 @@ export default class InfoCommand extends BaseCommand {
         '$ relate dbms:info --filter=name=my-dbms --output=json',
     ];
 
-    static args = [ARGS.DBMSS];
+    static args = {...ARGS.DBMSS};
 
     static strict = false;
 

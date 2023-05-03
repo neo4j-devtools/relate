@@ -17,7 +17,7 @@ export default class StopCommand extends BaseCommand {
         '$ relate dbms:stop -e environment-name',
     ];
 
-    static args = [ARGS.DBMSS];
+    static args = {...ARGS.DBMSS};
 
     static strict = false;
 

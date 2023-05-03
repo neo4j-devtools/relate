@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {ENTITY_TYPES} from '@relate/common';
 
 import {isInteractive} from './stdin';
@@ -9,22 +9,26 @@ export const IS_TEST_ENV = process.env.NODE_ENV === 'test';
 
 export const ARGS = {
     DBMS: {
-        description: 'Name or ID of a Neo4j instance',
-        name: 'dbms',
-        required: REQUIRED_FOR_SCRIPTS,
+        dbms: Args.string({
+            description: 'Name or ID of a Neo4j instance',
+            required: REQUIRED_FOR_SCRIPTS,
+        }),
     },
     DBMSS: {
-        description: 'Names or IDs of Neo4j instances',
-        name: 'dbmss',
+        dbmss: Args.string({
+            description: 'Names or IDs of Neo4j instances',
+        }),
     },
     ENVIRONMENT: {
-        description: 'Name of the environment to run the command against',
-        name: 'environment',
+        environment: Args.string({
+            description: 'Name of the environment to run the command against',
+        }),
     },
     VERSION: {
-        description: 'Version to install (semver, url, or path)',
-        name: 'version',
-        required: REQUIRED_FOR_SCRIPTS,
+        version: Args.string({
+            description: 'Version to install (semver, url, or path)',
+            required: REQUIRED_FOR_SCRIPTS,
+        }),
     },
 };
 

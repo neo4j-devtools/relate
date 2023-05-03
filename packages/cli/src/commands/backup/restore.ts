@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
 import {RestoreModule} from '../../modules/backup/restore.module';
@@ -15,17 +16,16 @@ export default class RestoreCommand extends BaseCommand {
         '$ relate backup:restore <backup-id-or-path> <output-path>',
     ];
 
-    static args = [
-        {
-            name: 'backupIdOrPath',
+    static args = {
+        backupIdOrPath: Args.string({
             description: 'Backup ID or path',
             required: true,
-        },
-        {
+        }),
+        outputPath: Args.string({
             name: 'outputPath',
             description: 'destination of backup',
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

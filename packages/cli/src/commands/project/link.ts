@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {LinkModule} from '../../modules/project/link.module';
@@ -12,12 +12,11 @@ export default class LinkCommand extends BaseCommand {
 
     static examples = ['$ relate project:link /path/to/target/project/dir'];
 
-    static args = [
-        {
-            name: 'filePath',
+    static args = {
+        filePath: Args.file({
             required: true,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         name: Flags.string({

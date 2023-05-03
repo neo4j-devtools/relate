@@ -20,7 +20,7 @@ export default class AccessTokenCommand extends BaseCommand {
         '$ relate dbms:access-token my-dbms -u dbms-user',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

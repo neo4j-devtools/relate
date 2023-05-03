@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -18,13 +18,12 @@ export default class CreateCommand extends BaseCommand {
         '$ relate db:create my-new-db -D started-dbms -u dbms-user-with-system-db-access',
     ];
 
-    static args = [
-        {
-            name: 'name',
+    static args = {
+        name: Args.string({
             description: 'database name',
-            required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+            reuqired: REQUIRED_FOR_SCRIPTS,
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

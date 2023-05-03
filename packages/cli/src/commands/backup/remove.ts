@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
 import {RemoveModule} from '../../modules/backup/remove.module';
@@ -11,13 +12,12 @@ export default class RemoveCommand extends BaseCommand {
 
     static examples = ['$ relate backup:remove <backup-id-or-path>', '$ relate backup:remove -e environment-name'];
 
-    static args = [
-        {
-            name: 'backupId',
+    static args = {
+        backupId: Args.string({
             description: 'Backup ID',
             required: true,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

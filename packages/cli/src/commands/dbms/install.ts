@@ -19,7 +19,7 @@ export default class InstallCommand extends BaseCommand {
         '$ relate dbms:install 4.0.2 -n my-new-dbms -e environment-name --no-caching',
     ];
 
-    static args = [ARGS.VERSION];
+    static args = {...ARGS.VERSION};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

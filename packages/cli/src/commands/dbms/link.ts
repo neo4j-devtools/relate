@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {LinkModule} from '../../modules/dbms/link.module';
@@ -13,16 +13,14 @@ export default class LinkCommand extends BaseCommand {
 
     static examples = ['$ relate dbms:link /path/to/target/dbms/dir "related DBMS"'];
 
-    static args = [
-        {
-            name: 'filePath',
+    static args = {
+        filePath: Args.string({
             required: true,
-        },
-        {
-            name: 'dbmsName',
+        }),
+        dbmsName: Args.string({
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         confirm: Flags.boolean({

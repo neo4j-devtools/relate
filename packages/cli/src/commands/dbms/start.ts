@@ -16,7 +16,7 @@ export default class StartCommand extends BaseCommand {
         '$ relate dbms:start -e environment-name',
     ];
 
-    static args = [ARGS.DBMSS];
+    static args = {...ARGS.DBMSS};
 
     static strict = false;
 

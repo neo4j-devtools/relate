@@ -21,7 +21,7 @@ export default class UninstallCommand extends BaseCommand {
 
     static strict = false;
 
-    static args = [ARGS.DBMSS];
+    static args = {...ARGS.DBMSS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

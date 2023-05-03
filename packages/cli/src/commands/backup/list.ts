@@ -22,7 +22,7 @@ export default class ListCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...CliUx.ux.table.flags({except: ['extended', 'csv']}),
-        type: Flags.enum<ENTITY_TYPES>({
+        type: Flags.custom<ENTITY_TYPES>({
             char: 't',
             options: VALID_BACKUP_TYPES,
             description: 'The relate entity type',

@@ -19,7 +19,7 @@ export default class InitCommand extends BaseCommand {
 
     static aliases = ['env:init'];
 
-    static args = [ARGS.ENVIRONMENT];
+    static args = {...ARGS.ENVIRONMENT};
 
     static flags = {
         interactive: Flags.boolean({
