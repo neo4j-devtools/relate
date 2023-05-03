@@ -55,8 +55,8 @@ importers:
       '@nestjs/common': 9.4.0
       '@nestjs/config': 2.3.1
       '@nestjs/core': 9.4.0
-      '@oclif/core': 1.26.2
-      '@oclif/plugin-autocomplete': 1.4.6
+      '@oclif/core': 2.8.4
+      '@oclif/plugin-autocomplete': 2.1.9
       '@oclif/plugin-help': 5.2.9
       '@oclif/test': 2.3.17
       '@relate/common': workspace:*
@@ -89,8 +89,8 @@ importers:
       '@nestjs/common': 9.4.0_atc7tu2sld2m3nk4hmwkqn6qde
       '@nestjs/config': 2.3.1_4k3epc74gc2u2qkv5yznawsx6m
       '@nestjs/core': 9.4.0_4k3epc74gc2u2qkv5yznawsx6m
-      '@oclif/core': 1.26.2
-      '@oclif/plugin-autocomplete': 1.4.6_hl62ipmltjfz74pvls4whx33xm
+      '@oclif/core': 2.8.4_hl62ipmltjfz74pvls4whx33xm
+      '@oclif/plugin-autocomplete': 2.1.9_hl62ipmltjfz74pvls4whx33xm
       '@oclif/plugin-help': 5.2.9_hl62ipmltjfz74pvls4whx33xm
       '@relate/common': link:../common
       '@relate/types': link:../types
@@ -2118,119 +2118,6 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@oclif/core/1.26.2:
-    resolution: {integrity: sha512-6jYuZgXvHfOIc9GIaS4T3CIKGTjPmfAxuMcbCbMRKJJl4aq/4xeRlEz0E8/hz8HxvxZBGvN2GwAUHlrGWQVrVw==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@oclif/linewrap': 1.0.0
-      '@oclif/screen': 3.0.4
-      ansi-escapes: 4.3.2
-      ansi-styles: 4.3.0
-      cardinal: 2.1.1
-      chalk: 4.1.2
-      clean-stack: 3.0.1
-      cli-progress: 3.12.0
-      debug: 4.3.4_supports-color@8.1.1
-      ejs: 3.1.9
-      fs-extra: 9.1.0
-      get-package-type: 0.1.0
-      globby: 11.1.0
-      hyperlinker: 1.0.0
-      indent-string: 4.0.0
-      is-wsl: 2.2.0
-      js-yaml: 3.14.1
-      natural-orderby: 2.0.3
-      object-treeify: 1.1.33
-      password-prompt: 1.1.2
-      semver: 7.5.0
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      supports-color: 8.1.1
-      supports-hyperlinks: 2.3.0
-      tslib: 2.5.0
-      widest-line: 3.1.0
-      wrap-ansi: 7.0.0
-    dev: false
-
-  /@oclif/core/2.8.1_hl62ipmltjfz74pvls4whx33xm:
-    resolution: {integrity: sha512-GnJNTR6+TmrvBBHTXFPV7oqhEbJ6Rv+pnG6XVag6MUwzKjIrhotyT2DH2/QkIQ+J2wgsqQvo2hcB9QuoBC3Ipg==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@types/cli-progress': 3.11.0
-      ansi-escapes: 4.3.2
-      ansi-styles: 4.3.0
-      cardinal: 2.1.1
-      chalk: 4.1.2
-      clean-stack: 3.0.1
-      cli-progress: 3.12.0
-      debug: 4.3.4_supports-color@8.1.1
-      ejs: 3.1.9
-      fs-extra: 9.1.0
-      get-package-type: 0.1.0
-      globby: 11.1.0
-      hyperlinker: 1.0.0
-      indent-string: 4.0.0
-      is-wsl: 2.2.0
-      js-yaml: 3.14.1
-      natural-orderby: 2.0.3
-      object-treeify: 1.1.33
-      password-prompt: 1.1.2
-      semver: 7.5.0
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      supports-color: 8.1.1
-      supports-hyperlinks: 2.3.0
-      ts-node: 10.9.1_hl62ipmltjfz74pvls4whx33xm
-      tslib: 2.5.0
-      widest-line: 3.1.0
-      wordwrap: 1.0.0
-      wrap-ansi: 7.0.0
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - typescript
-
-  /@oclif/core/2.8.2_hl62ipmltjfz74pvls4whx33xm:
-    resolution: {integrity: sha512-g50NrCdEcFlBfuwZb9RxLmxPNQ9wIaBPOiwbxlGYRkHMnsC6LNHcvVtyDnmndU8qoXrmCOZ6ocSZenOMlG+G1w==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@types/cli-progress': 3.11.0
-      ansi-escapes: 4.3.2
-      ansi-styles: 4.3.0
-      cardinal: 2.1.1
-      chalk: 4.1.2
-      clean-stack: 3.0.1
-      cli-progress: 3.12.0
-      debug: 4.3.4_supports-color@8.1.1
-      ejs: 3.1.9
-      fs-extra: 9.1.0
-      get-package-type: 0.1.0
-      globby: 11.1.0
-      hyperlinker: 1.0.0
-      indent-string: 4.0.0
-      is-wsl: 2.2.0
-      js-yaml: 3.14.1
-      natural-orderby: 2.0.3
-      object-treeify: 1.1.33
-      password-prompt: 1.1.2
-      semver: 7.5.0
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      supports-color: 8.1.1
-      supports-hyperlinks: 2.3.0
-      ts-node: 10.9.1_hl62ipmltjfz74pvls4whx33xm
-      tslib: 2.5.0
-      widest-line: 3.1.0
-      wordwrap: 1.0.0
-      wrap-ansi: 7.0.0
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - typescript
-    dev: true
-
   /@oclif/core/2.8.4_hl62ipmltjfz74pvls4whx33xm:
     resolution: {integrity: sha512-VlFDhoAJ1RDwcpDF46wAlciWTIryapMUViACttY9GwX6Ci6Lud1awe/pC3k4jad5472XshnPQV4bHAl4a/yxpA==}
     engines: {node: '>=14.0.0'}
@@ -2269,17 +2156,12 @@ packages:
       - '@swc/wasm'
       - '@types/node'
       - typescript
-    dev: true
 
-  /@oclif/linewrap/1.0.0:
-    resolution: {integrity: sha512-Ups2dShK52xXa8w6iBWLgcjPJWjais6KPJQq3gQ/88AY6BXoTX+MIGFPrWQO1KLMiQfoTpcLnUwloN4brrVUHw==}
-    dev: false
-
-  /@oclif/plugin-autocomplete/1.4.6_hl62ipmltjfz74pvls4whx33xm:
-    resolution: {integrity: sha512-dawJk8Eb5dxsHTEttKZIOJkJ9PPKB59hL8BrqdCkr+WB4Xerm3G6rNeGWErOVYcOLe8y+nWAeYUE8OHNPn2E9g==}
+  /@oclif/plugin-autocomplete/2.1.9_hl62ipmltjfz74pvls4whx33xm:
+    resolution: {integrity: sha512-Fx3YTb1tZJUZXlWw41HOCTJnrE58Qiyta7PxKzqlCl7TxFPHst1lxIdNo+93Kqc3StWc6+zOEHnqNLHsu/+HrA==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@oclif/core': 2.8.1_hl62ipmltjfz74pvls4whx33xm
+      '@oclif/core': 2.8.4_hl62ipmltjfz74pvls4whx33xm
       chalk: 4.1.2
       debug: 4.3.4
       fs-extra: 9.1.0
@@ -2295,7 +2177,7 @@ packages:
     resolution: {integrity: sha512-0J3oowPURZJ4Dn1p1WpQ46E4+CoV20KTn1cvsNiDl6Hmbw+qoljKQnArJJzNFeZQxWo4R7/S42PrzKJTVYh68Q==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@oclif/core': 2.8.1_hl62ipmltjfz74pvls4whx33xm
+      '@oclif/core': 2.8.4_hl62ipmltjfz74pvls4whx33xm
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -2336,17 +2218,11 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/screen/3.0.4:
-    resolution: {integrity: sha512-IMsTN1dXEXaOSre27j/ywGbBjrzx0FNd1XmuhCWCB9NTPrhWI1Ifbz+YLSEcstfQfocYsrbrIessxXb2oon4lA==}
-    engines: {node: '>=12.0.0'}
-    deprecated: Deprecated in favor of @oclif/core
-    dev: false
-
   /@oclif/test/2.3.17_hl62ipmltjfz74pvls4whx33xm:
     resolution: {integrity: sha512-Ph3Gg1n7Sz2JHsoLHNifzwbeDs8kKlBK+JcFikkoH7Fc+FoNXOsEBY6HTF0/8P3SeVK3H3MyBEvGNsGbeClhtg==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@oclif/core': 2.8.2_hl62ipmltjfz74pvls4whx33xm
+      '@oclif/core': 2.8.4_hl62ipmltjfz74pvls4whx33xm
       fancy-test: 2.0.19
     transitivePeerDependencies:
       - '@swc/core'
