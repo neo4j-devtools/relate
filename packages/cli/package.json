@@ -27,7 +27,7 @@
         "@nestjs/common": "9.4.0",
         "@nestjs/config": "2.3.1",
         "@nestjs/core": "9.4.0",
-        "@oclif/core": "1.26.2",
+        "@oclif/core": "2.8.5",
         "@oclif/plugin-autocomplete": "1.4.6",
         "@oclif/plugin-help": "5.2.9",
         "@relate/common": "workspace:*",
