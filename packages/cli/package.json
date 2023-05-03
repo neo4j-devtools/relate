@@ -44,12 +44,12 @@
         "tslib": "2.5.0"
     },
     "devDependencies": {
-        "oclif": "3.8.1",
+        "oclif": "3.9.0",
         "@oclif/test": "2.3.17",
         "@types/fs-extra": "9.0.13",
         "@types/jest": "29.5.1",
         "@types/lodash": "4.14.194",
-        "@types/node": "18.16.1",
+        "@types/node": "18.16.3",
         "@types/node-fetch": "2.6.3",
         "@types/semver": "7.3.13",
         "chai": "4.3.7",
