@@ -1,4 +1,4 @@
-import {CliUx, Flags} from '@oclif/core';
+import {ux, Flags} from '@oclif/core';
 import {ENTITY_TYPES} from '@relate/common';
 
 import BaseCommand from '../../base.command';
@@ -21,7 +21,7 @@ export default class ListCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...CliUx.ux.table.flags({except: ['extended', 'csv']}),
+        ...ux.table.flags({except: ['extended', 'csv']}),
         type: Flags.custom<ENTITY_TYPES>({
             char: 't',
             options: VALID_BACKUP_TYPES,

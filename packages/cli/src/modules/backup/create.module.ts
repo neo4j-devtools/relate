@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {ENTITY_TYPES, SystemModule, SystemProvider} from '@relate/common';
 
 import CreateCommand from '../../commands/backup/create';
@@ -36,8 +36,8 @@ export class CreateModule implements OnApplicationBootstrap {
 
         const entity = await getSelectedEntity(environment, entityType, entityNameOrId);
 
-        CliUx.ux.action.start(`Creating backup for ${getEntityDisplayName(entity)}`);
+        ux.action.start(`Creating backup for ${getEntityDisplayName(entity)}`);
         await environment.backups.create(entityType, entity.id);
-        CliUx.ux.action.stop();
+        ux.action.stop();
     }
 }

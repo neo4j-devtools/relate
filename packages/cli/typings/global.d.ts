@@ -34,7 +34,7 @@ declare global {
 }
 
 declare module '@oclif/core' {
-    declare namespace CliUx {
+    declare namespace ux {
         declare namespace Table {
             declare function table<T>(
                 data: T[],

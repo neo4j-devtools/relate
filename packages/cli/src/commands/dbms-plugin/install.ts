@@ -1,4 +1,4 @@
-import {CliUx, Flags} from '@oclif/core';
+import {ux, Flags} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {InstallModule} from '../../modules/dbms-plugin/install.module';
@@ -25,7 +25,7 @@ export default class InstallCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...CliUx.ux.table.flags({except: ['csv']}),
+        ...ux.table.flags({except: ['csv']}),
         plugin: Flags.string({
             char: 'p',
             description: 'Name of the plugin to install',

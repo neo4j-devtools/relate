@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {
     ENVIRONMENT_TYPES,
     IEnvironmentConfigInput,
@@ -27,19 +27,19 @@ export class InitModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = CliUx.ux.progress({
+        const downloadBar = ux.progress({
             format: 'Downloading Java [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
         });
-        registerHookListener(HOOK_EVENTS.JAVA_DOWNLOAD_START, () => downloadBar.start());
+        registerHookListener(HOOK_EVENTS.JAVA_DOWNLOAD_START, () => downloadBar.start(100, 0));
         registerHookListener(HOOK_EVENTS.JAVA_DOWNLOAD_STOP, () => downloadBar.stop());
         registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
             downloadBar.update(Math.round(percent * 100)),
         );
 
-        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_START, (val) => CliUx.ux.action.start(val));
-        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_STOP, () => CliUx.ux.action.stop());
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_START, (val) => ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.JAVA_EXTRACT_STOP, () => ux.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {
@@ -69,9 +69,9 @@ export class InitModule implements OnApplicationBootstrap {
             }
         }
 
-        CliUx.ux.action.start('Creating environment');
+        ux.action.start('Creating environment');
         await this.systemProvider.createEnvironment(config);
-        CliUx.ux.action.stop();
+        ux.action.stop();
 
         await Promise.all(
             ['4.0.0', '5.0.0'].map(async (version) => {
