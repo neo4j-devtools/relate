@@ -22,7 +22,6 @@ export default class RestoreCommand extends BaseCommand {
             required: true,
         }),
         outputPath: Args.string({
-            name: 'outputPath',
             description: 'destination of backup',
         }),
     };
