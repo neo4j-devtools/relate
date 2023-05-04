@@ -1,6 +1,6 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 
 import ListCommand from '../../commands/environment/list';
 
@@ -20,7 +20,7 @@ export class ListModule implements OnApplicationBootstrap {
         const {flags} = this.parsed;
         const environments = await this.systemProvider.listEnvironments();
 
-        CliUx.ux.table(
+        ux.table(
             environments.toArray(),
             {
                 id: {},

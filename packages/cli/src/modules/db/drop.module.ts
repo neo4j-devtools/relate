@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 
 import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
 import DropCommand from '../../commands/db/drop';
@@ -33,8 +33,8 @@ export class DropModule implements OnApplicationBootstrap {
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
-        CliUx.ux.action.start('Dropping database');
+        ux.action.start('Dropping database');
         await environment.dbs.drop(dbms, user, name, accessToken);
-        CliUx.ux.action.stop();
+        ux.action.stop();
     }
 }

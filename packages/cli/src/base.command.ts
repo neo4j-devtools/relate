@@ -1,4 +1,4 @@
-import {Command, Interfaces, Errors} from '@oclif/core';
+import {Command, Errors, Parser} from '@oclif/core';
 import {INestApplicationContext, Type} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {ISystemModuleConfig, SystemModule, registerHookListener, HOOK_EVENTS} from '@relate/common';
@@ -7,7 +7,7 @@ import {ConfigModule} from '@nestjs/config';
 import {IS_DEVELOPMENT_ENV, IS_TEST_ENV} from './constants';
 
 export default abstract class BaseCommand extends Command {
-    protected abstract commandClass: Interfaces.Input<Interfaces.FlagOutput, Interfaces.FlagOutput>;
+    protected abstract commandClass: Parameters<typeof Parser.parse>[1];
 
     // Any nestjs module should be a valid command module.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,9 +15,10 @@ export default abstract class BaseCommand extends Command {
 
     static flags = {};
 
-    static globalFlags = {};
+    static baseFlags = {};
 
     async run(): Promise<INestApplicationContext> {
+        this.parse();
         const parsed = await this.parse(this.commandClass);
         const utils = {
             debug: this.debug.bind(this),

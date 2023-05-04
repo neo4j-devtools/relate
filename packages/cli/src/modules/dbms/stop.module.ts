@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {List} from '@relate/types';
 import {SystemModule, SystemProvider, DBMS_STATUS, IQueryTarget} from '@relate/common';
 
@@ -40,8 +40,8 @@ export class StopModule implements OnApplicationBootstrap {
                 .unwindPromises();
         }
 
-        CliUx.ux.action.start('Stopping Neo4j');
-        return environment.dbmss.stop(dbmss).then(() => CliUx.ux.action.stop());
+        ux.action.start('Stopping Neo4j');
+        return environment.dbmss.stop(dbmss).then(() => ux.action.stop());
     }
 }
 

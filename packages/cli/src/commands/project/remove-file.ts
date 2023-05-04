@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -17,12 +18,11 @@ export default class RemoveFileCommand extends BaseCommand {
         '$ relate project:remove-file /project/path/to/name.file -p my-project',
     ];
 
-    static args = [
-        {
-            name: 'file',
+    static args = {
+        file: Args.string({
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

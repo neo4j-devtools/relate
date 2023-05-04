@@ -18,7 +18,7 @@ export default class ExecCommand extends BaseCommand {
         '$ relate db:exec dbms-containing-db-to-query -f /path/to/cypher/file -d db-to-query --force',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static strict = false;
 

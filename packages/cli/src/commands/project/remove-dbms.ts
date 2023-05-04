@@ -16,7 +16,7 @@ export default class RemoveDbmsCommand extends BaseCommand {
         '$ relate project:remove-dbms project-dbms-name -p my-project',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

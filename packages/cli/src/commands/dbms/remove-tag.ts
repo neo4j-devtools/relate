@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {RemoveTagModule} from '../../modules/dbms/remove-tag.module';
@@ -11,13 +12,12 @@ export default class RemoveTagCommand extends BaseCommand {
 
     static examples = ['$ relate dbms:remove-tag dbmsId "waiting for approval"'];
 
-    static args = [
-        ARGS.DBMS,
-        {
-            name: 'tagName',
+    static args = {
+        ...ARGS.DBMS,
+        tagName: Args.string({
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

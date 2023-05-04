@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import chalk from 'chalk';
 import path from 'path';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
@@ -46,15 +46,15 @@ export class DumpModule implements OnApplicationBootstrap {
         const filePath = path.resolve(file);
 
         if (dbms.status === DBMS_STATUS.STARTED) {
-            CliUx.ux.action.start(`Stopping ${dbms.name} DBMS`);
+            ux.action.start(`Stopping ${dbms.name} DBMS`);
             await environment.dbmss.stop([dbms.id]);
-            CliUx.ux.action.stop(chalk.green('done'));
+            ux.action.stop(chalk.green('done'));
         }
 
-        CliUx.ux.action.start(`Dumping ${database} from ${dbms.name}`);
+        ux.action.start(`Dumping ${database} from ${dbms.name}`);
         return environment.dbs.dump(dbms.id, database, filePath).then((res: string) => {
             this.utils.log(res);
-            CliUx.ux.action.stop();
+            ux.action.stop();
         });
     }
 }

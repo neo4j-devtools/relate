@@ -1,4 +1,4 @@
-import {CliUx, Flags} from '@oclif/core';
+import {ux, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -20,7 +20,7 @@ export default class InfoCommand extends BaseCommand {
         '$ relate dbms:info --filter=name=my-dbms --output=json',
     ];
 
-    static args = [ARGS.DBMSS];
+    static args = {...ARGS.DBMSS};
 
     static strict = false;
 
@@ -29,6 +29,6 @@ export default class InfoCommand extends BaseCommand {
         onlineCheck: Flags.boolean({
             description: 'Check if the DBMS is online',
         }),
-        ...CliUx.ux.table.flags({except: ['csv']}),
+        ...ux.table.flags({except: ['csv']}),
     };
 }

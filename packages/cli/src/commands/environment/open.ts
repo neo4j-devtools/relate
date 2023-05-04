@@ -19,7 +19,7 @@ export default class OpenCommand extends BaseCommand {
 
     static aliases = ['env:open'];
 
-    static args = [ARGS.ENVIRONMENT];
+    static args = {...ARGS.ENVIRONMENT};
 
     static flags = {
         log: Flags.boolean({

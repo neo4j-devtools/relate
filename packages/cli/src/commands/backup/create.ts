@@ -1,5 +1,4 @@
-import {Flags} from '@oclif/core';
-import {ENTITY_TYPES} from '@relate/common';
+import {Args, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS, VALID_BACKUP_TYPES} from '../../constants';
@@ -18,17 +17,16 @@ export default class CreateCommand extends BaseCommand {
         '$ relate backup:create <entity-id> -t dbms',
     ];
 
-    static args = [
-        {
-            name: 'entityNameOrId',
+    static args = {
+        entityNameOrId: Args.string({
             description: 'Entity id',
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        type: Flags.enum<ENTITY_TYPES>({
+        type: Flags.string({
             char: 't',
             options: VALID_BACKUP_TYPES,
             description: 'The relate entity type',

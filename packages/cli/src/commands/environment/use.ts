@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {REQUIRED_FOR_SCRIPTS} from '../../constants';
 import {UseModule} from '../../modules/environment/use.module';
@@ -13,11 +14,10 @@ export default class UseCommand extends BaseCommand {
 
     static aliases = ['env:use'];
 
-    static args = [
-        {
-            name: 'environment',
+    static args = {
+        environment: Args.string({
             description: 'Name of the environment to set as active',
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 }

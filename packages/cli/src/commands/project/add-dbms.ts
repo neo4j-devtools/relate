@@ -18,7 +18,7 @@ export default class AddDbmsCommand extends BaseCommand {
         '$ relate project:add-dbms -p my-project -n dbms-name-in-project -u dbms-user-to-create-token-for',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

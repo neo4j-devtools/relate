@@ -18,7 +18,7 @@ export default class LoadCommand extends BaseCommand {
         '$ relate db:load dbms-containing-db-to-load-into -f /path/to/dump/file -d db-to-load-into --force',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static strict = false;
 

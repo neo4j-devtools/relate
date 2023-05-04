@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -21,12 +21,11 @@ export default class APITokenCommand extends BaseCommand {
 
     static aliases = ['env:api-token'];
 
-    static args = [
-        {
+    static args = {
+        clientId: Args.string({
             description: 'Client ID',
-            name: 'clientId',
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

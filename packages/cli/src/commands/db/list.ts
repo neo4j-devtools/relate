@@ -1,4 +1,4 @@
-import {CliUx, Flags} from '@oclif/core';
+import {ux, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS} from '../../constants';
@@ -22,7 +22,7 @@ export default class ListCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...CliUx.ux.table.flags({except: ['extended', 'csv']}),
+        ...ux.table.flags({except: ['extended', 'csv']}),
         user: Flags.string({
             char: 'u',
             description: 'The Neo4j DBMS user to list databases with (needs to have access to the system database)',

@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 
 import {SystemModule, SystemProvider, DBMS_STATUS} from '@relate/common';
 import CreateCommand from '../../commands/db/create';
@@ -34,8 +34,8 @@ export class CreateModule implements OnApplicationBootstrap {
 
         const accessToken = await this.systemProvider.getAccessToken(environment.id, dbms, user);
 
-        CliUx.ux.action.start('Creating database');
+        ux.action.start('Creating database');
         await environment.dbs.create(dbms, user, name, accessToken);
-        CliUx.ux.action.stop();
+        ux.action.stop();
     }
 }

@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {ARGS, FLAGS} from '../../constants';
@@ -21,10 +21,10 @@ export default class ListCommand extends BaseCommand {
         '$ relate dbms-plugin:list MyDbms --filter=name=my-dbms --output=json',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...CliUx.ux.table.flags({except: ['csv']}),
+        ...ux.table.flags({except: ['csv']}),
     };
 }

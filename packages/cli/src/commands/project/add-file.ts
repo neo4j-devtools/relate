@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 
@@ -19,12 +19,11 @@ export default class AddFileCommand extends BaseCommand {
         '$ relate project:add-file -p my-project -d /path/to/existing-dest.file /path/to/source.file --overwrite',
     ];
 
-    static args = [
-        {
-            name: 'source',
+    static args = {
+        source: Args.file({
             required: REQUIRED_FOR_SCRIPTS,
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

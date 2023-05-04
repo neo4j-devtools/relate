@@ -1,5 +1,5 @@
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 
 import {SystemModule, SystemProvider} from '@relate/common';
 import ListSourcesCommand from '../../commands/dbms-plugin/list-sources';
@@ -22,7 +22,7 @@ export class ListSourcesModule implements OnApplicationBootstrap {
         const environment = await this.systemProvider.getEnvironment(flags.environment);
 
         return environment.dbmsPlugins.listSources().then((sources) => {
-            CliUx.ux.table(
+            ux.table(
                 sources.toArray(),
                 {
                     name: {},

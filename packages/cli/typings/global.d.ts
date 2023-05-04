@@ -1,16 +1,19 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
-import {Interfaces} from '@oclif/core';
+import {Parser} from '@oclif/core';
 import {table as originalTable} from '@oclif/core/lib/cli-ux/styled/table';
+import {InferredArgs, InferredFlags} from '@oclif/core/lib/interfaces';
 
-// https://itnext.io/typescript-extract-unpack-a-type-from-a-generic-baca7af14e51
-interface IHasFlags {
-    flags: any;
-}
-type UnpackFlags<InputFlags> = InputFlags extends Interfaces.FlagInput<infer TFlags> ? TFlags : never;
-type CommandToFlags<C> = C extends IHasFlags ? UnpackFlags<C['flags']> : Record<string, unknown>;
+type ParserInput = Parameters<typeof Parser.parse>[1];
+type TFlags<C> = InferredFlags<C['flags'] & C['baseFlags']>;
+type TArgs<C> = InferredArgs<C['args']>;
 
 declare global {
-    declare type ParsedInput<C> = Interfaces.ParserOutput<CommandToFlags<C>, {[name: string]: any}>;
+    declare type ParsedInput<C> = {
+        flags: TFlags<C>;
+        args: TArgs<C>;
+        argv: string[];
+    };
+
     declare type CommandUtils = {
         log: (message?: string | undefined, ...args: any[]) => void;
         debug: (...args: any[]) => void;
@@ -34,7 +37,7 @@ declare global {
 }
 
 declare module '@oclif/core' {
-    declare namespace CliUx {
+    declare namespace ux {
         declare namespace Table {
             declare function table<T>(
                 data: T[],

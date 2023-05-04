@@ -13,7 +13,7 @@ export default class OpenCommand extends BaseCommand {
 
     static examples = ['$ relate dbms:open', '$ relate dbms:open -e environment-name', '$ relate dbms:open -L'];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static flags = {
         ...FLAGS.ENVIRONMENT,

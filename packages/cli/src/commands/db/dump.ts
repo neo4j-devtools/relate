@@ -18,7 +18,7 @@ export default class DumpCommand extends BaseCommand {
         '$ relate db:dump dbms-containing-db-to-dump -d db-to-dump -t /path/to/save/dump/file/to',
     ];
 
-    static args = [ARGS.DBMS];
+    static args = {...ARGS.DBMS};
 
     static strict = false;
 

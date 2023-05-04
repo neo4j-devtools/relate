@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {Args, ux} from '@oclif/core';
 
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
@@ -22,15 +22,14 @@ export default class AddSourcesCommand extends BaseCommand {
 
     static strict = false;
 
-    static args = [
-        {
-            name: 'sources',
+    static args = {
+        sources: Args.string({
             description: 'File path or URL to plugin sources',
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        ...CliUx.ux.table.flags({except: ['csv']}),
+        ...ux.table.flags({except: ['csv']}),
     };
 }

@@ -2,7 +2,7 @@ import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, registerHookListener, HOOK_EVENTS, NEO4J_EDITION} from '@relate/common';
 import path from 'path';
 import fse from 'fs-extra';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import _ from 'lodash';
 
 import InstallCommand from '../../commands/dbms/install';
@@ -22,18 +22,18 @@ export class InstallModule implements OnApplicationBootstrap {
     ) {}
 
     registerHookListeners() {
-        const downloadBar = CliUx.ux.progress({
+        const downloadBar = ux.progress({
             format: 'Download progress [{bar}] {percentage}%',
             barCompleteChar: '\u2588',
             barIncompleteChar: '\u2591',
         });
-        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, () => downloadBar.start());
+        registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_START, () => downloadBar.start(100, 0));
         registerHookListener(HOOK_EVENTS.NEO4J_DOWNLOAD_STOP, () => downloadBar.stop());
         registerHookListener(HOOK_EVENTS.DOWNLOAD_PROGRESS, ({percent}) =>
             downloadBar.update(Math.round(percent * 100)),
         );
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => CliUx.ux.action.start(val));
-        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => CliUx.ux.action.stop());
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_START, (val) => ux.action.start(val));
+        registerHookListener(HOOK_EVENTS.NEO4J_EXTRACT_STOP, () => ux.action.stop());
     }
 
     async onApplicationBootstrap(): Promise<void> {

@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import chalk from 'chalk';
 import path from 'path';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
@@ -50,12 +50,12 @@ export class LoadModule implements OnApplicationBootstrap {
         });
 
         if (dbms.status === DBMS_STATUS.STARTED) {
-            CliUx.ux.action.start(`Stopping ${dbms.name} DBMS`);
+            ux.action.start(`Stopping ${dbms.name} DBMS`);
             await environment.dbmss.stop([dbms.id]);
-            CliUx.ux.action.stop(chalk.green('done'));
+            ux.action.stop(chalk.green('done'));
         }
 
-        CliUx.ux.action.start(`Loading data from dump into ${dbms.name}`);
+        ux.action.start(`Loading data from dump into ${dbms.name}`);
         return environment.dbs.load(dbms.id, database, filePath, force).then((res: string) => {
             let result = chalk.green('done');
 
@@ -77,7 +77,7 @@ export class LoadModule implements OnApplicationBootstrap {
                 message.push(chalk.red(`Logs:\n${res}`));
             }
 
-            CliUx.ux.action.stop(result);
+            ux.action.stop(result);
 
             this.utils.log(message.join('\n'));
         });

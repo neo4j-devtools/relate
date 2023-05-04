@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import chalk from 'chalk';
 import {OnApplicationBootstrap, Module, Inject} from '@nestjs/common';
 import {SystemModule, SystemProvider, DBMS_STATUS, supportsAccessTokens} from '@relate/common';
@@ -37,9 +37,9 @@ export class ExecModule implements OnApplicationBootstrap {
         const dbms = await environment.dbmss.get(dbmsId);
 
         if (dbms.status === DBMS_STATUS.STOPPED) {
-            CliUx.ux.action.start(`Starting ${dbms.name} DBMS`);
+            ux.action.start(`Starting ${dbms.name} DBMS`);
             await environment.dbmss.start([dbmsId]);
-            CliUx.ux.action.stop(chalk.green('done'));
+            ux.action.stop(chalk.green('done'));
         }
 
         const accessToken = supportsAccessTokens(dbms)

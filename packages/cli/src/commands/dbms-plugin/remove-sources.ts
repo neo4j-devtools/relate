@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core';
 import BaseCommand from '../../base.command';
 import {FLAGS} from '../../constants';
 import {RemoveSourcesModule} from '../../modules/dbms-plugin/remove-sources.module';
@@ -20,12 +21,11 @@ export default class RemoveSourcesCommand extends BaseCommand {
 
     static strict = false;
 
-    static args = [
-        {
-            name: 'sources',
+    static args = {
+        sources: Args.string({
             description: 'Names of the plugin sources to remove',
-        },
-    ];
+        }),
+    };
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
