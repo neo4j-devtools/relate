@@ -15,7 +15,7 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "prepare": "pnpm build:clean",
+        "prepare": "corepack pnpm build:clean",
         "clean": "rimraf dist",
         "build": "tsc",
         "build:clean": "run-s clean build",
