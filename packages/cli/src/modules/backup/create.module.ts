@@ -28,7 +28,9 @@ export class CreateModule implements OnApplicationBootstrap {
         let {entityNameOrId} = args;
         const entityType =
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            flags.type || ((await selectPrompt('Select entity type to backup', VALID_BACKUP_TYPES)) as ENTITY_TYPES);
+            (flags.type as ENTITY_TYPES) ||
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            ((await selectPrompt('Select entity type to backup', VALID_BACKUP_TYPES)) as ENTITY_TYPES);
 
         if (!entityNameOrId) {
             entityNameOrId = await selectEntityPrompt(`Select ${entityType} to backup`, environment, entityType);

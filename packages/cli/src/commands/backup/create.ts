@@ -1,5 +1,4 @@
 import {Args, Flags} from '@oclif/core';
-import {ENTITY_TYPES} from '@relate/common';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, REQUIRED_FOR_SCRIPTS, VALID_BACKUP_TYPES} from '../../constants';
@@ -27,7 +26,7 @@ export default class CreateCommand extends BaseCommand {
 
     static flags = {
         ...FLAGS.ENVIRONMENT,
-        type: Flags.custom<ENTITY_TYPES>({
+        type: Flags.string({
             char: 't',
             options: VALID_BACKUP_TYPES,
             description: 'The relate entity type',

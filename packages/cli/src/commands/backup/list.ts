@@ -1,5 +1,4 @@
 import {ux, Flags} from '@oclif/core';
-import {ENTITY_TYPES} from '@relate/common';
 
 import BaseCommand from '../../base.command';
 import {FLAGS, VALID_BACKUP_TYPES} from '../../constants';
@@ -22,7 +21,7 @@ export default class ListCommand extends BaseCommand {
     static flags = {
         ...FLAGS.ENVIRONMENT,
         ...ux.table.flags({except: ['extended', 'csv']}),
-        type: Flags.custom<ENTITY_TYPES>({
+        type: Flags.string({
             char: 't',
             options: VALID_BACKUP_TYPES,
             description: 'The relate entity type',
