@@ -106,7 +106,7 @@
         ]
     },
     "scripts": {
-        "prepare": "pnpm build:clean",
+        "prepare": "corepack pnpm build:clean",
         "postpack": "rimraf oclif.manifest.json",
         "prepack": "run-s build:clean build:manifest generate:docs",
         "build": "tsc -b",
