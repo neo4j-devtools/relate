@@ -11,7 +11,6 @@ Projects bring files and data together.
 * [`relate project list`](#relate-project-list)
 * [`relate project list-dbmss`](#relate-project-list-dbmss)
 * [`relate project list-files`](#relate-project-list-files)
-* [`relate project open`](#relate-project-open)
 * [`relate project remove-dbms DBMS`](#relate-project-remove-dbms-dbms)
 * [`relate project remove-file FILE`](#relate-project-remove-file-file)
 
@@ -21,7 +20,7 @@ Add a DBMS connection to a project
 
 ```
 USAGE
-  $ relate project add-dbms [DBMS] -p <value> [-e <value>] [-n <value>] [-u <value>]
+  $ relate project add-dbms DBMS -p <value> [-e <value>] [-n <value>] [-u <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -51,7 +50,7 @@ Add a file to a project
 
 ```
 USAGE
-  $ relate project add-file [SOURCE] -p <value> [-e <value>] [-d <value>] [--overwrite]
+  $ relate project add-file SOURCE -p <value> [-e <value>] [-d <value>] [--overwrite]
 
 FLAGS
   -d, --destination=<value>  The relative path of the file (including name) in the project
@@ -121,7 +120,7 @@ Link a project
 
 ```
 USAGE
-  $ relate project link [FILEPATH] -n <value>
+  $ relate project link FILEPATH -n <value>
 
 FLAGS
   -n, --name=<value>  (required) Name of the project
@@ -223,39 +222,13 @@ EXAMPLES
   $ relate project:list-files --ignore node_module,dist
 ```
 
-## `relate project open`
-
-Open a project's folder
-
-```
-USAGE
-  $ relate project open -p <value> [-e <value>] [-L]
-
-FLAGS
-  -L, --log                  If set, log the path instead
-  -e, --environment=<value>  Name of the environment to run the command against
-  -p, --project=<value>      (required) Name of the project to run the command against
-
-DESCRIPTION
-  Open a project's folder
-
-EXAMPLES
-  $ relate project:open
-
-  $ relate project:open -e environment-name
-
-  $ relate project:open -p my-project
-
-  $ relate project:open -p my-project -L
-```
-
 ## `relate project remove-dbms DBMS`
 
 Remove a DBMS connection from a project
 
 ```
 USAGE
-  $ relate project remove-dbms [DBMS] -p <value> [-e <value>]
+  $ relate project remove-dbms DBMS -p <value> [-e <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -283,7 +256,7 @@ Remove a file from a project
 
 ```
 USAGE
-  $ relate project remove-file [FILE] -p <value> [-e <value>]
+  $ relate project remove-file FILE -p <value> [-e <value>]
 
 FLAGS
   -e, --environment=<value>  Name of the environment to run the command against

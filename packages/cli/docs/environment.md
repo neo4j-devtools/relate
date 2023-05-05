@@ -6,7 +6,6 @@ Managed sets of related resources and services.
 * [`relate environment api-token [CLIENTID]`](#relate-environment-api-token-clientid)
 * [`relate environment init [ENVIRONMENT]`](#relate-environment-init-environment)
 * [`relate environment list`](#relate-environment-list)
-* [`relate environment open [ENVIRONMENT]`](#relate-environment-open-environment)
 * [`relate environment use ENVIRONMENT`](#relate-environment-use-environment)
 
 ## `relate environment api-token [CLIENTID]`
@@ -90,41 +89,13 @@ EXAMPLES
   $ relate env:list
 ```
 
-## `relate environment open [ENVIRONMENT]`
-
-Open an environment's configuration with your default editor
-
-```
-USAGE
-  $ relate environment open [ENVIRONMENT] [-L]
-
-ARGUMENTS
-  ENVIRONMENT  Name of the environment to run the command against
-
-FLAGS
-  -L, --log  If set, log the path instead
-
-DESCRIPTION
-  Open an environment's configuration with your default editor
-
-ALIASES
-  $ relate env open
-
-EXAMPLES
-  $ relate env:open
-
-  $ relate env:open environment-name
-
-  $ relate env:open environment-name -L
-```
-
 ## `relate environment use ENVIRONMENT`
 
 Set an environment as default
 
 ```
 USAGE
-  $ relate environment use [ENVIRONMENT]
+  $ relate environment use ENVIRONMENT
 
 ARGUMENTS
   ENVIRONMENT  Name of the environment to set as active

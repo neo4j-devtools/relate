@@ -1,5 +1,11 @@
 # @relate/common
 
+## 1.0.13
+
+### Patch Changes
+
+-   ad56fc5: Bump @oclif/core, remove reflect-metadata
+
 ## 1.0.12
 
 ### Patch Changes

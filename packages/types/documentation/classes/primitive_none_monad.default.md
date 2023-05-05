@@ -394,7 +394,7 @@ ___
 
 **`See`**
 
-None.of
+[of](primitive_none_monad.default.md#of)
 
 #### Type parameters
 

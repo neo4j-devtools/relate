@@ -401,7 +401,7 @@ Coerces anything into a Bool
 
 **`See`**
 
-Bool.of
+[of](primitive_bool_monad.default.md#of)
 
 #### Parameters
 

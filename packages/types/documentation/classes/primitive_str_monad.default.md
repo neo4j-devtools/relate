@@ -538,7 +538,7 @@ Coerces anything into a Str
 
 **`See`**
 
-Str.of
+[of](primitive_str_monad.default.md#of)
 
 #### Type parameters
 

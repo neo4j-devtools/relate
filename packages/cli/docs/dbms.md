@@ -9,7 +9,6 @@ Neo4j DBMS installations.
 * [`relate dbms install VERSION`](#relate-dbms-install-version)
 * [`relate dbms link FILEPATH DBMSNAME`](#relate-dbms-link-filepath-dbmsname)
 * [`relate dbms list`](#relate-dbms-list)
-* [`relate dbms open DBMS`](#relate-dbms-open-dbms)
 * [`relate dbms remove-tag DBMS TAGNAME`](#relate-dbms-remove-tag-dbms-tagname)
 * [`relate dbms start [DBMSS]`](#relate-dbms-start-dbmss)
 * [`relate dbms stop [DBMSS]`](#relate-dbms-stop-dbmss)
@@ -22,7 +21,7 @@ Generate access token for a Neo4j >=4.x enterprise DBMS
 
 ```
 USAGE
-  $ relate dbms access-token [DBMS] [-e <value>] [-u <value>]
+  $ relate dbms access-token DBMS [-e <value>] [-u <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -50,7 +49,7 @@ Tag a DBMS
 
 ```
 USAGE
-  $ relate dbms add-tag [DBMS] [TAGNAME] [-e <value>]
+  $ relate dbms add-tag DBMS TAGNAME [-e <value>]
 
 ARGUMENTS
   DBMS     Name or ID of a Neo4j instance
@@ -113,7 +112,7 @@ Install a new Neo4j DBMS
 
 ```
 USAGE
-  $ relate dbms install [VERSION] -n <value> [-e <value>] [--noCaching] [--limited]
+  $ relate dbms install VERSION -n <value> [-e <value>] [--noCaching] [--limited]
 
 ARGUMENTS
   VERSION  Version to install (semver, url, or path)
@@ -145,7 +144,7 @@ Link to an existing DBMS installation
 
 ```
 USAGE
-  $ relate dbms link [FILEPATH] [DBMSNAME] -y
+  $ relate dbms link FILEPATH DBMSNAME -y
 
 FLAGS
   -y, --confirm  (required) Confirm DBMS configuration changes
@@ -193,39 +192,13 @@ EXAMPLES
   $ relate dbms:list --filter=name=my-dbms --output=json
 ```
 
-## `relate dbms open DBMS`
-
-Open a Neo4j DBMS's directory
-
-```
-USAGE
-  $ relate dbms open [DBMS] [-e <value>] [-L]
-
-ARGUMENTS
-  DBMS  Name or ID of a Neo4j instance
-
-FLAGS
-  -L, --log                  If set, log the path instead
-  -e, --environment=<value>  Name of the environment to run the command against
-
-DESCRIPTION
-  Open a Neo4j DBMS's directory
-
-EXAMPLES
-  $ relate dbms:open
-
-  $ relate dbms:open -e environment-name
-
-  $ relate dbms:open -L
-```
-
 ## `relate dbms remove-tag DBMS TAGNAME`
 
 Remove tag from a DBMS
 
 ```
 USAGE
-  $ relate dbms remove-tag [DBMS] [TAGNAME] [-e <value>]
+  $ relate dbms remove-tag DBMS TAGNAME [-e <value>]
 
 ARGUMENTS
   DBMS     Name or ID of a Neo4j instance
@@ -303,7 +276,7 @@ Uninstall a Neo4j DBMS
 
 ```
 USAGE
-  $ relate dbms uninstall [DBMS] [-e <value>]
+  $ relate dbms uninstall DBMS [-e <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -330,7 +303,7 @@ Upgrade an installed DBMS to a newer version
 
 ```
 USAGE
-  $ relate dbms upgrade [DBMS] -v <value> [-e <value>] [--noCaching] [--noMigration]
+  $ relate dbms upgrade DBMS -v <value> [-e <value>] [--noCaching] [--noMigration]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance

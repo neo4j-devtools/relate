@@ -419,7 +419,7 @@ Wraps passed value in Maybe, if not already a Maybe
 
 **`See`**
 
-Maybe.of
+[of](primitive_maybe_monad.default.md#of)
 
 #### Type parameters
 

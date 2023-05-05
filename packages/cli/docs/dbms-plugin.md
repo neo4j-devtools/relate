@@ -95,7 +95,7 @@ List plugins installed in a Neo4j DBMS
 
 ```
 USAGE
-  $ relate dbms-plugin list [DBMS] [-e <value>] [--columns <value> | -x] [--sort <value>] [--filter <value>] [--output
+  $ relate dbms-plugin list DBMS [-e <value>] [--columns <value> | -x] [--sort <value>] [--filter <value>] [--output
     csv|json|yaml | --no-truncate | ] [--no-header | ]
 
 ARGUMENTS

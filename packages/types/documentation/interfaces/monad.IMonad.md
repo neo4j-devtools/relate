@@ -61,7 +61,7 @@ packages/types/src/monads/monad.ts:4
 
 #### Inherited from
 
-Iterable.\_\_@iterator@17
+Iterable.[iterator]
 
 #### Defined in
 

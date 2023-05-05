@@ -3,14 +3,14 @@
 
 Individual databases within a DBMS.
 
-* [`relate db create NAME`](#relate-db-create-name)
+* [`relate db create [NAME]`](#relate-db-create-name)
 * [`relate db drop [NAME]`](#relate-db-drop-name)
 * [`relate db dump DBMS`](#relate-db-dump-dbms)
 * [`relate db exec DBMS`](#relate-db-exec-dbms)
 * [`relate db list`](#relate-db-list)
 * [`relate db load DBMS`](#relate-db-load-dbms)
 
-## `relate db create NAME`
+## `relate db create [NAME]`
 
 Create a new database in a DBMS
 
@@ -78,7 +78,7 @@ Dump data from database
 
 ```
 USAGE
-  $ relate db dump [DBMS] [-e <value>] [-d <value>] [-t <value>]
+  $ relate db dump DBMS [-e <value>] [-d <value>] [-t <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -107,7 +107,7 @@ Execute a query against a database
 
 ```
 USAGE
-  $ relate db exec [DBMS] -f <value> [-e <value>] [-d <value>] [-u <value>]
+  $ relate db exec DBMS -f <value> [-e <value>] [-d <value>] [-u <value>]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance
@@ -177,7 +177,7 @@ Load data into a database from a dump
 
 ```
 USAGE
-  $ relate db load [DBMS] -f <value> [-e <value>] [-d <value>] [--force]
+  $ relate db load DBMS -f <value> [-e <value>] [-d <value>] [--force]
 
 ARGUMENTS
   DBMS  Name or ID of a Neo4j instance

@@ -1,5 +1,13 @@
 # @relate/cli
 
+## 1.0.13
+
+### Patch Changes
+
+-   ad56fc5: Bump @oclif/core, remove reflect-metadata
+-   Updated dependencies [ad56fc5]
+    -   @relate/common@1.0.13
+
 ## 1.0.12
 
 ### Patch Changes

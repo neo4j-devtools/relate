@@ -94,7 +94,7 @@ const asObj: {foo: 'bar'} = dict.toObject();
 
 • `get` **first**(): [`default`](primitive_maybe_monad.default.md)<`T`\>
 
-Returns a Maybe of the first element in the sequence
+Returns a [default](primitive_maybe_monad.default.md) of the first element in the sequence
 
 #### Returns
 
@@ -148,7 +148,7 @@ ___
 
 • `get` **last**(): [`default`](primitive_maybe_monad.default.md)<`T`\>
 
-Returns a Maybe of the last element in the sequence
+Returns a [default](primitive_maybe_monad.default.md) of the last element in the sequence
 
 #### Returns
 
@@ -866,7 +866,7 @@ ___
 
 ▸ **nth**(`index`): [`default`](primitive_maybe_monad.default.md)<`RawDict`<`K`, `V`\>\>
 
-Returns a Maybe of the nth element in the sequence
+Returns a [default](primitive_maybe_monad.default.md) of the nth element in the sequence
 
 #### Parameters
 
@@ -1336,7 +1336,7 @@ Coerces any value to a Dict, if not one already
 
 **`See`**
 
-Dict.of
+[of](primitive_dict_monad.default.md#of)
 
 #### Type parameters
 
