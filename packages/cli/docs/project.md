@@ -11,6 +11,7 @@ Projects bring files and data together.
 * [`relate project list`](#relate-project-list)
 * [`relate project list-dbmss`](#relate-project-list-dbmss)
 * [`relate project list-files`](#relate-project-list-files)
+* [`relate project open`](#relate-project-open)
 * [`relate project remove-dbms DBMS`](#relate-project-remove-dbms-dbms)
 * [`relate project remove-file FILE`](#relate-project-remove-file-file)
 
@@ -220,6 +221,32 @@ EXAMPLES
   $ relate project:list-files --ignore node_module --ignore dist
 
   $ relate project:list-files --ignore node_module,dist
+```
+
+## `relate project open`
+
+Open a project's folder
+
+```
+USAGE
+  $ relate project open -p <value> [-e <value>] [-L]
+
+FLAGS
+  -L, --log                  If set, log the path instead
+  -e, --environment=<value>  Name of the environment to run the command against
+  -p, --project=<value>      (required) Name of the project to run the command against
+
+DESCRIPTION
+  Open a project's folder
+
+EXAMPLES
+  $ relate project:open
+
+  $ relate project:open -e environment-name
+
+  $ relate project:open -p my-project
+
+  $ relate project:open -p my-project -L
 ```
 
 ## `relate project remove-dbms DBMS`
