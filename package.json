@@ -45,7 +45,7 @@
         "object-treeify": "1.1.33",
         "ora": "5.4.1",
         "prettier": "2.8.8",
-        "rimraf": "4.4.1",
+        "rimraf": "5.0.0",
         "rxjs": "7.8.1",
         "tar": "6.1.14",
         "typescript": "5.0.4"
