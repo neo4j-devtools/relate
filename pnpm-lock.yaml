@@ -50,8 +50,8 @@ importers:
         specifier: 4.1.5
         version: 4.1.5
       object-treeify:
-        specifier: 1.1.33
-        version: 1.1.33
+        specifier: 3.3.1
+        version: 3.3.1
       ora:
         specifier: 5.4.1
         version: 5.4.1
@@ -7766,6 +7766,11 @@ packages:
   /object-treeify@1.1.33:
     resolution: {integrity: sha512-EFVjAYfzWqWsBMRHPMAXLCDIJnpMhdWAqR7xG6M6a2cs6PMFpl/+Z20w9zDW4vkxOFfddegBKq9Rehd0bxWE7A==}
     engines: {node: '>= 10'}
+
+  /object-treeify@3.3.1:
+    resolution: {integrity: sha512-oGCWfO3GEvv5foAuiLR64W02Xj/lWGLY7tuY35L2JBaOasaBxI0184PQzdhWHhib8guarXig3LMTL+MTI6cdSQ==}
+    engines: {node: '>= 12'}
+    dev: true
 
   /object.assign@4.1.4:
     resolution: {integrity: sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==}
