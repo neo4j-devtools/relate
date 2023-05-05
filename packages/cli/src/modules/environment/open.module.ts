@@ -1,6 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import {openApp} from 'open';
 
 import OpenCommand from '../../commands/environment/open';
 
@@ -16,10 +15,11 @@ export class OpenModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    logOrOpen(path: string): void {
+    async logOrOpen(path: string): Promise<void> {
         if (this.parsed.flags.log) {
             this.utils.log(path);
         } else {
+            const {openApp} = await import('open');
             openApp(path);
         }
     }
@@ -29,6 +29,6 @@ export class OpenModule implements OnApplicationBootstrap {
         const {environment: environmentId} = args;
         const environment = await this.systemProvider.getEnvironment(environmentId);
 
-        this.logOrOpen(environment.configPath);
+        await this.logOrOpen(environment.configPath);
     }
 }

@@ -1,6 +1,5 @@
 import {Inject, Module, OnApplicationBootstrap} from '@nestjs/common';
 import {SystemModule, SystemProvider} from '@relate/common';
-import {openApp} from 'open';
 
 import OpenCommand from '../../commands/dbms/open';
 import {isInteractive} from '../../stdin';
@@ -18,10 +17,11 @@ export class OpenModule implements OnApplicationBootstrap {
         @Inject(SystemProvider) protected readonly systemProvider: SystemProvider,
     ) {}
 
-    logOrOpen(path: string): void {
+    async logOrOpen(path: string): Promise<void> {
         if (this.parsed.flags.log) {
             this.utils.log(path);
         } else {
+            const {openApp} = await import('open');
             openApp(path);
         }
     }
@@ -43,6 +43,6 @@ export class OpenModule implements OnApplicationBootstrap {
             throw new Error(`DBMS ${dbmsId} could not be opened`);
         }
 
-        this.logOrOpen(dbms.rootPath);
+        await this.logOrOpen(dbms.rootPath);
     }
 }
