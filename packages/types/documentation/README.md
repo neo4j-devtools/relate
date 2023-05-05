@@ -6,6 +6,7 @@
 
 ### Modules
 
+- [index](modules/index.md)
 - [monad](modules/monad.md)
 - [primitive/bool.monad](modules/primitive_bool_monad.md)
 - [primitive/dict.monad](modules/primitive_dict_monad.md)

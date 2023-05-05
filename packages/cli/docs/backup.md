@@ -14,14 +14,15 @@ Create a new resource backup
 
 ```
 USAGE
-  $ relate backup create [ENTITYNAMEORID] -t dbms|project [-e <value>]
+  $ relate backup create ENTITYNAMEORID -t dbms|project [-e <value>]
 
 ARGUMENTS
   ENTITYNAMEORID  Entity id
 
 FLAGS
   -e, --environment=<value>  Name of the environment to run the command against
-  -t, --type=(dbms|project)  (required) The relate entity type
+  -t, --type=<option>        (required) The relate entity type
+                             <options: dbms|project>
 
 DESCRIPTION
   Create a new resource backup
@@ -45,7 +46,8 @@ USAGE
 
 FLAGS
   -e, --environment=<value>  Name of the environment to run the command against
-  -t, --type=(dbms|project)  The relate entity type
+  -t, --type=<option>        The relate entity type
+                             <options: dbms|project>
   --columns=<value>          only show provided columns (comma-separated)
   --filter=<value>           filter property by partial string matching, ex: name=foo
   --no-header                hide table header from output
@@ -73,7 +75,7 @@ Remove a resource backup
 
 ```
 USAGE
-  $ relate backup remove [BACKUPID] [-e <value>]
+  $ relate backup remove BACKUPID [-e <value>]
 
 ARGUMENTS
   BACKUPID  Backup ID
@@ -96,7 +98,7 @@ Restore resource from a backup
 
 ```
 USAGE
-  $ relate backup restore [BACKUPIDORPATH] [OUTPUTPATH] [-e <value>]
+  $ relate backup restore BACKUPIDORPATH [OUTPUTPATH] [-e <value>]
 
 ARGUMENTS
   BACKUPIDORPATH  Backup ID or path

@@ -388,7 +388,7 @@ ___
 
 **`See`**
 
-Nil.of
+[of](primitive_nil_monad.default.md#of)
 
 #### Parameters
 

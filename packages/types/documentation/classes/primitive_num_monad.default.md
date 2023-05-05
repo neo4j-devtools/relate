@@ -751,7 +751,7 @@ Coerces anything into a Num
 
 **`See`**
 
-Num.of
+[of](primitive_num_monad.default.md#of)
 
 #### Parameters
 
