@@ -9,6 +9,7 @@ Neo4j DBMS installations.
 * [`relate dbms install VERSION`](#relate-dbms-install-version)
 * [`relate dbms link FILEPATH DBMSNAME`](#relate-dbms-link-filepath-dbmsname)
 * [`relate dbms list`](#relate-dbms-list)
+* [`relate dbms open DBMS`](#relate-dbms-open-dbms)
 * [`relate dbms remove-tag DBMS TAGNAME`](#relate-dbms-remove-tag-dbms-tagname)
 * [`relate dbms start [DBMSS]`](#relate-dbms-start-dbmss)
 * [`relate dbms stop [DBMSS]`](#relate-dbms-stop-dbmss)
@@ -190,6 +191,32 @@ EXAMPLES
   $ relate dbms:list --sort=name
 
   $ relate dbms:list --filter=name=my-dbms --output=json
+```
+
+## `relate dbms open DBMS`
+
+Open a Neo4j DBMS's directory
+
+```
+USAGE
+  $ relate dbms open DBMS [-e <value>] [-L]
+
+ARGUMENTS
+  DBMS  Name or ID of a Neo4j instance
+
+FLAGS
+  -L, --log                  If set, log the path instead
+  -e, --environment=<value>  Name of the environment to run the command against
+
+DESCRIPTION
+  Open a Neo4j DBMS's directory
+
+EXAMPLES
+  $ relate dbms:open
+
+  $ relate dbms:open -e environment-name
+
+  $ relate dbms:open -L
 ```
 
 ## `relate dbms remove-tag DBMS TAGNAME`
