@@ -16,7 +16,7 @@ jobs:
             contents: write
             pull-requests: write
         steps:
-            - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
               with:
                   # Needed to ensure Github actions are run even when the pull request is rebased.
                   # https://github.com/changesets/action/issues/187#issuecomment-1228413850
