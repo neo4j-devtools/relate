@@ -48,7 +48,7 @@
         "nodemon": "2.0.22",
         "npm-run-all": "4.1.5",
         "rimraf": "5.0.0",
-        "semver": "7.5.0",
+        "semver": "7.5.2",
         "supertest": "6.3.3",
         "ts-jest": "29.1.0",
         "typescript": "5.1.3"
