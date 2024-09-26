@@ -18,7 +18,7 @@ runs:
           with:
               node-version: ${{ inputs.NODE_VERSION }}
 
-        - uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd # v2.2.4
+        - uses: pnpm/action-setup@v4 # v4
           id: pnpm-install
           with:
               version: ${{ inputs.PNPM_VERSION }}

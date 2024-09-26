@@ -137,10 +137,12 @@ export class LocalDbmss extends DbmssAbstract<LocalEnvironment> {
             throw new DbmsExistsError(`DBMS with name "${name}" already exists`);
         }
 
+        const installer = this.environment.name.replace('_', '');
+
         // version as a file path.
         if ((await fse.pathExists(version)) && (await fse.stat(version)).isFile()) {
             const tmpPath = path.join(this.environment.dirPaths.tmp, uuidv4());
-            const {extractedDistPath} = await extractNeo4j(version, tmpPath);
+            const {extractedDistPath} = await extractNeo4j(version, tmpPath, installer);
             const {version: semverVersion} = await getDistributionVersion(extractedDistPath);
 
             const dbms = await this.installNeo4j(
