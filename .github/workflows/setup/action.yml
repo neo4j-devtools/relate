@@ -9,7 +9,7 @@ inputs:
     PNPM_VERSION:
         description: PNPM version
         required: false
-        default: 8.4.0
+        default: 9.11.0
 
 runs:
     using: composite
