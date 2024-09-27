@@ -1,5 +1,12 @@
 # @relate/web
 
+## 1.0.15
+
+### Patch Changes
+
+-   Updated dependencies [97c9703]
+    -   @relate/common@1.0.14
+
 ## 1.0.14
 
 ### Patch Changes
