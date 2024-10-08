@@ -14,7 +14,7 @@ inputs:
 runs:
     using: composite
     steps:
-        - uses: actions/setup-node@v4 # v4
+        - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
           with:
               node-version: ${{ inputs.NODE_VERSION }}
 
@@ -29,7 +29,7 @@ runs:
           id: pnpm-cache
           run: 'echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT'
 
-        - uses: actions/cache@v4 # v4
+        - uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 # v4
           name: Setup pnpm cache
           with:
               path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
