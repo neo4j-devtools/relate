@@ -12,7 +12,7 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4 # v4
+            - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
             - uses: ./.github/workflows/setup
             - run: pnpm lint
 
@@ -25,16 +25,16 @@ jobs:
                 os: [macos-latest, ubuntu-latest, windows-latest]
 
         steps:
-            - uses: actions/checkout@v4 # v4
+            - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
             - uses: ./.github/workflows/setup
 
-            - uses: actions/cache@v4 # v4
+            - uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 # v4
               if: ${{ !env.ACT }}
               id: relate-e2e-dbms-cache
               with:
                   path: 'e2e/relate fixtures/cache/dbmss'
                   key: relate-e2e-dbms-${{ runner.os }}
-            - uses: actions/cache@v4 # v4
+            - uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 # v4
               if: ${{ !env.ACT }}
               id: relate-e2e-runtime-cache
               with:
