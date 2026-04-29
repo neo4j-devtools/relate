@@ -37,7 +37,7 @@
         "enquirer": "2.3.6",
         "fs-extra": "9.1.0",
         "graphql": "16.6.0",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "node-fetch": "2.6.9",
         "open": "9.1.0",
         "rxjs": "7.8.1",

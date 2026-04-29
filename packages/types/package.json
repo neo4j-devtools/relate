@@ -24,7 +24,7 @@
         "generate:docs": "typedoc"
     },
     "dependencies": {
-        "lodash": "4.17.21"
+        "lodash": "4.17.23"
     },
     "devDependencies": {
         "@types/jest": "29.5.1",
