@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@nestjs/common": "9.4.3",
-        "@nestjs/config": "2.3.3",
+        "@nestjs/config": "2.3.4",
         "@nestjs/core": "9.4.3",
         "@oclif/core": "2.8.5",
         "@oclif/plugin-autocomplete": "2.1.9",
